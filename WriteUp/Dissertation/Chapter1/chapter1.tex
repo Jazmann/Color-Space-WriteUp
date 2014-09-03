@@ -28,6 +28,8 @@ We are preserving the information in a targeted way, reducing the overall infrom
 
 \section{Overview of Color Spaces}
 
+As mentioned previously, one of the challenges facing this project is that  require a chromatic space in which the color information is 
+
 For the purposes of this project, a color space dedicated to human skin is necessary. When it comes to pattern recognition, it is beneficial to reduce the number of channels which the algorithm must process, as well as reducing the information density in those channels. It is also hoped that, in an appropriate color space, it will be a simple matter to separate the characteristics associated with saturation of tissue with blood, which changes under mechanical stress from the unchanging pigmentation of the cells (\cite{Stamatas2004}). Color spaces --- when they are normally defined --- are a combination of rotations, scaling and translations, while some (e.g. HSV (\cite{Vezhnevets2003, Zarit1999a} )) also perform a coordinate transform. The color space defined for this project is unusual in that it uses a non-linear redistribution of the values. It should be noted that this is not a pixel-based classifier (\cite{Jones2002}). However, seeing as the color space contains both the statistical information and the skin color information, it can be interpreted in a probabilistic way.
 
 For the sake of comparison, the following four color spaces --- all of which have been used for skin detection (\cite{Vezhnevets2003,Zarit1999a,Yang1997a,Brand2000a,Sigal2000a,Chai2000a,Phung2002a}) --- have been evaluated for the purposes of this project.
@@ -50,7 +52,22 @@ This color space bears similarities to the LAB and HSV spaces in that it explici
 
 The main issue with using these color spaces is the lack of control over information flow upon transformation and the clear mathematical statement of the transformation in terms of rotation, scaling and translation. Therefore, the construction of a new color space is necessary.
 
+Reasons for LAB: because LXY/LAB spaces all include implicit white-point correction in the readily-available implementatons, so there's no control over that. They all compress the information back into--they all use the same data type, the whole bit about "yes, the transform is reversible, but not really, because we're using discrete data types and most implementations the output is the same data type as the input. You can't fit a box into another box at an angle; the box needs to be big enough for it or it will lose the information. So they all implicitly do that. The second point is because we're using a 2D gaussian which, if we align the major and minor axes, then it's just a 1D gaussian in two of the chrom channels. So applying the stats is better. 
+
+So!
+
+1. Distortion from implicit white-point corrections.
+
+2. Loss of information.
+
+3. To facilitate the application of the stats.
+
+
+
 \section{Physiology Study}\label{sec:PhysiologyStudy}
+
+
+
 
 The image captured by a CCD camera is designed to fool the human eye. In physical reality, light reaching the sensor spans full spectral range. In the human eye --- and in the camera --- the diversity of chromatic information is lost by representing the spectrum as a combination of three chromatic Gaussians, as can be seen in Figure~\ref{fig:spectrum}.
 
