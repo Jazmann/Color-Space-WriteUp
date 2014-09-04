@@ -32,7 +32,7 @@ As mentioned previously, one of the challenges facing this project is identifyin
 
 Unlike RGB, the HSV color space makes a clear distinction between the chrominance (the "Hue" and "Saturation" channels) and the luminance (the "Value" channel), storing them separately (\cite{Vezhnevets2003,Sigal2000a}). However, the chromatic information in the Hue channel is expressed in polar coordinates, thereby necessitating a coordinate transform when converting from the raw image data. Given the nature of the algorithm outlined herein --- targeted preservation of information, as opposed to classification --- and the mechanical stress application of the algorithm, the computational cost of this transformation is undesirable.
 
-LAB and YCbCr, on the other hand, not only explicity seperate the chrominance and luminance, the information is also expressed linearly (\cite{Vezhnevets2003,Poynton1997,Phung2002a}), thereby allowing for simple and quick conversion to and from the RGB space with no loss of information. However, while they appear to be perfectly suited for the purposes of this project, a number of issues arise when represented discretely. LAB, YCbCr and other such Hue-Saturation spaces all include implicit white-point correction in the readily-available implementations, which distorts the information from the raw image. Also, while the transform is reversible numerically, discrete data types are used in practical computer science applications, and in most implementations the output is the same data type as the input, resulting in some loss of information when the transform is applied. 
+LAB and YCbCr, on the other hand, not only explicity seperate the chrominance and luminance, the information is also expressed linearly (\cite{Vezhnevets2003,Poynton1997,Phung2002a}), thereby allowing for simple and quick conversion to and from the RGB space with no loss of information. However, while they appear to be perfectly suited for the purposes of this project, a number of issues arise when represented discretely. LAB, YCbCr and other such Hue-Saturation spaces all include implicit white-point correction in the readily-available implementations, which distorts the information from the raw image. Also, while the transform is reversible numerically, discrete data types are used in practical computer science applications, and in most implementations the output is the same data type as the input, resulting in some loss of information when the transform is applied.
 
 Furthermore, based on the skin statistics we have gathered --- which will be described in detail in the next chapter --- the entire region of skin color in the chromatic space can be expressed as a 2D Gaussian. Typically, this is a complex operation, but by aligning the chromatic axes of a Hue-Saturation space with the major and minor axes of the 2D Gaussian, it can be expressed as the product of two 1D Gaussians in each chromatic channel, thereby facilitating the application of the statistics. While it is possible to modify existing implementations of such Hue-Saturation spaces to achieve this, in light of the issues with white-point correction and loss of information due to discrete representation, it was decided that a bespoke chromatic space would be best suited for this project.
 
@@ -62,17 +62,6 @@ Unlike RGB, the HSV color space makes a clear distinction between the chrominanc
 This color space bears similarities to the LAB and HSV spaces in that it explicitly separates the chrominance and the luminance. The luminosity (or "luma") channel "Y" is a weighted sum of the RGB values (\cite{Poynton1997,Phung2002a}), while the chrominance channels "Cb" and "Cr" contain the color difference between Y and the red and blue components of RGB, respectively (\cite{Vezhnevets2003}). Also like LAB, it is not oriented such that the Gaussian distribution is situated along the axis. In fact, there is little distinction between the two spaces aside from the orientation in the chromatic portion of the space.
 
 The main issue with using these color spaces is the lack of control over information flow upon transformation and the clear mathematical statement of the transformation in terms of rotation, scaling and translation. Therefore, the construction of a new color space is necessary.
-
-Reasons for LAB: because LXY/LAB spaces all include implicit white-point correction in the readily-available implementatons, so there's no control over that. They all compress the information back into--they all use the same data type, the whole bit about "yes, the transform is reversible, but not really, because we're using discrete data types and most implementations the output is the same data type as the input. You can't fit a box into another box at an angle; the box needs to be big enough for it or it will lose the information. So they all implicitly do that. The second point is because we're using a 2D gaussian which, if we align the major and minor axes, then it's just a 1D gaussian in two of the chrom channels. So applying the stats is better. 
-
-So!
-
-1. Distortion from implicit white-point corrections.
-
-2. Loss of information.
-
-3. To facilitate the application of the stats.
-
 
 
 \section{Physiology Study}\label{sec:PhysiologyStudy}
