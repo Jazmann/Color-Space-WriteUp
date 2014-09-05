@@ -26,7 +26,20 @@ Regardless of the color spaces and statistical models used, all of these algorit
 We are preserving the information in a targeted way, reducing the overall infromation in the image whilst preserving the relevant information about the object we're interested in. This is a clear difference from the more common binary categorization approach, though it is possible to adapt our approach to the same process. However, as it stands, the entire process should be more efficient than the first step in a binary classifier, and should be faster than even moving to an HSV image.
 
 
-\section{Overview of Color Spaces}
+\section{Choosing a Color Space}
+
+As mentioned previously, one of the challenges facing this project is identifying a chromatic space in which the color information and luminosity from the raw RGB image can be separated, thereby simplifying the process of identification of human skin color. To this end, the most widely-used chromatic spaces in practical applications of skin color classification have been evaluated --- HSV, LAB and YCbCr --- all of which have a number of readily-available discrete implementations (\cite{Vezhnevets2003,Zarit1999a,Yang1997a,Brand2000a,Sigal2000a,Chai2000a,Phung2002a}).
+
+Unlike RGB, the HSV color space makes a clear distinction between the chrominance (the "Hue" and "Saturation" channels) and the luminance (the "Value" channel), storing them separately (\cite{Vezhnevets2003,Sigal2000a}). However, the chromatic information in the Hue channel is expressed in polar coordinates, thereby necessitating a coordinate transform when converting from the raw image data. Given the nature of the algorithm outlined herein --- targeted preservation of information, as opposed to classification --- and the mechanical stress application of the algorithm, the computational cost of this transformation is undesirable.
+
+LAB and YCbCr, on the other hand, not only explicity seperate the chrominance and luminance, the information is also expressed linearly (\cite{Vezhnevets2003,Poynton1997,Phung2002a}), thereby allowing for simple and quick conversion to and from the RGB space with no loss of information. However, while they appear to be perfectly suited for the purposes of this project, a number of issues arise when represented discretely. LAB, YCbCr and other such Hue-Saturation spaces all include implicit white-point correction in the readily-available implementations, which distorts the information from the raw image. Also, while the transform is reversible numerically, discrete data types are used in practical computer science applications, and in most implementations the output is the same data type as the input, resulting in some loss of information when the transform is applied.
+
+Furthermore, based on the skin statistics we have gathered --- which will be described in detail in the next chapter --- the entire region of skin color in the chromatic space can be expressed as a 2D Gaussian. Typically, this is a complex operation, but by aligning the chromatic axes of a Hue-Saturation space with the major and minor axes of the 2D Gaussian, it can be expressed as the product of two 1D Gaussians in each chromatic channel, thereby facilitating the application of the statistics. While it is possible to modify existing implementations of such Hue-Saturation spaces to achieve this, in light of the issues with white-point correction and loss of information due to discrete representation, it was decided that a bespoke chromatic space would be best suited for this project.
+
+
+
+
+
 
 For the purposes of this project, a color space dedicated to human skin is necessary. When it comes to pattern recognition, it is beneficial to reduce the number of channels which the algorithm must process, as well as reducing the information density in those channels. It is also hoped that, in an appropriate color space, it will be a simple matter to separate the characteristics associated with saturation of tissue with blood, which changes under mechanical stress from the unchanging pigmentation of the cells (\cite{Stamatas2004}). Color spaces --- when they are normally defined --- are a combination of rotations, scaling and translations, while some (e.g. HSV (\cite{Vezhnevets2003, Zarit1999a} )) also perform a coordinate transform. The color space defined for this project is unusual in that it uses a non-linear redistribution of the values. It should be noted that this is not a pixel-based classifier (\cite{Jones2002}). However, seeing as the color space contains both the statistical information and the skin color information, it can be interpreted in a probabilistic way.
 
@@ -50,7 +63,19 @@ This color space bears similarities to the LAB and HSV spaces in that it explici
 
 The main issue with using these color spaces is the lack of control over information flow upon transformation and the clear mathematical statement of the transformation in terms of rotation, scaling and translation. Therefore, the construction of a new color space is necessary.
 
+
 \section{Physiology Study}\label{sec:PhysiologyStudy}
+
+Right, we're going from chemistry to computer science, yeah? This is the point, we're--we're going from physicalto virtual how we want to say it?
+
+The response spectra is how you turn wavelength into RGB. 'cause that's weird. We have a physical quantity, the energy of light, and we have to turn it into three numbers. Weird, huh? That depends upon the measuring device, so if that's an eye, it has a certain response based on the chemistry of the cones, yeah? In our retina. The retina produces that signal, yeah? But there are only three different types of cones which produce that kind of signal--well, we have cones and rods so it's kinda like RGBa, so we detect color and luminosity seperately, but whatever, in terms of color our cones produce RGB. CCDs are based on that and they produce RGB signals, but the absorption-- to do that, we take the wavelength which is generally in nanometers, and a response function, which is dimensionless, it's just the response--y'know the output, one for blue one for green one for red. The red one has, um, for eyes it has a weird bump, and a secondary bump there--the point is that there are a load of different response spectra. So we have a function for R G and B, depending on-- keep it simple, we're not making a big deal about it-- it is whatever it is. And what we have here in mathemativa (wavelength.nb) if you look at mathematica's graphical rep it simulates the red bump of the eye response, and we'll come back to that.
+
+Now, also, we have the absorption spectra. We have some skin, and we have our chromophores. We have hemoglobin, hemo-oxy and three forms of melanin but we have the data for two. But they're good enough; they give us an in. There are other chromophores that can be included which are breakdown products of blood, the stuff which makes bruises green, a variety of chemicals, but we'll restrict ourselves to these major components, the major chromophores in the skin. Now, the chromophores and the ones that contribute to diffusion. Now, chromophores are for absorption and the rest is dispersed (scattered). The point is that we are--we've consistently called it re-emission. ANYWAY, it's what comes out of the surface. So as absorption goes up, remittance goes down. Then there's blood constants, molar mass (very heavy; 64kg/mo), a--nevermind looking at mathematica file now.
+
+If we wanna make this quick, we gotta get the raw data from CCD and process it, but they all look weird; lots of variability, but they're corrected to match the more sensible one, hence all the correction.
+
+
+
 
 The image captured by a CCD camera is designed to fool the human eye. In physical reality, light reaching the sensor spans full spectral range. In the human eye --- and in the camera --- the diversity of chromatic information is lost by representing the spectrum as a combination of three chromatic Gaussians, as can be seen in Figure~\ref{fig:spectrum}.
 
