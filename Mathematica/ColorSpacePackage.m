@@ -223,7 +223,7 @@ nYABPolygon= Function[{\[Theta]},Evaluate[Transpose[{Take[RGBCube[nYAB][\[Theta]
 fracTicks[n_]:=List[Sequence@@Table[{N[-2^(-i)],-2^(-i)},{i,0,n}],Sequence@@Table[{N[2^(-i)],2^(-i)},{i,0,n}]]
 
 
-PiTicks[min_,max_,n_]:=(d=(max-min)/n;Table[{N[i d]+min,i d+min},{i,0,n}])
+PiTicks[min_,max_,n_:6]:=Block[{d},(d=(max-min)/n;Table[{N[i d]+min,i d+min},{i,0,n}])]
 
 
 ApplyToPiecewise[func_,pwFunc_]:=Module[{posPi,pos},
@@ -289,7 +289,11 @@ partShow[List[fun_,ineq:(Inequality|Inequality)[l_,ineql_,sym_,ineqr_,u_]],color
 
 
 Options[partDisp]={PlotStyle->{Blue},OuterLables->{True,False}};
-partDisp[txt_,l_,u_,regionFun_,OptionsPattern[]]:=ParametricPlot[{r Cos[\[Theta]],r Sin[\[Theta]]},{\[Theta],l,u},{r,1/4,1},RegionFunction->regionFun,Mesh->None, PlotStyle->OptionValue[PlotStyle],PlotRange-> 1.1,PlotLegends->{Placed[txt,{0.3 Cos[(l+u)/2]+0.5,0.3 Sin[(l+u)/2]+0.5}],If[TrueQ[OptionValue[OuterLables][[1]]],Placed[l,{0.5 Cos[l]+0.5,0.5 Sin[l]+0.5}],Sequence[]],If[TrueQ[OptionValue[OuterLables][[2]]],Placed[u,{0.5 Cos[u]+0.5,0.5 Sin[u]+0.5}],Sequence[]]},Axes->False]
+partDisp[txt_,l_,u_,regionFun_,OptionsPattern[]]:=ParametricPlot[
+{r Cos[\[Theta]],r Sin[\[Theta]]},{\[Theta],Min[0,l],Max[2 Pi,u]},{r,1/4,1},
+RegionFunction->regionFun,
+Mesh->None, 
+PlotStyle->OptionValue[PlotStyle],PlotRange-> 1.1,PlotLegends->{Placed[txt,{0.3 Cos[(l+u)/2]+0.5,0.3 Sin[(l+u)/2]+0.5}],If[TrueQ[OptionValue[OuterLables][[1]]],Placed[l,{0.5 Cos[l]+0.5,0.5 Sin[l]+0.5}],Sequence[]],If[TrueQ[OptionValue[OuterLables][[2]]],Placed[u,{0.5 Cos[u]+0.5,0.5 Sin[u]+0.5}],Sequence[]]},Axes->False]
 
 
 (* ::Section:: *)
