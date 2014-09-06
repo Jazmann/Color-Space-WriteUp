@@ -32,7 +32,7 @@ As mentioned previously, one of the challenges facing this project is identifyin
 
 Unlike RGB, the HSV color space makes a clear distinction between the chrominance (the "Hue" and "Saturation" channels) and the luminance (the "Value" channel), storing them separately (\cite{Vezhnevets2003,Sigal2000a}). However, the chromatic information in the Hue channel is expressed in polar coordinates, thereby necessitating a coordinate transform when converting from the raw image data. Given the nature of the algorithm outlined herein --- targeted preservation of information, as opposed to classification --- and the mechanical stress application of the algorithm, the computational cost of this transformation is undesirable.
 
-LAB and YCbCr, on the other hand, not only explicity seperate the chrominance and luminance, the information is also expressed linearly (\cite{Vezhnevets2003,Poynton1997,Phung2002a}), thereby allowing for simple and quick conversion to and from the RGB space with no loss of information. However, while they appear to be perfectly suited for the purposes of this project, a number of issues arise when represented discretely. LAB, YCbCr and other such Hue-Saturation spaces all include implicit white-point correction in the readily-available implementations, which distorts the information from the raw image. Also, while the transform is reversible numerically, discrete data types are used in practical computer science applications, and in most implementations the output is the same data type as the input, resulting in some loss of information when the transform is applied.
+LAB and YCbCr, on the other hand, not only explicitly separate the chrominance and luminance, the information is also expressed linearly (\cite{Vezhnevets2003,Poynton1997,Phung2002a}), thereby allowing for simple and quick conversion to and from the RGB space with no loss of information. However, while they appear to be perfectly suited for the purposes of this project, a number of issues arise when represented discretely. LAB, YCbCr and other such Hue-Saturation spaces all include implicit white-point correction in the readily-available implementations, which distorts the information from the raw image. Also, while the transform is reversible numerically, discrete data types are used in practical computer science applications, and in most implementations the output is the same data type as the input, resulting in some loss of information when the transform is applied.
 
 Furthermore, based on the skin statistics we have gathered --- which will be described in detail in the next chapter --- the entire region of skin color in the chromatic space can be expressed as a 2D Gaussian. Typically, this is a complex operation, but by aligning the chromatic axes of a Hue-Saturation space with the major and minor axes of the 2D Gaussian, it can be expressed as the product of two 1D Gaussians in each chromatic channel, thereby facilitating the application of the statistics. While it is possible to modify existing implementations of such Hue-Saturation spaces to achieve this, in light of the issues with white-point correction and loss of information due to discrete representation, it was decided that a bespoke chromatic space would be best suited for this project.
 
@@ -65,6 +65,21 @@ The main issue with using these color spaces is the lack of control over informa
 
 
 \section{Physiology Study}\label{sec:PhysiologyStudy}
+
+
+-Chromophores, briefest of summaries from Optics of Skin, from summary further down. Include the incident light, transmission light, scattering, absorption, etc. The two processes.
+
+Two processes in the skin: scattering and absorption. Luckily, the chemicals responsible for both are different. So, scattering chemicals != absorbing chemicals. So we only have to worry about absorption. The part of it that affects the color is the absorption chemicals, which are the chromophores. The scattering chemicals are important because they determine the average path length of the light through the skin. And, so the path length determines the amount of light which is absorbed; the longer the path length, the more light is absorbed for any given concentration of a chromophore.
+
+
+-Say what the chromophores are, mention there are a variety, but will focus on the four main chromophores: oxy-hemo, deoxy, two kinds of melanin. At this point we can say "okay, so um, we know the absorption spectra for these chromophores, now what are we gonna choose as our term?" It's variously called "molar absorptivity, molar extinction coefficient, and molar absorption coefficient." All are <epsilon>. All are equivalent terms. Now, this is where we mention the Bear-Lambert law thing, so the actual absorbance (NOT absorption) depends on the path length of light through the skin and the concentration of the chemical, the chromophore. So, to apply the molar apsortivity, we need the average path length of skin and the average concentration of the chromophore and their beer-lambert law relation which is just the product of them all. Absorptibity in wiki. Annoyingly, the units are not consistent because chemistry, and we reference the page linked to from wikipedia, or in the notebook. But the SI units are m^2/mo. And so we, um, we mention where we got the data from (in the notebook), OMLC website where the absorption spectra for lotsa junk is. But they have absorption for, like, two forms of hemoglobin and two forms of melanin, eumelanin and bemelanin (or something to that effect). So, first task was to put this into consistent units and that's what this stuff is about.
+
+
+-
+
+
+
+
 
 Right, we're going from chemistry to computer science, yeah? This is the point, we're--we're going from physicalto virtual how we want to say it?
 
