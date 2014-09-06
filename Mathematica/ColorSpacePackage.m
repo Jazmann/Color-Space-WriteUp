@@ -21,25 +21,25 @@ rR[\[Theta]_]:= ({
 })
 
 
-irR[\[Theta]_]:={{1,-Sin[\[Pi]/6+\[Theta]],-Cos[\[Pi]/6+\[Theta]]},{1,Cos[\[Theta]],-Sin[\[Theta]]},{1,-Sin[\[Pi]/6-\[Theta]],Cos[\[Pi]/6-\[Theta]]}}
+irR[\[Theta]_]:={{1/3, (-(2/3))*Sin[Pi/6 + \[Theta]], (-(2/3))*Cos[Pi/6 + \[Theta]]}, {1/3, (2*Cos[\[Theta]])/3, -((2*Sin[\[Theta]])/3)}, 
+   {1/3, (-(2/3))*Sin[Pi/6 - \[Theta]], (2/3)*Cos[Pi/6 - \[Theta]]}}
 
 
-scale[YAB,rR] = {1/Sqrt[3],Sqrt[2/3],Sqrt[2/3]};
-scale[nYAB,YAB][\[Theta]_] := {1/Sqrt[3],1/2 Sqrt[3/2] Sec[\[Pi]/6 - Mod[\[Theta]-\[Pi]/6,\[Pi]/3]],1/2 Sqrt[3/2] Sec[\[Pi]/6 - Mod[\[Theta],\[Pi]/3]]}
-scale[nYAB,rR][\[Theta]_]:= {1/3,1/2 Sec[\[Pi]/6-Mod[-(\[Pi]/6)+\[Theta],\[Pi]/3]],1/2 Sec[\[Pi]/6-Mod[\[Theta],\[Pi]/3]]}
-scale[rR,fR][\[Theta]_,rRange_:1]:= Piecewise[{{{{1, 1, 1}, rRange {1/2, -(Cos[\[Theta]]*Csc[Pi/6 + \[Theta]])/2, (Csc[Pi/6 + \[Theta]]*Sin[Pi/6 - \[Theta]])/2}, 
-    rRange {1/2, (Sec[Pi/6 + \[Theta]]*Sin[\[Theta]])/2, -(Cos[Pi/6 - \[Theta]]*Sec[Pi/6 + \[Theta]])/2}}, Inequality[0, LessEqual, Mod[\[Theta],Pi/2], Less, Pi/6 ]}, 
-  {{{1, 1, 1}, rRange {-(Sec[\[Theta]]*Sin[Pi/6 + \[Theta]])/2, 1/2, -(Sec[\[Theta]]*Sin[Pi/6 - \[Theta]])/2}, rRange {(Cos[Pi/6 + \[Theta]]*Csc[\[Theta]])/2, 1/2, -(Cos[Pi/6 - \[Theta]]*Csc[\[Theta]])/2}}, 
-   Inequality[Pi/6 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/3 ]}, {{{1, 1, 1}, rRange {(Csc[Pi/6 - \[Theta]]*Sin[Pi/6 + \[Theta]])/2, -(Cos[\[Theta]]*Csc[Pi/6 - \[Theta]])/2, 1/2}, 
-    rRange {-(Cos[Pi/6 + \[Theta]]*Sec[Pi/6 - \[Theta]])/2, -(Sec[Pi/6 - \[Theta]]*Sin[\[Theta]])/2, 1/2}}, Inequality[Pi/3 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/2 ]}}, Null]
-scale[rR,qR][\[Theta]_,n_:8]:=Piecewise[{{{1,-(2^(2-n)*Sin[Pi/6+\[Theta]]),-(2^(2-n)*Cos[Pi/6+\[Theta]])},Inequality[0,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/6]},{{1,2^(2-n)*Cos[\[Theta]],-(2^(2-n)*Sin[\[Theta]])},Inequality[Pi/6,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/3]},{{1,-(2^(2-n)*Sin[Pi/6-\[Theta]]),2^(2-n)*Cos[Pi/6-\[Theta]]},Inequality[Pi/3,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/2]}},Null]
+scale["YAB","rR"] = {1/Sqrt[3],Sqrt[2/3],Sqrt[2/3]};
+scale["nYAB","YAB"][\[Theta]_] := {1/Sqrt[3],1/2 Sqrt[3/2] Sec[\[Pi]/6 - Mod[\[Theta]-\[Pi]/6,\[Pi]/3]],1/2 Sqrt[3/2] Sec[\[Pi]/6 - Mod[\[Theta],\[Pi]/3]]}
+scale["nYAB","rR"][\[Theta]_]:= {1/3,1/2 Sec[\[Pi]/6-Mod[-(\[Pi]/6)+\[Theta],\[Pi]/3]],1/2 Sec[\[Pi]/6-Mod[\[Theta],\[Pi]/3]]}
+scale["rR","fR"][\[Theta]_,rRange_:1]:= Piecewise[{{{1, -((2*Sin[Pi/6 + \[Theta]])/rRange), -((2*Cos[Pi/6 + \[Theta]])/rRange)}, Inequality[0, LessEqual, Mod[\[Theta],Pi/2], Less, Pi/6 ]}, 
+   {{1, (2*Cos[\[Theta]])/rRange, -((2*Sin[\[Theta]])/rRange)}, Inequality[Pi/6 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/3 ]}, 
+   {{1, -((2*Sin[Pi/6 - \[Theta]])/rRange), (2*Cos[Pi/6 - \[Theta]])/rRange}, Inequality[Pi/3 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/2 ]}}, Null]
+scale["rR","qR"][\[Theta]_,n_:8]:=Piecewise[{{{1,-(2^(2-n)*Sin[Pi/6+\[Theta]]),-(2^(2-n)*Cos[Pi/6+\[Theta]])},Inequality[0,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/6]},{{1,2^(2-n)*Cos[\[Theta]],-(2^(2-n)*Sin[\[Theta]])},Inequality[Pi/6,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/3]},{{1,-(2^(2-n)*Sin[Pi/6-\[Theta]]),2^(2-n)*Cos[Pi/6-\[Theta]]},Inequality[Pi/3,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/2]}},Null]
 
 
-rRScale=scale[YAB,rR];
-nRScale[\[Theta]_]:=scale[nYAB,YAB][\[Theta]]
-nrRScale[\[Theta]_]:= scale[nYAB,rR][\[Theta]]
-fRScale[\[Theta]_,rRange_:1]:=scale[rR,fR][\[Theta],rRange]
-qRScale[\[Theta]_,n_:8]:=scale[rR,qR][\[Theta],n]
+(* ::Text:: *)
+(*rRScale["YAB", "rR"] = scale["YAB", "rR"];*)
+(*nRScale[\[Theta]_] := scale["nYAB", "YAB"][\[Theta]]*)
+(*nrRScale[\[Theta]_] := scale["nYAB", "rR"][\[Theta]]*)
+(*fRScale[\[Theta]_, rRange_: 1] := scale["rR", "fR"][\[Theta], rRange]*)
+(*qRScale[\[Theta]_, n_: 8] := scale["rR", "qR"][\[Theta], n]*)
 
 
 fR[\[Theta]_,rRange_:1]:=Piecewise[{{{{1, 1, 1}, rRange {1/2, -(Cos[\[Theta]]*Csc[Pi/6 + \[Theta]])/2, (Csc[Pi/6 + \[Theta]]*Sin[Pi/6 - \[Theta]])/2}, 
@@ -49,15 +49,7 @@ fR[\[Theta]_,rRange_:1]:=Piecewise[{{{{1, 1, 1}, rRange {1/2, -(Cos[\[Theta]]*Cs
     rRange {-(Cos[Pi/6 + \[Theta]]*Sec[Pi/6 - \[Theta]])/2, -(Sec[Pi/6 - \[Theta]]*Sin[\[Theta]])/2, 1/2}}, Inequality[Pi/3 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/2 ]}}, Null]
 
 
-fRScale[\[Theta]_,rRange_:1]:=Piecewise[{{{1, -((2*Sin[Pi/6 + \[Theta]])/rRange), -((2*Cos[Pi/6 + \[Theta]])/rRange)}, Inequality[0, LessEqual, Mod[\[Theta],Pi/2], Less, Pi/6 ]}, 
-   {{1, (2*Cos[\[Theta]])/rRange, -((2*Sin[\[Theta]])/rRange)}, Inequality[Pi/6 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/3 ]}, 
-   {{1, -((2*Sin[Pi/6 - \[Theta]])/rRange), (2*Cos[Pi/6 - \[Theta]])/rRange}, Inequality[Pi/3 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/2 ]}}, Null]
-
-
 qR[\[Theta]_,n_:8]:=Piecewise[{{{{1,1,1},{IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Cos[\[Theta]]*Csc[Pi/6+\[Theta]]],IntegerPart[2^(-2+n)*Csc[Pi/6+\[Theta]]*Sin[Pi/6-\[Theta]]]},{IntegerPart[2^(-2+n)],IntegerPart[2^(-2+n)*Sec[Pi/6+\[Theta]]*Sin[\[Theta]]],-IntegerPart[2^(-2+n)*Cos[Pi/6-\[Theta]]*Sec[Pi/6+\[Theta]]]}},Inequality[0,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/6]},{{{1,1,1},{-IntegerPart[2^(-2+n)*Sec[\[Theta]]*Sin[Pi/6+\[Theta]]],IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Sec[\[Theta]]*Sin[Pi/6-\[Theta]]]},{IntegerPart[2^(-2+n)*Cos[Pi/6+\[Theta]]*Csc[\[Theta]]],IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Cos[Pi/6-\[Theta]]*Csc[\[Theta]]]}},Inequality[Pi/6,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/3]},{{{1,1,1},{IntegerPart[2^(-2+n)*Csc[Pi/6-\[Theta]]*Sin[Pi/6+\[Theta]]],-IntegerPart[2^(-2+n)*Cos[\[Theta]]*Csc[Pi/6-\[Theta]]],IntegerPart[2^(-2+n)]},{-IntegerPart[2^(-2+n)*Cos[Pi/6+\[Theta]]*Sec[Pi/6-\[Theta]]],-IntegerPart[2^(-2+n)*Sec[Pi/6-\[Theta]]*Sin[\[Theta]]],IntegerPart[2^(-2+n)]}},Inequality[Pi/3,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/2]}},Null]
-
-
-qRScale[\[Theta]_,n_:8]:=Piecewise[{{{1,-(2^(2-n)*Sin[Pi/6+\[Theta]]),-(2^(2-n)*Cos[Pi/6+\[Theta]])},Inequality[0,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/6]},{{1,2^(2-n)*Cos[\[Theta]],-(2^(2-n)*Sin[\[Theta]])},Inequality[Pi/6,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/3]},{{1,-(2^(2-n)*Sin[Pi/6-\[Theta]]),2^(2-n)*Cos[Pi/6-\[Theta]]},Inequality[Pi/3,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/2]}},Null]
 
 
 (* ::Section:: *)
@@ -83,8 +75,8 @@ faces = {{1,2,3,4},{5,6,7,8},{1,2,7,6},{2,3,8,7},{3,4,5,8},{1,4,5,6}};
 RGBAxisRanges = {{0,1},{0,1},{0,1}};
 
 
-RGBCube[RGB]=cubeCorners[RGBAxisRanges];
-RGBCube[YAB]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[YAB[\[Theta]].RGBCube[RGB]]]]]];
+RGBCube["RGB"]=cubeCorners[RGBAxisRanges];
+RGBCube["YAB"]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[YAB[\[Theta]].RGBCube["RGB"]]]]]];
 
 
 RGBCube3D[corners_]:=Module[{RGBCube,faces,ranges},
@@ -103,11 +95,8 @@ YABAxisRanges[\[Theta]_]:={{0,Sqrt[3]},{-Sqrt[(2/3)] Cos[\[Pi]/6-Mod[\[Theta] -P
 YABAxisLengths = Function[{\[Theta]},Evaluate[Flatten[YABAxisRanges[\[Theta]][[All,2]] - YABAxisRanges[\[Theta]][[All,1]]]]];
 
 
-YABCube[YAB][\[Theta]_]:=cubeCorners[YABAxisRanges[\[Theta]]];
-YABCube[RGB]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[iYAB[\[Theta]].YABCube[YAB][\[Theta]]]]]]];
-
-
-YABCube[\[Theta]_] := cubeCorners[YABAxisRanges[\[Theta]]]
+YABCube["YAB"][\[Theta]_]:=cubeCorners[YABAxisRanges[\[Theta]]];
+YABCube["RGB"]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[iYAB[\[Theta]].YABCube["YAB"][\[Theta]]]]]]];
 
 
 (* ::Subsubsection:: *)
@@ -153,7 +142,7 @@ Table[{Glow[YABColor[col[[i]],\[Theta]]],Black,Cylinder[{c1[[i]],c2[[i]]},0.1]},
 
 
 YABCube3D[\[Theta]_]:=Module[{RGBinYABcorners,RGBCubeCorners,YABCubeCorners,YABinRGBCubeCorners,faces,ranges},
-RGBinYABcorners = Transpose[RGBCube[YAB][\[Theta]]];
+RGBinYABcorners = Transpose[RGBCube["YAB"][\[Theta]]];
 RGBCubeCorners = Transpose[cubeCorners[{{0,1},{0,1},{0,1}}]];YABCubeCorners =Transpose[cubeCorners[ YABAxisRanges[\[Theta]]]];
 YABinRGBCubeCorners =Transpose[cubeCorners[ iYAB[\[Theta]]. cubeCorners[ YABAxisRanges[\[Theta]]]]];
 faces = {{1,2,3,4},{5,6,7,8},{1,2,7,6},{2,3,8,7},{3,4,5,8},{1,4,5,6}};
@@ -164,7 +153,7 @@ Polygon[YABCubeCorners[[faces[[1]]]],VertexColors->MapThread[YABColor[{##},\[The
 
 
 RGBinYABCube3D[\[Theta]_]:=Module[{RGBinYABcorners,RGBCubeCorners,YABCubeCorners,YABinRGBCubeCorners,faces,ranges},
-RGBinYABcorners = Transpose[RGBCube[YAB][\[Theta]]];
+RGBinYABcorners = Transpose[RGBCube["YAB"][\[Theta]]];
 RGBCubeCorners = Transpose[cubeCorners[{{0,1},{0,1},{0,1}}]];YABCubeCorners =Transpose[cubeCorners[ YABAxisRanges[\[Theta]]]];
 YABinRGBCubeCorners =Transpose[cubeCorners[ iYAB[\[Theta]]. cubeCorners[ YABAxisRanges[\[Theta]]]]];
 faces = {{1,2,3,4},{5,6,7,8},{1,2,7,6},{2,3,8,7},{3,4,5,8},{1,4,5,6}};
@@ -173,7 +162,7 @@ ranges = YABAxisRanges[\[Theta]];
 ]
 
 
-GraphicsCube[elem__,opts:OptionsPattern[GraphicsCube]]:=Graphics3D[elem,Flatten[{FilterRules[opts,Options[GraphicsCube]],
+GraphicsCube[elem__,opts:OptionsPattern[GraphicsCube]]:=Graphics3D[elem, Flatten[{opts,
 FilterRules[Options[GraphicsCube],Except[opts]]}]];
 Options[GraphicsCube]=Evaluate[Options[Graphics3D]];
 SetOptions[GraphicsCube,Lighting->"Neutral",PlotRange->All,Axes->True,ViewVertical->{1,0,0},AxesLabel->{"Luminocity","Chrom a", "Chrom b"}];
@@ -185,7 +174,7 @@ Flatten[{Opacity[0.1],YABCube3D[\[Theta]],Opacity[1],RGBinYABCube3D[\[Theta]],YA
 ]
 
 
-YABPolygon[\[Theta]_]:=Transpose[{Take[RGBCube[YAB][\[Theta] ][[2]],{2,7}],Take[RGBCube[YAB][\[Theta] ][[3]],{2,7}]}]
+YABPolygon[\[Theta]_]:=Transpose[{Take[RGBCube["YAB"][\[Theta] ][[2]],{2,7}],Take[RGBCube["YAB"][\[Theta] ][[3]],{2,7}]}]
 
 
 (* ::Subsection:: *)
@@ -198,7 +187,7 @@ nYABScale = Function[{\[Theta]},Evaluate[Simplify[1/YABAxisLengths[\[Theta]]]]];
 nYAB= Function[{\[Theta]},Evaluate[TrigReduce[nYABScale[\[Theta]]  YAB[\[Theta]]]]];
 
 
-inYAB= Function[{\[Theta]},Evaluate[TrigReduce[FullSimplify[TrigExpand[Inverse[nYAB[\[Theta]]]]]]]];
+inYAB= Function[{\[Theta]},Evaluate[TrigFactor[TrigReduce[FullSimplify[TrigExpand[Inverse[nYAB[\[Theta]]]]]]]]];
 
 
 nYABAxisRanges={{0,1},{-0.5 ,0.5},{-0.5 ,0.5}};
@@ -207,9 +196,9 @@ nYABAxisRanges={{0,1},{-0.5 ,0.5},{-0.5 ,0.5}};
 nYABAxisLengths = {1,1,1};
 
 
-RGBCube[nYAB]=Function[{\[Theta]},Evaluate[FullSimplify[nYAB[\[Theta]].RGBCube[RGB]]]];
+RGBCube[nYAB]=Function[{\[Theta]},Evaluate[FullSimplify[nYAB[\[Theta]].RGBCube["RGB"]]]];
 nYABCube[nYAB]=cubeCorners[nYABAxisRanges];
-nYABCube[RGB]=Function[{\[Theta]},Evaluate[FullSimplify[inYAB[\[Theta]].nYABCube[nYAB]]]];
+nYABCube["RGB"]=Function[{\[Theta]},Evaluate[FullSimplify[inYAB[\[Theta]].nYABCube[nYAB]]]];
 
 
 
@@ -223,7 +212,7 @@ nYABPolygon= Function[{\[Theta]},Evaluate[Transpose[{Take[RGBCube[nYAB][\[Theta]
 fracTicks[n_]:=List[Sequence@@Table[{N[-2^(-i)],-2^(-i)},{i,0,n}],Sequence@@Table[{N[2^(-i)],2^(-i)},{i,0,n}]]
 
 
-PiTicks[min_,max_,n_]:=(d=(max-min)/n;Table[{N[i d]+min,i d+min},{i,0,n}])
+PiTicks[min_,max_,n_:6]:=Block[{d},(d=(max-min)/n;Table[{N[i d]+min,i d+min},{i,0,n}])]
 
 
 ApplyToPiecewise[func_,pwFunc_]:=Module[{posPi,pos},
@@ -266,7 +255,7 @@ eqnFromPoints[{x1_,y1_},{x2_,y2_}]:=Function[{x$},Evaluate[(x$ (-y1+y2))/(-x1+x2
 
 
 MatrixFormCubeColor[mat_,forgroundWhite_:1,backgroundWhite_:1]:=Module[{fg,bg },fg = forgroundWhite; bg={backgroundWhite,backgroundWhite-1};MatrixForm[{
-MapThread[Style[#1,#2,Background->#3]&, {mat[[1]],Map[RGBColor,fg Transpose[RGBCube[RGB]]],Map[RGBColor,bg[[1]]-bg[[2]] Transpose[RGBCube[RGB]]]}],MapThread[Style[#1,#2,Background->#3]&, {mat[[2]],Map[RGBColor,fg Transpose[RGBCube[RGB]]],Map[RGBColor,bg[[1]]-bg[[2]] Transpose[RGBCube[RGB]]]}],MapThread[Style[#1,#2,Background->#3]&, {mat[[3]],Map[RGBColor,fg Transpose[RGBCube[RGB]]],Map[RGBColor,bg[[1]]-bg[[2]] Transpose[RGBCube[RGB]]]}]}]]
+MapThread[Style[#1,#2,Background->#3]&, {mat[[1]],Map[RGBColor,fg Transpose[RGBCube["RGB"]]],Map[RGBColor,bg[[1]]-bg[[2]] Transpose[RGBCube["RGB"]]]}],MapThread[Style[#1,#2,Background->#3]&, {mat[[2]],Map[RGBColor,fg Transpose[RGBCube["RGB"]]],Map[RGBColor,bg[[1]]-bg[[2]] Transpose[RGBCube["RGB"]]]}],MapThread[Style[#1,#2,Background->#3]&, {mat[[3]],Map[RGBColor,fg Transpose[RGBCube["RGB"]]],Map[RGBColor,bg[[1]]-bg[[2]] Transpose[RGBCube["RGB"]]]}]}]]
 
 
 colorMat[mat_]:=Module[{pos,out}, 
@@ -279,17 +268,36 @@ pos=Position[matSameSign[mat],1];out=MapAt[Framed[#]&,out,pos];
 mForm[mat_]:=ToString[MatrixForm[mat],TraditionalForm];
 
 
-partShow[Piecewise[pFun_,_]]:=MapThread[partShow,{pFun,{Red,Green,Blue,Yellow,Orange}[[1;;Length[pFun]]]}];
-partShow[List[fun_,Or[f_,l__]],color_:Blue]:={partShow[{fun,f},color],partShow[{fun,Or[l]},color]}
-partShow[List[fun_,Or[f_]],color_:Blue]:=partShow[{fun,f},color]
-partShow[List[fun_,Or[f_]],color_:Blue]:=partShow[{fun,f},color]
+Clear[partShow];
+partShow[Piecewise[pFun_,_]]:=Module[{list},
+  list=MapThread[partShowEx,{pFun,{Red,Green,Blue,Yellow,Orange}[[1;;Length[pFun]]]}];
+  Show[Flatten[list]]
+];
 
-partShow[List[fun_,ineq:(Less| Greater| LessEqual|GreaterEqual)[l_,sym_,u_]],color_:Blue]:=partDisp[ToString[fun,TraditionalForm],l,u,Function[{x,y,\[Theta],r},Evaluate[Head[ineq][l,\[Theta],u]]],PlotStyle->{color}]
-partShow[List[fun_,ineq:(Inequality|Inequality)[l_,ineql_,sym_,ineqr_,u_]],color_:Blue]:=partDisp[ToString[fun,TraditionalForm],l,u,Function[{x,y,\[Theta],r},Evaluate[Inequality[l,ineql,\[Theta],ineqr,u]]],PlotStyle->{color}]
+partShowEx[List[fun_,Or[f_,l__]],color_:Blue]:={partShowEx[{fun,f},color],partShowEx[{fun,Or[l]},color]}
+partShowEx[List[fun_,Or[f_]],    color_:Blue]:=partShowEx[{fun,f},color]
+partShowEx[List[fun_,Or[f_]],    color_:Blue]:=partShowEx[{fun,f},color]
+
+partShowEx[List[fun_,ineq:(Less| Greater| LessEqual|GreaterEqual)[l_,sym_,u_]],color_:Blue] := partDisp[
+  ToString[fun,TraditionalForm], l, u, Function[{x,y,\[Theta],r},Evaluate[Head[ineq][l,\[Theta],u]]], PlotStyle->{color}]
+partShowEx[List[fun_,ineq:(Inequality|Inequality)[l_,ineql_,sym_,ineqr_,u_]],color_:Blue] := partDisp[
+  ToString[fun,TraditionalForm], l, u, Function[{x,y,\[Theta],r},Evaluate[Inequality[l,ineql,\[Theta],ineqr,u]]], PlotStyle->{color}]
 
 
+Protect[OuterLables];
 Options[partDisp]={PlotStyle->{Blue},OuterLables->{True,False}};
-partDisp[txt_,l_,u_,regionFun_,OptionsPattern[]]:=ParametricPlot[{r Cos[\[Theta]],r Sin[\[Theta]]},{\[Theta],l,u},{r,1/4,1},RegionFunction->regionFun,Mesh->None, PlotStyle->OptionValue[PlotStyle],PlotRange-> 1.1,PlotLegends->{Placed[txt,{0.3 Cos[(l+u)/2]+0.5,0.3 Sin[(l+u)/2]+0.5}],If[TrueQ[OptionValue[OuterLables][[1]]],Placed[l,{0.5 Cos[l]+0.5,0.5 Sin[l]+0.5}],Sequence[]],If[TrueQ[OptionValue[OuterLables][[2]]],Placed[u,{0.5 Cos[u]+0.5,0.5 Sin[u]+0.5}],Sequence[]]},Axes->False]
+partDisp[txt_,l_,u_,regionFun_,OptionsPattern[]]:=ParametricPlot[
+{r Cos[\[Theta]],r Sin[\[Theta]]},{\[Theta],Min[0,l],Max[2 Pi,u]},{r,1/4,1},
+RegionFunction->regionFun,
+Mesh->None, 
+PlotStyle->OptionValue[PlotStyle],
+PlotRange-> 1.1,
+PlotLegends->{
+  Placed[txt,{0.3 Cos[(l+u)/2]+0.5,0.3 Sin[(l+u)/2]+0.5}],
+  If[TrueQ[OptionValue[OuterLables][[1]]],Placed[l,{0.5 Cos[l]+0.5,0.5 Sin[l]+0.5}],Unevaluated[Sequence[]]],
+  If[TrueQ[OptionValue[OuterLables][[2]]],Placed[u,{0.5 Cos[u]+0.5,0.5 Sin[u]+0.5}],Unevaluated[Sequence[]]]
+},
+Axes->False]
 
 
 (* ::Section:: *)
@@ -342,13 +350,13 @@ fRScaledError[\[Theta]_,m_,round_:IntegerPart]:=Piecewise[{
    2^(1 - m)*Cos[Pi/6 + \[Theta]]*round[2^(-1 + m)*Cos[Pi/6 - \[Theta]]*Sec[Pi/6 + \[Theta]]]}}-rR[\[Theta]],Mod[\[Theta], Pi/2] >= 0 || Mod[\[Theta], Pi/2] < Pi/2}},Null]
 
 
-fRScaledErrorCube=Function[{\[Theta],n,round},Evaluate[ApplyToPiecewise[#.(2^n RGBCube[RGB])&,fRScaledError[\[Theta],n,round]]]];
+fRScaledErrorCube=Function[{\[Theta],n,round},Evaluate[ApplyToPiecewise[#.(2^n RGBCube["RGB"])&,fRScaledError[\[Theta],n,round]]]];
 
 
 rRfRErrorPlot[range_:{0,Pi/6},n_]:= Module[{},
-err[\[Theta]_]:=ApplyToPiecewise[#.RGBCube[RGB]&,fRScaledError[\[Theta],n,IntegerPart]];
-errR[\[Theta]_]:=ApplyToPiecewise[#.RGBCube[RGB]&,fRScaledError[\[Theta],n,Round]];
-Grid[{{plot[f,{\[Theta],range[[1]],range[[2]]},Ticks->{PiTicks[range[[1]],range[[2]],12],All},PlotStyle -> Map[RGBColor,Transpose[RGBCube[RGB]]]]/. {f-> Table[ApplyToPiecewise[#[[2,i]]&,err[\[Theta]]],{i,1,8}],plot->Plot},plot[f,{\[Theta],range[[1]],range[[2]]},Ticks->{PiTicks[range[[1]],range[[2]],12],All},PlotStyle -> Map[RGBColor,Transpose[RGBCube[RGB]]]]/. {f-> Table[ApplyToPiecewise[#[[2,i]]&,errR[\[Theta]]],{i,1,8}],plot->Plot}},{plot[f,{\[Theta],range[[1]],range[[2]]},Ticks->{PiTicks[range[[1]],range[[2]],12],All},PlotStyle -> Map[RGBColor,Transpose[RGBCube[RGB]]]]/. {f-> Table[ApplyToPiecewise[#[[3,i]]&,err[\[Theta]]],{i,1,8}],plot->Plot},plot[f,{\[Theta],range[[1]],range[[2]]},Ticks->{PiTicks[range[[1]],range[[2]],12],All},PlotStyle -> Map[RGBColor,Transpose[RGBCube[RGB]]]]/. {f-> Table[ApplyToPiecewise[#[[3,i]]&,errR[\[Theta]]],{i,1,8}],plot->Plot}}}]]
+err[\[Theta]_]:=ApplyToPiecewise[#.RGBCube["RGB"]&,fRScaledError[\[Theta],n,IntegerPart]];
+errR[\[Theta]_]:=ApplyToPiecewise[#.RGBCube["RGB"]&,fRScaledError[\[Theta],n,Round]];
+Grid[{{plot[f,{\[Theta],range[[1]],range[[2]]},Ticks->{PiTicks[range[[1]],range[[2]],12],All},PlotStyle -> Map[RGBColor,Transpose[RGBCube["RGB"]]]]/. {f-> Table[ApplyToPiecewise[#[[2,i]]&,err[\[Theta]]],{i,1,8}],plot->Plot},plot[f,{\[Theta],range[[1]],range[[2]]},Ticks->{PiTicks[range[[1]],range[[2]],12],All},PlotStyle -> Map[RGBColor,Transpose[RGBCube["RGB"]]]]/. {f-> Table[ApplyToPiecewise[#[[2,i]]&,errR[\[Theta]]],{i,1,8}],plot->Plot}},{plot[f,{\[Theta],range[[1]],range[[2]]},Ticks->{PiTicks[range[[1]],range[[2]],12],All},PlotStyle -> Map[RGBColor,Transpose[RGBCube["RGB"]]]]/. {f-> Table[ApplyToPiecewise[#[[3,i]]&,err[\[Theta]]],{i,1,8}],plot->Plot},plot[f,{\[Theta],range[[1]],range[[2]]},Ticks->{PiTicks[range[[1]],range[[2]],12],All},PlotStyle -> Map[RGBColor,Transpose[RGBCube["RGB"]]]]/. {f-> Table[ApplyToPiecewise[#[[3,i]]&,errR[\[Theta]]],{i,1,8}],plot->Plot}}}]]
 
 
 errorPlotLabel[n_,chan_, round_:IntegerPart]:=Row[{"The error in channel ",chan," with R \[Element] ",("2")^n," using ",round}]
@@ -359,7 +367,7 @@ pltFun[fun_,xRange_, ops:OptionsPattern[]]:= Plot[fun,xRange,
 PlotRange->{range,All},
 FrameTicks->{PiTicks[range[[1]],range[[2]],3(range[[2]]-range[[1]])/(Pi/6)],All},
 ExclusionsStyle-> None,Frame -> True,
-PlotStyle->Map[RGBColor,Transpose[RGBCube[RGB]]],PlotLabel->errorPlotLabel[n,chan, round],
+PlotStyle->Map[RGBColor,Transpose[RGBCube["RGB"]]],PlotLabel->errorPlotLabel[n,chan, round],
 FrameLabel->{"\[Theta]","Error"},
 ImageSize->400,Evaluate[FilterRules[{ops}, Options[Plot]]]];
 plot[f,{\[Theta],range[[1]],range[[2]]},opts]/. {f-> Table[ApplyToPiecewise[#[[chan,i]]&,errFun[\[Theta],n,round]  ],{i,1,8}],plot->pltFun}
