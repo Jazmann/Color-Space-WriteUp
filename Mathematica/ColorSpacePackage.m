@@ -21,8 +21,7 @@ rR[\[Theta]_]:= ({
 })
 
 
-irR[\[Theta]_]:={{1/3, (-(2/3))*Sin[Pi/6 + \[Theta]], (-(2/3))*Cos[Pi/6 + \[Theta]]}, {1/3, (2*Cos[\[Theta]])/3, -((2*Sin[\[Theta]])/3)}, 
-   {1/3, (-(2/3))*Sin[Pi/6 - \[Theta]], (2/3)*Cos[Pi/6 - \[Theta]]}}
+irR[\[Theta]_]:={{1/3, (-(2/3))*Sin[Pi/6 + \[Theta]], (-(2/3))*Cos[Pi/6 + \[Theta]]}, {1/3, (2*Cos[\[Theta]])/3, -((2*Sin[\[Theta]])/3)}, {1/3, (-(2/3))*Sin[Pi/6 - \[Theta]], (2/3)*Cos[Pi/6 - \[Theta]]}}
 
 
 scale["YAB","rR"] = {1/Sqrt[3],Sqrt[2/3],Sqrt[2/3]};
@@ -248,6 +247,233 @@ intersectionFromPoints[{p1_, p2_}, {p3_, p4_}] :=
 
 
 eqnFromPoints[{x1_,y1_},{x2_,y2_}]:=Function[{x$},Evaluate[(x$ (-y1+y2))/(-x1+x2)+(-x2 y1+x1 y2)/(x1-x2)]];
+
+
+ValueThumbSlider[v_] := ValueThumbSlider[Dynamic[v], {0, 1}]; 
+ValueThumbSlider[Dynamic[var_], {min_, max_}, options___] := LocatorPane[Dynamic[If[ !NumberQ[var], var = min]; {var, 0}, 
+     (var = First[#1]) & ], Graphics[{AbsoluteThickness[1.5], Line[{{min, 0}, {max, 0}}], 
+      Dynamic[{Text[var, {var, 0}, {0, -1}], Polygon[{Offset[{0, -1}, {var, 0}], Offset[{-5, -8}, {var, 0}], 
+          Offset[{5, -8}, {var, 0}]}]}]}, ImageSize -> {300, 30}, PlotRange -> {{min, max} + 0.1*{-1, 1}*(max - min), {-1, 1}}, 
+     AspectRatio -> 1/10], {{min, 0}, {max, 0}}, Appearance -> None]; 
+ValueThumbSlider[Dynamic[var_], {min_, max_, scale_}, options___] := 
+   LocatorPane[Dynamic[If[ !NumberQ[var], var = min]; {var, 0}, (var = First[#1]) & ], 
+    Graphics[{AbsoluteThickness[1.5], Line[{{min, 0}, {max, 0}}], Dynamic[{Text[var, {var, 0}, {0, -1}], 
+        Polygon[{Offset[{0, -1}, {var, 0}], Offset[{-5, -8}, {var, 0}], Offset[{5, -8}, {var, 0}]}]}]}, ImageSize -> {300, 30}, 
+     PlotRange -> {{min, max} + 0.1*{-1, 1}*(max - min), {-1, 1}}, AspectRatio -> 1/10], {{min, 0}, {max, 0}, {scale, 0}}, 
+    Appearance -> None]; 
+
+
+
+
+Clear[sliderIndicatorPoint];
+sliderIndicatorPoint[var_]:=Graphics[{Dynamic[{Text[var, {var, 0}, {0, -1}], Polygon[{Offset[{0, -1}, {var, 0}], Offset[{-5, -8}, {var, 0}], 
+          Offset[{5, -8}, {var, 0}]}],Text[StringReplace[SymbolName[Unevaluated[var]],"$$"~~x:DigitCharacter..->""], Offset[{0, -9}, {var, 0}], {0, 1}]}]}]
+SetAttributes[sliderIndicatorPoint,HoldAllComplete]
+
+SetAttributes[ValueThumbSlider,HoldFirst];
+ValueThumbSlider[{varsIn__}, {min_,max_}, options___] := Module[{in,ranges,appearance,vars},
+setUnset[min,varsIn,max];
+vars=Map[SymbolName,{ReleaseHold[Map[Unevaluated,Hold[varsIn]]]}];
+in = Map[StringJoin[{"List[",#,",0]"}]&,vars];
+ranges=List[
+StringJoin[{"List[{",ToString[min],",0}, {Dynamic[",vars[[1+1]],"],0}]"}],
+Sequence@@Table[
+StringJoin[{"List[{Dynamic[",vars[[i-1]],"],0}, {Dynamic[",vars[[i+1]],"],0}]"}]
+,{i,2,Length[vars]-1}],
+StringJoin["List[{Dynamic[",vars[[Length[vars]-1]],"],0}, {",ToString[max],",0}]"]];
+appearance = Map[StringJoin[{"Dynamic[sliderIndicatorPoint[",#,"]]"}]&,vars];
+riff[list_]:=StringJoin["List[",Riffle[list,", "],"]"];
+ToExpression[StringJoin[{"LocatorPane[Dynamic[",riff[in],"], Graphics[{AbsoluteThickness[1.5], Line[{{",ToString[min],", 0}, {",ToString[max],", 0}}]}, ImageSize -> {Scaled[1],30}, PlotRange -> {{",ToString[min],"," ,ToString[max],"} + 0.1*{-1, 1}*(",ToString[max]," - ",ToString[min],"), {-12,8}}, 
+     AspectRatio -> 30/Scaled[1]],",riff[ranges],", Appearance -> ",riff[appearance],"]"}]]
+]
+
+ValueThumbSlider[{varsIn__}, {min_,max_,scale_}, options___] := Module[{in,ranges,appearance},
+setUnset[min,varsIn,max];
+vars=Map[SymbolName,{ReleaseHold[Map[Unevaluated,Hold[varsIn]]]}];
+in = Map[StringJoin[{"List[",#,",0]"}]&,vars];
+ranges=List[
+StringJoin[{"List[{",ToString[min],",0}, {Dynamic[",vars[[1+1]],"],0}, {",ToString[scale],",0}]"}],
+Sequence@@Table[
+StringJoin[{"List[{Dynamic[",vars[[i-1]],"],0}, {Dynamic[",vars[[i+1]],"],0}, {",ToString[scale],",0}]"}]
+,{i,2,Length[vars]-1}],
+StringJoin["List[{Dynamic[",vars[[Length[vars]-1]],"],0}, {",ToString[max],",0}, {",ToString[scale],",0}]"]];
+appearance = Map[StringJoin[{"Dynamic[sliderIndicatorPoint[",#,"]]"}]&,vars];
+riff[list_]:=StringJoin["List[",Riffle[list,", "],"]"];
+ToExpression[StringJoin[{"LocatorPane[Dynamic[",riff[in],"], Graphics[{AbsoluteThickness[1.5], Line[{{",ToString[min],", 0}, {",ToString[max],", 0}}]}, ImageSize -> {Scaled[1],30}, PlotRange -> {{",ToString[min],"," ,ToString[max],"} + 0.1*{-1, 1}*(",ToString[max]," - ",ToString[min],"), {-12,8}}, 
+     AspectRatio -> 30/Scaled[1]],",riff[ranges],", Appearance -> ",riff[appearance],"]"}]]
+]
+
+ValueThumbSlider[{varsIn_}, {min_, max_}, options___] := Module[{in,ranges,appearance},
+setUnset[min,varsIn,max];
+vars=SymbolName[Unevaluated[varsIn]];
+in = StringJoin[{"List[",vars,",0]"}];
+ranges= StringJoin[{"List[{",ToString[min],",0}, {Dynamic[",ToString[max],"],0}]"}];
+appearance = StringJoin[{"Dynamic[sliderIndicatorPoint[",ToString[vars],"]]"}];
+ToExpression[StringJoin[{"LocatorPane[Dynamic[",in,"], 
+Graphics[{AbsoluteThickness[1.5], Line[{{",ToString[min],", 0}, {",ToString[max],", 0}}]}, ImageSize -> {Scaled[1],30}, PlotRange -> {{",ToString[min],"," ,ToString[max],"} + 0.1*{-1, 1}*(",ToString[max]," - ",ToString[min],"), {-12,8}}, 
+     AspectRatio -> 30/Scaled[1]],",ranges,", Appearance -> ",appearance,"]"}]]
+]
+
+ValueThumbSlider[{varsIn_}, {min_, max_,scale_}, options___] := Module[{in,ranges,appearance},
+setUnset[min,varsIn,max];
+vars=SymbolName[Unevaluated[varsIn]];
+in = StringJoin[{"List[",vars,",0]"}];
+ranges= StringJoin[{"List[{",ToString[min],",0}, {Dynamic[",ToString[max],"],0}, {",ToString[scale],",0}]"}];
+appearance = StringJoin[{"Dynamic[sliderIndicatorPoint[",ToString[vars],"]]"}];
+ToExpression[StringJoin[{"LocatorPane[Dynamic[",in,"], 
+Graphics[{AbsoluteThickness[1.5], Line[{{",ToString[min],", 0}, {",ToString[max],", 0}}]}, ImageSize -> {Scaled[1],30}, PlotRange -> {{",ToString[min],"," ,ToString[max],"} + 0.1*{-1, 1}*(",ToString[max]," - ",ToString[min],"), {-12,8}}, 
+     AspectRatio -> 30/Scaled[1]],",ranges,", Appearance -> ",appearance,"]"}]]
+]
+
+
+Clear[sliderIndicatorPoint];
+sliderIndicatorPoint[var_]:=Graphics[{Dynamic[{Text[var, {var, 0}, {0, -1}], Polygon[{Offset[{0, -1}, {var, 0}], Offset[{-5, -8}, {var, 0}], 
+          Offset[{5, -8}, {var, 0}]}],Text[StringReplace[SymbolName[Unevaluated[var]],"$$"~~x:DigitCharacter..->""], Offset[{0, -9}, {var, 0}], {0, 1}]}]}]
+SetAttributes[sliderIndicatorPoint,HoldAllComplete]
+
+Clear[ValueThumbSlider];
+ValueThumbSlider[{varsIn__}, {min_,max_}, options___] := Module[{in,ranges,appearance,heldVarsIn,heldVars,dynamic,dynVars,vars},
+heldVarsIn={ReleaseHold[Map[Hold,Map[Unevaluated,Hold[varsIn]]]]};
+heldVars=heldVarsIn/.Dynamic[sym_,bla___]->sym;
+dynamic=Map[(TrueQ[#[[1,1,0]]==Dynamic])&,heldVarsIn];
+dynVars=Table[If[dynamic[[i]],ToString[#]&[ReleaseHold[heldVarsIn[[i]]] ],StringJoin["Dynamic[",ToString[#]&[ReleaseHold[heldVars[[i]]]],"]"]],{i,1,Length[dynamic]}];
+vars=Map[ToString,Map[ReleaseHold,heldVars]];
+ToExpression[StringJoin["setUnset[",Riffle[{ToString[min],Sequence@@vars,ToString[max]},", "],"]"]];
+in = Map[StringJoin[{"List[",#,",0]"}]&,dynVars];
+ranges=List[
+StringJoin[{"List[{",ToString[min],",0}, {",dynVars[[1+1]],",0}]"}],
+Sequence@@Table[
+StringJoin[{"List[{",dynVars[[i-1]],",0}, {",dynVars[[i+1]],",0}]"}]
+,{i,2,Length[dynVars]-1}],
+StringJoin["List[{",vars[[Length[vars]-1]],",0}, {",ToString[max],",0}]"]];
+appearance = Map[StringJoin[{"Dynamic[sliderIndicatorPoint[",#,"]]"}]&,vars];
+riff[list_]:=StringJoin["List[",Riffle[list,", "],"]"];
+ToExpression[StringJoin[{"LocatorPane[Dynamic[",riff[in],"], Graphics[{AbsoluteThickness[1.5], Line[{{",ToString[min],", 0}, {",ToString[max],", 0}}]}, ImageSize -> {Scaled[1],30}, PlotRange -> {{",ToString[min],"," ,ToString[max],"} + 0.1*{-1, 1}*(",ToString[max]," - ",ToString[min],"), {-12,8}}, AspectRatio -> 30/Scaled[1]],",riff[ranges],", Appearance -> ",riff[appearance],"]"}]]
+]
+
+ValueThumbSlider[{varsIn_}, {min_,max_}, options___] := Module[{in,ranges,appearance,heldVarsIn,heldVars,dynamic,dynVars,vars},
+heldVarsIn=Hold[Unevaluated[varsIn]];
+heldVars=heldVarsIn/.Dynamic[sym_,bla___]->sym;
+dynamic=TrueQ[heldVarsIn[[1,1,0]]==Dynamic];
+dynVars=If[dynamic,ToString[#]&[ReleaseHold[heldVarsIn] ],StringJoin["Dynamic[",ToString[#]&[ReleaseHold[heldVars]],"]"]];
+vars=ToString[#]&[ReleaseHold[heldVars]];
+ToExpression[StringJoin["setUnset[",Riffle[{ToString[min],vars,ToString[max]},", "],"]"]];
+in = StringJoin[{"List[",dynVars,",0]"}];
+ranges=StringJoin[{"List[{",ToString[min],",0}, {",ToString[max],",0}]"}];
+appearance = StringJoin[{"Dynamic[sliderIndicatorPoint[",vars,"]]"}];
+ToExpression[StringJoin[{"LocatorPane[Dynamic[",in,"], Graphics[{AbsoluteThickness[1.5], Line[{{",ToString[min],", 0}, {",ToString[max],", 0}}]}, ImageSize -> {Scaled[1],30}, PlotRange -> {{",ToString[min],"," ,ToString[max],"} + 0.1*{-1, 1}*(",ToString[max]," - ",ToString[min],"), {-12,8}}, AspectRatio -> 30/Scaled[1]],",ranges,", Appearance -> ",appearance,"]"}]]
+]
+
+
+ValueThumbSlider[{varsIn_}, {min_,max_,scale_}, options___] := Module[{in,ranges,appearance,heldVarsIn,heldVars,dynamic,dynVars,vars},
+heldVarsIn=Hold[Unevaluated[varsIn]];
+heldVars=heldVarsIn/.Dynamic[sym_,bla___]->sym;
+dynamic=TrueQ[heldVarsIn[[1,1,0]]==Dynamic];
+dynVars=If[dynamic,ToString[#]&[ReleaseHold[heldVarsIn] ],StringJoin["Dynamic[",ToString[#]&[ReleaseHold[heldVars]],"]"]];
+vars=ToString[#]&[ReleaseHold[heldVars]];
+ToExpression[StringJoin["setUnset[",Riffle[{ToString[min],vars,ToString[max]},", "],"]"]];
+in = StringJoin[{"List[",dynVars,",0]"}];
+ranges=StringJoin[{"List[{",ToString[min],",0}, {",ToString[max],",0}, {",ToString[scale],",0}]"}];
+appearance = StringJoin[{"Dynamic[sliderIndicatorPoint[",vars,"]]"}];
+ToExpression[StringJoin[{"LocatorPane[Dynamic[",in,"], Graphics[{AbsoluteThickness[1.5], Line[{{",ToString[min],", 0}, {",ToString[max],", 0}}]}, ImageSize -> {Scaled[1],30}, PlotRange -> {{",ToString[min],"," ,ToString[max],"} + 0.1*{-1, 1}*(",ToString[max]," - ",ToString[min],"), {-12,8}}, AspectRatio -> 30/Scaled[1]],",ranges,", Appearance -> ",appearance,"]"}]]
+]
+
+ValueThumbSlider[{varsIn__}, {min_,max_,scale_}, options___] := Module[{in,ranges,appearance,heldVarsIn,heldVars,dynamic,dynVars,vars},
+heldVarsIn={ReleaseHold[Map[Hold,Map[Unevaluated,Hold[varsIn]]]]};
+heldVars=heldVarsIn/.Dynamic[sym_,bla___]->sym;
+dynamic=Map[(TrueQ[#[[1,1,0]]==Dynamic])&,heldVarsIn];
+dynVars=Table[If[dynamic[[i]],ToString[#]&[ReleaseHold[heldVarsIn[[i]]] ],StringJoin["Dynamic[",ToString[#]&[ReleaseHold[heldVars[[i]]]],"]"]],{i,1,Length[dynamic]}];
+vars=Map[ToString,Map[ReleaseHold,heldVars]];
+ToExpression[StringJoin["setUnset[",Riffle[{ToString[min],Sequence@@vars,ToString[max]},", "],"]"]];
+in = Map[StringJoin[{"List[",#,",0]"}]&,dynVars];
+ranges=List[
+StringJoin[{"List[{",ToString[min],",0}, {",dynVars[[1+1]],",0}, {",ToString[scale],",0}]"}],
+Sequence@@Table[
+StringJoin[{"List[{",dynVars[[i-1]],",0}, {",dynVars[[i+1]],",0}, {",ToString[scale],",0}]"}]
+,{i,2,Length[dynVars]-1}],
+StringJoin["List[{",vars[[Length[vars]-1]],",0}, {",ToString[max],",0}, {",ToString[scale],",0}]"]];
+appearance = Map[StringJoin[{"Dynamic[sliderIndicatorPoint[",#,"]]"}]&,vars];
+riff[list_]:=StringJoin["List[",Riffle[list,", "],"]"];
+ToExpression[StringJoin[{"LocatorPane[Dynamic[",riff[in],"], Graphics[{AbsoluteThickness[1.5], Line[{{",ToString[min],", 0}, {",ToString[max],", 0}}]}, ImageSize -> {Scaled[1],30}, PlotRange -> {{",ToString[min],"," ,ToString[max],"} + 0.1*{-1, 1}*(",ToString[max]," - ",ToString[min],"), {-12,8}}, AspectRatio -> 30/Scaled[1]],",riff[ranges],", Appearance -> ",riff[appearance],"]"}]]
+]
+
+
+
+Clear[ValueThumbSlider]
+ValueThumbSlider[Dynamic[{varsIn__},func_], {min_,max_,scale___}, options___] := Module[{},
+function=StringReplace[ToString[Unevaluated[func],InputForm],"#"~~x:DigitCharacter..:> "#"~~"[["~~x~~",1]]" ];
+heldVars={ReleaseHold[Map[Hold,Map[Unevaluated,Hold[varsIn]]]]}/.Dynamic[sym_,bla___]->sym;
+     vars=Map[ToString,Map[ReleaseHold,heldVars]];
+ToExpression[StringJoin["setUnset[",Riffle[{ToString[min],Sequence@@vars,ToString[max]},", "],"]"]];
+    in = Map[StringJoin[{"List[",#,",0]"}]&,vars];
+scle=If[TrueQ[scale==Null],"",StringJoin[{", {",ToString[scale],",0}"}]];
+ranges=List[
+StringJoin[{"List[{",ToString[min],",0}, {Dynamic[",vars[[1+1]],"],0}",scle,"]"}],
+Sequence@@Table[
+StringJoin[{"List[{Dynamic[",vars[[i-1]],"],0}, {Dynamic[",vars[[i+1]],"],0}",scle,"]"}]
+,{i,2,Length[vars]-1}],
+StringJoin["List[{Dynamic[",vars[[Length[vars]-1]],"],0}, {",ToString[max],",0}",scle,"]"]];
+appearance = Map[StringJoin[{"Dynamic[sliderIndicatorPoint[",#,"]]"}]&,vars];
+riff[list_]:=StringJoin["List[",Riffle[list,", "],"]"];
+ToExpression[StringJoin[{"LocatorPane[Dynamic[",riff[in],", ",function,"], Graphics[{AbsoluteThickness[1.5], Line[{{",ToString[min],", 0}, {",ToString[max],", 0}}]}, ImageSize -> {Scaled[1],30}, PlotRange -> {{",ToString[min],"," ,ToString[max],"} + 0.1*{-1, 1}*(",ToString[max]," - ",ToString[min],"), {-12,8}}, AspectRatio -> 30/Scaled[1]],",riff[ranges],", Appearance -> ",riff[appearance],"]"}]]
+]
+
+ValueThumbSlider[Dynamic[{varsIn_},func_], {min_,max_,scale___}, options___] := Module[{},
+function=StringReplace[ToString[Unevaluated[func],InputForm],"#"~~x:DigitCharacter..:> "#"~~"[["~~x~~"]]" ];
+     vars=ToString[Unevaluated[varsIn]];
+ToExpression[StringJoin["setUnset[",Riffle[{ToString[min],vars,ToString[max]},", "],"]"]];
+    in = StringJoin[{"List[",vars,",0]"}];
+scle=If[TrueQ[scale==Null],"",StringJoin[{", {",ToString[scale],",0}"}]];
+ranges= StringJoin[{"List[{",ToString[min],",0}, {",ToString[max],",0}",scle,"]"}];
+appearance = StringJoin[{"Dynamic[sliderIndicatorPoint[",vars,"]]"}];
+ToExpression[StringJoin[{"LocatorPane[Dynamic[",in,", ",function,"], Graphics[{AbsoluteThickness[1.5], Line[{{",ToString[min],", 0}, {",ToString[max],", 0}}]}, ImageSize -> {Scaled[1],30}, PlotRange -> {{",ToString[min],"," ,ToString[max],"} + 0.1*{-1, 1}*(",ToString[max]," - ",ToString[min],"), {-12,8}}, AspectRatio -> 30/Scaled[1]],",ranges,", Appearance -> ",appearance,"]"}]]
+]
+
+
+findUnset[vars__]:=Module[{posSym,posNum,start,end},
+posSym=Position[{vars},_Symbol,{1},Heads->False][[All,1]];
+If[Length[posSym]>0,
+posNum=Position[{vars},_Real|_Integer,{1},Heads->False][[All,1]];
+start=Intersection[Union[posNum+1],posSym];
+If[posSym[[1]]==1,PrependTo[start,1]];
+end=Intersection[Union[posNum-1],posSym];
+If[posSym[[-1]]==Length[{vars}],AppendTo[end,Length[{vars}]]];
+Transpose[{start, end}]
+,
+{}]
+]
+
+SetAttributes[setUnset,HoldAll];
+setUnset[minIn_,vars__,maxIn_]:=Module[{n,ends,newSequence,range,min,max},
+newSequence=findUnset[minIn,vars,maxIn];
+If[Length[newSequence]>0,
+If[newSequence[[1,1]]==1,min={minIn,vars,maxIn}[[newSequence[[1,2]]+1]]-1,min=minIn];
+If[newSequence[[-1,2]]==Length[{minIn,vars,maxIn}],max={minIn,vars,maxIn}[[newSequence[[-1,1]]-1]]+1,max=maxIn];
+Do[
+n=pos[[2]]-pos[[1]]+1;
+ends=List[min,minIn,vars,maxIn,max][[pos+{0,2}]];
+range=Range[Sequence@@ends,(ends[[2]]-ends[[1]])/(n+1)][[2;;n+1]];
+Evaluate[List[minIn,vars,maxIn][[Span@@pos]]] = N[range]
+,{pos,newSequence}]
+]
+]
+
+
+Clear[LablePoint]
+LablePoint[x_,fun_,txt_:"",color_:Green,align_:{0,0}]:=Block[{pnt,text},pnt=Round[N[{x,fun[x]}]];If[TrueQ[txt==""],text=StringJoin[ToString[pnt[[1]]],"  ",ToString[pnt[[2]]]],text=txt];{color,Opacity[0.6],Disk[pnt,12],Black,Opacity[1],Text[text,pnt,align]}];
+
+Clear[LablePointGrad]
+LablePointGrad[x_,fun_,txt_:"",color_:Green,align_:{0,0},len_:40]:=Block[{pnt,text},
+pnt=Round[N[{x,fun[x]}]];
+m=Function[{xx},Evaluate[D[fun[xx],xx]]];
+line=Function[{xx},Evaluate[{xx,m[x]*(xx-pnt[[1]]) + pnt[[2]]} ]];
+If[TrueQ[txt==""],text=StringJoin[ToString[pnt[[1]]],"  ",ToString[pnt[[2]]]],text=txt];{color,Opacity[0.6],
+Disk[pnt,12],Disk[line[x+len],6],Disk[line[x-len],6],
+Thick,Line[{line[x-len],line[x+len]}],
+Black,Opacity[1],
+Text[text,pnt,align,line[x+len]],Text[ToString[NumberForm[N[m[x]],3]],line[x+len],{0,0},line[x+len]],
+Text[ToString[NumberForm[N[m[x]],3]],line[x-len],{0,0},line[x+len]]}];
+
 
 
 (* ::Section:: *)
