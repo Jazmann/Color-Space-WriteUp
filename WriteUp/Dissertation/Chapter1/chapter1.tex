@@ -4,10 +4,11 @@
 
 \chapter{Motivation}  %Title of the First Chapter
 
+\epstopdfsetup{outdir=Chapter1/Figs/PDF/}
 \ifpdf
-    \graphicspath{{Chapter1/Figs/Raster/}{Chapter2/Figs/PDF/}{Chapter2/Figs/}}
+    \graphicspath{{Chapter1/Figs/Raster/}{Chapter1/Figs/PDF/}{Chapter1/Figs/}}
 \else
-    \graphicspath{{Chapter1/Figs/Vector/}{Chapter2/Figs/}}
+    \graphicspath{{Chapter1/Figs/Vector/}{Chapter1/Figs/}}
 \fi
 
 The purpose of this project is to create a chromatic skin and feature detector for application in mobile devices. Using a given device's built-in CCD camera, objects with characteristics matching those of human skin are identified. This presents a number of challenges. Since we are trying to use the chromatic information of human skin to distinguish objects (e.g. hands, fingers) in a given scene, working in a chromatic space helps to simplify this problem. A chromatic space is a color space wherein the color information is laid out in as few dimensions as possible, with a separate dimension for luminosity --- the brightness information. Fundamentally, the issue with this is that CCD cameras capture information using RGB values which mixes the chromatic information with the luminosity. Separating this information is the first part of the challenge.
