@@ -1,6 +1,8 @@
 \chapter{Pattern Recognition}
 
 % **************************** Define Graphics Path **************************
+
+\epstopdfsetup{outdir=Chapter3/Figs/PDF/}
 \ifpdf
     \graphicspath{{Chapter3/Figs/Raster/}{Chapter3/Figs/PDF/}{Chapter3/Figs/}}
 \else
@@ -68,7 +70,7 @@ The tightly-cropped region from each frame is held in as high a resolution as po
     \caption{The difference in the skin color space between successive frames during a finger press. (Or in this case, a thumb.)}\label{fig:FinalProof}
 \end{figure}
 
-The second indicator for a finger press was found around the center of the pad of the digit. The distance to the convex hull --- which outlines the edge of the digit in the frame --- was noted to move away from the centered reference point. This is because the nail does not dignificantly deform under mechanical stress, however the soft tissue underneath does. This provides a second level in the metric for detecting a digit press.
+The second indicator for a finger press was found around the center of the pad of the digit. The distance to the convex hull --- which outlines the edge of the digit in the frame --- was noted to move away from the centered reference point. This is because the nail does not significantly deform under mechanical stress, however the soft tissue underneath does. This provides a second level in the metric for detecting a digit press.
 
 The algorithm now decides based on thresholds which could be trained, but in the present implementation were set manually, one on the chromatic difference in the feature region (i.e. the nail), and the second on the contour from the shape detection. The output of each combined to produce a sound, the idea being the harder you press, the louder the noise.
 
