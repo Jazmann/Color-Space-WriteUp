@@ -70,20 +70,31 @@ The first is peak normalization, which simply levels out the maximum output in e
 
 The second method is to approach the response spectra as the basis functions for representing the spectrum. Using this approach, each basis function is normalized according to its integral over the visible wavelengths, giving an equal weighting to each of the response spectra functions over the range of values, rather than focusing on a peak value. Mathematically speaking, this approach is not unusual when constructing a basis set as it facilitates the maths.
 
-<Figure of spectrum strips for one of the cameras>
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.80\textwidth]{Chapter1/Figs/ResponceSpectrum_NokiaN900.eps}
+    \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ResponseSpectrum_NokiaN900.eps}
     \caption{The response spectrum for the Nokia N900. }  \label{fig:ResponseSpectumNokia}
 \end{figure}
 
 
 
-It should be noted that the color optimization methods used in modern CCD devices are much more sophisticated than either of these approaches.
+It should be noted that the color balancing methods used in modern CCD devices are much more sophisticated than either of these approaches.
 
-However, because the methods chosen here are straightforward amplifications of each channel, they're likely to be subject to color rebalancing, which is done at the lowest possible accessible level in the device. While we are not concerned with device constructions, it is useful to know how these devices capture the color information if this algorithm is to be used diagnostically, as how this color rebalancing is done with any given device and any artifacts and distortions in the data introduced as a result needs to be accounted for.
+However, because the methods chosen here are straightforward amplifications of each channel, they're likely to be used as a first step in color rebalancing at the hardware level in the device. While we are not concerned with device constructions, it is useful to know how these devices capture the color information if this algorithm is to be used diagnostically, as color rebalancing may introduce artefacts and distortions in the data.
 
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ResponseSpectraStripes.eps}
+    \caption{The light spectrum as viewed using various CCDs with a physical spectrum for comparison }  \label{fig:ResponseSpectraStripes}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ResponseSpectraStripesNorm.eps}
+    \caption{The light spectrum as viewed using various CCDs after normalisation with a physical spectrum for comparison.}  \label{fig:ResponseSpectraStripesNorm}
+\end{figure}
 <graphical representation of the raw data of some CCDs from the site, illustrating where the information is captured>
 
 Although we consider these sensors to be capturing information throughout the entire visible spectrum, what they are actually capturing varies quite significantly between devices. However, as these devices use the aforementioned color rebalancing algorithms to alter the image to look more sensible to human eyes, these differences aren't so apparent to us.
