@@ -94,9 +94,8 @@ However, because the methods chosen here are straightforward amplifications of e
     \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ResponseSpectraStripesNorm.eps}
     \caption{The light spectrum as viewed using various CCDs after normalisation with a physical spectrum for comparison.}  \label{fig:ResponseSpectraStripesNorm}
 \end{figure}
-<graphical representation of the raw data of some CCDs from the site, illustrating where the information is captured>
 
-Although we consider these sensors to be capturing information throughout the entire visible spectrum, what they are actually capturing varies quite significantly between devices. However, as these devices use the aforementioned color rebalancing algorithms to alter the image to look more sensible to human eyes, these differences aren't so apparent to us.
+Although we consider these sensors to be capturing information throughout the entire visible spectrum, what they are actually capturing varies quite significantly between devices\ref{fig:ResponseSpectraStripes}. However, as these devices use the aforementioned color rebalancing algorithms to alter the image to look more sensible to human eyes, these differences aren't so apparent to us.
 
 In addition to the color rebalancing, which corrects the behavior of the CCD devices, as is found in later sections <reference chapter 2>, some devices, like the iPhone, also apply a dynamic color rebalancing which attempts to even out the colors based on the image captured. This feature is intended to correct for strange lighting conditions and other such problems which could affect the image. This will be addressed in detail in <Chapter 2 reference again>.
 
@@ -105,26 +104,28 @@ In addition to the color rebalancing, which corrects the behavior of the CCD dev
 
 So, we have the morlar absorptivity for the four key chromophores in the skin, we have the response spectra for a variety of devices, and a response spectra which serves as a target color output for all the devices after the color correction has been applied. Additionally, we are using the CIE 1931 RGB color space for the absorption spectra, which is closer to how our eyes perceive color than any other color space <reference here, mentioning the site with the spectrum data>. This means that, in principle, we can get appropriate RGB values for the four key chromophores at the hardware layer using the device response spectra, or at the AP layer using the CIE 1931 RGB color space spectrum <reference for CIE 1931 page here>, assuming the device's color space correction does its job. The question now is how to actually simulate skin color.
 
-We can convert the molar absorptivity into an absorption spectrum for a chromophore if we know the average path length in the skin. So, the scattering properties of the skin will determine the path length. Since we are not trying to simulate any skin in particular, we can simply use average values taken from the <Camera Spectral Sensitivity Database project reference here>. At this point, we aren't so much interested in the saturation --- the concentration and path length both affect the saturation of the color rather than the hue --- as we are interested in the relative position around the luminosity axis; we want the saturation to lie on the axis.
+We can convert the molar absorptivity into an absorption spectrum for a chromophore if we know the average path length in the skin. So, the scattering properties of the skin will determine the path length. Since we are not trying to simulate any skin in particular, we can simply use average values taken from the <Camera Spectral Sensitivity Database project reference here>. At this point, we aren't so much interested in the saturation --- the concentration and path length both affect the saturation of the color rather than the hue --- as we are interested in the relative position around the luminosity axis.
 
 So now we have an absorption spectrum, but the color that we perceive is the light which is re-emitted, and that is what we are really interested in: the re-emitted light, or $R$. While the optics is a complicated study, there is a relatively simple theory called Kubelka-Munk Theory, which allows us to turn an absorption spectra into a re-emission spectra:
 
-\begin{equation}\label{eq:KubelkaMunk}
-r=\frac{A}{S}
-r=\frac{(R-1)^2-T^2}{2 R}
-S=\frac{\tanh ^{-1}\left(\frac{\sqrt{r (r+2)} R}{1-(r+1) R}\right)}{d \sqrt{r (r+2)}}
-\end{equation}
+\begin{align}\label{eq:KubelkaMunk}
+r &=\frac{A}{S} \\
+r & =\frac{(R-1)^2-T^2}{2 R} \\
+S & =\frac{\tanh ^{-1}\left(\frac{\sqrt{r (r+2)} R}{1-(r+1) R}\right)}{d \sqrt{r (r+2)}}
+\end{align}
 
 Where $A$ is the absorption, $S$ is the scattering of light, $R$ is the re-emission, and $T$ is transmittance. As the transmittance $T$ of human skin is approximately zero at visible wavelengths, $\frac{A}{S}$ can be expressed as:
 
-\begin{equation}\label{eq:KubelkaMunk2}
-\frac{A}{S}=\frac{(R-1)^2}{2 R}
-\left\{\left\{R\to -\sqrt{r^2+2 r}+r+1\right\},\left\{R\to \sqrt{r^2+2 r}+r+1\right\}\right\}
-\end{equation}
+\begin{align}\label{eq:KubelkaMunk2}
+\frac{A}{S} &=\frac{(R-1)^2}{2 R} \quad \therefore\\
+R &= r+1 \pm \sqrt{r^2+2 r}
+\end{align}
 
 As $r$ is $\frac{A}{S}$, the re-emission $R$ must go down with increasing absorption $A$:
 
-<figure showing graph here>
+\begin{equation}\label{eq:KubelkaMunk2}
+R &= r+1 - \sqrt{r^2+2 r}
+\end{equation}
 
 As for finding the RGB values, the bright color is the response of the CCD. By integrating the following functions in the figure below, we get the channel output:
 
