@@ -139,7 +139,7 @@ As for finding the RGB values, the bright color is the response of the CCD. By i
 
 
 
-Thus, we can now find the channel output for any device we have a response function for.
+Thus, we can now find the channel output of any device for which we have a response function.
 
 At this point, we're going from the physical space to a virtual space; we have a physical quantity, the energy of light, and we are turning it into three numbers. The output depends on the measuring device. In the case of the human eye, it has a certain response based on the chemistry of the cones, and our retina produces the signal. However, there are only three different types of cones which produce this kind of RGB signal. CCDs devices are based on that, and they produce RGB signals, but in order to find the absorption, we must take the wavelength --- generally measures in nanometers --- and a response function, which is dimensionless, and get the output for each of the three RGB channels. It should be noted that there are a variety of different response spectra --- human eyes have a small secondary bump in the red channel, for example, which will be addressed in the following chapter --- so we have an appropriate response function for each of the three RGB color channels depending on what sensor we're using.
 

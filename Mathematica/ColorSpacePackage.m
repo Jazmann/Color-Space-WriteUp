@@ -110,10 +110,12 @@ angle = angle-theta-4 Pi/3 +2 Pi;h=angle/(2 Pi) ; s = Sqrt[2]*s; Hue[h,s,y]]]/.{
 ]
 
 
-YABColorFastTheta=Compile[{{yIn, _Real},{aIn, _Real},{bIn, _Real},{\[Theta]In, _Real}}, Module[{y,a,b,h,s,angle},
+Clear[YABColorFastTheta]
+YABColorFastTheta[yIn_Real,aIn_Real,bIn_Real,\[Theta]In_Real]:= Module[{y,a,b,h,s,angle},
 y=yIn; a = aIn-0.5; b= bIn-0.5;
 Quiet[{s, angle}=CoordinateTransform[{"Cartesian"->"Polar",2},{a,b}]/.Indeterminate->0,{ArcTan::indet}];
-angle = angle-\[Theta]In-4 Pi/3 +2 Pi;h=angle/(2 Pi) ; s = Sqrt[2]*s; Hue[h,s,y]]
+angle = angle-\[Theta]In-4 Pi/3 +2 Pi;h=angle/(2 Pi) ; s = Sqrt[2]*s; 
+Hue[h,s,y]
 ];
 
 
