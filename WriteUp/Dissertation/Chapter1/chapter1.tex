@@ -62,6 +62,11 @@ In order to apply the molar absorptivity, we need the average path length of ski
 
 So, our first task is to convert everything into consistent SI units, and then find the absorbance of the skin using the Beer-Lambert Law relation.
 
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ChemicalSpectralProperties.eps}
+    \caption{ }  \label{fig:ChemicalSpectralProperties}
+\end{figure}
 \subsection{Response Spectra}
 
 The response spectrum is how a given sensor --- such as the human eye or a CCD --- responds to very specific wavelengths of light. Essentially, it is the raw output from the sensor. This is almost never used, and is generally inaccessible even at the hardware layer, as the circuitry very close to the CCD does a basic level of color rebalancing. As we don't know the full color correction for every possible CCD, we observed the raw output spectra of several different devices and then tried two very simple methods of rebalancing the color:
