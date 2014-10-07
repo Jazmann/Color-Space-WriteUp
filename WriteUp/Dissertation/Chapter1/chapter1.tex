@@ -69,6 +69,14 @@ So, our first task is to convert everything into consistent SI units, and then f
 \end{figure}
 \subsection{Response Spectra}
 
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.99\textwidth]{Chapter1/Figs/CameraComparison.jpg}
+    \caption{ }  \label{fig:ChemicalSpectralProperties}
+\end{figure}
+\subsection{Response Spectra}
+
 The response spectrum is how a given sensor --- such as the human eye or a CCD --- responds to very specific wavelengths of light. Essentially, it is the raw output from the sensor. This is almost never used, and is generally inaccessible even at the hardware layer, as the circuitry very close to the CCD does a basic level of color rebalancing. As we don't know the full color correction for every possible CCD, we observed the raw output spectra of several different devices and then tried two very simple methods of rebalancing the color:
 
 The first is peak normalization, which simply levels out the maximum output in each channel such that the peak output for each of the channels is equal. This approach is very simple, but is quite likely from an electrical engineering perspective as it facilitates the digitization of the color information.
