@@ -1,0 +1,152 @@
+eumelaninVis["base"] := 10
+ 
+eumelaninVis["chemical"] := "Eumelanin"
+ 
+eumelaninVis["data"] := {{209.99, 7458.2}, {212.21, 7238.7}, 
+     {218.91, 6956.6}, {223.36, 6611.8}, {230.06, 6298.2}, {239., 5953.2}, 
+     {245.7, 5608.2}, {261.38, 5231.8}, {279.3, 4855.3}, {294.99, 4510.2}, 
+     {312.92, 4196.4}, {324.13, 4008.}, {342.06, 3662.9}, {357.75, 3317.7}, 
+     {382.42, 2941.1}, {407.07, 2470.3}, {431.74, 2125.}, {458.67, 1810.8}, 
+     {483.36, 1590.8}, {523.76, 1245.1}, {550.7, 1024.9}, {588.87, 804.56}, 
+     {615.82, 709.86}, {642.77, 583.84}, {680.96, 488.79}, {712.41, 394.09}, 
+     {734.88, 362.05}, {764.09, 330.01}, {782.06, 298.15}, {804.53, 266.29}, 
+     {820.26, 265.93}}
+ 
+eumelaninVis["Func"] = InterpolatingFunction[{{382.42, 782.06}}, 
+     {4, 7, 0, {15}, {4}, 0, 0, 0, 0, Automatic}, {{382.42, 407.07, 431.74, 
+      458.67, 483.36, 523.76, 550.7, 588.87, 615.82, 642.77, 680.96, 712.41, 
+      734.88, 764.09, 782.06}}, {Developer`PackedArrayForm, {0, 1, 2, 3, 4, 
+      5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, {0.19595538002062338, 
+      0.22809459978366392, 0.25933967304462097, 0.2963485574046322, 
+      0.32932884089812825, 0.39943743272389715, 0.46251841687871204, 
+      0.5501155253154162, 0.5993044713417035, 0.6810515210219049, 
+      0.7602347254199199, 0.861615881031642, 0.9029383132602179, 
+      0.948866686032349, 1.}}, {Automatic}]
+ 
+eumelaninVis["molarMass"] := 178
+ 
+eumelaninVis["quantity"] := {Quantity[1, "Nanometers"], 
+     Quantity[1, "Liters"/("Centimeters"*"Moles")], "Centimeters"^(-1), 1}
+ 
+eumelaninVis["quantityData"] = {{Quantity[382.42, "Nanometers"], 
+      Quantity[294.11, "Meters"^2/"Moles"], Quantity[6.839767441860465, 
+       "Centimeters"^(-1)], 0.19595538002062338}, 
+     {Quantity[407.07, "Nanometers"], Quantity[247.03000000000003, 
+       "Meters"^2/"Moles"], Quantity[5.744883720930233, "Centimeters"^(-1)], 
+      0.22809459978366392}, {Quantity[431.74, "Nanometers"], 
+      Quantity[212.5, "Meters"^2/"Moles"], Quantity[4.941860465116279, 
+       "Centimeters"^(-1)], 0.25933967304462097}, 
+     {Quantity[458.67, "Nanometers"], Quantity[181.08, "Meters"^2/"Moles"], 
+      Quantity[4.211162790697674, "Centimeters"^(-1)], 0.2963485574046322}, 
+     {Quantity[483.36, "Nanometers"], Quantity[159.08, "Meters"^2/"Moles"], 
+      Quantity[3.69953488372093, "Centimeters"^(-1)], 0.32932884089812825}, 
+     {Quantity[523.76, "Nanometers"], Quantity[124.50999999999999, 
+       "Meters"^2/"Moles"], Quantity[2.8955813953488367, "Centimeters"^(-1)], 
+      0.39943743272389715}, {Quantity[550.7, "Nanometers"], 
+      Quantity[102.49000000000001, "Meters"^2/"Moles"], 
+      Quantity[2.3834883720930233, "Centimeters"^(-1)], 0.46251841687871204}, 
+     {Quantity[588.87, "Nanometers"], Quantity[80.456, "Meters"^2/"Moles"], 
+      Quantity[1.8710697674418604, "Centimeters"^(-1)], 0.5501155253154162}, 
+     {Quantity[615.82, "Nanometers"], Quantity[70.986, "Meters"^2/"Moles"], 
+      Quantity[1.6508372093023256, "Centimeters"^(-1)], 0.5993044713417035}, 
+     {Quantity[642.77, "Nanometers"], Quantity[58.38400000000001, 
+       "Meters"^2/"Moles"], Quantity[1.3577674418604653, "Centimeters"^(-1)], 
+      0.6810515210219049}, {Quantity[680.96, "Nanometers"], 
+      Quantity[48.879000000000005, "Meters"^2/"Moles"], 
+      Quantity[1.1367209302325583, "Centimeters"^(-1)], 0.7602347254199199}, 
+     {Quantity[712.41, "Nanometers"], Quantity[39.409, "Meters"^2/"Moles"], 
+      Quantity[0.9164883720930231, "Centimeters"^(-1)], 0.861615881031642}, 
+     {Quantity[734.88, "Nanometers"], Quantity[36.205000000000005, 
+       "Meters"^2/"Moles"], Quantity[0.8419767441860465, "Centimeters"^(-1)], 
+      0.9029383132602179}, {Quantity[764.09, "Nanometers"], 
+      Quantity[33.001, "Meters"^2/"Moles"], Quantity[0.7674651162790698, 
+       "Centimeters"^(-1)], 0.948866686032349}, 
+     {Quantity[782.06, "Nanometers"], Quantity[29.814999999999998, 
+       "Meters"^2/"Moles"], Quantity[0.6933720930232558, "Centimeters"^(-1)], 
+      1.}}
+ 
+eumelaninVis["symbol"] := {"\[Lambda]", TraditionalForm[\[CurlyEpsilon]], 
+     TraditionalForm[Subscript[\[Micro], a]], "R"}
+ 
+eumelaninVis["units"] := {"nm", TraditionalForm["l"/("cm"*"mol")]}
+ 
+eumelaninVis["value"] := {"Wavelength", "Molar absorptivity", 
+     "Absorption coefficient", "Remittance"}
+ 
+Attributes[Subscript] = {NHoldRest}
+eumelaninVis["base"] := 10
+ 
+eumelaninVis["chemical"] := "Eumelanin"
+ 
+eumelaninVis["data"] := {{209.99, 7458.2}, {212.21, 7238.7}, 
+     {218.91, 6956.6}, {223.36, 6611.8}, {230.06, 6298.2}, {239., 5953.2}, 
+     {245.7, 5608.2}, {261.38, 5231.8}, {279.3, 4855.3}, {294.99, 4510.2}, 
+     {312.92, 4196.4}, {324.13, 4008.}, {342.06, 3662.9}, {357.75, 3317.7}, 
+     {382.42, 2941.1}, {407.07, 2470.3}, {431.74, 2125.}, {458.67, 1810.8}, 
+     {483.36, 1590.8}, {523.76, 1245.1}, {550.7, 1024.9}, {588.87, 804.56}, 
+     {615.82, 709.86}, {642.77, 583.84}, {680.96, 488.79}, {712.41, 394.09}, 
+     {734.88, 362.05}, {764.09, 330.01}, {782.06, 298.15}, {804.53, 266.29}, 
+     {820.26, 265.93}}
+ 
+eumelaninVis["Func"] = InterpolatingFunction[{{382.42, 782.06}}, 
+     {4, 7, 0, {15}, {4}, 0, 0, 0, 0, Automatic}, {{382.42, 407.07, 431.74, 
+      458.67, 483.36, 523.76, 550.7, 588.87, 615.82, 642.77, 680.96, 712.41, 
+      734.88, 764.09, 782.06}}, {Developer`PackedArrayForm, {0, 1, 2, 3, 4, 
+      5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, {0.19595538002062338, 
+      0.22809459978366392, 0.25933967304462097, 0.2963485574046322, 
+      0.32932884089812825, 0.39943743272389715, 0.46251841687871204, 
+      0.5501155253154162, 0.5993044713417035, 0.6810515210219049, 
+      0.7602347254199199, 0.861615881031642, 0.9029383132602179, 
+      0.948866686032349, 1.}}, {Automatic}]
+ 
+eumelaninVis["molarMass"] := 178
+ 
+eumelaninVis["quantity"] := {Quantity[1, "Nanometers"], 
+     Quantity[1, "Liters"/("Centimeters"*"Moles")], "Centimeters"^(-1), 1}
+ 
+eumelaninVis["quantityData"] = {{Quantity[382.42, "Nanometers"], 
+      Quantity[294.11, "Meters"^2/"Moles"], Quantity[6.839767441860465, 
+       "Centimeters"^(-1)], 0.19595538002062338}, 
+     {Quantity[407.07, "Nanometers"], Quantity[247.03000000000003, 
+       "Meters"^2/"Moles"], Quantity[5.744883720930233, "Centimeters"^(-1)], 
+      0.22809459978366392}, {Quantity[431.74, "Nanometers"], 
+      Quantity[212.5, "Meters"^2/"Moles"], Quantity[4.941860465116279, 
+       "Centimeters"^(-1)], 0.25933967304462097}, 
+     {Quantity[458.67, "Nanometers"], Quantity[181.08, "Meters"^2/"Moles"], 
+      Quantity[4.211162790697674, "Centimeters"^(-1)], 0.2963485574046322}, 
+     {Quantity[483.36, "Nanometers"], Quantity[159.08, "Meters"^2/"Moles"], 
+      Quantity[3.69953488372093, "Centimeters"^(-1)], 0.32932884089812825}, 
+     {Quantity[523.76, "Nanometers"], Quantity[124.50999999999999, 
+       "Meters"^2/"Moles"], Quantity[2.8955813953488367, "Centimeters"^(-1)], 
+      0.39943743272389715}, {Quantity[550.7, "Nanometers"], 
+      Quantity[102.49000000000001, "Meters"^2/"Moles"], 
+      Quantity[2.3834883720930233, "Centimeters"^(-1)], 0.46251841687871204}, 
+     {Quantity[588.87, "Nanometers"], Quantity[80.456, "Meters"^2/"Moles"], 
+      Quantity[1.8710697674418604, "Centimeters"^(-1)], 0.5501155253154162}, 
+     {Quantity[615.82, "Nanometers"], Quantity[70.986, "Meters"^2/"Moles"], 
+      Quantity[1.6508372093023256, "Centimeters"^(-1)], 0.5993044713417035}, 
+     {Quantity[642.77, "Nanometers"], Quantity[58.38400000000001, 
+       "Meters"^2/"Moles"], Quantity[1.3577674418604653, "Centimeters"^(-1)], 
+      0.6810515210219049}, {Quantity[680.96, "Nanometers"], 
+      Quantity[48.879000000000005, "Meters"^2/"Moles"], 
+      Quantity[1.1367209302325583, "Centimeters"^(-1)], 0.7602347254199199}, 
+     {Quantity[712.41, "Nanometers"], Quantity[39.409, "Meters"^2/"Moles"], 
+      Quantity[0.9164883720930231, "Centimeters"^(-1)], 0.861615881031642}, 
+     {Quantity[734.88, "Nanometers"], Quantity[36.205000000000005, 
+       "Meters"^2/"Moles"], Quantity[0.8419767441860465, "Centimeters"^(-1)], 
+      0.9029383132602179}, {Quantity[764.09, "Nanometers"], 
+      Quantity[33.001, "Meters"^2/"Moles"], Quantity[0.7674651162790698, 
+       "Centimeters"^(-1)], 0.948866686032349}, 
+     {Quantity[782.06, "Nanometers"], Quantity[29.814999999999998, 
+       "Meters"^2/"Moles"], Quantity[0.6933720930232558, "Centimeters"^(-1)], 
+      1.}}
+ 
+eumelaninVis["symbol"] := {"\[Lambda]", TraditionalForm[\[CurlyEpsilon]], 
+     TraditionalForm[Subscript[\[Micro], a]], "R"}
+ 
+eumelaninVis["units"] := {"nm", TraditionalForm["l"/("cm"*"mol")]}
+ 
+eumelaninVis["value"] := {"Wavelength", "Molar absorptivity", 
+     "Absorption coefficient", "Remittance"}
+ 
+Attributes[Subscript] = {NHoldRest}
