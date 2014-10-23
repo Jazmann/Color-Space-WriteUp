@@ -24,13 +24,20 @@ rR[\[Theta]_]:= ({
 irR[\[Theta]_]:={{1/3, (-(2/3))*Sin[Pi/6 + \[Theta]], (-(2/3))*Cos[Pi/6 + \[Theta]]}, {1/3, (2*Cos[\[Theta]])/3, -((2*Sin[\[Theta]])/3)}, {1/3, (-(2/3))*Sin[Pi/6 - \[Theta]], (2/3)*Cos[Pi/6 - \[Theta]]}}
 
 
+Clear[scale];
 scale["YAB","rR"] = {1/Sqrt[3],Sqrt[2/3],Sqrt[2/3]};
 scale["nYAB","YAB"][\[Theta]_] := {1/Sqrt[3],1/2 Sqrt[3/2] Sec[\[Pi]/6 - Mod[\[Theta]-\[Pi]/6,\[Pi]/3]],1/2 Sqrt[3/2] Sec[\[Pi]/6 - Mod[\[Theta],\[Pi]/3]]}
 scale["nYAB","rR"][\[Theta]_]:= {1/3,1/2 Sec[\[Pi]/6-Mod[-(\[Pi]/6)+\[Theta],\[Pi]/3]],1/2 Sec[\[Pi]/6-Mod[\[Theta],\[Pi]/3]]}
-scale["rR","fR"][\[Theta]_,rRange_:1]:= Piecewise[{{{1, -((2*Sin[Pi/6 + \[Theta]])/rRange), -((2*Cos[Pi/6 + \[Theta]])/rRange)}, Inequality[0, LessEqual, Mod[\[Theta],Pi/2], Less, Pi/6 ]}, 
-   {{1, (2*Cos[\[Theta]])/rRange, -((2*Sin[\[Theta]])/rRange)}, Inequality[Pi/6 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/3 ]}, 
-   {{1, -((2*Sin[Pi/6 - \[Theta]])/rRange), (2*Cos[Pi/6 - \[Theta]])/rRange}, Inequality[Pi/3 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/2 ]}}, Null]
-scale["rR","qR"][\[Theta]_,n_:8]:=Piecewise[{{{1,-(2^(2-n)*Sin[Pi/6+\[Theta]]),-(2^(2-n)*Cos[Pi/6+\[Theta]])},Inequality[0,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/6]},{{1,2^(2-n)*Cos[\[Theta]],-(2^(2-n)*Sin[\[Theta]])},Inequality[Pi/6,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/3]},{{1,-(2^(2-n)*Sin[Pi/6-\[Theta]]),2^(2-n)*Cos[Pi/6-\[Theta]]},Inequality[Pi/3,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/2]}},Null]
+scale["rR","fR"][\[Theta]_]:= Piecewise[{{{1, -((Sin[Pi/6 + \[Theta]])), -((Cos[Pi/6 + \[Theta]]))}, Inequality[0, LessEqual, Mod[\[Theta],Pi/2], Less, Pi/6 ]}, 
+   {{1, (Cos[\[Theta]]), -((Sin[\[Theta]]))}, Inequality[Pi/6 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/3 ]}, 
+   {{1, -((Sin[Pi/6 - \[Theta]])), (Cos[Pi/6 - \[Theta]])}, Inequality[Pi/3 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/2 ]}}, Null]
+scale["rR", "qR"][\[Theta]_, n_: 8] := Piecewise[{{{1, -(2^(2 - n)*Sin[Pi/6 + \[Theta]]), -(2^(2 - n)*Cos[Pi/6 + \[Theta]])}, Inequality[0, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/6]},
+   {{1, 2^(2 - n)*Cos[\[Theta]], -(2^(2 - n)*Sin[\[Theta]])}, Inequality[Pi/6, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/3]},
+   {{1, -(2^(2 - n)*Sin[Pi/6 - \[Theta]]), 2^(2 - n)*Cos[Pi/6 - \[Theta]]}, Inequality[Pi/3, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/2]}}, Null]
+scale["qR","rR"][\[Theta]_,n_:8]:=Piecewise[{{{1,-(2^(-2+n)*Csc[Pi/6+\[Theta]]),-(2^(-2+n)*Sec[Pi/6+\[Theta]])},Inequality[0,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/6]},
+{{1,2^(-2+n)*Sec[\[Theta]],-(2^(-2+n)*Csc[\[Theta]])},Inequality[Pi/6,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/3]},
+{{1,-(2^(-2+n)*Csc[Pi/6-\[Theta]]),2^(-2+n)*Sec[Pi/6-\[Theta]]},Inequality[Pi/3,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/2]}},Null]
+scale["qR","fR"][\[Theta]_,n_:8]:={1,2^(n-1),2^(n-1)};
 
 
 (* ::Text:: *)
@@ -41,11 +48,25 @@ scale["rR","qR"][\[Theta]_,n_:8]:=Piecewise[{{{1,-(2^(2-n)*Sin[Pi/6+\[Theta]]),-
 (*qRScale[\[Theta]_, n_: 8] := scale["rR", "qR"][\[Theta], n]*)
 
 
-fR[\[Theta]_,rRange_:1]:=Piecewise[{{{{1, 1, 1}, rRange {1/2, -(Cos[\[Theta]]*Csc[Pi/6 + \[Theta]])/2, (Csc[Pi/6 + \[Theta]]*Sin[Pi/6 - \[Theta]])/2}, 
-    rRange {1/2, (Sec[Pi/6 + \[Theta]]*Sin[\[Theta]])/2, -(Cos[Pi/6 - \[Theta]]*Sec[Pi/6 + \[Theta]])/2}}, Inequality[0, LessEqual, Mod[\[Theta],Pi/2], Less, Pi/6 ]}, 
-  {{{1, 1, 1}, rRange {-(Sec[\[Theta]]*Sin[Pi/6 + \[Theta]])/2, 1/2, -(Sec[\[Theta]]*Sin[Pi/6 - \[Theta]])/2}, rRange {(Cos[Pi/6 + \[Theta]]*Csc[\[Theta]])/2, 1/2, -(Cos[Pi/6 - \[Theta]]*Csc[\[Theta]])/2}}, 
-   Inequality[Pi/6 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/3 ]}, {{{1, 1, 1}, rRange {(Csc[Pi/6 - \[Theta]]*Sin[Pi/6 + \[Theta]])/2, -(Cos[\[Theta]]*Csc[Pi/6 - \[Theta]])/2, 1/2}, 
-    rRange {-(Cos[Pi/6 + \[Theta]]*Sec[Pi/6 - \[Theta]])/2, -(Sec[Pi/6 - \[Theta]]*Sin[\[Theta]])/2, 1/2}}, Inequality[Pi/3 , LessEqual, Mod[\[Theta],Pi/2], Less, Pi/2 ]}}, Null]
+Clear[fR];
+fR[\[Theta]_]:=Piecewise[{{{{1, 1, 1}, {1, -(Cos[\[Theta]]*Csc[Pi/6 + \[Theta]]), Csc[Pi/6 + \[Theta]]*Sin[Pi/6 - \[Theta]]}, 
+    {1, Sec[Pi/6 + \[Theta]]*Sin[\[Theta]], -(Cos[Pi/6 - \[Theta]]*Sec[Pi/6 + \[Theta]])}}, Inequality[0, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/6]}, 
+  {{{1, 1, 1}, {-(Sec[\[Theta]]*Sin[Pi/6 + \[Theta]]), 1, -(Sec[\[Theta]]*Sin[Pi/6 - \[Theta]])}, {Cos[Pi/6 + \[Theta]]*Csc[\[Theta]], 1, 
+     -(Cos[Pi/6 - \[Theta]]*Csc[\[Theta]])}}, Inequality[Pi/6, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/3]}, 
+  {{{1, 1, 1}, {Csc[Pi/6 - \[Theta]]*Sin[Pi/6 + \[Theta]], -(Cos[\[Theta]]*Csc[Pi/6 - \[Theta]]), 1}, {-(Cos[Pi/6 + \[Theta]]*Sec[Pi/6 - \[Theta]]), 
+     -(Sec[Pi/6 - \[Theta]]*Sin[\[Theta]]), 1}}, Inequality[Pi/3, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/2]}}, Null];
+
+
+(* ::Text:: *)
+(*scale["rR", "fR"][\[Theta]_, rRange_: 1] := Piecewise[{{{1, -((2*Sin[Pi/6 + \[Theta]])/rRange), -((2*Cos[Pi/6 + \[Theta]])/rRange)}, Inequality[0, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/6 ]}, *)
+(*      {{1, (2*Cos[\[Theta]])/rRange, -((2*Sin[\[Theta]])/rRange)}, Inequality[Pi/6 , LessEqual, Mod[\[Theta], Pi/2], Less, Pi/3 ]}, *)
+(*      {{1, -((2*Sin[Pi/6 - \[Theta]])/rRange), (2*Cos[Pi/6 - \[Theta]])/rRange}, Inequality[Pi/3 , LessEqual, Mod[\[Theta], Pi/2], Less, Pi/2 ]}}, Null]*)
+(**)
+(*fR[\[Theta]_, rRange_: 1] := Piecewise[{{{{1, 1, 1}, rRange {1/2, -(Cos[\[Theta]]*Csc[Pi/6 + \[Theta]])/2, (Csc[Pi/6 + \[Theta]]*Sin[Pi/6 - \[Theta]])/2}, *)
+(*              rRange {1/2, (Sec[Pi/6 + \[Theta]]*Sin[\[Theta]])/2, -(Cos[Pi/6 - \[Theta]]*Sec[Pi/6 + \[Theta]])/2}}, Inequality[0, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/6 ]}, *)
+(*        {{{1, 1, 1}, rRange {-(Sec[\[Theta]]*Sin[Pi/6 + \[Theta]])/2, 1/2, -(Sec[\[Theta]]*Sin[Pi/6 - \[Theta]])/2}, rRange {(Cos[Pi/6 + \[Theta]]*Csc[\[Theta]])/2, 1/2, -(Cos[Pi/6 - \[Theta]]*Csc[\[Theta]])/2}}, *)
+(*           Inequality[Pi/6 , LessEqual, Mod[\[Theta], Pi/2], Less, Pi/3 ]}, {{{1, 1, 1}, rRange {(Csc[Pi/6 - \[Theta]]*Sin[Pi/6 + \[Theta]])/2, -(Cos[\[Theta]]*Csc[Pi/6 - \[Theta]])/2, 1/2}, *)
+(*              rRange {-(Cos[Pi/6 + \[Theta]]*Sec[Pi/6 - \[Theta]])/2, -(Sec[Pi/6 - \[Theta]]*Sin[\[Theta]])/2, 1/2}}, Inequality[Pi/3 , LessEqual, Mod[\[Theta], Pi/2], Less, Pi/2 ]}}, Null]*)
 
 
 qR[\[Theta]_,n_:8]:=Piecewise[{{{{1,1,1},{IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Cos[\[Theta]]*Csc[Pi/6+\[Theta]]],IntegerPart[2^(-2+n)*Csc[Pi/6+\[Theta]]*Sin[Pi/6-\[Theta]]]},{IntegerPart[2^(-2+n)],IntegerPart[2^(-2+n)*Sec[Pi/6+\[Theta]]*Sin[\[Theta]]],-IntegerPart[2^(-2+n)*Cos[Pi/6-\[Theta]]*Sec[Pi/6+\[Theta]]]}},Inequality[0,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/6]},{{{1,1,1},{-IntegerPart[2^(-2+n)*Sec[\[Theta]]*Sin[Pi/6+\[Theta]]],IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Sec[\[Theta]]*Sin[Pi/6-\[Theta]]]},{IntegerPart[2^(-2+n)*Cos[Pi/6+\[Theta]]*Csc[\[Theta]]],IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Cos[Pi/6-\[Theta]]*Csc[\[Theta]]]}},Inequality[Pi/6,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/3]},{{{1,1,1},{IntegerPart[2^(-2+n)*Csc[Pi/6-\[Theta]]*Sin[Pi/6+\[Theta]]],-IntegerPart[2^(-2+n)*Cos[\[Theta]]*Csc[Pi/6-\[Theta]]],IntegerPart[2^(-2+n)]},{-IntegerPart[2^(-2+n)*Cos[Pi/6+\[Theta]]*Sec[Pi/6-\[Theta]]],-IntegerPart[2^(-2+n)*Sec[Pi/6-\[Theta]]*Sin[\[Theta]]],IntegerPart[2^(-2+n)]}},Inequality[Pi/3,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/2]}},Null]
@@ -757,10 +778,16 @@ errorPlot[n,3,{range[[1]],range[[2]]},errFun, IntegerPart],
 errorPlot[n,3,{range[[1]],range[[2]]},errFun, Round]}}]]
 
 
-thetaOne[n_]:=Block[{fun},fun[y_]:=ArcTan[(Sqrt[3] (1+y))/Sqrt[1+y+y^2],(1-y)/Sqrt[1+y+y^2]];Table[fun[i/(2^(n-1))],{i,2^(n-1),0,-1}]]
+(* ::Text:: *)
+(*thetaOne[n_] := Block[{fun}, fun[y_] := ArcTan[(Sqrt[3] (1 + y))/Sqrt[1 + y + y^2], (1 - y)/Sqrt[1 + y + y^2]]; Table[fun[i/(2^(n - 1))], {i, 2^(n - 1), 0, -1}]]*)
 
 
-thetaTwo[n_]:=Block[{funTwo},funTwo[y_]:=ArcTan[(2+y)/Sqrt[1+y+y^2],(Sqrt[3] y)/Sqrt[1+y+y^2]];Table[funTwo[i/(2^(n-1))],{i,0,2^(n-1)}]]
+(* ::Text:: *)
+(*thetaTwo[n_] := Block[{funTwo}, funTwo[y_] := ArcTan[(2 + y)/Sqrt[1 + y + y^2], (Sqrt[3] y)/Sqrt[1 + y + y^2]]; Table[funTwo[i/(2^(n - 1))], {i, 0, 2^(n - 1)}]]*)
+
+
+thetaOne[n_]:=Block[{fun},fun[y_]:=ArcTan[(Sqrt[3] (1+y))/Sqrt[1+y+y^2],(1-y)/Sqrt[1+y+y^2]];Table[fun[i/(2^(n))],{i,2^(n),0,-1}]]
+thetaTwo[n_]:=Block[{funTwo},funTwo[y_]:=ArcTan[(2+y)/Sqrt[1+y+y^2],(Sqrt[3] y)/Sqrt[1+y+y^2]];Table[funTwo[i/(2^(n))],{i,0,2^(n)}]]
 
 
 setupThetaRanges[n_]:=Module[{},
