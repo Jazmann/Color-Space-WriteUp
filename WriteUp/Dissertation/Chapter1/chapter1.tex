@@ -46,11 +46,15 @@ This new bespoke color space transformation will fulfil the following design cri
 
 \section{Physiology Study}\label{sec:PhysiologyStudy}
 
-\subsection{Chromophores in the Skin}
+Now that we have chosen our chromatic space, we will look at the necessary biological considerations. Specifically, the chromophores in human skin and how they affect how skin appears to different detection devices. In brief, chromophores are chemicals in the skin which interact with light at visible wavelengths, i.e. chromophores are the chemicals which are responsible for the color of skin (\cite{Anderson1981}).
 
-Now that we have chosen our chromatic space, we will look at the necessary biological considerations. Specifically, the chromophores in human skin and how they affect how skin appears to different detection devices. In brief, chromophores are chemicals in the skin which interact with light at visible wavelengths, i.e. chromophores are the chemicals which are responsible for the color of skin (\cite{Anderson1981}). In the case of human skin, the chemicals responsible for both scattering and absorption are different; the absorption chemicals affect the color, while the scattering chemicals determine the average path length of the light through the skin, thereby determining the amount of light which is absorbed. The longer the path length, the more light is absorbed for any given concentration of a chromophore. 
+The aim of this physiology study is to determine, theoretically, how various sensors perceive human skin. Empirically, we have the absorption spectra for various key chromophores, and we have a response spectra for the sensors. We wish to combine this empirical data to predict the output from the sensor. 
 
-While there are a variety of chromophores, we will be focusing on the four which most significantly effect skin color: oxy-hemoglobin, deoxy-hemoglobin, eumelanin and pheomelanin. The absorption spectra for these chromophores are known quantities, which we can use to find the absorbance of skin, "absorbance" in this case being the ratio of re-emitted light to absorbed light. The absorbance can be found by applying Beer-Lambert Law (\cite{Clark2007}):
+\subsection{Chromophores in Human Skin}
+
+In the case of human skin, the chemicals responsible for both scattering and absorption are different; the absorption chemicals affect the hue, while the scattering chemicals determine the average path length of the light through the skin, thereby determining the saturation --- the amount of light which is absorbed. The longer the path length, the more light is absorbed for any given concentration of a chromophore. 
+
+While there are a variety of chromophores, we will be focusing on the four which most significantly affect skin color: oxy-hemoglobin, deoxy-hemoglobin, eumelanin and pheomelanin. The absorption spectra for these chromophores are known quantities, which we can use to find the absorbance of skin, "absorbance" in this case being the ratio of remitted light to absorbed light. The absorbance can be found by applying Beer-Lambert Law (\cite{Clark2007}):
 
 \begin{equation}\label{eq:BeerLambert}
 A = \log \frac{I_{0}}{I} = \epsilon l  c 
@@ -58,13 +62,15 @@ A = \log \frac{I_{0}}{I} = \epsilon l  c
 
 Where $A$ is the absorbance, $I_{0}$ is the intensity of the light passing through the reference cell, $I$ is the intensity of the light passing through the sample cell, $l$ is the path length of light through the skin, and $c$ is the concentration of the chromophore. $\epsilon$ is variously called "molar absorptivity," the "molar extinction coefficient," and the "molar absorption coefficient;" all equivalent terms for how strongly a chemical species absorbs light at a given wavelength.
 
-In order to apply the molar absorptivity, we need the average path length of skin, the average concentration of the chromophore, and their Beer-Lambert Law relation --- in this case, the product of them all. Unfortunately, the units are not consistent (\cite{Clark2007}), but they can each be converted into the SI units, $m^{2}/mo$. The data on the chromophores were obtained from the OMLC website, which contains information on the absorption spectra for many different chemicals, including the aforementioned four skin chromophores (\cite{OMLC2001}). 
+In order to apply the molar absorptivity, we need the average path length of skin, the average concentration of the chromophore, and their Beer-Lambert Law relation --- in this case, the product of them all. Unfortunately, the units are not consistent (\cite{Clark2007}), but they can each be converted into the SI units, $m^{2}/mol$. The data on the chromophores were obtained from the OMLC website, which contains information on the absorption spectra for many different chemicals, including the aforementioned four skin chromophores (\cite{OMLC2001}). 
 
-So, our first task is to convert everything into consistent SI units, and then find the absorbance of the skin using the Beer-Lambert Law relation.
+So, our first task is to convert everything into consistent SI units, and then find the absorbance of the skin using the Beer-Lambert Law relation. As the average path length is a property of the skin, it is useful to calculate an absorption coefficient for each chromophore; this differs from the molar absorptivity only in that it contains the concentration for the chromophore. We're interested in average values, and the actual concentrations vary markedly between individuals. So we chose a molar concentration equivalent to that of hemoglobin in blood for each of the chromophores, and used their individual molar masses.
+
+The absorption coefficient $\mu = \frac{\epsilon \rho}{M_{chem}}$, where $\rho$ is the mass concentration and $M_{chem}$ is the molar mass of the chromophore.
 
 We can convert the molar absorptivity into an absorption spectrum for a chromophore if we know the average path length in the skin. So, the scattering properties of the skin will determine the path length. Since we are not trying to simulate any skin in particular, we can simply use average values taken from the OMLC site (\cite{OMLC2001}). At this point, we aren't so much interested in the saturation --- the concentration and path length both affect the saturation of the color rather than the hue --- as we are interested in the relative position around the luminosity axis.
 
-So now we have an absorption spectrum, but the color that we perceive is the light which is re-emitted, and that is what we are really interested in: the re-emitted light, or $R$. While the optics is a complicated study, there is a relatively simple theory called Kubelka-Munk Theory, which allows us to turn an absorption spectra into a re-emission spectra:
+So now we have an absorption spectrum, but the color that we perceive is the light which is remitted, and that is what we are really interested in: the remitted light, or $R$. While the optics is a complicated study, there is a relatively simple theory called Kubelka-Munk Theory, which allows us to turn an absorption spectra into a remission spectra:
 
 \begin{align}\label{eq:KubelkaMunk}
 r &=\frac{A}{S} \\
@@ -72,14 +78,14 @@ r & =\frac{(R-1)^2-T^2}{2 R} \\
 S & =\frac{\tanh ^{-1}\left(\frac{\sqrt{r (r+2)} R}{1-(r+1) R}\right)}{d \sqrt{r (r+2)}}
 \end{align}
 
-Where $A$ is the absorption, $S$ is the scattering of light, $R$ is the re-emission, and $T$ is transmittance. As the transmittance $T$ of human skin is approximately zero at visible wavelengths, $\frac{A}{S}$ can be expressed as:
+Where $A$ is the absorption, $S$ is the scattering of light, $R$ is the remission, and $T$ is transmittance. As the transmittance $T$ of human skin is approximately zero at visible wavelengths, $\frac{A}{S}$ can be expressed as:
 
 \begin{align}\label{eq:KubelkaMunk2}
 \frac{A}{S} &=\frac{(R-1)^2}{2 R} \quad \therefore\\
 R &= r+1 \pm \sqrt{r^2+2 r}
 \end{align}
 
-As $r$ is $\frac{A}{S}$, the re-emission $R$ must go down with increasing absorption $A$:
+As $r$ is $\frac{A}{S}$, the remission $R$ must go down with increasing absorption $A$:
 
 \begin{equation}\label{eq:KubelkaMunk3}
 R = r+1 - \sqrt{r^2+2 r}
@@ -88,8 +94,10 @@ R = r+1 - \sqrt{r^2+2 r}
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ChemicalSpectralProperties.eps}
-    \caption{From left to right, the molar absorptivity, the absorption coefficient, and re-emittance of the four key chromophores. We assume a concentration of 150 $g/L$, which is typical of haemoglobin concentration in blood, and a unit path length. The remittance was found using Kubelka-Munk Theory, outlined in section \ref{sec:SkinColorSimulation}. }  \label{fig:ChemicalSpectralProperties}
+    \caption{From left to right, the molar absorptivity, the absorption coefficient, and remittance of the four key chromophores. We assume a concentration of 150 $g/L$, which is typical of haemoglobin concentration in blood. The remittance was found using Kubelka-Munk Theory, outlined in section \ref{sec:SkinColorSimulation}. }  \label{fig:ChemicalSpectralProperties}
 \end{figure}
+
+The remittance spectra for the four key chromophores is shown in Figure \ref{fig:ChemicalSpectralProperties}. 
 
 \subsection{Response Spectra}
 
@@ -121,17 +129,17 @@ However, because the methods chosen here are straightforward amplifications of e
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ResponseSpectraStripesNorm.eps}
-    \caption{The light spectrum as viewed using various CCDs after normalisation with a physical spectrum for comparison.}  \label{fig:ResponseSpectraStripesNorm}
+    \caption{The light spectrum as viewed using various CCDs after normalization with a physical spectrum for comparison.}  \label{fig:ResponseSpectraStripesNorm}
 \end{figure}
 
-Although we consider these sensors to be capturing information throughout the entire visible spectrum, what they are actually capturing varies quite significantly between devices, as shown in Figure \ref{fig:ResponseSpectraStripes}. However, as these devices use the aforementioned color rebalancing algorithms to alter the image to look more sensible to human eyes, these differences aren't so apparent to us.
+Although we consider these sensors to be capturing information throughout the entire visible spectrum, what they are actually capturing varies quite significantly between devices, as shown in Figure \ref{fig:ResponseSpectraStripes}. Even a very simple color rebalancing can restore some normality to the spectrum, as shown in Figure \ref{fig:ResponseSpectraStripesNorm}. However, as these devices use the aforementioned color rebalancing algorithms to alter the image to look more sensible to human eyes, these differences aren't so apparent to us.
 
-In addition to the color rebalancing, which corrects the behavior of the CCD devices, as is found in later sections, some devices, like the iPhone, also apply a dynamic color rebalancing which attempts to even out the colors based on the image captured. This feature is intended to correct for strange lighting conditions and other such problems which could affect the image. This will be addressed in detail in \ref{sec:Chap2}.
+In addition to the color rebalancing, which corrects the behavior of the CCD devices, as is found in later sections, some devices, like the iPhone, also apply a dynamic color rebalancing which attempts to even out the colors based on the image captured. This feature is intended to correct for strange lighting conditions and other such problems which could affect the image. This will be addressed in detail in Chapter \ref{sec:Chap2}.
 
 
 \subsection{Skin Color Simulation} \label{sec:SkinColorSimulation}
 
-So, we have the morlar absorptivity for the four key chromophores in the skin, we have the response spectra for a variety of devices, and a response spectra which serves as a target color output for all the devices after the color correction has been applied. Additionally, we are using the CIE 1931 RGB color space for the absorption spectra, which is closer to how our eyes perceive color than any other color space (\cite{RIDI2013}). This means that, in principle, we can get appropriate RGB values for the four key chromophores at the hardware layer using the device response spectra, or at the AP layer using the CIE 1931 RGB color space spectrum, assuming the device's color space correction does its job. The question now is how to actually simulate skin color.
+So, we have the molar absorptivity for the four key chromophores in the skin, we have the response spectra for a variety of devices, and a response spectra which serves as a target color output for all the devices after the color correction has been applied. Additionally, we are using the CIE 1931 RGB color space for the absorption spectra, which is closer to how our eyes perceive color than any other color space (\cite{RIDI2013}). This means that, in principle, we can get appropriate RGB values for the four key chromophores at the hardware layer using the device response spectra, or at the AP layer using the CIE 1931 RGB color space spectrum, assuming the device's color space correction does its job. The question now is how to actually simulate skin color.
 
 Given a remittance spectrum $R(\lambda)$ and a response function $S_{rgb}(\lambda)$ for the sensor the RGB output values can be calculated by finding the convolution 
 
@@ -152,13 +160,9 @@ As for finding the RGB values, the bright color is the response of the CCD. By i
 
 
 
-Thus, we can now find the channel output of any device for which we have a response function.
+Thus, we can now find the channel output of any device for which we have a response function. (Figure \ref{fig:CameraComparison})
 
-At this point, we're going from the physical space to a virtual space; we have a physical quantity, the energy of light, and we are turning it into three numbers. The output depends on the measuring device. In the case of the human eye, it has a certain response based on the chemistry of the cones, and our retina produces the signal. However, there are only three different types of cones which produce this kind of RGB signal. CCDs devices are based on that, and they produce RGB signals, but in order to find the absorption, we must take the wavelength --- generally measured in nanometers --- and a response function, which is dimensionless, and get the output for each of the three RGB channels. It should be noted that there are a variety of different response spectra --- human eyes have a small secondary bump in the red channel, for example, which will be addressed in the following chapter --- so we have an appropriate response function for each of the three RGB color channels depending on what sensor we're using.
-
-We also have the absorption spectra; we have an average spectrum for skin, and the spectra for each of our four key chromophores. It should be noted that there is a third form of melanin --- neuromelanin --- which we could not find the absorption spectra for, but the spectra for the other four chromophores give us enough information to accurately digitize and simulate human skin. There are also the blood constants to consider: Typically, in human blood, Hb (hemoglobin) concentration is 150 grams per liter. The molar mass of Hb is 64500 $g/mo$. Additionally, absorbance for typical skin values resulting from Hemoglobin is $\frac{\epsilon}{430}$ reciprocal centimeters, where $\epsilon$ is, again, the molar absorptivity.
-
-In order to guarantee the speed and efficiency of the algorithm, we must obtain the raw data from the CCD and process it, but the raw data for virtually all devices appears strange to the human eye, with much variability between devices. As such, they're all rebalanced to match the more sensible CIE 1931 RGB color space specification.
+At the time of development, access to the camera on the iPhone was limited to the AP layer, and so we work with the CIE 1931 RGB color space. The relative position of the chromophores in the chromatic space, i.e. a color space with a luminosity axis, is shown in Figure \ref{fig:ChromophoresYAB}.
 
 
 
@@ -181,11 +185,11 @@ In order to guarantee the speed and efficiency of the algorithm, we must obtain 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.99\textwidth]{Chapter1/Figs/CameraComparison.jpg}
-    \caption{ }  \label{fig:CameraComparison}
+    \caption{Chromophore colors as perceived by a range of devices.}  \label{fig:CameraComparison}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ChromophoresYAB.jpg}
-    \caption{ChromophoresYAB }  \label{fig:ChromophoresYAB}
+    \caption{The four main chromophores as perceived by CIE 1931 RGB color space after rotation into the LXY(0) color space.}  \label{fig:ChromophoresYAB}
 \end{figure}
