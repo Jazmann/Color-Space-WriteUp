@@ -169,8 +169,12 @@ RGBCubeCorners = Transpose[cubeCorners[{{0,1},{0,1},{0,1}}]];YABCubeCorners =Tra
 YABinRGBCubeCorners =Transpose[cubeCorners[ iYAB[\[Theta]]. cubeCorners[ YABAxisRanges[\[Theta]]]]];
 faces = {{1,2,3,4},{5,6,7,8},{1,2,7,6},{2,3,8,7},{3,4,5,8},{1,4,5,6}};
 ranges = YABAxisRanges[\[Theta]];
-{
-Polygon[YABCubeCorners[[faces[[1]]]],VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[1]]]]]]],Polygon[YABCubeCorners[[faces[[2]]]],VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[2]]]]]]],Polygon[YABCubeCorners[[faces[[3]]]],VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[3]]]]]]],Polygon[YABCubeCorners[[faces[[4]]]],VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[4]]]]]]],Polygon[YABCubeCorners[[faces[[5]]]],VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[5]]]]]]],Polygon[YABCubeCorners[[faces[[6]]]],VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[6]]]]]]]}
+{Polygon[YABCubeCorners[[faces[[1]]]], VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[1]]]]]]], 
+ Polygon[YABCubeCorners[[faces[[2]]]], VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[2]]]]]]], 
+ Polygon[YABCubeCorners[[faces[[3]]]], VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[3]]]]]]], 
+ Polygon[YABCubeCorners[[faces[[4]]]], VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[4]]]]]]],
+ Polygon[YABCubeCorners[[faces[[5]]]], VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[5]]]]]]],
+ Polygon[YABCubeCorners[[faces[[6]]]], VertexColors->MapThread[YABColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[6]]]]]]]}
 ]
 
 
@@ -180,7 +184,12 @@ RGBCubeCorners = Transpose[cubeCorners[{{0,1},{0,1},{0,1}}]];YABCubeCorners =Tra
 YABinRGBCubeCorners =Transpose[cubeCorners[ iYAB[\[Theta]]. cubeCorners[ YABAxisRanges[\[Theta]]]]];
 faces = {{1,2,3,4},{5,6,7,8},{1,2,7,6},{2,3,8,7},{3,4,5,8},{1,4,5,6}};
 ranges = YABAxisRanges[\[Theta]];
-{Polygon[RGBinYABcorners[[faces[[1]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[1]]]]]]],Polygon[RGBinYABcorners[[faces[[2]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[2]]]]]]],Polygon[RGBinYABcorners[[faces[[3]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[3]]]]]]],Polygon[RGBinYABcorners[[faces[[4]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[4]]]]]]],Polygon[RGBinYABcorners[[faces[[5]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[5]]]]]]],Polygon[RGBinYABcorners[[faces[[6]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[6]]]]]]]}
+{Polygon[RGBinYABcorners[[faces[[1]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[1]]]]]]], 
+ Polygon[RGBinYABcorners[[faces[[2]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[2]]]]]]], 
+ Polygon[RGBinYABcorners[[faces[[3]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[3]]]]]]],
+ Polygon[RGBinYABcorners[[faces[[4]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[4]]]]]]],
+ Polygon[RGBinYABcorners[[faces[[5]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[5]]]]]]],
+ Polygon[RGBinYABcorners[[faces[[6]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[6]]]]]]]}
 ]
 
 
