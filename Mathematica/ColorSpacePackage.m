@@ -58,18 +58,23 @@ fR[\[Theta]_]:=Piecewise[{{{{1, 1, 1}, {1, -(Cos[\[Theta]]*Csc[Pi/6 + \[Theta]])
 
 
 (* ::Text:: *)
-(*scale["rR", "fR"][\[Theta]_, rRange_: 1] := Piecewise[{{{1, -((2*Sin[Pi/6 + \[Theta]])/rRange), -((2*Cos[Pi/6 + \[Theta]])/rRange)}, Inequality[0, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/6 ]}, *)
-(*      {{1, (2*Cos[\[Theta]])/rRange, -((2*Sin[\[Theta]])/rRange)}, Inequality[Pi/6 , LessEqual, Mod[\[Theta], Pi/2], Less, Pi/3 ]}, *)
-(*      {{1, -((2*Sin[Pi/6 - \[Theta]])/rRange), (2*Cos[Pi/6 - \[Theta]])/rRange}, Inequality[Pi/3 , LessEqual, Mod[\[Theta], Pi/2], Less, Pi/2 ]}}, Null]*)
 (**)
-(*fR[\[Theta]_, rRange_: 1] := Piecewise[{{{{1, 1, 1}, rRange {1/2, -(Cos[\[Theta]]*Csc[Pi/6 + \[Theta]])/2, (Csc[Pi/6 + \[Theta]]*Sin[Pi/6 - \[Theta]])/2}, *)
-(*              rRange {1/2, (Sec[Pi/6 + \[Theta]]*Sin[\[Theta]])/2, -(Cos[Pi/6 - \[Theta]]*Sec[Pi/6 + \[Theta]])/2}}, Inequality[0, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/6 ]}, *)
-(*        {{{1, 1, 1}, rRange {-(Sec[\[Theta]]*Sin[Pi/6 + \[Theta]])/2, 1/2, -(Sec[\[Theta]]*Sin[Pi/6 - \[Theta]])/2}, rRange {(Cos[Pi/6 + \[Theta]]*Csc[\[Theta]])/2, 1/2, -(Cos[Pi/6 - \[Theta]]*Csc[\[Theta]])/2}}, *)
-(*           Inequality[Pi/6 , LessEqual, Mod[\[Theta], Pi/2], Less, Pi/3 ]}, {{{1, 1, 1}, rRange {(Csc[Pi/6 - \[Theta]]*Sin[Pi/6 + \[Theta]])/2, -(Cos[\[Theta]]*Csc[Pi/6 - \[Theta]])/2, 1/2}, *)
-(*              rRange {-(Cos[Pi/6 + \[Theta]]*Sec[Pi/6 - \[Theta]])/2, -(Sec[Pi/6 - \[Theta]]*Sin[\[Theta]])/2, 1/2}}, Inequality[Pi/3 , LessEqual, Mod[\[Theta], Pi/2], Less, Pi/2 ]}}, Null]*)
 
 
-qR[\[Theta]_,n_:8]:=Piecewise[{{{{1,1,1},{IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Cos[\[Theta]]*Csc[Pi/6+\[Theta]]],IntegerPart[2^(-2+n)*Csc[Pi/6+\[Theta]]*Sin[Pi/6-\[Theta]]]},{IntegerPart[2^(-2+n)],IntegerPart[2^(-2+n)*Sec[Pi/6+\[Theta]]*Sin[\[Theta]]],-IntegerPart[2^(-2+n)*Cos[Pi/6-\[Theta]]*Sec[Pi/6+\[Theta]]]}},Inequality[0,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/6]},{{{1,1,1},{-IntegerPart[2^(-2+n)*Sec[\[Theta]]*Sin[Pi/6+\[Theta]]],IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Sec[\[Theta]]*Sin[Pi/6-\[Theta]]]},{IntegerPart[2^(-2+n)*Cos[Pi/6+\[Theta]]*Csc[\[Theta]]],IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Cos[Pi/6-\[Theta]]*Csc[\[Theta]]]}},Inequality[Pi/6,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/3]},{{{1,1,1},{IntegerPart[2^(-2+n)*Csc[Pi/6-\[Theta]]*Sin[Pi/6+\[Theta]]],-IntegerPart[2^(-2+n)*Cos[\[Theta]]*Csc[Pi/6-\[Theta]]],IntegerPart[2^(-2+n)]},{-IntegerPart[2^(-2+n)*Cos[Pi/6+\[Theta]]*Sec[Pi/6-\[Theta]]],-IntegerPart[2^(-2+n)*Sec[Pi/6-\[Theta]]*Sin[\[Theta]]],IntegerPart[2^(-2+n)]}},Inequality[Pi/3,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/2]}},Null]
+qR[\[Theta]_,n_:8]:=Piecewise[{
+{{{1,1,1},
+{IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Cos[\[Theta]]*Csc[Pi/6+\[Theta]]], IntegerPart[2^(-2+n)*Csc[Pi/6+\[Theta]]*Sin[Pi/6-\[Theta]]]},
+{IntegerPart[2^(-2+n)], IntegerPart[2^(-2+n)*Sec[Pi/6+\[Theta]]*Sin[\[Theta]]],-IntegerPart[2^(-2+n)*Cos[Pi/6-\[Theta]]*Sec[Pi/6+\[Theta]]]}},
+Inequality[0,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/6]},
+{{{1,1,1},
+{-IntegerPart[2^(-2+n)*Sec[\[Theta]]*Sin[Pi/6+\[Theta]]],IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Sec[\[Theta]]*Sin[Pi/6-\[Theta]]]},
+{ IntegerPart[2^(-2+n)*Csc[\[Theta]]*Cos[Pi/6+\[Theta]]],IntegerPart[2^(-2+n)],-IntegerPart[2^(-2+n)*Csc[\[Theta]]*Cos[Pi/6-\[Theta]]]}},
+Inequality[Pi/6,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/3]},
+{{{1,1,1},
+{ IntegerPart[2^(-2+n)*Csc[Pi/6-\[Theta]]*Sin[Pi/6+\[Theta]]],-IntegerPart[2^(-2+n)*Cos[\[Theta]]*Csc[Pi/6-\[Theta]]],IntegerPart[2^(-2+n)]},
+{-IntegerPart[2^(-2+n)*Sec[Pi/6-\[Theta]]*Cos[Pi/6+\[Theta]]],-IntegerPart[2^(-2+n)*Sin[\[Theta]]*Sec[Pi/6-\[Theta]]],IntegerPart[2^(-2+n)]}},
+Inequality[Pi/3,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/2]}}
+,Null]
 
 
 (* ::Section:: *)
@@ -124,15 +129,17 @@ YABCube["RGB"]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[iY
 
 
 SetUpYABColor[\[Theta]_] :=Module[{theta}, YABColorTheta=\[Theta];
-YABColorFast=Compile[{{yIn, _Real},{aIn, _Real},{bIn, _Real}}, Module[{y,a,b,h,s,angle},
-y=yIn; a = aIn-0.5; b= bIn-0.5;
-Quiet[{s, angle}=CoordinateTransform[{"Cartesian"->"Polar",2},{a,b}]/.Indeterminate->0,{ArcTan::indet}];
-angle = angle-theta-4 Pi/3 +2 Pi;h=angle/(2 Pi) ; s = Sqrt[2]*s; Hue[h,s,y]]]/.{theta -> \[Theta]};
+YABColorFastList=Compile[{{yIn, _Real},{aIn, _Real},{bIn, _Real}}, Module[{y,a,b,h,s,angle},
+{Quiet[Mod[(ArcTan[(aIn-0.5),(bIn-0.5)]-theta-4 Pi/3),2 Pi]/(2 Pi)/.Indeterminate->0,{ArcTan::indet}],
+Sqrt[2]*Sqrt[(aIn-0.5)^2+(bIn-0.5)^2],
+yIn}
+]]/.{theta -> \[Theta]};
+YABColorFast=Hue[YABColorFastList[##]]&;
 ]
 
 
 Clear[YABColorFastTheta]
-YABColorFastTheta[yIn_Real,aIn_Real,bIn_Real,\[Theta]In_Real]:= Module[{y,a,b,h,s,angle},
+YABColorFastTheta[yIn_,aIn_,bIn_,\[Theta]In_]:= Module[{y,a,b,h,s,angle},
 y=yIn; a = aIn-0.5; b= bIn-0.5;
 Quiet[{s, angle}=CoordinateTransform[{"Cartesian"->"Polar",2},{a,b}]/.Indeterminate->0,{ArcTan::indet}];
 angle = angle-\[Theta]In-4 Pi/3 +2 Pi;h=angle/(2 Pi) ; s = Sqrt[2]*s; 
@@ -201,7 +208,7 @@ SetOptions[GraphicsCube,Lighting->"Neutral",PlotRange->All,Axes->True,ViewVertic
 
 ShowYABCube3D[\[Theta]_,opts:OptionsPattern[Graphics3D]]:=Module[{},
 GraphicsCube[
-Flatten[{Opacity[0.1],YABCube3D[\[Theta]],Opacity[1],RGBinYABCube3D[\[Theta]],YABAxisEnds3D[\[Theta]]}],PlotRange->YABAxisRanges[\[Theta]],opts]
+Flatten[{Opacity[0.1],YABCube3D[\[Theta]],Opacity[1],RGBinYABCube3D[\[Theta]],YABAxisEnds3D[-\[Theta]]}],PlotRange->YABAxisRanges[\[Theta]],opts]
 ]
 
 
