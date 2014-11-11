@@ -79,52 +79,15 @@ As for the discrete representation of the axes, it's desired that all the inform
 
 \subsection{Camera RGB and Normalization for Discrete Range}\label{sec:CameraRGB}
 
-Due to the hardware being locked down at the application level, we do not have access to the raw camera feed. We do, however, have access to the compressed, post-processing 8-bit RGB image data. The processing involves evening up the color channel senors' sensitivity by way of multiplying each channel by an appropriate correction factor. This is partly why cameras likely have a 10 or 12 bit/channel capture rate, but after accounting for differences in sensitivity, it only outputs in 8-bit color depth.
+Due to the iPhone hardware being locked down at the application level, we do not have access to the raw camera feed. We do, however, have access to the post-processing (color-rebalanced and white-point-corrected) 8-bit RGB image data.
 
-The three-color RGB channel sensors commonly found in CCD cameras are based on how the human eye perceives colors. But in physical reality, light is actually hitting the camera as a continuous spectrum. Since it's impossible to map an infinite set of Gaussians to it, we instead use some function which, for any frequency, will give the intensity of the light hitting the point at that frequency. This function is expanded in the basis set of three Gaussians with mean values centered on the RGB frequencies. This model is used in cameras because the main purpose of cameras --- until recent times --- has been to capture images for human viewing. And while the RGB Gaussian basis model is perfectly suited for capturing all the scene information which humans can perceive, it is not a complete representation.
-
-Because we're searching for particular points in the real color space --- which, being a continuous function, is infinite dimensional --- there is a possibility in the future that larger multi-channel color spaces will be much more common, such as the 8-channel color spaces currently in development. Though most such cameras are primarily designed for post-production editing for still pictures and film (e.g. changing the lighting independent of the scene), as well as visual effects, the possibilities for computer vision are exciting. However, computer vision tasks are computationally intensive, and more often than not require operation in real time, so there is a natural inclination to shy away from large data sets in practical computer vision applications; many tasks are done in grayscale or single channel processing to expedite the process.
+Because we're searching for particular points in the real color space --- which, being a continuous function, is infinite dimensional --- there is a possibility in the future that larger multi-channel color spaces will be much more common, such as the 8-channel color spaces currently in development. Though most such cameras are primarily designed for post-production editing for still pictures and film (e.g. changing the lighting independent of the scene), as well as visual effects, the possibilities for computer vision are exciting. However, computer vision tasks are computationally intensive, and more often than not require operation in real time, so there is a natural inclination to shy away from large data sets in practical computer vision applications; many tasks are done in grayscale or single-channel processing to expedite the process.
 
 As such, there is a need to develop techniques which keep the relevant information while quickly and efficiently discarding the irrelevant information. This is true for the RGB space at the moment, and the aim of this first part of the work.
 
-\subsection{iPhone Camera Characteristics} \label{sec:iPhoneCameraCharacteristics}
-
-Unlike more general cameras, the iPhone's camera performs certain pre-processing tasks on the raw image before it reaches the AP layer. Typically, cameras have a specific white point value, which is the value corresponding to white. It isn't necessarily the corner of the RGB cube; finding this value is part of the camera calibration. It also determines the orientation of the luminosity axis, which passes through zero to the white point. This is why all pre-defined color space functions have an implicit white point correction. However, the iPhone's white point is always set to the corner of the RGB cube before the image reaches the AP layer. So, when developing an algorithm for the iPhone, white point correction is not necessary, while on other devices the algorithm may need to be adapted accordingly.
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.80\textwidth]{Chapter2/Figs/lxy_general_white_point.eps}
-    \caption{The white point for the general skin sample set described in Section~\ref{sec:SkinStatistics}.}  \label{fig:WhitePoint}
-\end{figure}
-
-While gathering skin statistics for the purposes of this project, the original approach involved taking photos of individual skin --- each with distinct color characteristics --- taken under different lighting conditions with a constant background using the iPhone camera. The background was included in order to obtain data on the edges of the skin. The background would be photographed, then again with each individual's hand over the same background. Afterward, the statistics would be collected and the background removed by negating the background statistics.
-
-Surprisingly, this approached failed to work; the background reappeared (Figure~\ref{fig:BGFailure}).
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter2/Figs/xy_bg_failed.eps}
-    \caption{Initial attempt at removing background; unsuccessful.} \label{fig:BGFailure}
-\end{figure}
-
-The background statistics changed with the skin present in the photo. This is because the iPhone adjusts to images with very strong color characteristics. This is an undocumented feature of the iPhone processing. The only way to compensate for this unwelcome pre-processing is to photograph the background with a strongly contrasting object present, but one which is easily cropped out of the image before the background stats are collected. After collecting the statistics again, the result was much improved (Figure~\ref{fig:BGSuccess}).
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter2/Figs/bg_cap.eps}
-    \caption{The red marker cap contrasts with the green background.}  \label{fig:BGCap}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter2/Figs/xy_bg_success.eps}
-    \caption{Successful background removal.}  \label{fig:BGSuccess}
-\end{figure}
-
-In a real world context, it is relatively safe to presume that the scene will be chromatically complex enough that the color correction won't be detrimental to detection, and perhaps even beneficial under unusual lighting conditions. But for gathering statistics, it proved to be a massive pain.
 
 \subsection{Rotation Matrix}\label{sec:RotationMatrix}
-Any rotation about an axis can be represented by a matrix. Such rotations can be expressed as a 3x3 square matrix in a 3D space. Since they are generally invertible, they're guaranteed to be non-singular. For this application, we require rotation about three different axes, which can be expressed thus:
+Any rotation about an axis can be represented by a 3x3 square matrix in a 3D space. Since they are invertible, they're guaranteed to be non-singular. However, as there are many ways in which to rotate an object from one position to another, or use a combination of different rotations to get to the same point, they aren't necessarily unique. For this application, we require rotation about three different axes, which can be expressed thus:
 
 
 \begin{alignat}{1}
@@ -146,9 +109,7 @@ R_z(\theta) &= \begin{bmatrix}
 \end{alignat}
 
 
-It should be noted that the solutions are not unique; there are many ways in which to rotate an object from one position to another, or use a combination of different rotations to get to the same point, so they aren't necessarily unique, but this has no bearing on this project. So any rotation which orients the RGB color space such that one of the new axes lies along the luminosity direction is sufficient. To achieve this end using rotations about the RGB color space axes requires a rotation in only two of those axes.
-
-A rotation which aligns the L axis along the luminosity direction is produced by a rotation of $\frac{\pi}4$ about the x axis, followed by a rotation of $\arctan{\frac{1}{\sqrt{2}}}$ about the y axis. This leaves one free rotational degree of freedom about the L axis. The resulting rotation matrix is given by:
+Any rotation which orients the RGB color space such that one of the new axes lies along the luminosity direction is sufficient; a rotation which aligns the L axis along the luminosity direction is produced by a rotation of $\frac{\pi}4$ about the R axis, followed by a rotation of $\arctan{\frac{1}{\sqrt{2}}}$ about the G axis. This leaves one free rotational degree of freedom about the L axis. The resulting rotation matrix is given by:
 
 \begin{equation}
 R_{xyz}(\theta) =
@@ -302,6 +263,42 @@ Given that we are free to choose the orientation of the color space about the lu
 
 
 For numerical reasons, the value for $\theta$ was found iteratively by performing the color space transformation and the statistical fit until the value for $\theta$ converged. (See Figure~\ref{fig:ConvergenceTheta}.)
+
+\subsection{iPhone Camera Characteristics} \label{sec:iPhoneCameraCharacteristics}
+
+Unlike more general cameras, the iPhone's camera performs certain pre-processing tasks on the raw image before it reaches the AP layer. Typically, cameras have a specific white point value, which is the value corresponding to white. It isn't necessarily the corner of the RGB cube; finding this value is part of the camera calibration. It also determines the orientation of the luminosity axis, which passes through zero to the white point. This is why all pre-defined color space functions have an implicit white point correction. However, the iPhone's white point is always set to the corner of the RGB cube before the image reaches the AP layer. So, when developing an algorithm for the iPhone, white point correction is not necessary, while on other devices the algorithm may need to be adapted accordingly.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.80\textwidth]{Chapter2/Figs/lxy_general_white_point.eps}
+    \caption{The white point for the general skin sample set described in Section~\ref{sec:SkinStatistics}.}  \label{fig:WhitePoint}
+\end{figure}
+
+While gathering skin statistics for the purposes of this project, the original approach involved taking photos of individual skin --- each with distinct color characteristics --- taken under different lighting conditions with a constant background using the iPhone camera. The background was included in order to obtain data on the edges of the skin. The background would be photographed, then again with each individual's hand over the same background. Afterward, the statistics would be collected and the background removed by negating the background statistics.
+
+Surprisingly, this approached failed to work; the background reappeared (Figure~\ref{fig:BGFailure}).
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter2/Figs/xy_bg_failed.eps}
+    \caption{Initial attempt at removing background; unsuccessful.} \label{fig:BGFailure}
+\end{figure}
+
+The background statistics changed with the skin present in the photo. This is because the iPhone adjusts to images with very strong color characteristics. This is an undocumented feature of the iPhone processing. The only way to compensate for this unwelcome pre-processing is to photograph the background with a strongly contrasting object present, but one which is easily cropped out of the image before the background stats are collected. After collecting the statistics again, the result was much improved (Figure~\ref{fig:BGSuccess}).
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter2/Figs/bg_cap.eps}
+    \caption{The red marker cap contrasts with the green background.}  \label{fig:BGCap}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter2/Figs/xy_bg_success.eps}
+    \caption{Successful background removal.}  \label{fig:BGSuccess}
+\end{figure}
+
+In a real world context, it is relatively safe to presume that the scene will be chromatically complex enough that the color correction won't be detrimental to detection, and perhaps even beneficial under unusual lighting conditions. But for gathering statistics, it proved to be a massive pain.
 
 
 \section{Implementation of Skin Color Space Statistics in Matlab}\label{sec:SkinColorSpaceStatsMatlab}
