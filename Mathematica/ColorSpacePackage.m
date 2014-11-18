@@ -206,9 +206,14 @@ Options[GraphicsCube]=Evaluate[Options[Graphics3D]];
 SetOptions[GraphicsCube,Lighting->"Neutral",PlotRange->All,Axes->True,ViewVertical->{1,0,0},AxesLabel->{"Luminocity","Chrom a", "Chrom b"}];
 
 
-ShowYABCube3D[\[Theta]_,opts:OptionsPattern[Graphics3D]]:=Module[{},
-GraphicsCube[
-Flatten[{Opacity[0.1],YABCube3D[\[Theta]],Opacity[1],RGBinYABCube3D[\[Theta]],YABAxisEnds3D[-\[Theta]]}],PlotRange->YABAxisRanges[\[Theta]],opts]
+GraphicsCubeOpts=Sequence[Lighting->"Neutral",Axes->True,ViewVertical->{1,0,0},AxesLabel->{"Luminocity","Chrom a", "Chrom b"}];
+
+
+ShowYABCube3D[\[Theta]_,opts:OptionsPattern[Graphics3D]]:=Module[{dfltOpts,opt},
+dfltOpts=Flatten[{GraphicsCubeOpts, PlotRange->YABAxisRanges[\[Theta]],FilterRules[Options[Graphics3D],Except[Flatten[{GraphicsCubeOpts, PlotRange->YABAxisRanges[\[Theta]]}]]]}];
+opt=Flatten[{opts, FilterRules[dfltOpts,Except[opts]]}];
+Graphics3D[
+Flatten[{Opacity[0.1],YABCube3D[\[Theta]],Opacity[1],RGBinYABCube3D[\[Theta]],YABAxisEnds3D[-\[Theta]]}], opt]
 ]
 
 
