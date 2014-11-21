@@ -110,6 +110,9 @@ Graphics3D[{Polygon[corners[[faces[[1]]]],VertexColors->MapThread[RGBColor,Trans
 ]
 
 
+RGBCubeFinite3D[n_]:=Raster3D[Table[List[r,g,b],{b,0,1,1/n},{g,0,1,1/n},{r,0,1,1/n}],{{0,0,0},{1,1,1}},ColorFunction->RGBColor];
+
+
 (* ::Subsection:: *)
 (*YAB Cube*)
 
@@ -162,10 +165,14 @@ SetUpYABColor[\[Theta]];
 ]
 
 
-YABAxisEnds3D[\[Theta]_]:=Module[{c1,c2,col},
+YABAxisEnds3D[\[Theta]_,bri_:1]:=Module[{c1,c2,col},
 c1=Transpose[cubeFaces[ YABAxisRanges[\[Theta]]]];
 c2=Transpose[cubeFacesInside[YABAxisRanges[\[Theta]],0.001]];
 col=Transpose[cubeFaces[{{0,1},{0,1},{0,1}}]];
+col[[3,1]]=col[[3,1]]*bri;
+col[[4,1]]=col[[4,1]]*bri;
+col[[5,1]]=col[[5,1]]*bri;
+col[[6,1]]=col[[6,1]]*bri;
 Table[{Glow[YABColor[col[[i]],\[Theta]]],Black,Cylinder[{c1[[i]],c2[[i]]},0.1]},{i,1,6}]
 ]
 
@@ -200,7 +207,7 @@ ranges = YABAxisRanges[\[Theta]];
 ]
 
 
-RGBCubeInYabFinite[\[Theta]_,cut_]:=Module[{cube},cube=Raster3D[Table[List[i,j,k,If[i+j+k<cut,1,0.03]],{i,0,1,1/n},{j,0,1,1/n},{k,0,1,1/n}],{{0,0,0},{1,1,1}},ColorFunction->RGBColor];
+RGBCubeInYabFinite[\[Theta]_,cut_:3]:=Module[{cube},cube=Raster3D[Table[List[i,j,k,If[i+j+k<cut,1,0.03]],{k,0,1,1/n},{j,0,1,1/n},{i,0,1,1/n}],{{0,0,0},{1,1,1}},ColorFunction->RGBColor];
 Rotate[Rotate[Rotate[cube,Pi/4,{0,1,0}],-ArcTan[1/Sqrt[2]],{0,0,1}],\[Theta],{1,0,0}]
 ]
 

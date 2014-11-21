@@ -173,8 +173,8 @@ In the range $0:\frac{\pi}{3}$, both sin and cos are positive, therefore the axi
   % after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
     & Min & Max \\ \hline
   L & \(0\) & \(\sqrt{3}\) \\
-  X & \(- \sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\left(\theta -\frac{\pi }{6}\right) \bmod \frac{\pi }{3})\right) \)&\( \sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\left(\theta -\frac{\pi }{6}\right) \bmod \frac{\pi }{3})\right) \)\\
-  Y & \(-\sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\theta  \bmod \frac{\pi }{3})\right) \)&\( \sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\theta  \bmod \frac{\pi }{3})\right) \)\\
+  Ca & \(- \sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\left(\theta -\frac{\pi }{6}\right) \bmod \frac{\pi }{3})\right) \)&\( \sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\left(\theta -\frac{\pi }{6}\right) \bmod \frac{\pi }{3})\right) \)\\
+ Cb & \(-\sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\theta  \bmod \frac{\pi }{3})\right) \)&\( \sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\theta  \bmod \frac{\pi }{3})\right) \)\\
   \hline
 \end{tabular}
 
@@ -225,6 +225,236 @@ This matrix is no longer technically a rotation matrix as its inverse is no long
 \end{array}
 \right)
 \end{equation}
+
+The final piece of the metaphorical jigsaw is to add the capability to deal with the machine handling of the numerics. The transforms as defined above assume the capacity to represent the resulting numbers. Unfortunately, on a device, the numerics are not handled in such a pure way and --- whilst we are uninterested in the information overflow outside the destination representation --- this can cause instabilities in a practical implementation. In the development of the algorithm, it is therefore necessary to define these bounds. In the unit space, these bounds have already been defined by Equation~\ref{eq:LowHigh}; so long as the axis length can be represented on the device between these bounds, then overflow and underflow can be dealt with using a simple conditional statement.
+
+It is significantly advantageous to perform calculations using integer types, particularly given that the input and output types are integers with small ranges, meaning it's possible to construct algorithms which avoid conversion to floating point operations. To this end, we wish to determine the most efficient internal representation for the transformation.
+
+We have a well-defined distribution which represents the desired conservation of information, which itself is represented by the distribution function in the unit ranges. Each of these unit ranges is discretized into steps of $\frac{1}{\srcRange}$ and $\frac{1}{\tRange}$. The question then is to what degree of accuracy do we need to represent the internal numerics? If we represent the transformation in a discrete type $\discreteR$, we can express the problem in terms of the largest perturbation which can be made to the transformation without affecting the result.
+
+
+\begin{equation}\label{eq:lxyPixel}
+\begin{aligned}
+\uR  \cdot \uSrc &= \uT  &\text{let} \quad \uR &= \dR + \delR \\
+(\discreteR + \delR)  \cdot \uSrc &= \discreteT + \delT \\
+\text{therefore if } \discreteR \cdot \uSrc &= \discreteT & \text{then}\quad \delR  \cdot \uSrc = \delT
+\end{aligned} 
+\end{equation}
+
+The continuous rotation $\uR$ can be expressed as the sum of its discrete representation $\dR$ with discretization factor and the correction $\delR$. The elements of the discrete rotation can be expressed as rational fractions.
+
+\begin{eqnarray}\label{eq:dRRange}
+\discreteR = \dfrac{int(\uR \cdot \rRange)}{\rRange}\quad where\quad int(1.5) = 1, int (-1.5) = -1\\
+therefore\quad \dfrac{-1}{\rRange} < \delR  < \dfrac{1}{\rRange}
+\end{eqnarray}
+
+It should be noted that --- unlike the source type \uSrc --- the perturbation can be negative. The definition of the function $int$ results in the sign of the perturbation matching the sign of the discertized transformation matrix. We must therefore consider both the maximum and minimum of $\delT$. As $0 \le\uSrc \le 1$ the extrema of $\delT$ are found where $\uSrc$ is a vector with elements of 0 and 1. If the matrix is decomposed into a sum of positive and negative elements $\delT = \delT_+ + \delT_-$ then the extrema are given by $\max(\delT_+ \cdot \mathbf{1})$ and $\min(\delT_- \cdot \mathbf{1})$. Where the elements are positive or negative is determined by the sign of the elements in the rotation matrix $\uR$. If we were to scale the entire matrix evenly then the top row would dominate as it is always positive and the necessary discrete representation would be characterised by $\rRange = 3 \; \tRange$. This would, however, necessitate the matrix being stored in a data type with at least 2 more bits than the source type. As the source type will be fully utilised in all but the most unusual applications this will result in a doubling of the bit depth for the matrix and a quadrupling of the bit depth for the working calculation. We will therefore consider each row individually and because the transformation is scaled by row as described previously. The second and third rows each sum to zero $\uR \mathbf{1} = [\sqrt{3},0,0]$ allowing us to state that each of the rows has one element of the opposite sign to the other two elements. The discretization for the second and third rows then only requires $\rRange = 2 \; \tRange$. It is also possible to pull out common factors from the rows to facilitate the reduction in the required representation.
+
+\begin{equation}
+\uR(\theta) =
+\left(
+\begin{array}{c}
+ \frac{1}{\sqrt{3}} \\
+ \sqrt{\frac{2}{3}}  \\
+ \sqrt{\frac{2}{3}} \\
+\end{array}
+\right) \bigotimes
+\left(
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ -\sin \left(\theta +\frac{\pi }{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\frac{\pi }{6}\right) \\
+ -\cos \left(\theta +\frac{\pi }{6}\right) & - \sin (\theta ) & \cos \left(\theta -\frac{\pi }{6}\right) \\
+\end{array}
+\right)
+\end{equation}
+The rotation matrix may now be adequately represented in a discrete range of $\rRange = 2 \tRange$ with all elements taking values between -1 and 1 because the top row consists entirely of integers negating the necessity to represent the elements as rational fractions.
+
+One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting colorspace. We must now establish which elements are affected.
+
+The sign of the rotation matrix is given by
+
+\begin{equation}
+\left(
+\begin{array}{ccc}
+1
+ &
+1
+ &
+1
+ \\
+\begin{cases}
+   1 & \frac{5 \pi }{6}<\theta <\frac{11 \pi }{6} \\
+ -1 & \left\lgroup \begin{array}{c} 0\leq \theta <\frac{5 \pi }{6} \\ \frac{11 \pi }{6}<\theta <2 \pi  \end{array} \right.\\
+\end{cases}
+ &
+\begin{cases}
+ 1   & \left\lgroup \begin{array}{c} 0\leq \theta <\frac{\pi }{2} \\ \frac{3 \pi }{2}<\theta <2 \pi  \end{array} \right.\\
+ -1 & \frac{\pi }{2}<\theta <\frac{3 \pi }{2} \\
+\end{cases}
+ &
+\begin{cases}
+ 1 & \frac{\pi }{6}<\theta <\frac{7 \pi }{6} \\
+ -1 & \left\lgroup \begin{array}{c}  0\leq \theta <\frac{\pi }{6} \\ \frac{7 \pi }{6}<\theta <2 \pi  \end{array} \right.\\
+\end{cases}
+ \\
+
+\begin{cases}
+ 1 & \frac{\pi }{3}<\theta <\frac{4 \pi }{3} \\
+ -1 & \left\lgroup \begin{array}{c} 0 \leq \theta <\frac{\pi }{3} \\ \frac{4 \pi }{3}<\theta <2 \pi \end{array} \right. \\
+\end{cases}
+ &
+\begin{cases}
+ 1 & \pi <\theta <2 \pi  \\
+ -1 & 0<\theta <\pi  \\
+\end{cases}
+ &
+\begin{cases}
+   1 & \left\lgroup \begin{array}{c} 0\leq \theta <\frac{2 \pi }{3} \\ \frac{5 \pi }{3}<\theta <2 \pi  \end{array} \right.\\
+ -1 & \frac{2 \pi }{3}<\theta <\frac{5 \pi }{3} \\
+\end{cases}
+ \\
+\end{array}
+\right)
+\end{equation}
+
+We are interested in which elements in each row share the same sign, as these will determine the pixel values which contribute to the error. If we find the intersecting conditions and flip the sign where there are two negative elements, the following is found
+\begin{equation}
+\begin{cases}
+ \left(
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 \\
+\end{array}
+\right) & \theta =\frac{\pi }{6}\lor \theta =\frac{\pi }{2}\lor \theta =\frac{5 \pi }{6}\lor \theta =\frac{7 \pi }{6}\lor \theta =\frac{3 \pi }{2}\lor \theta =\frac{11 \pi }{6} \\
+ \left(
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ -1 & 1 & 1 \\
+ -1 & 1 & 1 \\
+\end{array}
+\right) & \frac{\pi }{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
+ \left(
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ 1 & -1 & 1 \\
+ 1 & -1 & 1 \\
+\end{array}
+\right) & 0\leq \theta <\frac{\pi }{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
+ \left(
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ 1 & 1 & -1 \\
+ 1 & 1 & -1 \\
+\end{array}
+\right) & \frac{\pi }{2}<\theta <\frac{5 \pi }{6}\lor \frac{3 \pi }{2}<\theta <\frac{11 \pi }{6} \\
+\end{cases}
+\end{equation}
+So for a pixel $\{R,G,B\}$  % \parpic{\includegraphics[width=100mm]{Chapter2/Figs/ErrorIntheRotation.eps}}
+\begin{equation}\label{eq:errorFreeConditions}
+\raisebox{-22mm}{\includegraphics[width = 44mm]{Chapter2/Figs/ErrorIntheRotation.eps}}\begin{cases}
+ G + B < 1 & \frac{\pi }{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
+ R + B < 1 & 0\leq \theta <\frac{\pi }{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
+ R + G < 1 & \frac{\pi }{2}<\theta <\frac{5 \pi }{6}\lor \frac{3 \pi }{2}<\theta <\frac{11 \pi }{6} \\
+\end{cases}
+\end{equation}
+
+where 1 indicates that the element shares its sign with another element in the same row and -1 indicates the opposite. One channel from the source can be left error free whilst the sum of the other two must be less than one. this divides the color space in two. If the portion of the source which is to be preserved better than in a 2:1 ratio lies entirely within the error free half then the rotation matrix can be stored in the same data type as the source itself. This can be designed as it does not matter if we rotate the colorspace in $\frac{\pi}{2}$ steps.
+
+
+\begin{equation}
+\intR =
+\text{int}\left(
+\left(
+\begin{array}{c}
+ 1 \\
+ 2^{1-n_2} \; \tRange_2\\
+ 2^{1-n_3} \; \tRange_3 \\
+\end{array}
+\right) 
+\bigotimes
+\left(
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ -\sin \left(\theta +\frac{\pi }{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\frac{\pi }{6}\right) \\
+ -\cos \left(\theta +\frac{\pi }{6}\right) & - \sin (\theta ) & \cos \left(\theta -\frac{\pi }{6}\right) \\
+\end{array}
+\right)
+\right)
+\end{equation}
+
+\begin{equation}
+\widehat{R}_{xyz}(\theta,\mu,\sigma) =
+\left(
+\begin{array}{c}
+ \frac{\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\}}{\sqrt{3}}  \\
+ \sqrt{\frac{2}{3}} \frac{\min\left\{\Delta(\mu_2,\sigma_2), 1 \right\} }{2^{1-n_2} \; \tRange_2} \\
+ \sqrt{\frac{2}{3}} \frac{\min\left\{\Delta(\mu_3,\sigma_3), 1 \right\}}{2^{1-n_3} \; \tRange_3} \\
+\end{array}
+\right) 
+\bigotimes
+\intR 
+\end{equation}
+
+using $\tRange(\theta,\mu,\sigma) = \min\left\{\Delta(\mu,\sigma), 1 \right\} \srcRange \mathbf{L}(\theta) $
+\begin{equation}
+\widehat{R}_{xyz}(\theta,\mu,\sigma) =
+\left(
+\begin{array}{c}
+ \frac{\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\}}{\sqrt{3}}  \\
+ \sqrt{\frac{2}{3}} \frac{1}{2^{1-n_2} \; \srcRange \text{L}_2(\theta)} \\
+ \sqrt{\frac{2}{3}} \frac{1}{2^{1-n_3} \; \srcRange \text{L}_3(\theta)} \\
+\end{array}
+\right) 
+\bigotimes
+\intR 
+\end{equation}
+
+\begin{equation}
+\widehat{R}_{xyz}(\theta,\mu,\sigma) =
+\left(
+\begin{array}{c}
+\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\} \\
+\min\left\{\Delta(\mu_2,\sigma_2), 1 \right\}  \\
+\min\left\{\Delta(\mu_3,\sigma_3), 1 \right\}  \\
+\end{array}
+\right)
+\bigotimes
+\left(
+\begin{array}{c}
+ \frac{1}{\sqrt{3}} \\
+ \sqrt{\frac{2}{3}}  \\
+ \sqrt{\frac{2}{3}} \\
+\end{array}
+\right) \bigotimes
+\left(
+\begin{array}{c}
+ 1 \\
+ \frac{1}{2^{1-n_2} \; \tRange_2} \\
+ \frac{1}{2^{1-n_3} \; \tRange_3} \\
+\end{array}
+\right) 
+\bigotimes
+\text{int}\left(
+\left(
+\begin{array}{c}
+ 1 \\
+ 2^{1-n_2} \; \tRange_2\\
+ 2^{1-n_3} \; \tRange_3 \\
+\end{array}
+\right) 
+\bigotimes
+\left(
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ -\sin \left(\theta +\frac{\pi }{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\frac{\pi }{6}\right) \\
+ -\cos \left(\theta +\frac{\pi }{6}\right) & - \sin (\theta ) & \cos \left(\theta -\frac{\pi }{6}\right) \\
+\end{array}
+\right)
+\right)
+\end{equation}
+
+All that remains is to determine if the statistics allow for a reduced representation of the rotation. An equtaion for the boundary of the one to one fidelity region must be found in the source color space and then checked against the conditions given above \ref{eq:errorFreeConditions}. 
 
 \section{Preservation of Color Information}\label{sec:PreservationOfColorInformation}
 
@@ -477,236 +707,6 @@ this produces a $\tRange$ of
 \right)
 \end{aligned}
 \end{equation}
-The final piece of the metaphorical jigsaw is to add the capability to deal with the machine handling of the numerics. The transforms as defined above assume the capacity to represent the resulting numbers. Unfortunately, on a device, the numerics are not handled in such a pure way and --- whilst we are uninterested in the information overflow outside the destination representation --- this can cause instabilities in a practical implementation. In the development of the algorithm, it is therefore necessary to define these bounds. In the unit space, these bounds have already been defined by Equation~\ref{eq:LowHigh}; so long as the axis length can be represented on the device between these bounds, then overflow and underflow can be dealt with using a simple conditional statement.
-
-It is significantly advantageous to perform calculations using integer types, particularly given that the input and output types are integers with small ranges, meaning it's possible to construct algorithms which avoid conversion to floating point operations. To this end, we wish to determine the most efficient internal representation for the transformation.
-
-We have a well-defined distribution which represents the desired conservation of information, which itself is represented by the distribution function in the unit ranges. Each of these unit ranges is discretized into steps of $\frac{1}{\srcRange}$ and $\frac{1}{\tRange}$. The question then is to what degree of accuracy do we need to represent the internal numerics? If we represent the transformation in a discrete type $\discreteR$, we can express the problem in terms of the largest perturbation which can be made to the transformation without affecting the result.
-
-
-\begin{equation}\label{eq:lxyPixel}
-\begin{aligned}
-\uR  \cdot \uSrc &= \uT  &\text{let} \quad \uR &= \dR + \delR \\
-(\discreteR + \delR)  \cdot \uSrc &= \discreteT + \delT \\
-\text{therefore if } \discreteR \cdot \uSrc &= \discreteT & \text{then}\quad \delR  \cdot \uSrc = \delT
-\end{aligned} 
-\end{equation}
-
-The continuous rotation $\uR$ can be expressed as the sum of its discrete representation $\dR$ with discretization factor and the correction $\delR$. The elements of the discrete rotation can be expressed as rational fractions.
-
-\begin{eqnarray}\label{eq:dRRange}
-\discreteR = \dfrac{int(\uR \cdot \rRange)}{\rRange}\quad where\quad int(1.5) = 1, int (-1.5) = -1\\
-therefore\quad \dfrac{-1}{\rRange} < \delR  < \dfrac{1}{\rRange}
-\end{eqnarray}
-
-It should be noted that --- unlike the source type \uSrc --- the perturbation can be negative. The definition of the function $int$ results in the sign of the perturbation matching the sign of the discertized transformation matrix. We must therefore consider both the maximum and minimum of $\delT$. As $0 \le\uSrc \le 1$ the extrema of $\delT$ are found where $\uSrc$ is a vector with elements of 0 and 1. If the matrix is decomposed into a sum of positive and negative elements $\delT = \delT_+ + \delT_-$ then the extrema are given by $\max(\delT_+ \cdot \mathbf{1})$ and $\min(\delT_- \cdot \mathbf{1})$. Where the elements are positive or negative is determined by the sign of the elements in the rotation matrix $\uR$. If we were to scale the entire matrix evenly then the top row would dominate as it is always positive and the necessary discrete representation would be characterised by $\rRange = 3 \; \tRange$. This would, however, necessitate the matrix being stored in a data type with at least 2 more bits than the source type. As the source type will be fully utilised in all but the most unusual applications this will result in a doubling of the bit depth for the matrix and a quadrupling of the bit depth for the working calculation. We will therefore consider each row individually and because the transformation is scaled by row as described previously. The second and third rows each sum to zero $\uR \mathbf{1} = [\sqrt{3},0,0]$ allowing us to state that each of the rows has one element of the opposite sign to the other two elements. The discretization for the second and third rows then only requires $\rRange = 2 \; \tRange$. It is also possible to pull out common factors from the rows to facilitate the reduction in the required representation.
-
-\begin{equation}
-\uR(\theta) =
-\left(
-\begin{array}{c}
- \frac{1}{\sqrt{3}} \\
- \sqrt{\frac{2}{3}}  \\
- \sqrt{\frac{2}{3}} \\
-\end{array}
-\right) \bigotimes
-\left(
-\begin{array}{ccc}
- 1 & 1 & 1 \\
- -\sin \left(\theta +\frac{\pi }{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\frac{\pi }{6}\right) \\
- -\cos \left(\theta +\frac{\pi }{6}\right) & - \sin (\theta ) & \cos \left(\theta -\frac{\pi }{6}\right) \\
-\end{array}
-\right)
-\end{equation}
-The rotation matrix may now be adequately represented in a discrete range of $\rRange = 2 \tRange$ with all elements taking values between -1 and 1 because the top row consists entirely of integers negating the necessity to represent the elements as rational fractions.
-
-One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting colorspace. We must now establish which elements are affected.
-
-The sign of the rotation matrix is given by
-
-\begin{equation}
-\left(
-\begin{array}{ccc}
-1
- &
-1
- &
-1
- \\
-\begin{cases}
-   1 & \frac{5 \pi }{6}<\theta <\frac{11 \pi }{6} \\
- -1 & \left\lgroup \begin{array}{c} 0\leq \theta <\frac{5 \pi }{6} \\ \frac{11 \pi }{6}<\theta <2 \pi  \end{array} \right.\\
-\end{cases}
- &
-\begin{cases}
- 1   & \left\lgroup \begin{array}{c} 0\leq \theta <\frac{\pi }{2} \\ \frac{3 \pi }{2}<\theta <2 \pi  \end{array} \right.\\
- -1 & \frac{\pi }{2}<\theta <\frac{3 \pi }{2} \\
-\end{cases}
- &
-\begin{cases}
- 1 & \frac{\pi }{6}<\theta <\frac{7 \pi }{6} \\
- -1 & \left\lgroup \begin{array}{c}  0\leq \theta <\frac{\pi }{6} \\ \frac{7 \pi }{6}<\theta <2 \pi  \end{array} \right.\\
-\end{cases}
- \\
-
-\begin{cases}
- 1 & \frac{\pi }{3}<\theta <\frac{4 \pi }{3} \\
- -1 & \left\lgroup \begin{array}{c} 0 \leq \theta <\frac{\pi }{3} \\ \frac{4 \pi }{3}<\theta <2 \pi \end{array} \right. \\
-\end{cases}
- &
-\begin{cases}
- 1 & \pi <\theta <2 \pi  \\
- -1 & 0<\theta <\pi  \\
-\end{cases}
- &
-\begin{cases}
-   1 & \left\lgroup \begin{array}{c} 0\leq \theta <\frac{2 \pi }{3} \\ \frac{5 \pi }{3}<\theta <2 \pi  \end{array} \right.\\
- -1 & \frac{2 \pi }{3}<\theta <\frac{5 \pi }{3} \\
-\end{cases}
- \\
-\end{array}
-\right)
-\end{equation}
-
-We are interested in which elements in each row share the same sign, as these will determine the pixel values which contribute to the error. If we find the intersecting conditions and flip the sign where there are two negative elements, the following is found
-\begin{equation}
-\begin{cases}
- \left(
-\begin{array}{ccc}
- 1 & 1 & 1 \\
- 0 & 0 & 0 \\
- 0 & 0 & 0 \\
-\end{array}
-\right) & \theta =\frac{\pi }{6}\lor \theta =\frac{\pi }{2}\lor \theta =\frac{5 \pi }{6}\lor \theta =\frac{7 \pi }{6}\lor \theta =\frac{3 \pi }{2}\lor \theta =\frac{11 \pi }{6} \\
- \left(
-\begin{array}{ccc}
- 1 & 1 & 1 \\
- -1 & 1 & 1 \\
- -1 & 1 & 1 \\
-\end{array}
-\right) & \frac{\pi }{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
- \left(
-\begin{array}{ccc}
- 1 & 1 & 1 \\
- 1 & -1 & 1 \\
- 1 & -1 & 1 \\
-\end{array}
-\right) & 0\leq \theta <\frac{\pi }{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
- \left(
-\begin{array}{ccc}
- 1 & 1 & 1 \\
- 1 & 1 & -1 \\
- 1 & 1 & -1 \\
-\end{array}
-\right) & \frac{\pi }{2}<\theta <\frac{5 \pi }{6}\lor \frac{3 \pi }{2}<\theta <\frac{11 \pi }{6} \\
-\end{cases}
-\end{equation}
-So for a pixel $\{R,G,B\}$  % \parpic{\includegraphics[width=100mm]{Chapter2/Figs/ErrorIntheRotation.eps}}
-\begin{equation}\label{eq:errorFreeConditions}
-\raisebox{-22mm}{\includegraphics[width = 44mm]{Chapter2/Figs/ErrorIntheRotation.eps}}\begin{cases}
- G + B < 1 & \frac{\pi }{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
- R + B < 1 & 0\leq \theta <\frac{\pi }{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
- R + G < 1 & \frac{\pi }{2}<\theta <\frac{5 \pi }{6}\lor \frac{3 \pi }{2}<\theta <\frac{11 \pi }{6} \\
-\end{cases}
-\end{equation}
-
-where 1 indicates that the element shares its sign with another element in the same row and -1 indicates the opposite. One channel from the source can be left error free whilst the sum of the other two must be less than one. this divides the color space in two. If the portion of the source which is to be preserved better than in a 2:1 ratio lies entirely within the error free half then the rotation matrix can be stored in the same data type as the source itself. This can be designed as it does not matter if we rotate the colorspace in $\frac{\pi}{2}$ steps.
-
-
-\begin{equation}
-\intR =
-\text{int}\left(
-\left(
-\begin{array}{c}
- 1 \\
- 2^{1-n_2} \; \tRange_2\\
- 2^{1-n_3} \; \tRange_3 \\
-\end{array}
-\right) 
-\bigotimes
-\left(
-\begin{array}{ccc}
- 1 & 1 & 1 \\
- -\sin \left(\theta +\frac{\pi }{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\frac{\pi }{6}\right) \\
- -\cos \left(\theta +\frac{\pi }{6}\right) & - \sin (\theta ) & \cos \left(\theta -\frac{\pi }{6}\right) \\
-\end{array}
-\right)
-\right)
-\end{equation}
-
-\begin{equation}
-\widehat{R}_{xyz}(\theta,\mu,\sigma) =
-\left(
-\begin{array}{c}
- \frac{\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\}}{\sqrt{3}}  \\
- \sqrt{\frac{2}{3}} \frac{\min\left\{\Delta(\mu_2,\sigma_2), 1 \right\} }{2^{1-n_2} \; \tRange_2} \\
- \sqrt{\frac{2}{3}} \frac{\min\left\{\Delta(\mu_3,\sigma_3), 1 \right\}}{2^{1-n_3} \; \tRange_3} \\
-\end{array}
-\right) 
-\bigotimes
-\intR 
-\end{equation}
-
-using $\tRange(\theta,\mu,\sigma) = \min\left\{\Delta(\mu,\sigma), 1 \right\} \srcRange \mathbf{L}(\theta) $
-\begin{equation}
-\widehat{R}_{xyz}(\theta,\mu,\sigma) =
-\left(
-\begin{array}{c}
- \frac{\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\}}{\sqrt{3}}  \\
- \sqrt{\frac{2}{3}} \frac{1}{2^{1-n_2} \; \srcRange \text{L}_2(\theta)} \\
- \sqrt{\frac{2}{3}} \frac{1}{2^{1-n_3} \; \srcRange \text{L}_3(\theta)} \\
-\end{array}
-\right) 
-\bigotimes
-\intR 
-\end{equation}
-
-\begin{equation}
-\widehat{R}_{xyz}(\theta,\mu,\sigma) =
-\left(
-\begin{array}{c}
-\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\} \\
-\min\left\{\Delta(\mu_2,\sigma_2), 1 \right\}  \\
-\min\left\{\Delta(\mu_3,\sigma_3), 1 \right\}  \\
-\end{array}
-\right)
-\bigotimes
-\left(
-\begin{array}{c}
- \frac{1}{\sqrt{3}} \\
- \sqrt{\frac{2}{3}}  \\
- \sqrt{\frac{2}{3}} \\
-\end{array}
-\right) \bigotimes
-\left(
-\begin{array}{c}
- 1 \\
- \frac{1}{2^{1-n_2} \; \tRange_2} \\
- \frac{1}{2^{1-n_3} \; \tRange_3} \\
-\end{array}
-\right) 
-\bigotimes
-\text{int}\left(
-\left(
-\begin{array}{c}
- 1 \\
- 2^{1-n_2} \; \tRange_2\\
- 2^{1-n_3} \; \tRange_3 \\
-\end{array}
-\right) 
-\bigotimes
-\left(
-\begin{array}{ccc}
- 1 & 1 & 1 \\
- -\sin \left(\theta +\frac{\pi }{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\frac{\pi }{6}\right) \\
- -\cos \left(\theta +\frac{\pi }{6}\right) & - \sin (\theta ) & \cos \left(\theta -\frac{\pi }{6}\right) \\
-\end{array}
-\right)
-\right)
-\end{equation}
-
-All that remains is to determine if the statistics allow for a reduced representation of the rotation. An equtaion for the boundary of the one to one fidelity region must be found in the source color space and then checked against the conditions given above \ref{eq:errorFreeConditions}. 
-
 \section{Setting up the 2-Channel Representation}\label{sec:SettingUp2-ChannelRepresentation}
 
 For all computer vision tasks, the most significant influence on the required processing power is the number of channels. This is true even if the total information spread amongst the channels is less than the information contained in a single channel. Partly, this is due to the way that sequential processors operate; there is little difference between processing two 8-bit numbers and two 16-bit numbers on modern 64-bit processors. In contrast, processing a set of three related numbers is significantly more demanding; not only do the numbers have to be loaded into the processor sequentially, but the correlation between the numbers has to be taken into account. So, it is highly desirable to reduce the number of channels necessary for any further processing. The challenge is to compress all the relevant information for the desired subsequent processing into as few channels as possible.
