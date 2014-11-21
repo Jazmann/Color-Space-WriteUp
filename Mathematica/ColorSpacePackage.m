@@ -200,18 +200,26 @@ ranges = YABAxisRanges[\[Theta]];
 ]
 
 
-GraphicsCube[elem__,opts:OptionsPattern[GraphicsCube]]:=Graphics3D[elem, Flatten[{opts,
+RGBCubeInYabFinite[\[Theta]_,cut_]:=Module[{cube},cube=Raster3D[Table[List[i,j,k,If[i+j+k<cut,1,0.03]],{i,0,1,1/n},{j,0,1,1/n},{k,0,1,1/n}],{{0,0,0},{1,1,1}},ColorFunction->RGBColor];
+Rotate[Rotate[Rotate[cube,Pi/4,{0,1,0}],-ArcTan[1/Sqrt[2]],{0,0,1}],\[Theta],{1,0,0}]
+]
+
+
+(*GraphicsCube[elem__,opts:OptionsPattern[GraphicsCube]]:=Graphics3D[elem, Flatten[{opts,
 FilterRules[Options[GraphicsCube],Except[opts]]}]];
 Options[GraphicsCube]=Evaluate[Options[Graphics3D]];
-SetOptions[GraphicsCube,Lighting->"Neutral",PlotRange->All,Axes->True,ViewVertical->{1,0,0},AxesLabel->{"Luminocity","Chrom a", "Chrom b"}];
+SetOptions[GraphicsCube,Lighting->"Neutral",PlotRange->All,Axes->True,ViewVertical->{1,0,0},AxesLabel->{"Luminocity","Chrom a", "Chrom b"}];*)
 
 
 GraphicsCubeOpts=Sequence[Lighting->"Neutral",Axes->True,ViewVertical->{1,0,0},AxesLabel->{"Luminocity","Chrom a", "Chrom b"}];
+GraphicsCubeOptions[opts:OptionsPattern[Graphics3D]]:=Module[{dfltOpts},
+dfltOpts=Flatten[{GraphicsCubeOpts,FilterRules[Options[Graphics3D],Except[GraphicsCubeOpts]]}];
+Flatten[{opts, FilterRules[dfltOpts,Except[opts]]}]
+]
 
 
-ShowYABCube3D[\[Theta]_,opts:OptionsPattern[Graphics3D]]:=Module[{dfltOpts,opt},
-dfltOpts=Flatten[{GraphicsCubeOpts, PlotRange->YABAxisRanges[\[Theta]],FilterRules[Options[Graphics3D],Except[Flatten[{GraphicsCubeOpts, PlotRange->YABAxisRanges[\[Theta]]}]]]}];
-opt=Flatten[{opts, FilterRules[dfltOpts,Except[opts]]}];
+ShowYABCube3D[\[Theta]_,opts:OptionsPattern[Graphics3D]]:=Module[{opt},
+opt=GraphicsCubeOptions[opts, PlotRange->YABAxisRanges[\[Theta]]];
 Graphics3D[
 Flatten[{Opacity[0.1],YABCube3D[\[Theta]],Opacity[1],RGBinYABCube3D[\[Theta]],YABAxisEnds3D[-\[Theta]]}], opt]
 ]
