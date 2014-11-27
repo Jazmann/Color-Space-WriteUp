@@ -233,6 +233,26 @@ The final piece of the metaphorical jigsaw is to add the capability to deal with
 
 It is significantly advantageous to perform calculations using integer types, particularly given that the input and output types are integers with small ranges, meaning it's possible to construct algorithms which avoid conversion to floating point operations. To this end, we wish to determine the most efficient internal representation for the transformation.
 
+\subsubsection{Principles of Optimization}
+
+The rotation operation consists of 9 multiplications and 6 additions and constitutes the majority of the computational cost. Tt is this operation which we will focus our optimization efforts upon. The redistribution transformation, which comes after the rotation, processes each pixel value separately. This allows us to pull apart the rotation matrix by scaling each row arbitrarily, handing the knowledge of the scaling to the distribution. The goal of this section is to represent the matrix multiplication in such a way that we avoid floating-point operations.
+
+\begin{equation}\label{eq:NormRxyz4}
+ R(\theta) =
+\left(
+\begin{array}{c}
+ -  \\
+ \text{Scale} \\
+ -  \\
+\end{array}
+\right)
+\bigotimes
+qR(\theta)\text{where}\quad{qR(\theta)\in\mathbb{Z}}
+\end{equation}
+
+Given an infinite set of integers, this is not a problem. However, we wish to choose $qR$ to lie in a finite range, which depends on the color depth of the source. Ideally, we'd like the result of the rotation to have a bit depth not greater than twice the bit depth of the source, i.e. for 8-bit pixel values, we would like the rotated LCaCb values to be expressible as 16-bit integers. To accommodate 3 multiplications and 2 additions, the matrix $qR$ needs to be represented in two fewer bits than the source.
+
+
 We have a well-defined distribution which represents the desired conservation of information, which itself is represented by the distribution function in the unit ranges. Each of these unit ranges is discretized into steps of $\frac{1}{\srcRange}$ and $\frac{1}{\tRange}$. The question then is to what degree of accuracy do we need to represent the internal numerics? If we represent the transformation in a discrete type $\discreteR$, we can express the problem in terms of the largest perturbation which can be made to the transformation without affecting the result.
 
 
