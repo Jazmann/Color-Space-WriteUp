@@ -138,6 +138,30 @@ Graphics3D[{Polygon[corners[[faces[[1]]]],VertexColors->MapThread[RGBColor,Trans
 RGBCubeFinite3D[n_]:=Raster3D[Table[List[r,g,b],{b,0,1,1/n},{g,0,1,1/n},{r,0,1,1/n}],{{0,0,0},{1,1,1}},ColorFunction->RGBColor];
 
 
+ball[{r_,g_,b_},radius_,n_]:=Module[{chn,color,rgbCenter},
+color=RGBColor[(r)/n,(g)/n,(b)/n];
+rgbCenter={r,g,b};
+{color,Sphere[rgbCenter,radius]}]
+balls[map_,radius_]:=Module[{chn,nR,nG,nB,color,rgbCenter},
+{chn,nR,nG,nB}=Dimensions[map];
+Flatten[Table[
+color=RGBColor[(r)/nR,(g)/nG,(b)/nB];
+rgbCenter=Part[map,All,r+1,g+1,b+1];
+{color,Sphere[rgbCenter,radius]},{b,0,nB-1},{g,0,nG-1},{r,0,nR-1}]]
+]
+
+
+Clear[RGBCubeInYabFiniteBalls];
+RGBCubeInYabFiniteBalls[\[Theta]_,cut_:3,n_:8,opacity_:{1,0.03}]:=Module[{cube,color,rgbCenter,radius,T},
+T=YAB[\[Theta]];
+cube=Flatten[Table[
+color=RGBColor[(r)/n,(g)/n,(b)/n];
+rgbCenter = T . List[(r)/n,(g)/n,(b)/n];
+radius=1/(2n);
+{Opacity[If[r+g+b < n cut, opacity[[1]], opacity[[2]] ]],color,Sphere[rgbCenter,radius]},{b,0,n-1},{g,0,n-1},{r,0,n-1}]]
+]
+
+
 (* ::Subsection:: *)
 (*YAB Cube*)
 
@@ -234,8 +258,8 @@ ranges = YABAxisRanges[\[Theta]];
 
 Clear[RGBCubeInYabFinite];
 RGBCubeInYabFinite[\[Theta]_,cut_:3,n_:8]:=Module[{cube},
-cube=Raster3D[Table[List[i,j,k,If[i+j+k<cut,1,0.03]],{k,0,1,1/n},{j,0,1,1/n},{i,0,1,1/n}],{{0,0,0},{1,1,1}},ColorFunction->RGBColor];
-Rotate[Rotate[Rotate[cube,Pi/4,{0,1,0}],-ArcTan[1/Sqrt[2]],{0,0,1}],\[Theta],{1,0,0}]
+  cube=Raster3D[Table[List[i,j,k,If[i+j+k<cut,1,0.03]],{k,0,1,1/n},{j,0,1,1/n},{i,0,1,1/n}],{{0,0,0},{1,1,1}},ColorFunction->RGBColor];
+  Rotate[Rotate[Rotate[cube,Pi/4,{0,1,0}],-ArcTan[1/Sqrt[2]],{0,0,1}],\[Theta],{1,0,0}]
 ]
 
 
@@ -245,7 +269,7 @@ Options[GraphicsCube]=Evaluate[Options[Graphics3D]];
 SetOptions[GraphicsCube,Lighting->"Neutral",PlotRange->All,Axes->True,ViewVertical->{1,0,0},AxesLabel->{"Luminocity","Chrom a", "Chrom b"}];*)
 
 
-GraphicsCubeOpts=Sequence[Lighting->"Neutral",Axes->True,ViewVertical->{1,0,0},AxesLabel->{"Luminocity","Chrom a", "Chrom b"}];
+GraphicsCubeOpts=Sequence[Lighting->"Neutral",Axes->True,ViewVertical->{1,0,0},AxesLabel->{"Luminosity","Chrom a", "Chrom b"}];
 GraphicsCubeOptions[opts:OptionsPattern[Graphics3D]]:=Module[{dfltOpts},
 dfltOpts=Flatten[{GraphicsCubeOpts,FilterRules[Options[Graphics3D],Except[GraphicsCubeOpts]]}];
 Flatten[{opts, FilterRules[dfltOpts,Except[opts]]}]
@@ -562,6 +586,69 @@ Text[ToString[NumberForm[N[m[x]],3]],line[x-len],{0,0},line[x+len]]}];
 
 
 
+Clear[toPosCircle,toNegPosCircle]
+toPosCircle[\[Theta]_?((-64Pi<# <64Pi)&)]:=Mod[(\[Theta]+2Pi),2Pi];
+Format[toPosCircle[\[Theta]_],TraditionalForm]:=\[Theta];
+toNegPosCircle[\[Theta]_?((-64Pi<# <64Pi)&)]:= If[Mod[(\[Theta]+2Pi),2Pi]>=Pi,Mod[(\[Theta]+2Pi),2Pi]-2Pi,Mod[(\[Theta]+2Pi),2Pi]];Format[toNegPosCircle[\[Theta]_],TraditionalForm]:=\[Theta];
+
+posCircularInequality[a_?((0<= # <= 2Pi)&), relA_, \[Theta]_?((-2Pi<= # <= 2Pi)&), relB_,b_?((0<= # <= 2Pi)&)]:=Inequality[a, relA, toPosCircle[\[Theta]], relB,b];
+Format[posCircularInequality[a_, relA_, \[Theta]_, relB_,b_],TraditionalForm]:=Inequality[a, relA, \[Theta], relB,b];
+Format[posCircularInequality[a_, relA_, \[Theta]_, relB_,b_],TeXForm]:=TeXForm[Inequality[a, relA, \[Theta], relB,b]];negPosCircularInequality[a_?((-Pi<= # <=Pi)&), relA_, \[Theta]_?((-64Pi<# <64Pi)&), relB_,b_?((-Pi<= # <=Pi)&)]:=Inequality[a, relA, toNegPosCircle[\[Theta]], relB,b];
+Format[negPosCircularInequality[a_, relA_, \[Theta]_, relB_,b_],TraditionalForm]:=Inequality[a, relA, \[Theta], relB,b];
+Format[negPosCircularInequality[a_, relA_, \[Theta]_, relB_,b_],TeXForm]:=TeXForm[Inequality[a, relA, \[Theta], relB,b]]
+
+Clear[CircularInequality,circularInequality]; 
+CircularInequality[a_, Greater,      x_, Greater,      b_,opts:OptionsPattern[]] := CircularInequality[b, Less,      x, Less,      a, opts]
+CircularInequality[a_, Greater,      x_, GreaterEqual, b_,opts:OptionsPattern[]] := CircularInequality[b, LessEqual, x, Less,      a, opts]
+CircularInequality[a_, GreaterEqual, x_, Greater,      b_,opts:OptionsPattern[]] := CircularInequality[b, Less,      x, LessEqual, a, opts]
+CircularInequality[a_, GreaterEqual, x_, GreaterEqual, b_,opts:OptionsPattern[]] := CircularInequality[b, LessEqual, x, LessEqual, a, opts]
+Options[CircularInequality]={Range->"Automatic"}; (* Range->"Automatic"|"Positive"|"Mixed"*)
+CircularInequality::range="The range `1` is not \"Automatic\", \"Positive\" or \"Mixed\".";
+CircularInequality[a_, relA:(Less|LessEqual), \[Theta]_, relB:(Less|LessEqual), b_,opts:OptionsPattern[]] := 
+  Module[{a02, a11, b02, b11, out}, 
+a02 = toPosCircle[a]; b02 = toPosCircle[b]; 
+a11 = toNegPosCircle[a]; b11 = toNegPosCircle[b]; 
+  incZero =  Not[Inequality[a02, LessEqual, b02]]; 
+Switch[OptionValue[Range],
+"Automatic", If[incZero, 
+out = negPosCircularInequality[a11, relA, \[Theta], relB, b11], 
+out = posCircularInequality[a02, relA, \[Theta], relB, b02]
+], 
+"Positive", If[incZero, 
+out = posCircularInequality[a02, relA, \[Theta], Less, 2 Pi]||posCircularInequality[0, LessEqual, \[Theta], relB, b02], 
+out = posCircularInequality[a02, relA, \[Theta], relB, b02]
+], 
+"Mixed", If[incZero, 
+out = negPosCircularInequality[a11, relA, \[Theta], relB, b11], 
+out = negPosCircularInequality[-Pi, LessEqual, \[Theta], relA, b11]||negPosCircularInequality[a11, relB, \[Theta], LessEqual, Pi]
+],
+ _, Message[CircularInequality::range, OptionValue[Range]]; 
+      If[incZero, out = negPosCircularInequality[a11, relA, \[Theta], relB, b11], out = posCircularInequality[a02, relA, \[Theta], relB, b02]]];
+ out];
+Format[CircularInequality[a_, relA_, \[Theta]_, relB_, b_],TraditionalForm] := TraditionalForm[Inequality[a, relA, \[Theta], relB, b]];
+Format[CircularInequality[a_, relA_, \[Theta]_, relB_, b_],TeXForm]:=TeXForm[Inequality[a, relA, \[Theta], relB, b]];
+
+
+
+(* ::Text:: *)
+(*Usage*)
+
+
+(* ::Code:: *)
+(*i=2;*)
+(*{TraditionalForm[CircularInequality[(i-6) Pi/6, LessEqual, \[Theta], Less,i Pi/6,Range->"Automatic"]],*)
+(*TraditionalForm[CircularInequality[(i-6) Pi/6, LessEqual, \[Theta], Less,i Pi/6,Range->"Positive"]],*)
+(*TraditionalForm[CircularInequality[(i-6) Pi/6, LessEqual, \[Theta], Less,i Pi/6,Range->"Mixed"]]}*)
+(**)
+(*i=9;*)
+(*{TraditionalForm[CircularInequality[(i-6) Pi/6, LessEqual, \[Theta], Less,i Pi/6,Range->"Automatic"]],*)
+(*TraditionalForm[CircularInequality[(i-6) Pi/6, LessEqual, \[Theta], Less,i Pi/6,Range->"Positive"]],*)
+(*TraditionalForm[CircularInequality[(i-6) Pi/6, LessEqual, \[Theta], Less,i Pi/6,Range->"Mixed"]]}*)
+(**)
+(*TraditionalForm[{CircularInequality[(2-6) Pi/6, LessEqual, Pi/6, Less,2 Pi/6],*)
+(*CircularInequality[(2-6) Pi/6, LessEqual, -Pi/6, Less,2 Pi/6],CircularInequality[(2-6) Pi/6, LessEqual, 11 Pi/6, Less,2 Pi/6]}]*)
+
+
 (* ::Section:: *)
 (*Text Display*)
 
@@ -581,6 +668,9 @@ mForm[mat_]:=ToString[MatrixForm[mat],TraditionalForm];
 
 
 Clear[partShow];
+partShow[Interpretation[_,pFun_],2]:=partShow[pFun];
+partShow[Interpretation[pFun_,_],1]:=partShow[pFun];
+partShow[Interpretation[pFun_,_]]:=partShow[pFun];
 partShow[Piecewise[pFun_,_]]:=Module[{list},
   list=MapThread[partShowEx,{pFun,{Red,Green,Blue,Yellow,Orange,Cyan,Magenta,Pink,Brown,Purple,LightRed,LightGreen,LightBlue,LightYellow,LightOrange,LightCyan,LightMagenta,LightPink,LightBrown,LightPurple}[[1;;Length[pFun]]]}];
   Show[Flatten[list]]
@@ -592,21 +682,22 @@ partShowEx[List[fun_,Or[f_]],    color_:Blue]:=partShowEx[{fun,f},color]
 
 partShowEx[List[fun_,ineq:(Less| Greater| LessEqual|GreaterEqual)[l_,sym_,u_]],color_:Blue] := partDisp[
   ToString[fun,TraditionalForm], l, u, Function[{x,y,\[Theta],r},Evaluate[Head[ineq][l,\[Theta],u]]], PlotStyle->{color}]
-partShowEx[List[fun_,ineq:(Inequality|Inequality)[l_,ineql_,sym_,ineqr_,u_]],color_:Blue] := partDisp[
+partShowEx[List[fun_,ineq:(Inequality|circularInquality|posCircularInequality|negPosCircularInequality)[l_,ineql_,sym_,ineqr_,u_]],color_:Blue] := partDisp[
   ToString[fun,TraditionalForm], l, u, Function[{x,y,\[Theta],r},Evaluate[Inequality[l,ineql,\[Theta],ineqr,u]]], PlotStyle->{color}]
 
 
 Protect[OuterLables];
+ClearAll[partDisp];
 Options[partDisp]={PlotStyle->{Blue},OuterLables->{True,False}};
 partDisp[txt_,l_,u_,regionFun_,OptionsPattern[]]:=ParametricPlot[
 {r Cos[\[Theta]],r Sin[\[Theta]]},{\[Theta],Min[0,l],Max[2 Pi,u]},{r,1/4,1},
 RegionFunction->regionFun,
-Mesh->None, 
+Mesh->None, FrameTicks->None,Frame->False,AspectRatio->1,PlotRangeClipping->False,ImageMargins-> 1,ImagePadding->1.1,
 PlotStyle->OptionValue[PlotStyle],
-PlotRange-> 1.1,
+PlotRange-> 1.2,
 PlotLegends->{
   Placed[txt,{0.3 Cos[(l+u)/2]+0.5,0.3 Sin[(l+u)/2]+0.5}],
-  If[TrueQ[OptionValue[OuterLables][[1]]],Placed[l,{0.5 Cos[l]+0.5,0.5 Sin[l]+0.5}],Unevaluated[Sequence[]]],
+  If[TrueQ[OptionValue[OuterLables][[1]]],Placed[l,{0.47 Cos[l]+0.5,0.47 Sin[l]+0.5}],Unevaluated[Sequence[]]],
   If[TrueQ[OptionValue[OuterLables][[2]]],Placed[u,{0.5 Cos[u]+0.5,0.5 Sin[u]+0.5}],Unevaluated[Sequence[]]]
 },
 Axes->False]
