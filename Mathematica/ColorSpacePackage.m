@@ -634,7 +634,6 @@ Format[CircularInequality[a_, relA_, \[Theta]_, relB_, b_],TeXForm]:=TeXForm[Ine
 (*Usage*)
 
 
-(* ::Code:: *)
 (*i=2;*)
 (*{TraditionalForm[CircularInequality[(i-6) Pi/6, LessEqual, \[Theta], Less,i Pi/6,Range->"Automatic"]],*)
 (*TraditionalForm[CircularInequality[(i-6) Pi/6, LessEqual, \[Theta], Less,i Pi/6,Range->"Positive"]],*)
@@ -690,15 +689,15 @@ Protect[OuterLables];
 ClearAll[partDisp];
 Options[partDisp]={PlotStyle->{Blue},OuterLables->{True,False}};
 partDisp[txt_,l_,u_,regionFun_,OptionsPattern[]]:=ParametricPlot[
-{r Cos[\[Theta]],r Sin[\[Theta]]},{\[Theta],Min[0,l],Max[2 Pi,u]},{r,1/4,1},
+{r Cos[\[Theta]],r Sin[\[Theta]]},{\[Theta],Min[0,l],Max[2 Pi,u]},{r,1/4,0.9},
 RegionFunction->regionFun,
 Mesh->None, FrameTicks->None,Frame->False,AspectRatio->1,PlotRangeClipping->False,ImageMargins-> 1,ImagePadding->1.1,
 PlotStyle->OptionValue[PlotStyle],
 PlotRange-> 1.2,
 PlotLegends->{
   Placed[txt,{0.3 Cos[(l+u)/2]+0.5,0.3 Sin[(l+u)/2]+0.5}],
-  If[TrueQ[OptionValue[OuterLables][[1]]],Placed[l,{0.47 Cos[l]+0.5,0.47 Sin[l]+0.5}],Unevaluated[Sequence[]]],
-  If[TrueQ[OptionValue[OuterLables][[2]]],Placed[u,{0.5 Cos[u]+0.5,0.5 Sin[u]+0.5}],Unevaluated[Sequence[]]]
+  If[TrueQ[OptionValue[OuterLables][[1]]],Placed[l,{ImageScaled[{0.4 Cos[l]+0.5,0.4 Sin[l]+0.5}],{-0.5 Cos[l]+0.5,-0.5 Sin[l]+0.5}}],Unevaluated[Sequence[]]],
+  If[TrueQ[OptionValue[OuterLables][[2]]],Placed[u,{ImageScaled[{0.4 Cos[u]+0.5,0.4 Sin[u]+0.5}],{-0.5 Cos[u]+0.5,-0.5 Sin[u]+0.5}}],Unevaluated[Sequence[]]]
 },
 Axes->False]
 
