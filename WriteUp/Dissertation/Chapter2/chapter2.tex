@@ -311,7 +311,17 @@ The second and third rows each sum to zero ($\uR \cdot \mathbf{1} = [\sqrt{3},0,
 \right)
 \end{equation}
 
-One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting colorspace. We must now establish which elements are affected.
+To facilitate the quantization, we next factor the second and third rows such that the largest element of each row equals exactly 1. As previously mentioned, the largest element has the opposite sign to the other two elements in a given row. So, the steps required to perform the factorization are as follows:
+
+\begin{itemize}
+\item[Find the sign of each of the elements.]
+\item[Determine which of those elements is of the opposite sign.]
+\item[Factor each row by that largest element.]
+\end{itemize}
+
+
+
+One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
 
 The sign of the rotation matrix is given by
 
