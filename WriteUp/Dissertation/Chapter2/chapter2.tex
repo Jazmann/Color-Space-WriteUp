@@ -484,14 +484,13 @@ The largest element changes every $\frac{\pi}{6}$ radians repeating every $\pi$ 
 \hline 
 \end{tabular} 
 
-Defining
+By defining $\theta$ as $\theta  = \Theta + \delta\theta$ --- where $\delta\theta = \theta \!\!\mod \Pii{6}$, and $\Theta$ is the starting value for the region in which $\theta$ lies --- and substituting in the function fRe($\phi$):
 
 \begin{align}
-\theta & = \Theta + \delta\theta \quad &\text{where} \quad \delta\theta &= \theta \!\!\mod \Pii{6} \\
 \text{fRe}(\phi) &= \frac{\um 1}{2} \left(1+\sqrt{3} \tan (\phi )\right) 
 \end{align}
 
-we can write
+we can now rewrite the factored rotation as:
 
 \begin{tabular}{|c|c|c|}
 \hline \rule[-2ex]{0pt}{5.5ex}  
@@ -578,10 +577,21 @@ we can write
 \hline 
 \end{tabular} 
 
+This allows us to relate the functions to each other, since they are now essentially the same function, and $\delta\theta$ has the same domain; the values they take have the same range, despite being in different positions in the matrix. 
+
 \subsubsection{Quantizing the Rotation}
 
-The factored rotation $\mathbf{fR}$ contains 4 non integer elements which lie between $-1$ and $0$ which we wish to quantize. 
- 
+The factored rotation $\mathbf{fR}$ contains 4 non-integer elements which lie between $-1$ and $0$, which we wish to quantize. This can be done simply by multiplying it by $2^{n - 2}$, where $n$ is the bit depth of the integer type, and rounding the result: 
+
+\begin{equation}
+ qR(\theta) =
+\textbf{Round}(
+fR(\theta)
+\bigotimes
+2^{n - 2})
+\end{equation}
+
+Since every row in $\mathbf{fR}$ always has at least one 1, we will cover the full range of the integer type. 
 
 One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
 
