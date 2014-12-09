@@ -2,6 +2,13 @@
 %*********************************** Second Chapter **************************************
 %*****************************************************************************************
 
+\newcommand{\um}{\scalebox{0.75}[1.0]{\( - \)}}
+\newcommand{\Pii}[1]{\frac{\pi}{#1} }
+\newcommand{\sine}[1]{\sin \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
+\newcommand{\cosine}[1]{\cos \left( \scalebox{0.75}[1.0]{\( #1 \)} \right)}
+\newcommand{\secant}[1]{\sec \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
+\newcommand{\cosecant}[1]{\csc \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
+
 \newcommand{\unitDst}{\text{uDst}} % Destination in the unit range 0:1
 \newcommand{\uDst}{\unitDst}       % Destination in the unit range 0:1
 \newcommand{\intDst}{\text{iDst}}  % Destination in the integer range dstMin:dstMax
@@ -116,8 +123,8 @@ R_{xyz}(\theta) =
 \left(
 \begin{array}{ccc}
  \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} \\
- -\sqrt{\frac{2}{3}} \sin \left(\theta +\frac{\pi }{6}\right) & \sqrt{\frac{2}{3}} \cos (\theta ) & -\sqrt{\frac{2}{3}} \sin \left(\frac{\pi }{6}-\theta \right) \\
- -\sqrt{\frac{2}{3}} \cos \left(\theta +\frac{\pi }{6}\right) & -\sqrt{\frac{2}{3}} \sin (\theta ) & \sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-\theta \right) \\
+ -\sqrt{\frac{2}{3}} \sine{\theta +\Pii{6} } & \sqrt{\frac{2}{3}} \cos (\theta ) & -\sqrt{\frac{2}{3}} \sine{\Pii{6}-\theta } \\
+ -\sqrt{\frac{2}{3}} \cos \left(\theta +\Pii{6}\right) & -\sqrt{\frac{2}{3}} \sin (\theta ) & \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-\theta \right) \\
 \end{array}
 \right)
 \end{equation}
@@ -145,8 +152,8 @@ $\displaystyle
 \left(
 \begin{array}{cccccccc}
  0 & \frac{1}{\sqrt{3}} & \frac{2}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{2}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{2}{\sqrt{3}} & \sqrt{3} \\
- 0 & -\sqrt{\frac{2}{3}} \sin \left(\theta +\frac{\pi }{6}\right) & \sqrt{\frac{2}{3}} \sin \left(\frac{\pi }{6}-\theta \right) & \sqrt{\frac{2}{3}} \cos (\theta ) & \sqrt{\frac{2}{3}} \sin \left(\theta +\frac{\pi }{6}\right) & -\sqrt{\frac{2}{3}} \sin \left(\frac{\pi }{6}-\theta \right) & -\sqrt{\frac{2}{3}} \cos (\theta ) & 0 \\
- 0 & -\sqrt{\frac{2}{3}} \cos \left(\theta +\frac{\pi }{6}\right) & -\sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-\theta \right) & -\sqrt{\frac{2}{3}} \sin (\theta ) & \sqrt{\frac{2}{3}} \cos \left(\theta +\frac{\pi }{6}\right) & \sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-\theta \right) & \sqrt{\frac{2}{3}} \sin (\theta ) & 0 \\
+ 0 & -\sqrt{\frac{2}{3}} \sin \left(\theta +\Pii{6}\right) & \sqrt{\frac{2}{3}} \sin \left(\Pii{6}-\theta \right) & \sqrt{\frac{2}{3}} \cos (\theta ) & \sqrt{\frac{2}{3}} \sin \left(\theta +\Pii{6}\right) & -\sqrt{\frac{2}{3}} \sin \left(\Pii{6}-\theta \right) & -\sqrt{\frac{2}{3}} \cos (\theta ) & 0 \\
+ 0 & -\sqrt{\frac{2}{3}} \cos \left(\theta +\Pii{6}\right) & -\sqrt{\frac{2}{3}} \cos \left(\Pii{6}-\theta \right) & -\sqrt{\frac{2}{3}} \sin (\theta ) & \sqrt{\frac{2}{3}} \cos \left(\theta +\Pii{6}\right) & \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-\theta \right) & \sqrt{\frac{2}{3}} \sin (\theta ) & 0 \\
 \end{array}
 \right)$}
 \end{multline}
@@ -173,8 +180,8 @@ In the range $0:\frac{\pi}{3}$, both sin and cos are positive, therefore the axi
   % after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
     & Min & Max \\ \hline
   L & \(0\) & \(\sqrt{3}\) \\
-  Ca & \(- \sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\left(\theta -\frac{\pi }{6}\right) \bmod \frac{\pi }{3})\right) \)&\( \sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\left(\theta -\frac{\pi }{6}\right) \bmod \frac{\pi }{3})\right) \)\\
- Cb & \(-\sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\theta  \bmod \frac{\pi }{3})\right) \)&\( \sqrt{\frac{2}{3}} \cos \left(\frac{\pi }{6}-(\theta  \bmod \frac{\pi }{3})\right) \)\\
+  Ca & \(- \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-(\left(\theta -\Pii{6}\right) \bmod \frac{\pi }{3})\right) \)&\( \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-(\left(\theta -\Pii{6}\right) \bmod \frac{\pi }{3})\right) \)\\
+ Cb & \(-\sqrt{\frac{2}{3}} \cos \left(\Pii{6}-(\theta  \bmod \frac{\pi }{3})\right) \)&\( \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-(\theta  \bmod \frac{\pi }{3})\right) \)\\
   \hline
 \end{tabular}
 
@@ -191,7 +198,7 @@ The lengths of the axis after rotation are given by:
 \quad \text{where}  \quad 
 \begin{array}{c}
 \widetilde{\theta} = \theta  \bmod \frac{\pi }{3} \\ 
-\widetilde{\vartheta} = \left(\theta - \frac{\pi }{6}\right) \bmod \frac{\pi }{3}
+\widetilde{\vartheta} = \left(\theta - \Pii{6}\right) \bmod \frac{\pi }{3}
 \end{array}
 \end{equation}
 
@@ -305,8 +312,8 @@ The second and third rows each sum to zero ($\uR \cdot \mathbf{1} = [\sqrt{3},0,
 \left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
- -\sin \left(\theta +\frac{\pi }{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\frac{\pi }{6}\right) \\
- -\cos \left(\theta +\frac{\pi }{6}\right) & - \sin (\theta ) & \cos \left(\theta -\frac{\pi }{6}\right) \\
+ -\sin \left(\theta +\Pii{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\Pii{6}\right) \\
+ -\cos \left(\theta +\Pii{6}\right) & - \sin (\theta ) & \cos \left(\theta -\Pii{6}\right) \\
 \end{array}
 \right)
 \end{equation}
@@ -314,12 +321,166 @@ The second and third rows each sum to zero ($\uR \cdot \mathbf{1} = [\sqrt{3},0,
 To facilitate the quantization, we next factor the second and third rows such that the largest element of each row equals exactly 1. As previously mentioned, the largest element has the opposite sign to the other two elements in a given row. So, the steps required to perform the factorization are as follows:
 
 \begin{itemize}
-\item[Find the sign of each of the elements.]
-\item[Determine which of those elements is of the opposite sign.]
-\item[Factor each row by that largest element.]
+\item{Find the sign of each of the elements.}
+\item{Determine which of those elements is of the opposite sign.}
+\item{Factor each row by that largest element.}
 \end{itemize}
 
+The sign of the elements is most easily seen by looking at the rotation as phase shifted sine functions.
+\begin{equation}
+\text{rR}(\theta )=\left(
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ \left(\theta -\frac{5 \pi }{6}\right) \sin  & \left(\theta +\frac{3 \pi }{6}\right) \sin  & \left(\theta -\Pii{6}\right) \sin  \\
+ \left(\theta -\frac{2 \pi }{6}\right) \sin  & \left(\theta -\frac{6 \pi }{6}\right) \sin  & \left(\theta +\frac{2 \pi }{6}\right) \sin  \\
+\end{array}
+\right)
+\end{equation}
 
+So the signs look like
+
+\begin{equation}
+\left(
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+\raisebox{-10mm}{\includegraphics[width = 20mm]{Chapter2/Figs/SignOfrR21.jpg}}
+\scalebox{0.68}[0.9]{\(
+\begin{cases}
+ 1 & \frac{5 \pi }{6}\leq \theta <\frac{11 \pi }{6} \\
+ \um 1 & \um \Pii{6}\leq \theta <\frac{5 \pi }{6} \\
+\end{cases}
+\)}
+ & 
+ \raisebox{-10mm}{\includegraphics[width = 20mm]{Chapter2/Figs/SignOfrR22.jpg}}
+ \scalebox{0.68}[0.9]{\(
+\begin{cases}
+ 1 & \um \frac{\pi }{2}\leq \theta <\frac{\pi }{2} \\
+ \um 1 & \frac{\pi }{2}\leq \theta <\frac{3 \pi }{2} \\
+  \end{cases}
+  \)}
+ & 
+ \raisebox{-10mm}{\includegraphics[width = 20mm]{Chapter2/Figs/SignOfrR23.jpg}}
+ \scalebox{0.68}[0.9]{\(
+\begin{cases}
+ 1 & \Pii{6}\leq \theta <\frac{7 \pi }{6} \\
+ \um 1 & \um \frac{5 \pi}{6} \leq \theta <\Pii{6} \\
+\end{cases}
+\)}
+ \\
+ \raisebox{-10mm}{\includegraphics[width = 20mm]{Chapter2/Figs/SignOfrR31.jpg}}
+ \scalebox{0.68}[0.9]{\(
+\begin{cases}
+ 1 & \frac{\pi }{3}\leq \theta <\frac{4 \pi }{3} \\
+ \um 1 & \um \frac{2 \pi }{3} \leq \theta <\frac{\pi }{3} \\
+\end{cases}
+\)}
+ & 
+\raisebox{-10mm}{\includegraphics[width = 20mm]{Chapter2/Figs/SignOfrR32.jpg}}
+\scalebox{0.68}[0.9]{\(
+\begin{cases}
+ 1 & -\pi \leq \theta <0 \\
+ -1 & 0\leq \theta <\pi  \\
+ \end{cases}
+ \)}
+ & 
+  \raisebox{-10mm}{\includegraphics[width = 20mm]{Chapter2/Figs/SignOfrR33.jpg}}
+  \scalebox{0.68}[0.9]{\(
+\begin{cases}
+ 1 & \um \frac{\pi }{3}\leq \theta <\frac{2 \pi }{3} \\
+ -1 & \frac{2 \pi }{3}\leq \theta <\frac{5 \pi }{3} \\
+\end{cases}
+\)}
+ \\
+\end{array}
+\right)
+\end{equation}
+
+Each row is a series of three sin waves each $\frac{2\pi}{3}$ out of phase with each other. The rows are$\frac{\pi}{2}$ out of phase with each other.
+The largest element changes every $\frac{\pi}{6}$ radians repeating every $\pi$ radians.
+
+\begin{tabular}{|c|c|c|}
+\hline \rule[-2ex]{0pt}{5.5ex}  & Scale : $fS[\theta]$ &  Factored Rotation : $fR[\theta]$ \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{A} & \( \left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \cos (\theta ) \\
+ \cosine{\Pii{6}-\theta } \\
+\end{array}
+\!\!\!\right) \)& \(  \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ \um\sec (\theta ) \sine{\theta +\Pii{6}} & 1 & \sec (\theta ) \sine{\theta-\Pii{6} } \\
+ \um\cosine{\theta +\Pii{6}} \secant{\Pii{6}-\theta } & \um\secant{\Pii{6}-\theta } \sin (\theta ) & 1 \\
+\end{array}
+\right) \)  \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{B} & \( \left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \um\sine{\theta +\Pii{6}} \\
+ \cosine{\Pii{6}-\theta } \\
+\end{array}
+\!\!\!\right) \)  &  \(  \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ 1 & \um\cos (\theta ) \cosecant{\theta +\Pii{6}} & \cosecant{\theta +\Pii{6}} \sine{\Pii{6}-\theta } \\
+ \um\cosine{\theta +\Pii{6}} \secant{\Pii{6}-\theta } & \um\secant{\Pii{6}-\theta } \sin (\theta ) & 1 \\
+\end{array}
+\!\!\!\right)  \) \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{C} & \(  \left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \um\sine{\theta +\Pii{6}} \\
+ \um\sin (\theta ) \\
+\end{array}
+\!\!\!\right) \)  & \(  \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ 1 & \um\cos (\theta ) \cosecant{\theta +\Pii{6}} & \cosecant{\theta +\Pii{6}} \sine{\Pii{6}-\theta } \\
+ \cosine{\theta +\Pii{6}} \csc (\theta ) & 1 & \um\cosine{\Pii{6}-\theta } \csc (\theta ) \\
+\end{array}
+\!\!\!\right) \)  \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{D} & \( \left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \sine{\theta-\Pii{6} } \\
+ \um\sin (\theta ) \\
+\end{array}
+\!\!\!\right) \)  & \(  \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ \cosecant{\Pii{6}-\theta } \sine{\theta +\Pii{6}} & \um\cos (\theta ) \cosecant{\Pii{6}-\theta } & 1 \\
+ \cosine{\theta +\Pii{6}} \csc (\theta ) & 1 & -\cosine{\Pii{6}-\theta } \csc (\theta ) \\
+\end{array}
+\!\!\!\right) \)  \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{E} & \(  \left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \sine{\theta-\Pii{6} } \\
+ \um\cosine{\theta +\Pii{6}} \\
+\end{array}
+\!\!\!\right)\)  & \(  \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ \cosecant{\Pii{6}-\theta } \sine{\theta +\Pii{6}} & \um\cos (\theta ) \cosecant{\Pii{6}-\theta } & 1 \\
+ 1 & \secant{\theta +\Pii{6}} \sin (\theta ) & \um\cosine{\Pii{6}-\theta } \secant{\theta +\Pii{6}} \\
+\end{array}
+\!\!\!\right) \)  \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{F} &\( 
+\left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \cos (\theta ) \\
+ \um\cosine{\theta +\Pii{6}} \\
+\end{array}
+\!\!\!\right)\)   & \( \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ \um\sec (\theta ) \sine{\theta +\Pii{6}} & 1 & \sec (\theta ) \sine{\theta-\Pii{6}} \\
+ 1 & \secant{\theta +\Pii{6}} \sin (\theta ) & \um\cosine{\Pii{6}-\theta } \secant{\theta +\Pii{6}} \\
+\end{array}
+\!\!\!\right)  \)  \\ 
+\hline 
+\end{tabular} 
 
 One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
 
@@ -328,12 +489,7 @@ The sign of the rotation matrix is given by
 \begin{equation}
 \left(
 \begin{array}{ccc}
-1
- &
-1
- &
-1
- \\
+1 & 1  & 1 \\
 \begin{cases}
    1 & \frac{5 \pi }{6}<\theta <\frac{11 \pi }{6} \\
  -1 & \left\lgroup \begin{array}{c} 0\leq \theta <\frac{5 \pi }{6} \\ \frac{11 \pi }{6}<\theta <2 \pi  \end{array} \right.\\
@@ -345,8 +501,8 @@ The sign of the rotation matrix is given by
 \end{cases}
  &
 \begin{cases}
- 1 & \frac{\pi }{6}<\theta <\frac{7 \pi }{6} \\
- -1 & \left\lgroup \begin{array}{c}  0\leq \theta <\frac{\pi }{6} \\ \frac{7 \pi }{6}<\theta <2 \pi  \end{array} \right.\\
+ 1 & \Pii{6}<\theta <\frac{7 \pi }{6} \\
+ -1 & \left\lgroup \begin{array}{c}  0\leq \theta <\Pii{6} \\ \frac{7 \pi }{6}<\theta <2 \pi  \end{array} \right.\\
 \end{cases}
  \\
 
@@ -378,21 +534,21 @@ We are interested in which elements in each row share the same sign, as these wi
  0 & 0 & 0 \\
  0 & 0 & 0 \\
 \end{array}
-\right) & \theta =\frac{\pi }{6}\lor \theta =\frac{\pi }{2}\lor \theta =\frac{5 \pi }{6}\lor \theta =\frac{7 \pi }{6}\lor \theta =\frac{3 \pi }{2}\lor \theta =\frac{11 \pi }{6} \\
+\right) & \theta =\Pii{6}\lor \theta =\frac{\pi }{2}\lor \theta =\frac{5 \pi }{6}\lor \theta =\frac{7 \pi }{6}\lor \theta =\frac{3 \pi }{2}\lor \theta =\frac{11 \pi }{6} \\
  \left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
  -1 & 1 & 1 \\
  -1 & 1 & 1 \\
 \end{array}
-\right) & \frac{\pi }{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
+\right) & \Pii{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
  \left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
  1 & -1 & 1 \\
  1 & -1 & 1 \\
 \end{array}
-\right) & 0\leq \theta <\frac{\pi }{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
+\right) & 0\leq \theta <\Pii{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
  \left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
@@ -405,8 +561,8 @@ We are interested in which elements in each row share the same sign, as these wi
 So for a pixel $\{R,G,B\}$  % \parpic{\includegraphics[width=100mm]{Chapter2/Figs/ErrorIntheRotation.eps}}
 \begin{equation}\label{eq:errorFreeConditions}
 \raisebox{-22mm}{\includegraphics[width = 44mm]{Chapter2/Figs/ErrorIntheRotation.eps}}\begin{cases}
- G + B < 1 & \frac{\pi }{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
- R + B < 1 & 0\leq \theta <\frac{\pi }{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
+ G + B < 1 & \Pii{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
+ R + B < 1 & 0\leq \theta <\Pii{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
  R + G < 1 & \frac{\pi }{2}<\theta <\frac{5 \pi }{6}\lor \frac{3 \pi }{2}<\theta <\frac{11 \pi }{6} \\
 \end{cases}
 \end{equation}
@@ -428,8 +584,8 @@ where 1 indicates that the element shares its sign with another element in the s
 \left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
- -\sin \left(\theta +\frac{\pi }{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\frac{\pi }{6}\right) \\
- -\cos \left(\theta +\frac{\pi }{6}\right) & - \sin (\theta ) & \cos \left(\theta -\frac{\pi }{6}\right) \\
+ -\sin \left(\theta +\Pii{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\Pii{6}\right) \\
+ -\cos \left(\theta +\Pii{6}\right) & - \sin (\theta ) & \cos \left(\theta -\Pii{6}\right) \\
 \end{array}
 \right)
 \right)
@@ -499,8 +655,8 @@ using $\tRange(\theta,\mu,\sigma) = \min\left\{\Delta(\mu,\sigma), 1 \right\} \s
 \left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
- -\sin \left(\theta +\frac{\pi }{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\frac{\pi }{6}\right) \\
- -\cos \left(\theta +\frac{\pi }{6}\right) & - \sin (\theta ) & \cos \left(\theta -\frac{\pi }{6}\right) \\
+ -\sin \left(\theta +\Pii{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\Pii{6}\right) \\
+ -\cos \left(\theta +\Pii{6}\right) & - \sin (\theta ) & \cos \left(\theta -\Pii{6}\right) \\
 \end{array}
 \right)
 \right)
@@ -655,7 +811,7 @@ We need to consider the requested compression of information alongside the sprea
 \begin{align}
 L_1 &= \sqrt{3} \\
 L_2(\theta)  &= \sqrt{\frac{2}{3}} \sin \left(\widetilde{\vartheta}\right) + \sqrt{2} \cos \left(\widetilde{\vartheta}\right)  & where & & \widetilde{\theta} = \theta  \bmod \frac{\pi }{3} \\
-L_3(\theta)  &= \sqrt{\frac{2}{3}} \sin \left(\widetilde{\theta}\right) + \sqrt{2} \cos \left(\widetilde{\theta}\right) & & & \widetilde{\vartheta} = \left(\theta - \frac{\pi }{6}\right) \bmod \frac{\pi }{3}
+L_3(\theta)  &= \sqrt{\frac{2}{3}} \sin \left(\widetilde{\theta}\right) + \sqrt{2} \cos \left(\widetilde{\theta}\right) & & & \widetilde{\vartheta} = \left(\theta - \Pii{6}\right) \bmod \frac{\pi }{3}
 \end{align}
 
 The destination color space is designed with a maximum discretization $\dstRange$ given by the required data type.
