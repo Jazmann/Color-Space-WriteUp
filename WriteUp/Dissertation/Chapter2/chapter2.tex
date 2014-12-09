@@ -494,7 +494,8 @@ Defining
 we can write
 
 \begin{tabular}{|c|c|c|}
-\hline \rule[-2ex]{0pt}{5.5ex}  & Scale : $fS[\theta]$ &  Factored Rotation : $fR[\theta]$ \\ 
+\hline \rule[-2ex]{0pt}{5.5ex}  
+\raisebox{-13mm}{\includegraphics[width = 26mm]{Chapter2/Figs/fRWheel.jpg}} & Scale : $fS[\theta]$ &  Factored Rotation : $fR[\theta]$ \\ 
 \hline \rule[-2ex]{0pt}{5.5ex} \bf{A} & \( \left(\!\!\!
 \begin{array}{c}
  1 \\
@@ -576,6 +577,10 @@ we can write
 \!\!\!\right)  \)  \\ 
 \hline 
 \end{tabular} 
+
+\subsubsection{Quantizing the Rotation}
+
+The factored rotation $\mathbf{fR}$ contains 4 non integer elements which lie between $-1$ and $0$ which we wish to quantize.  
 
 One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
 
