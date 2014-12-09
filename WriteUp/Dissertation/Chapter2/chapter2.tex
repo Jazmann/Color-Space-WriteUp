@@ -9,6 +9,8 @@
 \newcommand{\secant}[1]{\sec \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
 \newcommand{\cosecant}[1]{\csc \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
 
+\newcommand{\fReq}[1]{\text{fRe}\left( \scalebox{0.75}[1.0]{\( #1 \)}\right) }
+
 \newcommand{\unitDst}{\text{uDst}} % Destination in the unit range 0:1
 \newcommand{\uDst}{\unitDst}       % Destination in the unit range 0:1
 \newcommand{\intDst}{\text{iDst}}  % Destination in the integer range dstMin:dstMax
@@ -477,6 +479,99 @@ The largest element changes every $\frac{\pi}{6}$ radians repeating every $\pi$ 
  1 & 1 & 1 \\
  \um\sec (\theta ) \sine{\theta +\Pii{6}} & 1 & \sec (\theta ) \sine{\theta-\Pii{6}} \\
  1 & \secant{\theta +\Pii{6}} \sin (\theta ) & \um\cosine{\Pii{6}-\theta } \secant{\theta +\Pii{6}} \\
+\end{array}
+\!\!\!\right)  \)  \\ 
+\hline 
+\end{tabular} 
+
+Defining
+
+\begin{align}
+\theta & = \Theta + \delta\theta \quad \text{where} \quad \Theta = \theta \mod \Pii{6} \\
+\text{fRe}(\phi) &= \frac{\um 1}{2} \left(1+\sqrt{3} \tan (\phi )\right) 
+\end{align}
+
+we can write
+
+\begin{tabular}{|c|c|c|}
+\hline \rule[-2ex]{0pt}{5.5ex}  & Scale : $fS[\theta]$ &  Factored Rotation : $fR[\theta]$ \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{A} & \( \left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \cos (\theta ) \\
+ \cosine{\Pii{6}-\theta } \\
+\end{array}
+\!\!\!\right) \)& \(  \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ \fReq{\delta \theta } & 1 & \fReq{-\delta \theta } \\
+ \fReq{\frac{\pi }{6}-\delta \theta }& \fReq{\delta \theta -\frac{\pi }{6}} & 1 \\
+\end{array}
+\right) \)  \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{B} & \( \left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \um\sine{\theta +\Pii{6}} \\
+ \cosine{\Pii{6}-\theta } \\
+\end{array}
+\!\!\!\right) \)  &  \(  \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ 1 & \fReq{\frac{\pi }{6}-\delta \theta } & \fReq{\delta \theta -\frac{\pi }{6}} \\
+ \fReq{-\delta \theta } & \fReq{\delta \theta } & 1 \\
+\end{array}
+\!\!\!\right)  \) \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{C} & \(  \left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \um\sine{\theta +\Pii{6}} \\
+ \um\sin (\theta ) \\
+\end{array}
+\!\!\!\right) \)  & \(  \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ 1 & \fReq{-\delta \theta } & \fReq{\delta \theta } \\
+ \fReq{\delta \theta -\frac{\pi }{6}} & 1 & \fReq{\frac{\pi }{6}-\delta \theta } \\
+\end{array}
+\!\!\!\right) \)  \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{D} & \( \left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \sine{\theta-\Pii{6} } \\
+ \um\sin (\theta ) \\
+\end{array}
+\!\!\!\right) \)  & \(  \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ \fReq{\frac{\pi }{6}-\delta \theta } & \fReq{\delta \theta -\frac{\pi }{6}} & 1 \\
+ \fReq{\delta \theta } & 1 & \fReq{-\delta \theta } \\
+\end{array}
+\!\!\!\right) \)  \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{E} & \(  \left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \sine{\theta-\Pii{6} } \\
+ \um\cosine{\theta +\Pii{6}} \\
+\end{array}
+\!\!\!\right)\)  & \(  \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ \fReq{-\delta \theta } & \fReq{\delta \theta } & 1 \\
+ 1 & \fReq{\frac{\pi }{6}-\delta \theta } & \fReq{\delta \theta -\frac{\pi }{6}} \\
+\end{array}
+\!\!\!\right) \)  \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{F} &\( 
+\left(\!\!\!
+\begin{array}{c}
+ 1 \\
+ \cos (\theta ) \\
+ \um\cosine{\theta +\Pii{6}} \\
+\end{array}
+\!\!\!\right)\)   & \( \left(\!\!\!
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ \fReq{\delta \theta -\frac{\pi }{6}} & 1 & \fReq{\frac{\pi }{6}-\delta \theta } \\
+ 1 & \fReq{-\delta \theta } & \fReq{\delta \theta } \\
 \end{array}
 \!\!\!\right)  \)  \\ 
 \hline 
