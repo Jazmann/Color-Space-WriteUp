@@ -616,7 +616,7 @@ Thus far, we have assumed that we can achieve a bit depth of two less than the b
 
 Given that the source type with a bit depth of $n$, we can work out any errors introduced by finding the difference between using the quantized rotation $qR$ and the unquantized rotation $fR$. All the factoring of the rotation is mathematically exact up to and including $fR$, so any errors that are introduced will be during the rounding.
 
-We are interested in the error introduced in the quantization so we introduce the perturbation associated with the transform $\delta fR(\theta)$. 
+We are interested in the error introduced in the quantization, so we introduce the perturbation associated with the transform $\delta fR(\theta)$. 
 
 
 
@@ -632,7 +632,7 @@ We are interested in the error introduced in the quantization so we introduce th
 \bigotimes
 qR(\theta) + \delta fR(\theta)
 \end{equation}
-because $fRO$ works equivilantly for both $qR$ and $fR$
+because $fRO$ works equivalently for both $qR$ and $fR$
 \begin{align}
 \delta fR(\theta) &= \fRO{  fR(\theta) -\left(
 \begin{array}{c}
@@ -663,7 +663,7 @@ so
 \right) }
 \end{equation}
 
-The perturbation introduced to each channel is further simplified by recognising that $err(-\phi)=-err(\phi)$, allowing us to analyse the quantization error in terms of just one function $err$.
+The perturbation introduced to each channel is further simplified by recognizing that $err(-\phi)=-err(\phi)$, allowing us to analyze the quantization error in terms of just one function $err$.
 
 
 One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
