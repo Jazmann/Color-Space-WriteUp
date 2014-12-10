@@ -597,7 +597,13 @@ The factored rotation $\mathbf{fR}$ contains 4 non-integer elements which lie be
 fR(\theta)]
 \end{equation}
 
-Since every row in $\mathbf{fR}$ always has an element equal to 1, we will cover the full range of the integer type. 
+Since every row in $\mathbf{fR}$ always has an element equal to 1, we will cover the full range of the integer type.
+
+Thus far, we have assumed that we can achieve a bit depth of two less than the bit depth of the source type for the representation of the rotation matrix. We are now in a position to assess whether the representation introduces any errors.
+
+Given that the source type with a bit depth of $n$, we can work out any errors introduced by finding the difference between using the quantized rotation $qR$ and the unquantized rotation $fR$. All the factoring of the rotation is mathematically exact up to and including $fR$, so any errors that are introduced will be during the rounding.
+
+
 
 One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
 
