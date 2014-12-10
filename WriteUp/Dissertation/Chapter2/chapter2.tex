@@ -651,6 +651,25 @@ qR(\theta)  } \\
 \right)
 \end{align}
 
+the perturbation depends upon
+\begin{equation}
+err(\phi)=2^{2-n} \text{Round}\left[2^{n-2} \text{fRe}(\phi )\right]-\text{fRe}(\phi ) 
+\end{equation}
+
+so
+
+\begin{align}
+\delta fR(\theta) &= 
+\left(
+\begin{array}{ccc}
+ 0 & 0 & 0 \\
+ err(\phi) & 0 & err(-\phi) \
+ err(\frac{\pi }{6}-\phi)    & err(\phi-\frac{\pi }{6}) & 0 \\
+\end{array}
+\right)
+\end{align}
+
+which allows us to analyse the quantization error in terms of just one function $err$.
 
 
 One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
