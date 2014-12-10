@@ -640,15 +640,7 @@ because $fRO$ works equivilantly for both $qR$ and $fR$
 \end{array}
 \right)
 \bigotimes
-qR(\theta)  } \\
-&= 
-\left(
-\begin{array}{ccc}
- 0 & 0 & 0 \\
- 2^{2-n} \text{Round}\left[2^{n-2} \text{fRe}(\delta \theta )\right]-\text{fRe}(\delta \theta ) & 0 & 2^{2-n} \text{Round}\left[2^{n-2} \text{fRe}(-\delta \theta )\right]-\text{fRe}(-\delta \theta ) \\
- 2^{2-n} \text{Round}\left[2^{n-2} \text{fRe}\left(\frac{\pi }{6}-\delta \theta \right)\right]-\text{fRe}\left(\frac{\pi }{6}-\delta \theta \right) & 2^{2-n} \text{Round}\left[2^{n-2} \text{fRe}\left(\delta \theta -\frac{\pi }{6}\right)\right]-\text{fRe}\left(\delta \theta -\frac{\pi }{6}\right) & 0 \\
-\end{array}
-\right)
+qR(\theta)  } 
 \end{align}
 
 the perturbation depends upon
@@ -669,9 +661,7 @@ so
 \right) }
 \end{equation}
 
-The perturbation introduced to each channel is further simplified by recognising that $err(-\phi)=-err(\phi)$.
-
-which allows us to analyse the quantization error in terms of just one function $err$.
+The perturbation introduced to each channel is further simplified by recognising that $err(-\phi)=-err(\phi)$, allowing us to analyse the quantization error in terms of just one function $err$.
 
 
 One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
