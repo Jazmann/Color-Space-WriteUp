@@ -597,7 +597,23 @@ The factored rotation $\mathbf{fR}$ contains 4 non-integer elements which lie be
 fR(\theta)]
 \end{equation}
 
-Since every row in $\mathbf{fR}$ always has an element equal to 1, we will cover the full range of the integer type. 
+Since every row in $\mathbf{fR}$ always has an element equal to 1, we will exploit the full range of the integer type. 
+
+We are interested in the error introduced in the quantization so we introduce the perturbation associated with the transform $\delta fR(\theta)$. 
+
+
+\begin{equation}
+ fR(\theta) =
+\left(
+\begin{array}{c}
+ 1  \\
+ 2^{2-n } \\
+ 2^{2-n }  \\
+\end{array}
+\right)
+\bigotimes
+qR(\theta) + \delta fR(\theta)
+\end{equation}
 
 One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
 
