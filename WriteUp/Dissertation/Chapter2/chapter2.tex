@@ -660,14 +660,16 @@ so
 
 \begin{equation}
 \delta fR(\theta) = 
-\left(
+ \fRO{ \left(
 \begin{array}{ccc}
  0 & 0 & 0 \\
  err(\phi) & 0 & err(-\phi) \\
  err(\frac{\pi }{6}-\phi)    & err(\phi-\frac{\pi }{6}) & 0 \\
 \end{array}
-\right)
+\right) }
 \end{equation}
+
+The perturbation introduced to each channel is further simplified by recognising that $err(-\phi)=-err(\phi)$.
 
 which allows us to analyse the quantization error in terms of just one function $err$.
 
