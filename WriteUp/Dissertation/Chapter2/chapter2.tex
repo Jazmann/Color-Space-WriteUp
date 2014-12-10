@@ -577,7 +577,18 @@ we can now rewrite the factored rotation as:
 \hline 
 \end{tabular} 
 
-We can now relate the functions to each other, since they are now essentially the same function, and $\delta\theta$ has the same domain; the values they take have the same range, despite being in different positions in the matrix. This allows us to write the piecewise function $fR$ independently as a function which re-orders the elements of the matrix in region A appropriately for the other regions.
+\newcommand{\fRO}[1]{\text{fRO}\left( #1,\theta\right)}
+We can now relate the functions to each other, since they are now essentially the same function, and $\delta\theta$ has the same domain; the values they take have the same range, despite being in different positions in the matrix. This allows us to write the piecewise function $fR$ independently as a function $fRO$ which re-orders the elements of the matrix in region $A$ appropriately for the other regions.
+
+\begin{equation}
+\text{fR}(\theta) = \fRO{\left(
+\begin{array}{ccc}
+ 1 & 1 & 1 \\
+ \text{fRe} (\delta \theta)  & 1 & \text{fRe} (-\delta \theta ) \\
+ \text{fRe} \left(\frac{\pi }{6}-\delta \theta \right) & \text{fRe} \left(\delta \theta -\frac{\pi }{6}\right) & 1 \\
+\end{array}
+\right) }
+\end{equation}
 
 \subsubsection{Quantizing the Rotation}
 
@@ -620,15 +631,6 @@ We are interested in the error introduced in the quantization so we introduce th
 qR(\theta) + \delta fR(\theta)
 \end{equation}
 
-\begin{equation}
-\left(
-\begin{array}{ccc}
- 1 & 1 & 1 \\
- \text{fRe} \delta \theta  & 1 & \text{fRe} (-\delta \theta ) \\
- \text{fRe} \left(\frac{\pi }{6}-\delta \theta \right) & \text{fRe} \left(\delta \theta -\frac{\pi }{6}\right) & 1 \\
-\end{array}
-\right)
-\end{equation}
 
 One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
 
