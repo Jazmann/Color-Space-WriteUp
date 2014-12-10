@@ -597,11 +597,28 @@ The factored rotation $\mathbf{fR}$ contains 4 non-integer elements which lie be
 fR(\theta)]
 \end{equation}
 
-Since every row in $\mathbf{fR}$ always has an element equal to 1, we will cover the full range of the integer type.
+Since every row in $\mathbf{fR}$ always has an element equal to 1, we will exploit the full range of the integer type. 
 
 Thus far, we have assumed that we can achieve a bit depth of two less than the bit depth of the source type for the representation of the rotation matrix. We are now in a position to assess whether the representation introduces any errors.
 
 Given that the source type with a bit depth of $n$, we can work out any errors introduced by finding the difference between using the quantized rotation $qR$ and the unquantized rotation $fR$. All the factoring of the rotation is mathematically exact up to and including $fR$, so any errors that are introduced will be during the rounding.
+
+We are interested in the error introduced in the quantization so we introduce the perturbation associated with the transform $\delta fR(\theta)$. 
+
+
+
+\begin{equation}
+ fR(\theta) =
+\left(
+\begin{array}{c}
+ 1  \\
+ 2^{2-n } \\
+ 2^{2-n }  \\
+\end{array}
+\right)
+\bigotimes
+qR(\theta) + \delta fR(\theta)
+\end{equation}
 
 
 
