@@ -12,6 +12,38 @@
 %}
 
 
+\newcommand\R[1][]{
+  \ifstrempty{#1}{
+    \mathbf{R}
+  }{
+    \mathbf{R}\left( #1 \right)
+  }
+} 
+
+\newcommand\fR[1][]{
+  \ifstrempty{#1}{
+    \mathbf{fR}
+  }{
+    \mathbf{fR}\left( #1 \right)
+  }
+} 
+
+\newcommand\rR[1][]{
+  \ifstrempty{#1}{
+    \mathbf{qR}
+  }{
+    \mathbf{qR}\left( #1 \right)
+  }
+} 
+
+\newcommand\qR[1][]{
+  \ifstrempty{#1}{
+    \mathbf{qR}
+  }{
+    \mathbf{qR}\left( #1 \right)
+  }
+} 
+
 \newcommand\dfR[1][]{
   \ifstrempty{#1}{
     \delta \mathbf{fR}
@@ -311,7 +343,7 @@ During the color space conversion, the pixel values are represented in three dif
 The rotation operation consists of 9 multiplications and 6 additions and constitutes the majority of the computational cost. It is this operation which we will focus our optimization efforts upon. The redistribution transformation, which comes after the rotation, processes each pixel channel value separately. This allows us to pull apart the rotation matrix by scaling each row arbitrarily, handing the knowledge of the scaling to the distribution. The goal of this section is to represent the matrix multiplication in such a way that we avoid floating-point operations.
 
 \begin{equation}\label{eq:NormRxyz4}
- R(\theta) =
+ \R[\theta] =
 \left(
 \begin{array}{c}
  -  \\
@@ -320,10 +352,10 @@ The rotation operation consists of 9 multiplications and 6 additions and constit
 \end{array}
 \right)
 \bigotimes
-qR(\theta)\text{where}\quad{qR(\theta)\in\mathbb{Z}}
+\qR[\theta]\;\text{where}\quad{\qR[\theta]\in\mathbb{Z}}
 \end{equation}
 
-Given an infinite set of integers, this is not a problem. However, we wish to choose $qR$ to lie in a finite range, which depends on the color depth of the source. Ideally, we'd like the result of the rotation to have a bit depth not greater than twice the bit depth of the source, i.e. for 8-bit pixel values, we would like the rotated LCaCb values to be expressible as 16-bit integers. To accommodate 3 multiplications and 2 additions, the matrix $qR$ needs to be represented in two fewer bits than the source.
+Given an infinite set of integers, this is not a problem. However, we wish to choose $\qR$ to lie in a finite range, which depends on the color depth of the source. Ideally, we'd like the result of the rotation to have a bit depth not greater than twice the bit depth of the source, i.e. for 8-bit pixel values, we would like the rotated LCaCb values to be expressible as 16-bit integers. To accommodate 3 multiplications and 2 additions, the matrix $\qR$ needs to be represented in two fewer bits than the source.
 
 This unit range is discretized into steps of $\frac{1}{\srcRange}$ and $\frac{1}{\tRange}$. The question then is to what degree of accuracy do we need to represent the internal numerics? If we represent the transformation in a discrete type $\discreteR$, we can express the problem in terms of the largest perturbation which can be made to the transformation without affecting the result.
 
@@ -343,7 +375,7 @@ The continuous rotation $\uR$ can be expressed as the sum of its discrete repres
 therefore\quad \dfrac{-1}{\rRange} < \delR  < \dfrac{1}{\rRange}
 \end{eqnarray}
 
-It should be noted that --- unlike the source type \uSrc --- the perturbation can be negative. The definition of the function $int$ results in the sign of the perturbation matching the sign of the discertized transformation matrix. We must therefore consider both the maximum and minimum of $\delT$. As $0 \le\uSrc \le 1$ the extrema of $\delT$ are found where $\uSrc$ is a vector with elements of 0 and 1. If the matrix is decomposed into a sum of positive and negative elements $\delT = \delT_+ + \delT_-$ then the extrema are given by $\max(\delT_+ \cdot \mathbf{1})$ and $\min(\delT_- \cdot \mathbf{1})$. Where the elements are positive or negative is determined by the sign of the elements in the rotation matrix $\uR$.
+It should be noted that --- unlike the source type \uSrc --- the perturbation can be negative. The definition of the function $int$ results in the sign of the perturbation matching the sign of the discretized transformation matrix. We must therefore consider both the maximum and minimum of $\delT$. As $0 \le\uSrc \le 1$ the extrema of $\delT$ are found where $\uSrc$ is a vector with elements of 0 and 1. If the matrix is decomposed into a sum of positive and negative elements $\delT = \delT_+ + \delT_-$ then the extrema are given by $\max(\delT_+ \cdot \mathbf{1})$ and $\min(\delT_- \cdot \mathbf{1})$. Where the elements are positive or negative is determined by the sign of the elements in the rotation matrix $\uR$.
 
 \subsubsection{Factoring the Rotation}
 
@@ -379,7 +411,7 @@ To facilitate the quantization, we next factor the second and third rows such th
 
 The sign of the elements is most easily seen by looking at the rotation as phase shifted sine functions.
 \begin{equation}
-\text{rR}(\theta )=\left(
+\text{\rR}[\theta]=\left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
  \sine{\theta -\frac{5 \pi }{6}}  & \sine{\theta +\frac{3 \pi }{6}}  & \sine{\theta -\Pii{6}}  \\
@@ -639,10 +671,10 @@ we can now rewrite the factored rotation as:
 \end{tabular} 
 
 
-We can now relate the functions to each other, since they are now essentially the same function, and $\delta\theta$ has the same domain; the values they take have the same range, despite being in different positions in the matrix. This allows us to write the piecewise function $fR$ independently as a function $fRO$ which re-orders the elements of the matrix in region $A$ appropriately for the other regions.
+We can now relate the functions to each other, since they are now essentially the same function, and $\delta\theta$ has the same domain; the values they take have the same range, despite being in different positions in the matrix. This allows us to write the piecewise function $\fR$ independently as a function $\fRO$ which re-orders the elements of the matrix in region $\mathbf{A}$ appropriately for the other regions.
 
 \begin{equation}
-\text{fR}(\theta) = \fRO{\left(
+\text{\fR}[\theta] = \fRO{\left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
  \text{fRe} (\delta \theta)  & 1 & \text{fRe} (-\delta \theta ) \\
@@ -727,7 +759,7 @@ so
 
 The perturbation introduced to each channel is further simplified by recognizing that $\fRe[-\phi]=-1-\fRe[\phi]$, which allows us to find $\dfRe[-\phi]=-\dfRe[\phi]$ i.e. that the sum of the two perturbations equals zero. we can analyze the quantization error in terms of just one function $\dfRe$.
 
-At this point, we should recognize that the perturbation in a channel is described by $\pm\dfRe[\phi]$ or $\pm\dfRe[\phi-\Pii{6}]$. So, because we're more interested in the error and the bounds on that than we are in the error for any particular $\theta$ --- $\theta$ being an input design parameter to the algorithm --- it's more useful to have a function which returns values of $\theta$ for a given error. To this end, we can find the inverse function for the perturbation function $err$. The perturbation to each channel lies between -2 and 2, which is, unfortunately, twice the acceptable perturbation for zero error (See Figure~\ref{fig:PtbToChan}). However, this is expected; we designed the quantization to what we desired rather than what we expected to be possible. At this point, there are no more tricks --- no more factorizations --- nothing more that we can do. The only thing left to do now is to specify which values of $\theta$ for which the quantization produces no error, and the values which do result in unacceptable error, i.e. the values of $\theta$ for which any of these four functions is greater than 1. 
+At this point, we should recognize that the perturbation in a channel is described by $\pm\dfRe[\phi]$ or $\pm\dfRe[\phi-\Pii{6}]$. So, because we're more interested in the error and the bounds on that than we are in the error for any particular $\theta$ --- $\theta$ being an input design parameter to the algorithm --- it's more useful to have a function which returns values of $\theta$ for a given error. To this end, we can find the inverse function for the perturbation function $\pm\dfRe[\phi-\Pii{6}]$. The perturbation to each channel lies between -2 and 2, which is, unfortunately, twice the acceptable perturbation for zero error (See Figure~\ref{fig:PtbToChan}). However, this is expected; we designed the quantization to what we desired rather than what we expected to be possible. At this point, there are no more tricks --- no more factorizations --- nothing more that we can do. The only thing left to do now is to specify which values of $\theta$ for which the quantization produces no error, and the values which do result in unacceptable error, i.e. the values of $\theta$ for which any of these four functions is greater than 1. 
 
 \begin{figure}[h!]
   \centering
