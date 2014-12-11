@@ -411,7 +411,7 @@ To facilitate the quantization, we next factor the second and third rows such th
 
 The sign of the elements is most easily seen by looking at the rotation as phase shifted sine functions.
 \begin{equation}
-\text{\rR}[\theta]=\left(
+\rR[\theta]=\left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
  \sine{\theta -\frac{5 \pi }{6}}  & \sine{\theta +\frac{3 \pi }{6}}  & \sine{\theta -\Pii{6}}  \\
@@ -674,7 +674,7 @@ we can now rewrite the factored rotation as:
 We can now relate the functions to each other, since they are now essentially the same function, and $\delta\theta$ has the same domain; the values they take have the same range, despite being in different positions in the matrix. This allows us to write the piecewise function $\fR$ independently as a function $\fRO$ which re-orders the elements of the matrix in region $\mathbf{A}$ appropriately for the other regions.
 
 \begin{equation}
-\text{\fR}[\theta] = \fRO{\left(
+\fR[\theta] = \fRO{\left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
  \text{fRe} (\delta \theta)  & 1 & \text{fRe} (-\delta \theta ) \\
@@ -703,7 +703,7 @@ The factored rotation $\mathbf{fR}$ contains 4 non-integer elements which lie be
 fR(\theta)]
 \end{equation}
 
-Since every row in $\mathbf{fR}$ always has an element equal to 1, we will exploit the full range of the integer type. 
+Since every row in $\fR$ always has an element equal to 1, we will exploit the full range of the integer type. 
 
 Thus far, we have assumed that we can achieve a bit depth of two less than the bit depth of the source type for the representation of the rotation matrix. We are now in a position to assess whether the representation introduces any errors.
 
