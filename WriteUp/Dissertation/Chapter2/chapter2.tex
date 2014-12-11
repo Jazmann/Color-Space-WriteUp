@@ -20,22 +20,17 @@
   }
 } 
 
-\newcommand\fR[1][]{
+% ----- qR definitions -------
+% The scaling for the matrix
+\newcommand\qS[1][]{
   \ifstrempty{#1}{
-    \mathbf{fR}
+    \vec{qS}
   }{
-    \mathbf{fR}\left( #1 \right)
+    \vec{qS}\left( #1 \right)
   }
 } 
 
-\newcommand\rR[1][]{
-  \ifstrempty{#1}{
-    \mathbf{qR}
-  }{
-    \mathbf{qR}\left( #1 \right)
-  }
-} 
-
+% The matrix
 \newcommand\qR[1][]{
   \ifstrempty{#1}{
     \mathbf{qR}
@@ -44,6 +39,82 @@
   }
 } 
 
+
+% The matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
+\newcommand\qRe[1][]{
+  \ifstrempty{#1}{
+     \mathbf{qR}\text{e}
+  }{
+     \mathbf{qR}\text{e}\left( #1 \right)
+  }
+} 
+
+% The perturbation to the matrix 
+\newcommand\dqR[1][]{
+  \ifstrempty{#1}{
+    \delta \mathbf{qR}
+  }{
+    \delta \mathbf{qR}\left( #1 \right)
+  }
+} 
+
+% The perturbation to the matrix in the 0 < theta < Pi/6 region \dqR[\theta]=\fRO[ \dqRe[\theta], \theta]
+\newcommand\dqRe[1][]{
+  \ifstrempty{#1}{
+    \delta \mathbf{qR}\text{e}
+  }{
+    \delta \mathbf{qR}\text{e}\left( #1 \right)
+  }
+} 
+
+
+% ----- fR definitions -------
+% The scaling for the matrix
+\newcommand\fS[1][]{
+  \ifstrempty{#1}{
+    \vec{fS}
+  }{
+    \vec{fS}\left( #1 \right)
+  }
+} 
+
+% The scaling ordering for the matrix
+\newcommand\fSO[1][]{
+  \ifstrempty{#1}{
+    \text{fSO}
+  }{
+    \text{fSO}\left[ #1 \right]
+  }
+} 
+
+% The scaling for the matrix  in the 0 < theta < Pi/6 region
+\newcommand\fSe[1][]{
+  \ifstrempty{#1}{
+    \text{fSe}
+  }{
+    \text{fSe}\left[#1 \right)
+  }
+} 
+
+% The matrix
+\newcommand\fR[1][]{
+  \ifstrempty{#1}{
+    \mathbf{fR}
+  }{
+    \mathbf{fR}\left( #1 \right)
+  }
+} 
+
+% The matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
+\newcommand\fRe[1][]{
+  \ifstrempty{#1}{
+     \mathbf{fR}\text{e}
+  }{
+     \mathbf{fR}\text{e}\left( #1 \right)
+  }
+} 
+
+% The perturbation to the matrix 
 \newcommand\dfR[1][]{
   \ifstrempty{#1}{
     \delta \mathbf{fR}
@@ -52,23 +123,16 @@
   }
 } 
 
+% The perturbation to the matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
 \newcommand\dfRe[1][]{
   \ifstrempty{#1}{
     \delta \mathbf{fR}\text{e}
   }{
     \delta \mathbf{fR}\text{e}\left( #1 \right)
   }
-}
+} 
 
-\newcommand\fRe[1][]{
-  \ifstrempty{#1}{
-    \mathbf{fR}\text{e}
-  }{
-    \mathbf{fR}\text{e}\left(#1\right)
-  }
-}
-
-
+% The Ordering function which puts fRe into the correct form for the other regions \fR[\theta]=\fRO[ \fRe[\theta], \theta]
 \newcommand\fRO[1][]{
   \ifstrempty{#1}{
     \mathbf{fR}\text{O}
@@ -76,6 +140,25 @@
     \mathbf{fR}\text{O}\left[#1\right]
   }
 }
+
+% --------- rR
+
+\newcommand\rR[1][]{
+  \ifstrempty{#1}{
+    \mathbf{rR}
+  }{
+    \mathbf{rR}\left( #1 \right)
+  }
+} 
+
+% The scaling for the matrix
+\newcommand\rS[1][]{
+  \ifstrempty{#1}{
+    \vec{rS}
+  }{
+    \vec{rS}\left( #1 \right)
+  }
+} 
 
 \newcommand{\um}{\scalebox{0.75}[1.0]{\( - \)}}
 \newcommand{\Pii}[1]{\frac{\pi}{#1} }
@@ -689,9 +772,9 @@ We can now relate the functions to each other, since they are now essentially th
 
 The factored rotation $\mathbf{fR}$ contains 4 non-integer elements which lie between $-1$ and $0$, which we wish to quantize. This can be done simply by multiplying it by $2^{n - 2}$, where $n$ is the bit depth of the integer type, and rounding the result: 
 
-\begin{equation}
- qR(\theta) =
-\textbf{Round}[
+\begin{align}
+ \qR[\theta] &=
+\textbf{Round}\left[
 \left(
 \begin{array}{c}
  1  \\
@@ -700,16 +783,22 @@ The factored rotation $\mathbf{fR}$ contains 4 non-integer elements which lie be
 \end{array}
 \right)
 \bigotimes
-fR(\theta)]
-\end{equation}
+\fR[\theta] \right] \quad &\text{and} \quad \qS[n] = \left(
+\begin{array}{c}
+ 1  \\
+ 2^{2-n } \\
+ 2^{2-n }  \\
+\end{array}
+\right)
+\end{align}
 
 Since every row in $\fR$ always has an element equal to 1, we will exploit the full range of the integer type. 
 
 Thus far, we have assumed that we can achieve a bit depth of two less than the bit depth of the source type for the representation of the rotation matrix. We are now in a position to assess whether the representation introduces any errors.
 
-Given that the source type with a bit depth of $n$, we can work out any errors introduced by finding the difference between using the quantized rotation $qR$ and the unquantized rotation $fR$. All the factoring of the rotation is mathematically exact up to and including $fR$, so any errors that are introduced will be during the rounding.
+Given that the source type with a bit depth of $n$, we can work out any errors introduced by finding the difference between using the quantized rotation $\qR$ and the unquantized rotation $\fR$. All the factoring of the rotation is mathematically exact up to and including $\fR$, so any errors that are introduced will be during the rounding.
 
-We are interested in the error introduced in the quantization, so we introduce the perturbation associated with the transform $\delta fR(\theta)$. 
+We are interested in the error introduced by the quantization, so we introduce the perturbation $\dfR[\theta]$ associated with the transform $\fR[\theta]$ produced by the rounding i 
 
 
 
@@ -723,11 +812,11 @@ We are interested in the error introduced in the quantization, so we introduce t
 \end{array}
 \right)
 \bigotimes
-qR(\theta) + \delta fR(\theta)
+\left( \qR[\theta] + \dqR\right)
 \end{equation}
-because $fRO$ works equivalently for both $qR$ and $fR$
+because $\fRO$ works equivalently for both $\qR$ and $\fR$
 \begin{align}
-\dfR[ \theta ]  &= \fRO{  fR(\theta) -\left(
+\dfR[ \theta ]  &= \fRO \left[  \fRe[\theta] -\left(
 \begin{array}{c}
  1  \\
  2^{2-n } \\
@@ -735,7 +824,7 @@ because $fRO$ works equivalently for both $qR$ and $fR$
 \end{array}
 \right)
 \bigotimes
-qR(\theta)  } 
+\qRe[\theta]  \right] 
 \end{align}
 
 
