@@ -665,6 +665,15 @@ so
 
 The perturbation introduced to each channel is further simplified by recognizing that $err(-\phi)=-err(\phi)$, allowing us to analyze the quantization error in terms of just one function $err$.
 
+At this point, we should recognize that the perturbation in a channel is described by $err(\pm\phi)$ or $err(\pm(\phi-\frac{\pi }{6}))$. So, because we're more interested in the error and the bounds on that than we are in the error for any particular $\theta$ --- $\theta$ being an input design parameter to the algorithm --- it's more useful to have a function which returns values of $\theta$ for a given error. To this end, we can find the inverse function for the perturbation function $err$. The perturbation via the channel lies between -2 and 2, which is, unfortunately, twice the acceptable perturbation for zero error. (See Figure~\ref{fig:PtbToChan}) However, this is expected; we designed the quantization to what we desired rather than what we expected to be possible. At this point, there are no more tricks --- no more factorizations --- nothing more that we can do. The only thing left to do now is to specify which values of $\theta$ for which the quantization produces no error, and the values which do result in unacceptable error, i.e. the values of $\theta$ for which any of these four functions is greater than 1. 
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.99\textwidth]{Chapter2/Figs/PtbToChan.jpg}
+    \caption{Perturbation in the chromatic channels.}  \label{fig:PtbToChan}
+\end{figure}
+
+
 
 One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
 
