@@ -162,7 +162,7 @@ The obvious idea is to find all the non-zero bins and fit an interpolating funct
 
 Naively collapsing the bins along the luminosity axis artificially skews the chromatic distribution along the axis which passed through the luminosity axis; this is easily explained due to white-out and black-out. As luminosity increases or decreases, it will eventually hit the edge of the cube. Having reached its numerical limit, the luminosity slides toward the corner of the cube, resulting in a white or black value.
 
-To accommodate this, we collapse the bins excluding the bins which are clearly suffering from white-out and black-out. This could be done mathematically by taking the bin of the distribution which is furthest from the luminosity axis, and then finding the intersection with the RGB cube when this chromatic value is at its limits, just before it reaches the edge of the cube where it suffers from white-out or black-out. But it's a simple matter to look at the three projections of the 3D Lxy bins and manually determine the limits for the valid region.
+To accommodate this, we collapse the bins excluding the bins which are clearly suffering from white-out and black-out. This could be done mathematically by taking the bin of the distribution which is furthest from the luminosity axis, and then finding the intersection with the RGB cube when this chromatic value is at its limits, just before it reaches the edge of the cube where it suffers from white-out or black-out. But it's a simple matter to look at the three projections of the 3D LCaCb bins and manually determine the limits for the valid region.
 
 %<Insert white-out/black-out bins here>
 
@@ -186,7 +186,7 @@ To that effect, we selected three individuals with different skin tones; orderin
     \includegraphics[width=0.49\textwidth]{Chapter3/Figs/NHands_XY_gFit.eps}
     \includegraphics[width=0.49\textwidth]{Chapter3/Figs/JHands_XY_fBin.eps}
     \includegraphics[width=0.49\textwidth]{Chapter3/Figs/JHands_XY_gFit.eps}
-    \caption{The xy bins after processing and the Gaussian fit.}  \label{fig:FBinAndGFit}
+    \caption{The CaCb bins after processing and the Gaussian fit.}  \label{fig:FBinAndGFit}
 \end{figure}
 
 The individual statistics are as follows:
