@@ -264,7 +264,7 @@ Any rotation about an axis can be represented by a 3x3 square matrix in a 3D spa
 
 
 \begin{alignat}{1}
-R_x(\theta) &= \begin{bmatrix}
+\R_x(\theta) &= \begin{bmatrix}
 1 & 0 & 0 \\
 0 & \cos \theta &  -\sin \theta \\[3pt]
 0 & \sin \theta  &  \cos \theta \\[3pt]
@@ -285,7 +285,7 @@ R_z(\theta) &= \begin{bmatrix}
 Any rotation which orients the RGB color space such that one of the new axes lies along the luminosity direction is sufficient; a rotation which aligns the L axis along the luminosity direction is produced by a rotation of $\frac{\pi}4$ about the red (\textbf{R}) axis, followed by a rotation of $\arctan{\frac{1}{\sqrt{2}}}$ about the green (\textbf{G}) axis. This leaves one free rotational degree of freedom about the L axis. The resulting rotation matrix is given by:
 
 \begin{equation}
-R_{xyz}(\theta) =
+\R_{xyz}(\theta) =
 \left(
 \begin{array}{ccc}
  \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} \\
@@ -306,7 +306,7 @@ We need to know, in each of the axes, how far out each point is. Because we're e
 
 
 \begin{multline}\label{eq:YabCube}
-  R_{xyz}(\theta)\cdot\left(
+  \R_{xyz}(\theta)\cdot\left(
 \begin{array}{cccccccc}
  0 & 1 & 1 & 0 & 0 & 0 & 1 & 1 \\
  0 & 0 & 1 & 1 & 1 & 0 & 0 & 1 \\
@@ -374,7 +374,7 @@ The normalized 'rotation' matrix is given by:
 
 
 \begin{equation}\label{eq:NormRxyz3}
- \overline{R}_{xyz}(\theta) =
+ \overline{\R}_{xyz}(\theta) =
 \left(
 \begin{array}{c}
  \frac{1}{\sqrt{3}}  \\
@@ -389,7 +389,7 @@ R_{xyz}(\theta)
 This matrix is no longer technically a rotation matrix as its inverse is no longer equal to its transpose. It now equal to:
 
 \begin{equation}\label{eq:NormRxyz3Inverse}
- \overline{R}_{xyz}^{-1}(\theta) =
+ \overline{\R}_{xyz}^{-1}(\theta) =
  R_{xyz}(\theta)^{T} \bigotimes
 \left(
 \begin{array}{ccc}
