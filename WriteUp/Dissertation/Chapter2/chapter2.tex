@@ -798,7 +798,7 @@ Thus far, we have assumed that we can achieve a bit depth of two less than the b
 
 Given that the source type with a bit depth of $n$, we can work out any errors introduced by finding the difference between using the quantized rotation $\qR$ and the unquantized rotation $\fR$. All the factoring of the rotation is mathematically exact up to and including $\fR$, so any errors that are introduced will be during the rounding.
 
-We are interested in the error introduced by the quantization, so we introduce the perturbation $\dfR[\theta]$ associated with the transform $\fR[\theta]$ produced by the rounding i 
+We are interested in the error introduced by the quantization, so we introduce the perturbation $\dfR[\theta]$ associated with the transform $\fR[\theta]$ produced by the rounding:
 
 
 
@@ -828,7 +828,7 @@ because $\fRO$ works equivalently for both $\qR$ and $\fR$
 \end{align}
 
 
-the perturbation depends upon
+The perturbation depends upon
 \begin{equation}
 \dfRe[\phi]=2^{2-n} \text{Round}\left[2^{n-2} \fRe[\phi ]\right]-\fRe[\phi ]
 \end{equation}
@@ -836,7 +836,7 @@ the perturbation depends upon
 so
 
 \begin{equation}
-\delta fR(\theta) = 
+\delta\fR[\theta] = 
  \fRO{ \left(
 \begin{array}{ccc}
  0 & 0 & 0 \\
