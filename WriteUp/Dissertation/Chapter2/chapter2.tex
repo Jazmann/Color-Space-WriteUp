@@ -11,6 +11,9 @@
 %  }%
 %}
 
+\newcommand{\discrete}[1]{\widehat{#1}}
+\newcommand{\apprx}[1]{\widetilde{#1}}
+\newcommand{\normed}[1]{\overline{#1}}
 
 \newcommand\R[1][]{
   \ifstrempty{#1}{
@@ -141,6 +144,15 @@
   }
 }
 
+% The Ordering function which puts fRe into the correct form for the other regions \fR[\theta]=\fRO[ \fRe[\theta], \theta]
+\newcommand\fROm[1][]{
+  \ifstrempty{#1}{
+    \widehat{\mathbf{fR}\text{O}}
+  }{
+    \widehat{\mathbf{fR}\text{O}}\left[#1\right]
+  }
+}
+
 % --------- rR
 
 \newcommand\rR[1][]{
@@ -151,12 +163,48 @@
   }
 } 
 
+\newcommand\nR[1][]{
+  \ifstrempty{#1}{
+    \normed{\mathbf{R}}
+  }{
+    \normed{\mathbf{R}}\left( #1 \right)
+  }
+} 
+
+\newcommand\nRa[1][]{
+  \ifstrempty{#1}{
+    \apprx{\normed{\mathbf{R}}}
+  }{
+   \apprx{ \normed{\mathbf{R}}} \left( #1 \right)
+  }
+} 
+
+\newcommand\dnR[1][]{
+  \ifstrempty{#1}{
+    \normed{\delta\mathbf{R}}
+  }{
+   \normed{\delta\mathbf{R}} \left( #1 \right)
+  }
+} 
+
+
 % The scaling for the matrix
 \newcommand\rS[1][]{
   \ifstrempty{#1}{
     \vec{rS}
   }{
     \vec{rS}\left( #1 \right)
+  }
+} 
+
+
+% ----- nR definitions -------
+% The scaling for the matrix
+\newcommand\nS[1][]{
+  \ifstrempty{#1}{
+    \vec{nS}
+  }{
+    \vec{nS}\left( #1 \right)
   }
 } 
 
@@ -757,13 +805,13 @@ we can now rewrite the factored rotation as:
 We can now relate the functions to each other, since they are now essentially the same function, and $\delta\theta$ has the same domain; the values they take have the same range, despite being in different positions in the matrix. This allows us to write the piecewise function $\fR$ independently as a function $\fRO$ which re-orders the elements of the matrix in region $\mathbf{A}$ appropriately for the other regions.
 
 \begin{equation}
-\fR[\theta] = \fRO{\left(
+\fR[\theta] = \fRO \left[ \left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
  \text{fRe} (\delta \theta)  & 1 & \text{fRe} (-\delta \theta ) \\
  \text{fRe} \left(\frac{\pi }{6}-\delta \theta \right) & \text{fRe} \left(\delta \theta -\frac{\pi }{6}\right) & 1 \\
 \end{array}
-\right) }
+\right) \right]
 \end{equation}
 
 
@@ -773,7 +821,7 @@ We can now relate the functions to each other, since they are now essentially th
 The factored rotation $\mathbf{fR}$ contains 4 non-integer elements which lie between $-1$ and $0$, which we wish to quantize. This can be done simply by multiplying it by $2^{n - 2}$, where $n$ is the bit depth of the integer type, and rounding the result: 
 
 \begin{align}
- \qR[\theta] &=
+ \qR[\theta, n] &=
 \textbf{Round}\left[
 \left(
 \begin{array}{c}
@@ -783,24 +831,141 @@ The factored rotation $\mathbf{fR}$ contains 4 non-integer elements which lie be
 \end{array}
 \right)
 \bigotimes
-\fR[\theta] \right] \quad &\text{and} \quad \qS[n] = \left(
+\fR[\theta] \right] 
+\quad &\text{and} \quad 
+\qS[n] &= \left(
 \begin{array}{c}
  1  \\
  2^{2-n } \\
  2^{2-n }  \\
 \end{array}
-\right)
+\right) 
 \end{align}
 
-Since every row in $\fR$ always has an element equal to 1, we will exploit the full range of the integer type. 
+
+
+Since every row in $\fR$ always has an element equal to 1, we will exploit the full range $ -2^{n-2} \le \fR \le 2^{n-2}$ of the integer type. 
+
+\begin{align}
+\fR[ \theta ] &= \qS[n]  \otimes \left( \qR[ \theta, n]  + \dqR[ \theta, n ] \right)  \\
+                  &= \qS[n]  \otimes \qR[ \theta, n ] +  \dfR[ \theta, n ] 
+\end{align}
 
 Thus far, we have assumed that we can achieve a bit depth of two less than the bit depth of the source type for the representation of the rotation matrix. We are now in a position to assess whether the representation introduces any errors.
 
 Given that the source type with a bit depth of $n$, we can work out any errors introduced by finding the difference between using the quantized rotation $\qR$ and the unquantized rotation $\fR$. All the factoring of the rotation is mathematically exact up to and including $\fR$, so any errors that are introduced will be during the rounding.
 
-We are interested in the error introduced by the quantization, so we introduce the perturbation $\dfR[\theta]$ associated with the transform $\fR[\theta]$ produced by the rounding i 
+We are interested in the error introduced by the quantization, so we introduce the perturbation $\dfR[\theta]$ associated with the transform $\fR[\theta]$ produced by the rounding. Defining 
+
+\begin{align*}
+\fRe[ \theta ] &=  \qS[ n ]  \otimes  \left( \qRe[ \theta, n ]  + \dqRe[ \theta, n ] \right) 
+\end{align*}
+because $\qS$ has equal elements in the second and third rows
+\begin{equation*}
+\fRO \left[ \qS[n] \otimes \mathbf{A} \right] = \qS[n] \otimes \fRO[ \mathbf{A} ]  
+\end{equation*}
+then
+\begin{align*}
+\fR[ \theta ] &= \fRO \left[ \fRe[ \theta ] \right] \\
+                    &= \fRO \left[ \qS[ n ]  \otimes \left( \qRe[ \theta, n ]  + \dqRe[ \theta, n ] \right) \right]  \\
+                   &= \qS[ n ]  \otimes \fRO \left[ \qRe[ \theta, n ]  + \dqRe[ \theta, n ]  \right]  \\
+                   &= \qS[ n ]  \otimes \fRO \left[ \qRe[ \theta, n ]   \right]  + \qS[ n ]  \otimes \fRO \left[ \dqRe[ \theta, n ]  \right]  
+\end{align*}
+
+The perturbation depends entirely on $\dqRe[\theta,n]$ 
+
+\begin{align*}
+\dqRe[\phi] &= \text{Round}\left[ 2^{n-2} \fRe[\phi ] \right]-2^{n-2}\fRe[\phi ] \\
+% \dfRe[\phi] &= 2^{2-n} \text{Round}\left[2^{n-2} \fRe[\phi ]\right]-\fRe[\phi ] \\
+\dfRe[\phi] &= 2^{2-n} \dqRe[\phi]  
+\end{align*}
+
+\newcommand{\thetaA}{\delta\theta}
+The perturbation $\dqR[\theta]$ is a rearrangement of $\dqR[\thetaA] $ 
+\begin{align*}
+\dqR[\thetaA] &= \fRO[\dqRe, \thetaA ] \\
+ &= \left(
+\begin{array}{ccc}
+ 0                                     & 0                                   & 0                     \\
+ \dqRe[ \thetaA ]              & 0                                   & \dqRe[ -\thetaA ] \\
+ \dqRe[ \Pii{6} -\thetaA]   & \dqRe[\thetaA-\Pii{6} ] & 0                     \\
+\end{array}
+\right) 
+\end{align*}
+
+The perturbation introduced to each channel is further simplified by recognizing that $\fRe[-\phi]=-1-\fRe[\phi]$, which allows us to find $\dqRe[-\phi]=-\dqRe[\phi]$ i.e. that the sum of the two perturbations in each row equals zero. we can analyze the quantization error in terms of just one function $\dqRe$ and a matrix ordering function $\dqR[\theta] = \fROm \left[ \dqR[ \thetaA ]  \right]$.
+
+\begin{align*}
+\dqR[\theta] &= \fROm \left[  \left(
+\begin{array}{ccc}
+ 0                                     & 0                                      & 0                     \\
+ \dqRe[ \thetaA ]              & 0                                      & -\dqRe[ \thetaA ] \\
+ \dqRe[ \Pii{6} -\thetaA]  & - \dqRe[ \Pii{6} -\thetaA] & 0                     \\
+\end{array}
+\right)  ,\theta \right]
+\end{align*}
 
 
+\begin{equation}
+\fROm \left[  \left(
+\begin{smallmatrix}
+ 0   & 0   & 0  \\
+ a   & 0   & -a \\
+ b & - b & 0    \\
+ \end{smallmatrix} 
+\right)  ,\theta \right] =
+\begin{cases}
+ \left(
+\begin{smallmatrix}
+ 0 & 0 & 0 \\
+ a & 0 & -a \\
+ b & -b & 0 \\
+\end{smallmatrix} 
+\right) & 0\leq (\theta  \bmod \pi )<\frac{\pi }{6} \\
+ \left(
+\begin{smallmatrix}
+ 0 & 0 & 0 \\
+ 0 & b & -b \\
+ -a & a & 0 \\
+\end{smallmatrix} 
+\right) & \frac{\pi }{6}\leq (\theta  \bmod \pi )<\frac{\pi }{3} \\
+ \left(
+\begin{smallmatrix}
+ 0 & 0 & 0 \\
+ 0 & -a & a \\
+ -b & 0 & b \\
+\end{smallmatrix} 
+\right) & \frac{\pi }{3}\leq (\theta  \bmod \pi )<\frac{\pi }{2} \\
+ \left(
+\begin{smallmatrix}
+ 0 & 0 & 0 \\
+ b & -b & 0 \\
+ a & 0 & -a \\
+\end{smallmatrix} 
+\right) & \frac{\pi }{2}\leq (\theta  \bmod \pi )<\frac{2 \pi }{3} \\
+ \left(
+\begin{smallmatrix}
+ 0 & 0 & 0 \\
+ -a & a & 0 \\
+ 0 & b & -b \\
+\end{smallmatrix} 
+\right) & \frac{2 \pi }{3}\leq (\theta  \bmod \pi )<\frac{5 \pi }{6} \\
+ \left(
+\begin{smallmatrix}
+ 0 & 0 & 0 \\
+ -b & 0 & b \\
+ 0 & -a & a \\
+\end{smallmatrix} 
+\right) & \frac{5 \pi }{6}\leq (\theta  \bmod \pi )<\pi 
+\end{cases}
+\end{equation}
+
+We can now express the perturbation to the rotation and to the channel elements themselves.
+
+\begin{align}
+\nR[\theta] & = \nRa[\theta]+\dnR[theta] \\
+&= \nS[\theta] \otimes\rS \otimes \fSO \left[ \fSe[\thetaA] \right] \otimes  \qS[ n ]  \otimes \fRO \left[ \qRe[ \theta, n ]  + \dqRe[ \theta, n ]  \right] 
+\end{align}
 
 \begin{equation}
  fR(\theta) =
