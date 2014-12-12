@@ -23,6 +23,15 @@
   }
 } 
 
+% The scaling for the matrix
+\newcommand\Scale[1][]{
+  \ifstrempty{#1}{
+    \vec{S}
+  }{
+    \vec{S}\left( #1 \right)
+  }
+} 
+
 % ----- qR definitions -------
 % The scaling for the matrix
 \newcommand\qS[1][]{
@@ -962,13 +971,34 @@ The perturbation introduced to each channel is further simplified by recognizing
 
 We can now express the perturbation to the rotation and to the channel elements themselves.
 
-\begin{align}
+\begin{align*}
 \nR[\theta] & = \nRa[\theta]+\dnR[theta] \\
-&= \nS[\theta] \otimes\rS \otimes \fSO \left[ \fSe[\thetaA] \right] \otimes  \qS[ n ]  \otimes \fRO \left[ \qRe[ \theta, n ]  + \dqRe[ \theta, n ]  \right] 
-\end{align}
+&= \nS[\theta] \otimes\rS \otimes \fSO \left[ \fSe[ \thetaA ] \right] \otimes  \qS[ n ]  \otimes \fRO \left[ \qRe[ \theta, n ]  + \dqRe[ \theta, n ]  \right] 
+\end{align*}
+
+defining
+
+\begin{align*}
+\Scale[\theta, n]   & =\nS[\theta] \otimes\rS \otimes \fSO \left[ \fSe[\thetaA] \right] \otimes  \qS[ n ]  \\
+\nRa[\theta]   & =  \Scale[\theta] \otimes \fRO \left[   \qRe[ \theta, n ] \right]   \\
+\dnR[\theta]   & =  \Scale[\theta] \otimes \fRO \left[ \dqRe[ \theta, n ] \right] \\
+\end{align*}
+
+\newcommand{\rgb}{\vec{v}}
+\newcommand{\w}{\vec{w}}
+\newcommand{\dW}{\vec{\delta w}}
+
+the perturbation to the rotated channel elements $\dW$ is found for an input set of pixel values $\rgb$
+
+
+\begin{align*}
+\w+\dW &= \nRa[\theta] \cdot \rgb+\dnR[\theta] \cdot \rgb \\
+\dW &= 2^n\dnR[\theta] \cdot \normed{\rgb} \\
+        &= 2^n\Scale[\theta] \otimes \fRO \left[ \dqRe[ \theta, n ] \right] \cdot \normed{\rgb} 
+\end{align*}
 
 \begin{equation}
- fR(\theta) =
+ \fR[\theta] =
 \left(
 \begin{array}{c}
  1  \\
@@ -993,7 +1023,7 @@ because $\fRO$ works equivalently for both $\qR$ and $\fR$
 \end{align}
 
 
-the perturbation depends upon
+The perturbation depends upon
 \begin{equation}
 \dfRe[\phi]=2^{2-n} \text{Round}\left[2^{n-2} \fRe[\phi ]\right]-\fRe[\phi ]
 \end{equation}
@@ -1001,7 +1031,7 @@ the perturbation depends upon
 so
 
 \begin{equation}
-\delta fR(\theta) = 
+\delta\fR[\theta] = 
  \fRO{ \left(
 \begin{array}{ccc}
  0 & 0 & 0 \\
