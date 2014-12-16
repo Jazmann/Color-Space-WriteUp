@@ -15,6 +15,10 @@
 \newcommand{\apprx}[1]{\widetilde{#1}}
 \newcommand{\normed}[1]{\overline{#1}}
 
+
+\newcommand{\thetaA}{\delta\theta}
+
+
 \newcommand\R[1][]{
   \ifstrempty{#1}{
     \mathbf{R}
@@ -89,6 +93,14 @@
     \vec{fS}\left( #1 \right)
   }
 } 
+% The sign for the scaling for the matrix
+\newcommand\fSs[1][]{
+  \ifstrempty{#1}{
+    \vec{fSs}
+  }{
+    \vec{fSs}\left( #1 \right)
+  }
+} 
 
 % The scaling ordering for the matrix
 \newcommand\fSO[1][]{
@@ -123,6 +135,15 @@
      \mathbf{fR}\text{e}
   }{
      \mathbf{fR}\text{e}\left( #1 \right)
+  }
+} 
+
+% The matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
+\newcommand\fRm[1][]{
+  \ifstrempty{#1}{
+     \mathbf{fR}\text{m}
+  }{
+     \mathbf{fR}\text{m}\left( #1 \right)
   }
 } 
 
@@ -622,19 +643,26 @@ Each row is a series of three sin waves each $\frac{2\pi}{3}$ out of phase with 
 The largest element changes every $\frac{\pi}{6}$ radians repeating every $\pi$ radians.
 
 \begin{tabular}{|c|c|c|}
-\hline \rule[-2ex]{0pt}{5.5ex}  & Scale : $fS[\theta]$ &  Factored Rotation : $fR[\theta]$ \\ 
-\hline \rule[-2ex]{0pt}{5.5ex} \bf{A} & \( \left(\!\!\!
+\hline \rule[-2ex]{0pt}{5.5ex} 
+& 
+\begin{tabular}{c} 
+Scale : $fS[\theta]$ \\
+\raisebox{-13mm}{\includegraphics[width = 26mm]{Chapter2/Figs/fRWheel.jpg}} \\
+\end{tabular}
+&  Factored Rotation : $fR[\theta]$ \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} 
+\bf{A} & \( \left(\!\!\!
 \begin{array}{c}
  1 \\
  \cos (\theta ) \\
  \cosine{\Pii{6}-\theta } \\
 \end{array}
 \!\!\!\right) \)& \(  \left(\!\!\!
-\begin{array}{ccc}
+\begin{smallmatrix}
  1 & 1 & 1 \\
  \um\sec (\theta ) \sine{\theta +\Pii{6}} & 1 & \sec (\theta ) \sine{\theta-\Pii{6} } \\
  \um\cosine{\theta +\Pii{6}} \secant{\Pii{6}-\theta } & \um\secant{\Pii{6}-\theta } \sin (\theta ) & 1 \\
-\end{array}
+\end{smallmatrix}
 \right) \)  \\ 
 \hline \rule[-2ex]{0pt}{5.5ex} \bf{B} & \( \left(\!\!\!
 \begin{array}{c}
@@ -643,11 +671,11 @@ The largest element changes every $\frac{\pi}{6}$ radians repeating every $\pi$ 
  \cosine{\Pii{6}-\theta } \\
 \end{array}
 \!\!\!\right) \)  &  \(  \left(\!\!\!
-\begin{array}{ccc}
+\begin{smallmatrix}
  1 & 1 & 1 \\
  1 & \um\cos (\theta ) \cosecant{\theta +\Pii{6}} & \cosecant{\theta +\Pii{6}} \sine{\Pii{6}-\theta } \\
  \um\cosine{\theta +\Pii{6}} \secant{\Pii{6}-\theta } & \um\secant{\Pii{6}-\theta } \sin (\theta ) & 1 \\
-\end{array}
+\end{smallmatrix}
 \!\!\!\right)  \) \\ 
 \hline \rule[-2ex]{0pt}{5.5ex} \bf{C} & \(  \left(\!\!\!
 \begin{array}{c}
@@ -656,11 +684,11 @@ The largest element changes every $\frac{\pi}{6}$ radians repeating every $\pi$ 
  \um\sin (\theta ) \\
 \end{array}
 \!\!\!\right) \)  & \(  \left(\!\!\!
-\begin{array}{ccc}
+\begin{smallmatrix}
  1 & 1 & 1 \\
  1 & \um\cos (\theta ) \cosecant{\theta +\Pii{6}} & \cosecant{\theta +\Pii{6}} \sine{\Pii{6}-\theta } \\
  \cosine{\theta +\Pii{6}} \csc (\theta ) & 1 & \um\cosine{\Pii{6}-\theta } \csc (\theta ) \\
-\end{array}
+\end{smallmatrix}
 \!\!\!\right) \)  \\ 
 \hline \rule[-2ex]{0pt}{5.5ex} \bf{D} & \( \left(\!\!\!
 \begin{array}{c}
@@ -669,11 +697,11 @@ The largest element changes every $\frac{\pi}{6}$ radians repeating every $\pi$ 
  \um\sin (\theta ) \\
 \end{array}
 \!\!\!\right) \)  & \(  \left(\!\!\!
-\begin{array}{ccc}
+\begin{smallmatrix}
  1 & 1 & 1 \\
  \cosecant{\Pii{6}-\theta } \sine{\theta +\Pii{6}} & \um\cos (\theta ) \cosecant{\Pii{6}-\theta } & 1 \\
  \cosine{\theta +\Pii{6}} \csc (\theta ) & 1 & -\cosine{\Pii{6}-\theta } \csc (\theta ) \\
-\end{array}
+\end{smallmatrix}
 \!\!\!\right) \)  \\ 
 \hline \rule[-2ex]{0pt}{5.5ex} \bf{E} & \(  \left(\!\!\!
 \begin{array}{c}
@@ -682,11 +710,11 @@ The largest element changes every $\frac{\pi}{6}$ radians repeating every $\pi$ 
  \um\cosine{\theta +\Pii{6}} \\
 \end{array}
 \!\!\!\right)\)  & \(  \left(\!\!\!
-\begin{array}{ccc}
+\begin{smallmatrix}
  1 & 1 & 1 \\
  \cosecant{\Pii{6}-\theta } \sine{\theta +\Pii{6}} & \um\cos (\theta ) \cosecant{\Pii{6}-\theta } & 1 \\
  1 & \secant{\theta +\Pii{6}} \sin (\theta ) & \um\cosine{\Pii{6}-\theta } \secant{\theta +\Pii{6}} \\
-\end{array}
+\end{smallmatrix}
 \!\!\!\right) \)  \\ 
 \hline \rule[-2ex]{0pt}{5.5ex} \bf{F} &\( 
 \left(\!\!\!
@@ -696,16 +724,16 @@ The largest element changes every $\frac{\pi}{6}$ radians repeating every $\pi$ 
  \um\cosine{\theta +\Pii{6}} \\
 \end{array}
 \!\!\!\right)\)   & \( \left(\!\!\!
-\begin{array}{ccc}
+\begin{smallmatrix}
  1 & 1 & 1 \\
  \um\sec (\theta ) \sine{\theta +\Pii{6}} & 1 & \sec (\theta ) \sine{\theta-\Pii{6}} \\
  1 & \secant{\theta +\Pii{6}} \sin (\theta ) & \um\cosine{\Pii{6}-\theta } \secant{\theta +\Pii{6}} \\
-\end{array}
+\end{smallmatrix}
 \!\!\!\right)  \)  \\ 
 \hline 
 \end{tabular} 
 
-By defining $\theta$ as $\theta  = \Theta + \delta\theta$ --- where $\delta\theta = \theta \!\!\mod \Pii{6}$, and $\Theta$ is the starting value for the region in which $\theta$ lies --- and substituting in the function $\fRe[\phi] $:
+By defining $\theta$ as $\theta  = \Theta + \thetaA$ --- where $\thetaA = \theta \!\!\mod \Pii{6}$, and $\Theta$ is the starting value for the region in which $\theta$ lies --- and substituting in the function $\fRe[\phi] $:
 
 \begin{align}
 \fRe[\phi] &= \frac{\um 1}{2} \left(1+\sqrt{3} \tan (\phi )\right) 
@@ -715,115 +743,209 @@ we can now rewrite the factored rotation as:
 
 \begin{tabular}{|c|c|c|}
 \hline \rule[-2ex]{0pt}{5.5ex}  
-\raisebox{-13mm}{\includegraphics[width = 26mm]{Chapter2/Figs/fRWheel.jpg}} & Scale : $fS[\delta\theta]$ &  Factored Rotation : $fR[\delta\theta]$ \\ 
-\hline \rule[-2ex]{0pt}{5.5ex} \bf{A} & \( \left(\!\!\!
+$\Theta$ & 
+\begin{tabular}{c} 
+Scale : $fS[\theta]$ \\
+\raisebox{-13mm}{\includegraphics[width = 26mm]{Chapter2/Figs/fRWheel.jpg}} \\
+$\fSs{\theta} \otimes \fSe{\theta}$ \\
+\end{tabular} &  Factored Rotation : $fR[\thetaA]$ \\ 
+\hline \rule[-2ex]{0pt}{5.5ex} 
+\bf{A} : $0$& \( \left(\!\!\!
 
 \begin{array}{c}
+ 1 \\  1 \\ 1\\
+\end{array} \!\!\!\right) \otimes \left(\!\!\!
+\begin{array}{c}
  1 \\
- \cosine {\delta\theta } \\
- \cosine{\Pii{6}-\delta\theta } \\
+ \cosine {\thetaA } \\
+ \cosine{\Pii{6}-\thetaA } \\
 \end{array}
 
 \!\!\!\right) \)& \(  \left(\!\!\!
 \begin{array}{ccc}
  1 & 1 & 1 \\
- \fReq{\delta \theta } & 1 & \fReq{-\delta \theta } \\
- \fReq{\frac{\pi }{6}-\delta \theta }& \fReq{\delta \theta -\frac{\pi }{6}} & 1 \\
+ \fReq{\thetaA } & 1 & \fReq{-\thetaA } \\
+ \fReq{\frac{\pi }{6}-\thetaA }& \fReq{\thetaA -\frac{\pi }{6}} & 1 \\
 \end{array}
 \right) \)  \\ 
-\hline \rule[-2ex]{0pt}{5.5ex} \bf{B} & \( \left(\!\!\!
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{B} : $\frac{\pi}{6}$ & \( \left(\!\!\!
 
 \begin{array}{c}
+ 1 \\  -1 \\ 1\\
+\end{array} \!\!\!\right) \otimes \left(\!\!\!
+\begin{array}{c}
  1 \\
- -\cosine{\Pii{6}-\delta\theta } \\
- \cosine {\delta\theta } \\
+ \cosine{\Pii{6}-\thetaA } \\
+ \cosine {\thetaA } \\
 \end{array}
 
 \!\!\!\right) \)  &  \(  \left(\!\!\!
 \begin{array}{ccc}
  1 & 1 & 1 \\
- 1 & \fReq{\frac{\pi }{6}-\delta \theta } & \fReq{\delta \theta -\frac{\pi }{6}} \\
- \fReq{-\delta \theta } & \fReq{\delta \theta } & 1 \\
+ 1 & \fReq{\frac{\pi }{6}-\thetaA } & \fReq{\thetaA -\frac{\pi }{6}} \\
+ \fReq{-\thetaA } & \fReq{\thetaA } & 1 \\
 \end{array}
 \!\!\!\right)  \) \\ 
-\hline \rule[-2ex]{0pt}{5.5ex} \bf{C} & \(  \left(\!\!\!
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{C} : $\frac{\pi}{3}$ & \(  \left(\!\!\!
 
 \begin{array}{c}
+ 1 \\  -1 \\ -1\\
+\end{array} \!\!\!\right) \otimes \left(\!\!\!
+\begin{array}{c}
  1 \\
- -\cosine {\delta\theta } \\
- -\cosine{\Pii{6}-\delta\theta } \\
+ \cosine {\thetaA } \\
+ \cosine{\Pii{6}-\thetaA } \\
 \end{array}
 
 \!\!\!\right) \)  & \(  \left(\!\!\!
 \begin{array}{ccc}
  1 & 1 & 1 \\
- 1 & \fReq{-\delta \theta } & \fReq{\delta \theta } \\
- \fReq{\delta \theta -\frac{\pi }{6}} & 1 & \fReq{\frac{\pi }{6}-\delta \theta } \\
+ 1 & \fReq{-\thetaA } & \fReq{\thetaA } \\
+ \fReq{\thetaA -\frac{\pi }{6}} & 1 & \fReq{\frac{\pi }{6}-\thetaA } \\
 \end{array}
 \!\!\!\right) \)  \\ 
-\hline \rule[-2ex]{0pt}{5.5ex} \bf{D} & \( \left(\!\!\!
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{D}  : $\frac{\pi}{2}$& \( \left(\!\!\!
 
 \begin{array}{c}
+ 1 \\  1 \\ -1\\
+\end{array} \!\!\!\right) \otimes \left(\!\!\!
+\begin{array}{c}
  1 \\
- \cosine{\Pii{6}-\delta\theta } \\
- -\cosine {\delta\theta } \\
+ \cosine{\Pii{6}-\thetaA } \\
+ \cosine {\thetaA } \\
 \end{array}
 
 \!\!\!\right) \)  & \(  \left(\!\!\!
 \begin{array}{ccc}
  1 & 1 & 1 \\
- \fReq{\frac{\pi }{6}-\delta \theta } & \fReq{\delta \theta -\frac{\pi }{6}} & 1 \\
- \fReq{\delta \theta } & 1 & \fReq{-\delta \theta } \\
+ \fReq{\frac{\pi }{6}-\thetaA } & \fReq{\thetaA -\frac{\pi }{6}} & 1 \\
+ \fReq{\thetaA } & 1 & \fReq{-\thetaA } \\
 \end{array}
 \!\!\!\right) \)  \\ 
-\hline \rule[-2ex]{0pt}{5.5ex} \bf{E} & \(  \left(\!\!\!
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{E}  : $\frac{2 \pi}{3}$& \(  \left(\!\!\!
 
 \begin{array}{c}
+ 1 \\  1 \\ 1\\
+\end{array} \!\!\!\right) \otimes \left(\!\!\!
+\begin{array}{c}
  1 \\
- \cosine {\delta\theta } \\
- \cosine{\Pii{6}-\delta\theta } \\
+ \cosine {\thetaA } \\
+ \cosine{\Pii{6}-\thetaA } \\
 \end{array}
 
 \!\!\!\right)\)  & \(  \left(\!\!\!
 \begin{array}{ccc}
  1 & 1 & 1 \\
- \fReq{-\delta \theta } & \fReq{\delta \theta } & 1 \\
- 1 & \fReq{\frac{\pi }{6}-\delta \theta } & \fReq{\delta \theta -\frac{\pi }{6}} \\
+ \fReq{-\thetaA } & \fReq{\thetaA } & 1 \\
+ 1 & \fReq{\frac{\pi }{6}-\thetaA } & \fReq{\thetaA -\frac{\pi }{6}} \\
 \end{array}
 \!\!\!\right) \)  \\ 
-\hline \rule[-2ex]{0pt}{5.5ex} \bf{F} &\( 
+\hline \rule[-2ex]{0pt}{5.5ex} \bf{F}  : $\frac{5 \pi}{6}$&\( 
 \left(\!\!\!
 
 \begin{array}{c}
+ 1 \\  -1 \\ 1\\
+\end{array} \!\!\!\right) \otimes \left(\!\!\!
+\begin{array}{c}
  1 \\
- -\cosine{\Pii{6}-\delta\theta } \\
-  \cosine {\delta\theta } \\
+ \cosine{\Pii{6}-\thetaA } \\
+ \cosine {\thetaA } \\
 \end{array}
 
 \!\!\!\right)\)   & \( \left(\!\!\!
 \begin{array}{ccc}
  1 & 1 & 1 \\
- \fReq{\delta \theta -\frac{\pi }{6}} & 1 & \fReq{\frac{\pi }{6}-\delta \theta } \\
- 1 & \fReq{-\delta \theta } & \fReq{\delta \theta } \\
+ \fReq{\thetaA -\frac{\pi }{6}} & 1 & \fReq{\frac{\pi }{6}-\thetaA } \\
+ 1 & \fReq{-\thetaA } & \fReq{\thetaA } \\
 \end{array}
 \!\!\!\right)  \)  \\ 
 \hline 
 \end{tabular} 
 
 
-We can now relate the functions to each other, since they are now essentially the same function, and $\delta\theta$ has the same domain; the values they take have the same range, despite being in different positions in the matrix. This allows us to write the piecewise function $\fR$ independently as a function $\fRO$ which re-orders the elements of the matrix in region $\mathbf{A}$ appropriately for the other regions.
+We can now relate the functions to each other, since they are now essentially the same function, and $\thetaA$ has the same domain; the values they take have the same range, despite being in different positions in the matrix. This allows us to write the piecewise function $\fR$ independently as a function $\fRO$ which re-orders the elements of the matrix in region $\mathbf{A}$ appropriately for the other regions.
 
-\begin{equation}
-\fR[\theta] = \fRO \left[ \left(
+\begin{align}
+\fR[\theta] & = \fRO \left[ \fRm{\thetaA} , \theta \right] \\
+& = \fRO \left[ \left(
 \begin{array}{ccc}
  1 & 1 & 1 \\
- \text{fRe} (\delta \theta)  & 1 & \text{fRe} (-\delta \theta ) \\
- \text{fRe} \left(\frac{\pi }{6}-\delta \theta \right) & \text{fRe} \left(\delta \theta -\frac{\pi }{6}\right) & 1 \\
+ \text{fRe} (\thetaA)  & 1 & \text{fRe} (-\thetaA ) \\
+ \text{fRe} \left(\frac{\pi }{6}-\thetaA \right) & \text{fRe} \left(\thetaA -\frac{\pi }{6}\right) & 1 \\
 \end{array}
-\right) \right]
+\right) , \theta \right]
+\end{align}
+
+The scaling factor $\fS ( \thetaA )$ can also be further simplified by separating the sign and combining the functional parts.
+\begin{align}
+\fSe(\theta) 
+&=
+\begin{cases}
+ \left(
+\begin{array}{c}
+ 1 \\
+ \cos \left(\frac{\pi }{6}-(\thetaA)\right) \\
+ \cos \left((\thetaA)\right) \\
+\end{array}
+\right) & 
+\begin{array}{c}
+\frac{\pi }{6}\leq (\theta  \bmod \pi )<\frac{\pi }{3}\lor \\
+\frac{\pi }{2}\leq (\theta  \bmod \pi )<\frac{2 \pi }{3}\lor \\
+\frac{5 \pi}{6}\leq (\theta  \bmod \pi )<\pi  \\
+\end{array} \\
+ \left(
+\begin{array}{c}
+ 1 \\
+ \cos \left((\thetaA)\right) \\
+ \cos \left(\frac{\pi }{6}-(\thetaA)\right) \\
+\end{array}
+\right)  & 
+\begin{array}{c}
+0\leq (\theta  \bmod \pi )<\frac{\pi }{6}\lor \\
+\frac{\pi }{3}\leq (\theta  \bmod \pi ) < \frac{\pi }{2}\lor \\
+\frac{2 \pi }{3}\leq (\theta \bmod \pi ) <\frac{5 \pi }{6} \\
+\end{array}
+\end{cases} \\
+&= 
+\left(
+\begin{array}{c}
+ 1 \\
+ \cos \left(\frac{\pi }{6}-(\widetilde{\vartheta})\right) \\
+ \cos \left(\frac{\pi }{6}-(\widetilde{\theta} )\right) \\
+\end{array}
+\right) 
+\quad \text{where}  \quad 
+\begin{array}{c}
+\widetilde{\theta} = \theta  \bmod \frac{\pi }{3} \\ 
+\widetilde{\vartheta} = \left(\theta - \Pii{6}\right) \bmod \frac{\pi }{3}
+\end{array}
+\end{align}
+
+then $\fS (\theta) = \fSe (\theta) \otimes \fSs(\theta)$ where $\fSs$ is a piecewise function containing the signs. 
+
+The scaling factors combine in a simple way
+\begin{equation}
+\nS{\theta} \otimes \rS \otimes \fSe (\theta)   = 
+\left(
+\begin{array}{c}
+ \frac{1}{3}  \\
+ \frac{1}{2}\\
+ \frac{1}{2} \\
+\end{array}
+\right)
 \end{equation}
+The fully factorized matrix can now be written as
 
-
+\begin{align*}
+\nR{\theta} & = \nS{\theta} \otimes \rS \otimes \fSe (\theta) \otimes \fSs(\theta) \otimes\fRO \left[  \fRm{ \thetaA }, \theta \right] \\
+& = \left(
+\begin{array}{c}
+ \frac{1}{3}  \\
+ \frac{1}{2}\\
+ \frac{1}{2} \\
+\end{array}
+\right) \otimes \fSs(\theta) \otimes\fRO \left[  \fRm{\thetaA}, \theta \right] \\
+\end{align*}
 
 \subsubsection{Quantizing the Rotation}
 
@@ -889,7 +1011,6 @@ The perturbation depends entirely on $\dqRe[\theta,n]$
 \dfRe[\phi] &= 2^{2-n} \dqRe[\phi]  
 \end{align*}
 
-\newcommand{\thetaA}{\delta\theta}
 The perturbation $\dqR[\theta]$ is a rearrangement of $\dqR[\thetaA] $ 
 \begin{align*}
 \dqR[\thetaA] &= \fRO[\dqRe, \thetaA ] \\
@@ -972,7 +1093,25 @@ The perturbation introduced to each channel is further simplified by recognizing
 We can now express the perturbation to the rotation and to the channel elements themselves.
 
 \begin{align*}
-\nR[\theta] & = \nRa[\theta]+\dnR[theta] \\
+\nR[\theta] & = \nRa[\theta]+\dnR[\theta] \\
+& = \nS[\theta] \otimes \rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  + \dqRe[ \theta, n ]  \right]  \\
+& = 
+\begin{pmatrix}
+ \frac{1}{3}  \\
+ \frac{1}{2}\\
+ \frac{1}{2} \\
+\end{pmatrix}
+ \otimes
+\begin{pmatrix}
+ 1  \\
+ 2^{2-n } \\
+ 2^{2-n }  \\
+\end{pmatrix}
+\otimes  \fSs(\theta) \otimes \fRO \left[ \qRe[ \theta, n ]  + \dqRe[ \theta, n ]  \right]   \\
+\end{align*}
+
+\begin{align*}
+\nR[\theta] & = \nRa[\theta]+\dnR[\theta] \\
 &= \nS[\theta] \otimes\rS \otimes \fSO \left[ \fSe[ \thetaA ] \right] \otimes  \qS[ n ]  \otimes \fRO \left[ \qRe[ \theta, n ]  + \dqRe[ \theta, n ]  \right] 
 \end{align*}
 
