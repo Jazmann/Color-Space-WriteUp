@@ -1026,13 +1026,18 @@ The perturbation $\dqR[\theta]$ is a rearrangement of $\dqR[\thetaA] $
 The perturbation introduced to each channel is further simplified by recognizing that $\fRe[-\phi]=-1-\fRe[\phi]$, which allows us to find $\dqRe[-\phi]=-\dqRe[\phi]$ i.e. that the sum of the two perturbations in each row equals zero. we can analyze the quantization error in terms of just one function $\dqRe$ and a matrix ordering function $\dqR[\theta] = \fROm \left[ \dqR[ \thetaA ]  \right]$.
 
 \begin{align*}
-\dqR[\theta] &= \fROm \left[  \left(
-\begin{array}{ccc}
- 0                                     & 0                                      & 0                     \\
- \dqRe[ \thetaA ]              & 0                                      & -\dqRe[ \thetaA ] \\
- \dqRe[ \Pii{6} -\thetaA]  & - \dqRe[ \Pii{6} -\thetaA] & 0                     \\
-\end{array}
-\right)  ,\theta \right]
+\dqR[\theta] &= \fROm \left[  
+\begin{pmatrix}
+ 0                                     \\
+ \dqRe[ \thetaA ]              \\
+ \dqRe[ \Pii{6} -\thetaA]   \\
+\end{pmatrix} \otimes
+\begin{pmatrix}
+ 0  &    0  &   0  \\
+ 1  &    0  & -1  \\
+ 1  & - 1  &   0  \\
+\end{pmatrix}
+  ,\theta \right]
 \end{align*}
 
 
@@ -1090,7 +1095,7 @@ The perturbation introduced to each channel is further simplified by recognizing
 \end{cases}
 \end{equation}
 
-We can now express the perturbation to the rotation and to the channel elements themselves.
+We can now express the perturbation to the rotation and to the channel elements themselves. The structure of $\fROm$ means that the perturbation to each channel is the product of either $\dqRe[ \thetaA ]$ or $\dqRe[ \Pii{6} -\thetaA]$ with the difference between two of the pixel values. Given that we can assume that the pixel values are positive, being unsigned integers, the extreme values of the perturbation are when one of the two pixel values is zero.  
 
 \begin{align*}
 \nR[\theta] & = \nRa[\theta]+\dnR[\theta] \\
@@ -1110,15 +1115,17 @@ We can now express the perturbation to the rotation and to the channel elements 
 \otimes  \fSs(\theta) \otimes \fRO \left[ \qRe[ \theta, n ]  + \dqRe[ \theta, n ]  \right]   \\
 \end{align*}
 
-\begin{align*}
-\nR[\theta] & = \nRa[\theta]+\dnR[\theta] \\
-&= \nS[\theta] \otimes\rS \otimes \fSO \left[ \fSe[ \thetaA ] \right] \otimes  \qS[ n ]  \otimes \fRO \left[ \qRe[ \theta, n ]  + \dqRe[ \theta, n ]  \right] 
-\end{align*}
 
 defining
 
 \begin{align*}
-\Scale[\theta, n]   & =\nS[\theta] \otimes\rS \otimes \fSO \left[ \fSe[\thetaA] \right] \otimes  \qS[ n ]  \\
+\Scale[\theta, n]   & =
+\begin{pmatrix}
+  \frac{1}{3} \\
+ 2^{1-n } \\
+ 2^{1-n }  \\
+\end{pmatrix}
+\otimes  \fSs(\theta)    \\
 \nRa[\theta]   & =  \Scale[\theta] \otimes \fRO \left[   \qRe[ \theta, n ] \right]   \\
 \dnR[\theta]   & =  \Scale[\theta] \otimes \fRO \left[ \dqRe[ \theta, n ] \right] \\
 \end{align*}
@@ -1127,7 +1134,7 @@ defining
 \newcommand{\w}{\vec{w}}
 \newcommand{\dW}{\vec{\delta w}}
 
-the perturbation to the rotated channel elements $\dW$ is found for an input set of pixel values $\rgb$
+the perturbation to the rotated channel elements $\dW$ is found for an input set of pixel values $\rgb= 2^n\normed{\rgb} $
 
 
 \begin{align*}
@@ -1135,52 +1142,6 @@ the perturbation to the rotated channel elements $\dW$ is found for an input set
 \dW &= 2^n\dnR[\theta] \cdot \normed{\rgb} \\
         &= 2^n\Scale[\theta] \otimes \fRO \left[ \dqRe[ \theta, n ] \right] \cdot \normed{\rgb} 
 \end{align*}
-
-\begin{equation}
- \fR[\theta] =
-\left(
-\begin{array}{c}
- 1  \\
- 2^{2-n } \\
- 2^{2-n }  \\
-\end{array}
-\right)
-\bigotimes
-\left( \qR[\theta] + \dqR\right)
-\end{equation}
-because $\fRO$ works equivalently for both $\qR$ and $\fR$
-\begin{align}
-\dfR[ \theta ]  &= \fRO \left[  \fRe[\theta] -\left(
-\begin{array}{c}
- 1  \\
- 2^{2-n } \\
- 2^{2-n }  \\
-\end{array}
-\right)
-\bigotimes
-\qRe[\theta]  \right] 
-\end{align}
-
-
-The perturbation depends upon
-\begin{equation}
-\dfRe[\phi]=2^{2-n} \text{Round}\left[2^{n-2} \fRe[\phi ]\right]-\fRe[\phi ]
-\end{equation}
-
-so
-
-\begin{equation}
-\delta\fR[\theta] = 
- \fRO{ \left(
-\begin{array}{ccc}
- 0 & 0 & 0 \\
- \dfRe[\phi]& 0 & \dfRe[-\phi] \\
- \dfRe[\frac{\pi }{6}-\phi]   & \dfRe[\phi-\frac{\pi }{6}] & 0 \\
-\end{array}
-\right) }
-\end{equation}
-
-The perturbation introduced to each channel is further simplified by recognizing that $\fRe[-\phi]=-1-\fRe[\phi]$, which allows us to find $\dfRe[-\phi]=-\dfRe[\phi]$ i.e. that the sum of the two perturbations equals zero. we can analyze the quantization error in terms of just one function $\dfRe$.
 
 At this point, we should recognize that the perturbation in a channel is described by $\pm\dfRe[\phi]$ or $\pm\dfRe[\phi-\Pii{6}]$. So, because we're more interested in the error and the bounds on that than we are in the error for any particular $\theta$ --- $\theta$ being an input design parameter to the algorithm --- it's more useful to have a function which returns values of $\theta$ for a given error. To this end, we can find the inverse function for the perturbation function $\pm\dfRe[\phi-\Pii{6}]$. The perturbation to each channel lies between -2 and 2, which is, unfortunately, twice the acceptable perturbation for zero error (See Figure~\ref{fig:PtbToChan}). However, this is expected; we designed the quantization to what we desired rather than what we expected to be possible. At this point, there are no more tricks --- no more factorizations --- nothing more that we can do. The only thing left to do now is to specify which values of $\theta$ for which the quantization produces no error, and the values which do result in unacceptable error, i.e. the values of $\theta$ for which any of these four functions is greater than 1. 
 
