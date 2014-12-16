@@ -347,12 +347,12 @@ Any rotation about an axis can be represented by a 3x3 square matrix in a 3D spa
 0 & \cos \theta &  -\sin \theta \\[3pt]
 0 & \sin \theta  &  \cos \theta \\[3pt]
 \end{bmatrix} \\[6pt]
-R_y(\theta) &= \begin{bmatrix}
+\R_y(\theta) &= \begin{bmatrix}
 \cos \theta & 0 & \sin \theta \\[3pt]
 0 & 1 & 0 \\[3pt]
 -\sin \theta & 0 & \cos \theta \\
 \end{bmatrix} \\[6pt]
-R_z(\theta) &= \begin{bmatrix}
+\R_z(\theta) &= \begin{bmatrix}
 \cos \theta &  -\sin \theta & 0 \\[3pt]
 \sin \theta & \cos \theta & 0\\[3pt]
 0 & 0 & 1\\
@@ -364,13 +364,11 @@ Any rotation which orients the RGB color space such that one of the new axes lie
 
 \begin{equation}
 \R_{xyz}(\theta) =
-\left(
-\begin{array}{ccc}
+\begin{pmatrix}
  \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} \\
  -\sqrt{\frac{2}{3}} \sine{\theta +\Pii{6} } & \sqrt{\frac{2}{3}} \cos (\theta ) & -\sqrt{\frac{2}{3}} \sine{\Pii{6}-\theta } \\
  -\sqrt{\frac{2}{3}} \cos \left(\theta +\Pii{6}\right) & -\sqrt{\frac{2}{3}} \sin (\theta ) & \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-\theta \right) \\
-\end{array}
-\right)
+\end{pmatrix}
 \end{equation}
 
 
@@ -384,22 +382,20 @@ We need to know, in each of the axes, how far out each point is. Because we're e
 
 
 \begin{multline}\label{eq:YabCube}
-  \R_{xyz}(\theta)\cdot\left(
-\begin{array}{cccccccc}
+  \R_{xyz}(\theta)\cdot
+\begin{pmatrix}
  0 & 1 & 1 & 0 & 0 & 0 & 1 & 1 \\
  0 & 0 & 1 & 1 & 1 & 0 & 0 & 1 \\
  0 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
-\end{array}
-\right) = \\
+\end{pmatrix}
+ = \\
 \resizebox{\textwidth}{!}{%
 $\displaystyle
-\left(
-\begin{array}{cccccccc}
+\begin{pmatrix}
  0 & \frac{1}{\sqrt{3}} & \frac{2}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{2}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{2}{\sqrt{3}} & \sqrt{3} \\
  0 & -\sqrt{\frac{2}{3}} \sin \left(\theta +\Pii{6}\right) & \sqrt{\frac{2}{3}} \sin \left(\Pii{6}-\theta \right) & \sqrt{\frac{2}{3}} \cos (\theta ) & \sqrt{\frac{2}{3}} \sin \left(\theta +\Pii{6}\right) & -\sqrt{\frac{2}{3}} \sin \left(\Pii{6}-\theta \right) & -\sqrt{\frac{2}{3}} \cos (\theta ) & 0 \\
  0 & -\sqrt{\frac{2}{3}} \cos \left(\theta +\Pii{6}\right) & -\sqrt{\frac{2}{3}} \cos \left(\Pii{6}-\theta \right) & -\sqrt{\frac{2}{3}} \sin (\theta ) & \sqrt{\frac{2}{3}} \cos \left(\theta +\Pii{6}\right) & \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-\theta \right) & \sqrt{\frac{2}{3}} \sin (\theta ) & 0 \\
-\end{array}
-\right)$}
+\end{pmatrix}$}
 \end{multline}
 
 
@@ -432,13 +428,12 @@ In the range $0:\frac{\pi}{3}$, both sin and cos are positive, therefore the axi
 The lengths of the axis after rotation are given by:
 
 \begin{equation}\label{eq:L}
-\mathbf{L}(\theta) = \left(
-\begin{array}{c}
+\mathbf{L}(\theta) =
+\begin{pmatrix}
 \sqrt{3} \\
  \sqrt{\frac{2}{3}} \sin \left(\widetilde{\vartheta}\right) + \sqrt{2} \cos \left(\widetilde{\vartheta}\right) \\  
 \sqrt{\frac{2}{3}} \sin \left(\widetilde{\theta}\right) + \sqrt{2} \cos \left(\widetilde{\theta}\right) 
-\end{array}
-\right)
+\end{pmatrix}
 \quad \text{where}  \quad 
 \begin{array}{c}
 \widetilde{\theta} = \theta  \bmod \frac{\pi }{3} \\ 
@@ -553,13 +548,11 @@ The second and third rows each sum to zero ($\uR \cdot \mathbf{1} = [\sqrt{3},0,
  \sqrt{\frac{2}{3}} \\
 \end{array}
 \right) \bigotimes
-\left(
-\begin{array}{ccc}
+\begin{pmatrix}
  1 & 1 & 1 \\
  -\sin \left(\theta +\Pii{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\Pii{6}\right) \\
  -\cos \left(\theta +\Pii{6}\right) & - \sin (\theta ) & \cos \left(\theta -\Pii{6}\right) \\
-\end{array}
-\right)
+\end{pmatrix}
 \end{equation}
 
 To facilitate the quantization, we next factor the second and third rows such that the largest element of each row equals exactly 1. As previously mentioned, the largest element has the opposite sign to the other two elements in a given row. So, the steps required to perform the factorization are as follows:
@@ -572,20 +565,18 @@ To facilitate the quantization, we next factor the second and third rows such th
 
 The sign of the elements is most easily seen by looking at the rotation as phase shifted sine functions.
 \begin{equation}
-\rR[\theta]=\left(
-\begin{array}{ccc}
+\rR[\theta]=
+\begin{pmatrix}
  1 & 1 & 1 \\
  \sine{\theta -\frac{5 \pi }{6}}  & \sine{\theta +\frac{3 \pi }{6}}  & \sine{\theta -\Pii{6}}  \\
  \sine{\theta -\frac{2 \pi }{6}}  & \sine{\theta -\frac{6 \pi }{6}}  & \sine{\theta +\frac{2 \pi }{6}}  \\
-\end{array}
-\right)
+\end{pmatrix}
 \end{equation}
 
 So the signs look like
 
 \begin{equation}
-\left(
-\begin{array}{ccc}
+\begin{pmatrix}
  1 & 1 & 1 \\
 \raisebox{-10mm}{\includegraphics[width = 20mm]{Chapter2/Figs/SignOfrR21.jpg}}
 \scalebox{0.68}[0.9]{\(
@@ -635,8 +626,7 @@ So the signs look like
 \end{cases}
 \)}
  \\
-\end{array}
-\right)
+\end{pmatrix}
 \end{equation}
 
 Each row is a series of three sin waves each $\frac{2\pi}{3}$ out of phase with each other. The rows are$\frac{\pi}{2}$ out of phase with each other.
@@ -867,13 +857,12 @@ We can now relate the functions to each other, since they are now essentially th
 
 \begin{align}
 \fR[\theta] & = \fRO \left[ \fRm{\thetaA} , \theta \right] \\
-& = \fRO \left[ \left(
-\begin{array}{ccc}
+& = \fRO \left[
+\begin{pmatrix}
  1 & 1 & 1 \\
  \text{fRe} (\thetaA)  & 1 & \text{fRe} (-\thetaA ) \\
  \text{fRe} \left(\frac{\pi }{6}-\thetaA \right) & \text{fRe} \left(\thetaA -\frac{\pi }{6}\right) & 1 \\
-\end{array}
-\right) , \theta \right]
+\end{pmatrix} , \theta \right]
 \end{align}
 
 The scaling factor $\fS ( \thetaA )$ can also be further simplified by separating the sign and combining the functional parts.
@@ -1007,20 +996,21 @@ The perturbation depends entirely on $\dqRe[\theta,n]$
 
 \begin{align*}
 \dqRe[\phi] &= \text{Round}\left[ 2^{n-2} \fRe[\phi ] \right]-2^{n-2}\fRe[\phi ] \\
-% \dfRe[\phi] &= 2^{2-n} \text{Round}\left[2^{n-2} \fRe[\phi ]\right]-\fRe[\phi ] \\
+%&= \text{Round}\left[ 2^{n-2} \frac{\um 1}{2} \left(1+\sqrt{3} \tan (\phi )\right)  \right]-2^{n-2}\frac{\um 1}{2} \left(1+\sqrt{3} \tan (\phi )\right) \\
+%&= \text{Round}\left[ 2^{n-3} \right]+ \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right]-2^{n-3}-2^{n-3}\sqrt{3} \tan (\phi )\\
+&=  \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right]-2^{n-3}\sqrt{3} \tan (\phi )\\
 \dfRe[\phi] &= 2^{2-n} \dqRe[\phi]  
 \end{align*}
 
 The perturbation $\dqR[\theta]$ is a rearrangement of $\dqR[\thetaA] $ 
 \begin{align*}
 \dqR[\thetaA] &= \fRO[\dqRe, \thetaA ] \\
- &= \left(
-\begin{array}{ccc}
+ &=
+\begin{pmatrix}
  0                                     & 0                                   & 0                     \\
  \dqRe[ \thetaA ]              & 0                                   & \dqRe[ -\thetaA ] \\
  \dqRe[ \Pii{6} -\thetaA]   & \dqRe[\thetaA-\Pii{6} ] & 0                     \\
-\end{array}
-\right) 
+\end{pmatrix}
 \end{align*}
 
 The perturbation introduced to each channel is further simplified by recognizing that $\fRe[-\phi]=-1-\fRe[\phi]$, which allows us to find $\dqRe[-\phi]=-\dqRe[\phi]$ i.e. that the sum of the two perturbations in each row equals zero. we can analyze the quantization error in terms of just one function $\dqRe$ and a matrix ordering function $\dqR[\theta] = \fROm \left[ \dqR[ \thetaA ]  \right]$.
@@ -1140,16 +1130,54 @@ the perturbation to the rotated channel elements $\dW$ is found for an input set
 \begin{align*}
 \w+\dW &= \nRa[\theta] \cdot \rgb+\dnR[\theta] \cdot \rgb \\
 \dW &= 2^n\dnR[\theta] \cdot \normed{\rgb} \\
-        &= 2^n\Scale[\theta] \otimes \fRO \left[ \dqRe[ \theta, n ] \right] \cdot \normed{\rgb} 
+        &= 2^n\Scale[\theta] \otimes \fRO \left[ \dqRe[ \theta, n ] \right] \cdot \normed{\rgb} \\
+        &= \fROm \left[  
+        \begin{pmatrix}
+         0                                     \\
+         2 \dqRe[ \thetaA ]              \\
+         2 \dqRe[ \Pii{6} -\thetaA]   \\
+        \end{pmatrix} \otimes
+        \begin{pmatrix}
+         0  &    0  &   0  \\
+         1  &    0  & -1  \\
+         1  & - 1  &   0  \\
+        \end{pmatrix}
+          ,\theta \right]
 \end{align*}
 
-At this point, we should recognize that the perturbation in a channel is described by $\pm\dfRe[\phi]$ or $\pm\dfRe[\phi-\Pii{6}]$. So, because we're more interested in the error and the bounds on that than we are in the error for any particular $\theta$ --- $\theta$ being an input design parameter to the algorithm --- it's more useful to have a function which returns values of $\theta$ for a given error. To this end, we can find the inverse function for the perturbation function $\pm\dfRe[\phi-\Pii{6}]$. The perturbation to each channel lies between -2 and 2, which is, unfortunately, twice the acceptable perturbation for zero error (See Figure~\ref{fig:PtbToChan}). However, this is expected; we designed the quantization to what we desired rather than what we expected to be possible. At this point, there are no more tricks --- no more factorizations --- nothing more that we can do. The only thing left to do now is to specify which values of $\theta$ for which the quantization produces no error, and the values which do result in unacceptable error, i.e. the values of $\theta$ for which any of these four functions is greater than 1. 
+So to minimise the perturbation we need to simultaneously minimise $\pm 2 \dqRe[ \thetaA ]  $ and $\pm 2 \dqRe[ \Pii{6} -\thetaA]$
+
 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.99\textwidth]{Chapter2/Figs/PtbToChanBoth.jpg}
     \caption{Perturbation in the chromatic channels.}  \label{fig:PtbToChan}
 \end{figure}
+
+The maxima for each function are where $\pm 2 \dqRe[ \thetaA ]  = \pm 1$ and $\pm 2 \dqRe[ \Pii{6} -\thetaA]= \pm 1$ and the minima are where $\pm 2 \dqRe[ \thetaA ]  = 0$ and $\pm 2 \dqRe[ \Pii{6} -\thetaA] = 0$. To find the corresponding values of $\thetaA$ all that is needed is an inverse function for $\dqRe$. In essence $\dqRe[\phi]$ discretizes $\sqrt{3} \tan (\phi )$ into steps of $2^{3-n}$. The minima can be found by taking the inverse of $\left[\sqrt{3} \tan (\phi )\right]^{-1} = \arctan\left(\frac{\phi}{\sqrt{3}}\right))$ given that
+$0\le\sqrt{3} \tan (\phi )\le1$ for $0 \le \phi \le \Pii{6}$ we can say that  $0 \le \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right]\le 2^{n-3}$
+\begin{gather*}
+\dqRe[\phi] = 0 \quad \text{when} \\
+\text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right]=  2^{n-3}\sqrt{3} \tan (\phi ) \\
+m =  2^{n-3}\sqrt{3} \tan (\phi )\quad \text{where}\quad m=0,1,2...2^{n-3} \\
+\phi =\arctan\left(\frac{ 2^{3-n} m}{\sqrt{3}}\right))  
+\end{gather*}
+The maxima can be found by recognising that the maximum rounding error is a half and evaluating at these points
+\begin{gather*}
+\dqRe[\phi] = \pm 1 \quad \textbf{when}\\
+\phi =\arctan\left(\frac{ 2^{3-n} m}{\sqrt{3}} +\frac{1}{2}\right))  
+\end{gather*}
+
+We are interested in a compromise between the perturbations to each channel which is where the perturbations intersect. 
+\begin{gather*}
+\dqRe[\phi] = \dqRe[\frac{\pi}{6} -\phi]  \quad \textbf{when}\\
+\text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\frac{\pi}{6} - \phi ) \right] 
+=  2^{n-3}\sqrt{3} \left( \tan (\frac{\pi}{6} - \phi ) - \tan (\phi ) \right) \\
+m =  2^{n-3}\sqrt{3} \tan (\phi )\quad \text{where}\quad m=0,1,2...2^{n-2}\\
+\phi =\tan ^{-1}\left(\frac{\sqrt{m^2 2^{6-2 n}-m 2^{4-n}+49}+m 2^{3-n}-7}{2 \sqrt{3}}\right)
+\end{gather*}
+
+At this point, we should recognize that the perturbation in a channel is described by $\pm\dfRe[\phi]$ or $\pm\dfRe[\phi-\Pii{6}]$. So, because we're more interested in the error and the bounds on that than we are in the error for any particular $\theta$ --- $\theta$ being an input design parameter to the algorithm --- it's more useful to have a function which returns values of $\theta$ for a given error. To this end, we can find the inverse function for the perturbation function $\pm\dfRe[\phi-\Pii{6}]$. The perturbation to each channel lies between -2 and 2, which is, unfortunately, twice the acceptable perturbation for zero error (See Figure~\ref{fig:PtbToChan}). However, this is expected; we designed the quantization to what we desired rather than what we expected to be possible. At this point, there are no more tricks --- no more factorizations --- nothing more that we can do. The only thing left to do now is to specify which values of $\theta$ for which the quantization produces no error, and the values which do result in unacceptable error, i.e. the values of $\theta$ for which any of these four functions is greater than 1. 
 
 
 
@@ -1158,8 +1186,7 @@ One further optimization is possible if we consider the redistribution of the va
 The sign of the rotation matrix is given by
 
 \begin{equation}
-\left(
-\begin{array}{ccc}
+\begin{pmatrix}
 1 & 1  & 1 \\
 \begin{cases}
    1 & \frac{5 \pi }{6}<\theta <\frac{11 \pi }{6} \\
@@ -1192,41 +1219,36 @@ The sign of the rotation matrix is given by
  -1 & \frac{2 \pi }{3}<\theta <\frac{5 \pi }{3} \\
 \end{cases}
  \\
-\end{array}
-\right)
+\end{pmatrix}
 \end{equation}
 
 We are interested in which elements in each row share the same sign, as these will determine the pixel values which contribute to the error. If we find the intersecting conditions and flip the sign where there are two negative elements, the following is found
 \begin{equation}
 \begin{cases}
- \left(
-\begin{array}{ccc}
+\begin{pmatrix}
  1 & 1 & 1 \\
  0 & 0 & 0 \\
  0 & 0 & 0 \\
-\end{array}
-\right) & \theta =\Pii{6}\lor \theta =\frac{\pi }{2}\lor \theta =\frac{5 \pi }{6}\lor \theta =\frac{7 \pi }{6}\lor \theta =\frac{3 \pi }{2}\lor \theta =\frac{11 \pi }{6} \\
- \left(
-\begin{array}{ccc}
+\end{pmatrix}
+ & \theta =\Pii{6}\lor \theta =\frac{\pi }{2}\lor \theta =\frac{5 \pi }{6}\lor \theta =\frac{7 \pi }{6}\lor \theta =\frac{3 \pi }{2}\lor \theta =\frac{11 \pi }{6} \\
+\begin{pmatrix}
  1 & 1 & 1 \\
  -1 & 1 & 1 \\
  -1 & 1 & 1 \\
-\end{array}
-\right) & \Pii{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
- \left(
-\begin{array}{ccc}
+\end{pmatrix}
+ & \Pii{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
+\begin{pmatrix}
  1 & 1 & 1 \\
  1 & -1 & 1 \\
  1 & -1 & 1 \\
-\end{array}
-\right) & 0\leq \theta <\Pii{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
- \left(
-\begin{array}{ccc}
+\end{pmatrix}
+ & 0\leq \theta <\Pii{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
+\begin{pmatrix}
  1 & 1 & 1 \\
  1 & 1 & -1 \\
  1 & 1 & -1 \\
-\end{array}
-\right) & \frac{\pi }{2}<\theta <\frac{5 \pi }{6}\lor \frac{3 \pi }{2}<\theta <\frac{11 \pi }{6} \\
+\end{pmatrix}
+ & \frac{\pi }{2}<\theta <\frac{5 \pi }{6}\lor \frac{3 \pi }{2}<\theta <\frac{11 \pi }{6} \\
 \end{cases}
 \end{equation}
 So for a pixel $\{R,G,B\}$  % \parpic{\includegraphics[width=100mm]{Chapter2/Figs/ErrorIntheRotation.eps}}
