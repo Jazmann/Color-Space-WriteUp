@@ -1177,6 +1177,22 @@ m =  2^{n-3}\sqrt{3} \tan (\phi )\quad \text{where}\quad m=0,1,2...2^{n-2}\\
 \phi =\tan ^{-1}\left(\frac{\sqrt{m^2 2^{6-2 n}-m 2^{4-n}+49}+m 2^{3-n}-7}{2 \sqrt{3}}\right)
 \end{gather*}
 
+\begin{align}
+\phi &=\arctan\left(\frac{ 2^{3-n} m}{\sqrt{3}}\right))  &
+\phi &=\arctan\left(\frac{ \sqrt{3} \left(1-2^{3-n} m\right) }{2^{3-n} m+3}\right)\\
+\phi &=\arctan\left(\frac{ 2^{3-n} m}{\sqrt{3}}+\frac{1}{2}\right))  & 
+\phi &=\arctan\left(\frac{\sqrt{3} \left(1-2^{3-n} m\right) }{2^{3-n}  m+3}\right)\\
+\end{align}
+
+The extrema $\theta_{min}(m)$ and $\theta_{max}(m)$ and points of intersection $\theta_{i}(m)$  
+
+\parpic(44mm,44mm)[r]{Chapter2/Figs/GeometryClassifyPoint.jpg}
+
+\begin{gather}
+\frac{h_1}{h_2} = \frac{b}{a}\\
+h_1 = \frac{b}{a+b}\\
+\end{gather}
+
 At this point, we should recognize that the perturbation in a channel is described by $\pm\dfRe[\phi]$ or $\pm\dfRe[\phi-\Pii{6}]$. So, because we're more interested in the error and the bounds on that than we are in the error for any particular $\theta$ --- $\theta$ being an input design parameter to the algorithm --- it's more useful to have a function which returns values of $\theta$ for a given error. To this end, we can find the inverse function for the perturbation function $\pm\dfRe[\phi-\Pii{6}]$. The perturbation to each channel lies between -2 and 2, which is, unfortunately, twice the acceptable perturbation for zero error (See Figure~\ref{fig:PtbToChan}). However, this is expected; we designed the quantization to what we desired rather than what we expected to be possible. At this point, there are no more tricks --- no more factorizations --- nothing more that we can do. The only thing left to do now is to specify which values of $\theta$ for which the quantization produces no error, and the values which do result in unacceptable error, i.e. the values of $\theta$ for which any of these four functions is greater than 1. 
 
 
