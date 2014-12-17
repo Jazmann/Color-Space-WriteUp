@@ -737,7 +737,7 @@ $\Theta$ &
 \begin{tabular}{c} 
 Scale : $fS[\theta]$ \\
 \raisebox{-13mm}{\includegraphics[width = 26mm]{Chapter2/Figs/fRWheel.jpg}} \\
-$\fSs{\theta} \otimes \fSe{\theta}$ \\
+$\fSs[\theta] \otimes \fSe[\theta]$ \\
 \end{tabular} &  Factored Rotation : $fR[\thetaA]$ \\ 
 \hline \rule[-2ex]{0pt}{5.5ex} 
 \bf{A} : $0$& \( \left(\!\!\!
@@ -914,7 +914,7 @@ then $\fS (\theta) = \fSe (\theta) \otimes \fSs(\theta)$ where $\fSs$ is a piece
 
 The scaling factors combine in a simple way
 \begin{equation}
-\nS{\theta} \otimes \rS \otimes \fSe (\theta)   = 
+\nS[\theta] \otimes \rS \otimes \fSe (\theta)   = 
 \left(
 \begin{array}{c}
  \frac{1}{3}  \\
@@ -926,7 +926,7 @@ The scaling factors combine in a simple way
 The fully factorized matrix can now be written as
 
 \begin{align*}
-\nR{\theta} & = \nS{\theta} \otimes \rS \otimes \fSe (\theta) \otimes \fSs(\theta) \otimes\fRO \left[  \fRm{ \thetaA }, \theta \right] \\
+\nR[\theta] & = \nS[\theta] \otimes \rS \otimes \fSe (\theta) \otimes \fSs(\theta) \otimes\fRO \left[  \fRm{ \thetaA }, \theta \right] \\
 & = \left(
 \begin{array}{c}
  \frac{1}{3}  \\
@@ -1154,19 +1154,30 @@ So to minimise the perturbation we need to simultaneously minimise $\pm 2 \dqRe[
     \caption{Perturbation in the chromatic channels.}  \label{fig:PtbToChan}
 \end{figure}
 
-The maxima for each function are where $\pm 2 \dqRe[ \thetaA ]  = \pm 1$ and $\pm 2 \dqRe[ \Pii{6} -\thetaA]= \pm 1$ and the minima are where $\pm 2 \dqRe[ \thetaA ]  = 0$ and $\pm 2 \dqRe[ \Pii{6} -\thetaA] = 0$. To find the corresponding values of $\thetaA$ all that is needed is an inverse function for $\dqRe$. In essence $\dqRe[\phi]$ discretizes $\sqrt{3} \tan (\phi )$ into steps of $2^{3-n}$. The minima can be found by taking the inverse of $\left[\sqrt{3} \tan (\phi )\right]^{-1} = \arctan\left(\frac{\phi}{\sqrt{3}}\right))$ given that
-$0\le\sqrt{3} \tan (\phi )\le1$ for $0 \le \phi \le \Pii{6}$ we can say that  $0 \le \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right]\le 2^{n-3}$
-\begin{gather*}
-\dqRe[\phi] = 0 \quad \text{when} \\
-\text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right]=  2^{n-3}\sqrt{3} \tan (\phi ) \\
-m =  2^{n-3}\sqrt{3} \tan (\phi )\quad \text{where}\quad m=0,1,2...2^{n-3} \\
-\phi =\arctan\left(\frac{ 2^{3-n} m}{\sqrt{3}}\right))  
-\end{gather*}
+The maxima for each function are where $\pm 2 \dqRe[ \thetaA ]  = \pm 1$ and $\pm 2 \dqRe[ \Pii{6} -\thetaA]= \pm 1$ and the minima are where $\pm 2 \dqRe[ \thetaA ]  = 0$ and $\pm 2 \dqRe[ \Pii{6} -\thetaA] = 0$. To find the corresponding values of $\thetaA$ all that is needed is an inverse function for $\dqRe$. In essence $\dqRe[\phi]$ discretizes $\sqrt{3} \tan (\phi )$ into steps of $2^{3-n}$. The minima can be found by taking the inverse of $\sqrt{3} \tan (\phi )$ given that
+$0\le\sqrt{3} \tan (\phi )\le1$ for $0 \le \phi \le \Pii{6}$ we can say that $\text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] \in \{ 0, 1, 2, \cdots 2^{n-3} \}$ 
+
+
+\begin{align*}
+\dqRe[\phi] & = 0 & \dqRe[\Pii{6}-\phi] & = 0 \quad \text{when} \\
+% 2^{n-3}\sqrt{3} \tan (\phi ) &= \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right]  & 
+% 2^{n-3}\sqrt{3} \tan (\Pii{6}-\phi ) &= \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\Pii{6}-\phi ) \right]\\
+2^{n-3}\sqrt{3} \tan (\phi ) & = m & 
+2^{n-3}\sqrt{3} \tan (\Pii{6}-\phi ) &= m \quad \text{where}\quad m=0,1,2 \cdots 2^{n-3} \\
+ \check{\phi}_{b} = & \arctan\left(\frac{m 2^{3-n}}{\sqrt{3}}  \right) &
+ \check{\phi}_{a} = & \arctan\left(\frac{2 \sqrt{3} m}{2^n - 2 m}\right) 
+\end{align*}
+
 The maxima can be found by recognising that the maximum rounding error is a half and evaluating at these points
-\begin{gather*}
-\dqRe[\phi] = \pm 1 \quad \textbf{when}\\
-\phi =\arctan\left(\frac{ 2^{3-n} m}{\sqrt{3}} +\frac{1}{2}\right))  
-\end{gather*}
+
+\begin{align*}
+\dqRe[\hat{\phi}_{b} ] & = \pm 1 & \dqRe[\Pii{6}-\hat{\phi}_{a} ] & = \pm 1  \quad \text{when} \\
+\hat{\phi}_{b} & =\arctan\left(\frac{ 2^{3-n} }{\sqrt{3}} \left(m+\frac{1}{2}\right) \right) &
+\hat{\phi}_{a} & = \arctan\left(\frac{2 \sqrt{3} \left(m+\frac{1}{2}\right)}{2^n - 2 \left(m+\frac{1}{2}\right)}\right)  \\
+ \hat{\phi}_{b}  &=  \arctan\left(\frac{(2 m+1) 2^{2-n}}{\sqrt{3}}          \right) &
+  \hat{\phi}_{a}  &=  \arctan\left(\frac{\sqrt{3} (2 m+1)}{2^n-2 m-1}  \right) \\
+  \quad&\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 
+\end{align*}
 
 We are interested in a compromise between the perturbations to each channel which is where the perturbations intersect. 
 \begin{gather*}
@@ -1180,13 +1191,18 @@ m =  \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \text{Round}\left
 \overset{\times}{\phi} =\arctan\left(\frac{\sqrt{m^2 2^{6-2 n}-m 2^{4-n}+49}+m 2^{3-n}-7}{2 \sqrt{3}}\right) \quad \text{where}\quad m=0,1,2 \cdots 2^{n-2}
 \end{gather*}
 
-\begin{align}
+Comparing with the extrema 
+
+\begin{align*}
  \check{\phi}_{a} = & \arctan\left(\frac{2 \sqrt{3} m}{2^n - 2 m}\right) &
- \check{\phi}_{b} = & \arctan\left(\frac{m 2^{3-n}}{\sqrt{3}}       \right) \quad & \text{with}\quad   m =  0,1,2,3 \cdots2^{n-3} \\
- \hat{\phi    }_{a}  = & \arctan\left(\frac{\sqrt{3} (2 m+1)}{-2 m+2^n-1}  \right) &
- \hat{\phi   }_{b}  = & \arctan\left(\frac{(2 m+1) 2^{2-n}}{\sqrt{3}}          \right) \quad&\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 \\
- \check{\phi}_{a} (m)&< \check{\phi}_{b}(m)  <  \check{\phi}_{a} (m+1)& \hat{\phi}_{a}(m)   &< \hat{\phi}_{b}(m)  <\hat{\phi}_{a}(m+1) 
-\end{align}
+ \check{\phi}_{b} = & \arctan\left(\frac{m 2^{3-n}}{\sqrt{3}}       \right) \\ 
+ & \text{with}\quad   m =  0,1,2,3 \cdots2^{n-3} \\
+ \hat{\phi    }_{a}  = & \arctan\left(\frac{\sqrt{3} (2 m+1)}{2^n-2 m-1}  \right) &
+ \hat{\phi   }_{b}  = & \arctan\left(\frac{(2 m+1) 2^{2-n}}{\sqrt{3}}          \right) \\
+ &\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 \\
+ \check{\phi}_{a} (m) & < \overset{\times}{\phi} (2m)     <\check{\phi}_{b}(m)  < \overset{\times}{\phi} (2m+1)  <  \check{\phi}_{a} (m+1) & 
+      \hat{\phi}_{a}(m) & < \overset{\times}{\phi} (2m+1) <    \hat{\phi}_{b}(m)  < \overset{\times}{\phi} (2m+2)  <      \hat{\phi}_{a}(m+1) 
+\end{align*}
 
 We want to classify the points of intersection as greater or lesser than a tolerance $\tau \in \{ \frac{1}{2}, \frac{1}{4},\frac{1}{8}, \cdots \}$. In order to do this we make a linear approximation to the perturbation between the extrema. There is one point of intersection between each of the maxima and corresponding minima. A bit of geometry allows us to write a classification criteria for each of the points of intersection.
 
@@ -1205,7 +1221,7 @@ b_1 & = \check{\phi}_{b}(m) - \check{\phi}_{a}(m) & b_2 & = \check{\phi}_{a}(m+1
 
 The criteria for $\tau_1$ is used for the odd values of m and $\tau_2$ for the even values in the equation for the points of intersection $\check{\phi}_{a} (m)$. There are $2^{n-2}$ points of intersection and $2^{n-3}$ which satisfy the criteria $\tau = \frac{1}{2}$. The algorithm as implemented in openCV leaves the decision about the criteria up to the programmer. The programmer chooses a value for $\theta$ and selects a value for $\tau$. The algorithm returns the nearest value of $\theta$ which satisfies the condition defined by $\tau$. The programmer then decides whether the suggested value for $\theta$ is acceptable and either adopts the suggested value or chooses a value as close as possible and accepts the possibility of errors.
 
-For example in this project $n$ is 8 which gives $12 ()2^(8-3)-1) = 372$ possible values for $\theta$ which produces a maximum perturbation of less than $\frac{1}{2}$. This would allow the destination pixel values to be expressed in 8 bit numbers without error using a transformation matrix expressed in 6 bit signed integers. The statistics performed to determine $\theta$ are not demanding enough to justify rejecting a suggested value of theta within 1\textdegree of the requested value. It is however important to know the value actually used in the algorithm which is why the mechanism for adjusting $\theta$ is separate from the color-space algorithm and is under the control of the programmer. For instance in the implementation below the suggested value is accepted and used to adjust the statistical model keeping all the values in correct correspondence.
+For example in this project $n$ is 8 which gives $12 (2^{8-3}-1) = 372$ possible values for $\theta$ which produces a maximum perturbation of less than $\frac{1}{2}$. This would allow the destination pixel values to be expressed in 8 bit numbers without error using a transformation matrix expressed in 6 bit signed integers. The statistics performed to determine $\theta$ are not demanding enough to justify rejecting a suggested value of theta within 1\textdegree of the requested value. It is however important to know the value actually used in the algorithm which is why the mechanism for adjusting $\theta$ is separate from the color-space algorithm and is under the control of the programmer. For instance in the implementation below the suggested value is accepted and used to adjust the statistical model keeping all the values in correct correspondence.
 
 \hrule
 
