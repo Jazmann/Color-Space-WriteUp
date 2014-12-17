@@ -1173,111 +1173,43 @@ We are interested in a compromise between the perturbations to each channel whic
 \dqRe[\phi] = \dqRe[\frac{\pi}{6} -\phi]  \quad \textbf{when}\\
 \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\frac{\pi}{6} - \phi ) \right] 
 =  2^{n-3}\sqrt{3} \left( \tan (\frac{\pi}{6} - \phi ) - \tan (\phi ) \right) \\
-m =  2^{n-3}\sqrt{3} \tan (\phi )\quad \text{where}\quad m=0,1,2...2^{n-2}\\
-\phi =\tan ^{-1}\left(\frac{\sqrt{m^2 2^{6-2 n}-m 2^{4-n}+49}+m 2^{3-n}-7}{2 \sqrt{3}}\right)
+\text{recognising that the rounded part can only take certain values} \\
+m =  \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\frac{\pi}{6} - \phi ) \right]
+ \quad \text{where}\quad m=0,1,2 \cdots 2^{n-2}\\
+\text{then} \\
+\overset{\times}{\phi} =\arctan\left(\frac{\sqrt{m^2 2^{6-2 n}-m 2^{4-n}+49}+m 2^{3-n}-7}{2 \sqrt{3}}\right) \quad \text{where}\quad m=0,1,2 \cdots 2^{n-2}
 \end{gather*}
 
 \begin{align}
-\phi &=\arctan\left(\frac{ 2^{3-n} m}{\sqrt{3}}\right))  &
-\phi &=\arctan\left(\frac{ \sqrt{3} \left(1-2^{3-n} m\right) }{2^{3-n} m+3}\right)\\
-\phi &=\arctan\left(\frac{ 2^{3-n} m}{\sqrt{3}}+\frac{1}{2}\right))  & 
-\phi &=\arctan\left(\frac{\sqrt{3} \left(1-2^{3-n} m\right) }{2^{3-n}  m+3}\right)\\
+ \check{\phi}_{a} = & \arctan\left(\frac{2 \sqrt{3} m}{2^n - 2 m}\right) &
+ \check{\phi}_{b} = & \arctan\left(\frac{m 2^{3-n}}{\sqrt{3}}       \right) \quad & \text{with}\quad   m =  0,1,2,3 \cdots2^{n-3} \\
+ \hat{\phi    }_{a}  = & \arctan\left(\frac{\sqrt{3} (2 m+1)}{-2 m+2^n-1}  \right) &
+ \hat{\phi   }_{b}  = & \arctan\left(\frac{(2 m+1) 2^{2-n}}{\sqrt{3}}          \right) \quad&\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 \\
+ \check{\phi}_{a} (m)&< \check{\phi}_{b}(m)  <  \check{\phi}_{a} (m+1)& \hat{\phi}_{a}(m)   &< \hat{\phi}_{b}(m)  <\hat{\phi}_{a}(m+1) 
 \end{align}
 
-The extrema $\theta_{min}(m)$ and $\theta_{max}(m)$ and points of intersection $\theta_{i}(m)$  
+We want to classify the points of intersection as greater or lesser than a tolerance $\tau \in \{ \frac{1}{2}, \frac{1}{4},\frac{1}{8}, \cdots \}$. In order to do this we make a linear approximation to the perturbation between the extrema. There is one point of intersection between each of the maxima and corresponding minima. A bit of geometry allows us to write a classification criteria for each of the points of intersection.
 
-\parpic(44mm,44mm)[r]{Chapter2/Figs/GeometryClassifyPoint.jpg}
+\begin{align*}
+a_1 & = \hat{\phi    }_{b}(m) - \hat{    \phi}_{a}(m) & a_2 & = \hat{\phi}_{a}(m+1) - \hat{\phi}_{b}(m)  \\
+b_1 & = \check{\phi}_{b}(m) - \check{\phi}_{a}(m) & b_2 & = \check{\phi}_{a}(m+1) - \check{\phi}_{b}(m)  \\
+\tau_1 &\ge \frac{\check{\phi}_{b}(m)     - \check{\phi}_{a}(m)}{\hat{\phi}_{b}(m)     - \hat{\phi}_{a}(m) +\check{\phi}_{b}(m)     - \check{\phi}_{a}(m)} &
+\tau_2 &\ge \frac{\check{\phi}_{a}(m+1) - \check{\phi}_{b}(m)}{\hat{\phi}_{a}(m+1) - \hat{\phi}_{b}(m)+\check{\phi}_{a}(m+1) - \check{\phi}_{b}(m)}\\
+\end{align*}
 
-\begin{gather}
-\frac{h_1}{h_2} = \frac{b}{a}\\
-h_1 = \frac{b}{a+b}\\
-\end{gather}
+\parpic(64mm,64mm)[r]{\fbox{\parbox{64mm}{
+\includegraphics[width=64mm]{Chapter2/Figs/GeometryClassifyPoint.jpg}  \\
+\centering  $\frac{h_1}{h_2} = \frac{b}{a} $ \\
+\centering  $ h_1 = \frac{b}{a+b} $ }}
+}
 
-At this point, we should recognize that the perturbation in a channel is described by $\pm\dfRe[\phi]$ or $\pm\dfRe[\phi-\Pii{6}]$. So, because we're more interested in the error and the bounds on that than we are in the error for any particular $\theta$ --- $\theta$ being an input design parameter to the algorithm --- it's more useful to have a function which returns values of $\theta$ for a given error. To this end, we can find the inverse function for the perturbation function $\pm\dfRe[\phi-\Pii{6}]$. The perturbation to each channel lies between -2 and 2, which is, unfortunately, twice the acceptable perturbation for zero error (See Figure~\ref{fig:PtbToChan}). However, this is expected; we designed the quantization to what we desired rather than what we expected to be possible. At this point, there are no more tricks --- no more factorizations --- nothing more that we can do. The only thing left to do now is to specify which values of $\theta$ for which the quantization produces no error, and the values which do result in unacceptable error, i.e. the values of $\theta$ for which any of these four functions is greater than 1. 
+The criteria for $\tau_1$ is used for the odd values of m and $\tau_2$ for the even values in the equation for the points of intersection $\check{\phi}_{a} (m)$. There are $2^{n-2}$ points of intersection and $2^{n-3}$ which satisfy the criteria $\tau = \frac{1}{2}$. The algorithm as implemented in openCV leaves the decision about the criteria up to the programmer. The programmer chooses a value for $\theta$ and selects a value for $\tau$. The algorithm returns the nearest value of $\theta$ which satisfies the condition defined by $\tau$. The programmer then decides whether the suggested value for $\theta$ is acceptable and either adopts the suggested value or chooses a value as close as possible and accepts the possibility of errors.
 
+For example in this project $n$ is 8 which gives $12 ()2^(8-3)-1) = 372$ possible values for $\theta$ which produces a maximum perturbation of less than $\frac{1}{2}$. This would allow the destination pixel values to be expressed in 8 bit numbers without error using a transformation matrix expressed in 6 bit signed integers. The statistics performed to determine $\theta$ are not demanding enough to justify rejecting a suggested value of theta within 1\textdegree of the requested value. It is however important to know the value actually used in the algorithm which is why the mechanism for adjusting $\theta$ is separate from the color-space algorithm and is under the control of the programmer. For instance in the implementation below the suggested value is accepted and used to adjust the statistical model keeping all the values in correct correspondence.
 
+\hrule
 
-One further optimization is possible if we consider the redistribution of the values which is performed after the rotation. Not all information contained in the source is of equal value, so an error introduced by using a less accurate discretization of the rotation may well be mitigated by the subsequent redistribution. Halving the discrete range will introduce errors of at most 1 for some of the pixel values. In general, using $\rRange = 2^{1-n} \; \tRange$ will introduce a maximum error of $\frac{2^n -1}{\tRange}$ into the resulting color space. We must now establish which elements are affected.
-
-The sign of the rotation matrix is given by
-
-\begin{equation}
-\begin{pmatrix}
-1 & 1  & 1 \\
-\begin{cases}
-   1 & \frac{5 \pi }{6}<\theta <\frac{11 \pi }{6} \\
- -1 & \left\lgroup \begin{array}{c} 0\leq \theta <\frac{5 \pi }{6} \\ \frac{11 \pi }{6}<\theta <2 \pi  \end{array} \right.\\
-\end{cases}
- &
-\begin{cases}
- 1   & \left\lgroup \begin{array}{c} 0\leq \theta <\frac{\pi }{2} \\ \frac{3 \pi }{2}<\theta <2 \pi  \end{array} \right.\\
- -1 & \frac{\pi }{2}<\theta <\frac{3 \pi }{2} \\
-\end{cases}
- &
-\begin{cases}
- 1 & \Pii{6}<\theta <\frac{7 \pi }{6} \\
- -1 & \left\lgroup \begin{array}{c}  0\leq \theta <\Pii{6} \\ \frac{7 \pi }{6}<\theta <2 \pi  \end{array} \right.\\
-\end{cases}
- \\
-
-\begin{cases}
- 1 & \frac{\pi }{3}<\theta <\frac{4 \pi }{3} \\
- -1 & \left\lgroup \begin{array}{c} 0 \leq \theta <\frac{\pi }{3} \\ \frac{4 \pi }{3}<\theta <2 \pi \end{array} \right. \\
-\end{cases}
- &
-\begin{cases}
- 1 & \pi <\theta <2 \pi  \\
- -1 & 0<\theta <\pi  \\
-\end{cases}
- &
-\begin{cases}
-   1 & \left\lgroup \begin{array}{c} 0\leq \theta <\frac{2 \pi }{3} \\ \frac{5 \pi }{3}<\theta <2 \pi  \end{array} \right.\\
- -1 & \frac{2 \pi }{3}<\theta <\frac{5 \pi }{3} \\
-\end{cases}
- \\
-\end{pmatrix}
-\end{equation}
-
-We are interested in which elements in each row share the same sign, as these will determine the pixel values which contribute to the error. If we find the intersecting conditions and flip the sign where there are two negative elements, the following is found
-\begin{equation}
-\begin{cases}
-\begin{pmatrix}
- 1 & 1 & 1 \\
- 0 & 0 & 0 \\
- 0 & 0 & 0 \\
-\end{pmatrix}
- & \theta =\Pii{6}\lor \theta =\frac{\pi }{2}\lor \theta =\frac{5 \pi }{6}\lor \theta =\frac{7 \pi }{6}\lor \theta =\frac{3 \pi }{2}\lor \theta =\frac{11 \pi }{6} \\
-\begin{pmatrix}
- 1 & 1 & 1 \\
- -1 & 1 & 1 \\
- -1 & 1 & 1 \\
-\end{pmatrix}
- & \Pii{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
-\begin{pmatrix}
- 1 & 1 & 1 \\
- 1 & -1 & 1 \\
- 1 & -1 & 1 \\
-\end{pmatrix}
- & 0\leq \theta <\Pii{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
-\begin{pmatrix}
- 1 & 1 & 1 \\
- 1 & 1 & -1 \\
- 1 & 1 & -1 \\
-\end{pmatrix}
- & \frac{\pi }{2}<\theta <\frac{5 \pi }{6}\lor \frac{3 \pi }{2}<\theta <\frac{11 \pi }{6} \\
-\end{cases}
-\end{equation}
-So for a pixel $\{R,G,B\}$  % \parpic{\includegraphics[width=100mm]{Chapter2/Figs/ErrorIntheRotation.eps}}
-\begin{equation}\label{eq:errorFreeConditions}
-\raisebox{-22mm}{\includegraphics[width = 44mm]{Chapter2/Figs/ErrorIntheRotation.eps}}\begin{cases}
- G + B < 1 & \Pii{6}<\theta <\frac{\pi }{2}\lor \frac{7 \pi }{6}<\theta <\frac{3 \pi }{2} \\
- R + B < 1 & 0\leq \theta <\Pii{6}\lor \frac{5 \pi }{6}<\theta <\frac{7 \pi }{6}\lor \frac{11 \pi }{6}<\theta <2 \pi  \\
- R + G < 1 & \frac{\pi }{2}<\theta <\frac{5 \pi }{6}\lor \frac{3 \pi }{2}<\theta <\frac{11 \pi }{6} \\
-\end{cases}
-\end{equation}
-
-where 1 indicates that the element shares its sign with another element in the same row and -1 indicates the opposite. One channel from the source can be left error free whilst the sum of the other two must be less than one. this divides the color space in two. If the portion of the source which is to be preserved better than in a 2:1 ratio lies entirely within the error free half then the rotation matrix can be stored in the same data type as the source itself. This can be designed as it does not matter if we rotate the colorspace in $\frac{\pi}{2}$ steps.
-
+this is junk which needs to be put in line with the succeeding section.
 
 \begin{equation}
 \intR =
