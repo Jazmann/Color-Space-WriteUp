@@ -1191,7 +1191,7 @@ m =  \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \text{Round}\left
 \overset{\times}{\phi} =\arctan\left(\frac{\sqrt{m^2 2^{6-2 n}-m 2^{4-n}+49}+m 2^{3-n}-7}{2 \sqrt{3}}\right) \quad \text{where}\quad m=0,1,2 \cdots 2^{n-2}
 \end{gather*}
 
-Comparing with the extrema 
+Each point of intersection is defined and bounded by 4 extrema. Comparing with the funstional form of the extrema allows these 4 points to be identified.
 
 \begin{align*}
  \check{\phi}_{a} = & \arctan\left(\frac{2 \sqrt{3} m}{2^n - 2 m}\right) &
@@ -1199,18 +1199,64 @@ Comparing with the extrema
  & \text{with}\quad   m =  0,1,2,3 \cdots2^{n-3} \\
  \hat{\phi    }_{a}  = & \arctan\left(\frac{\sqrt{3} (2 m+1)}{2^n-2 m-1}  \right) &
  \hat{\phi   }_{b}  = & \arctan\left(\frac{(2 m+1) 2^{2-n}}{\sqrt{3}}          \right) \\
- &\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 \\
- \check{\phi}_{a} (m) & < \overset{\times}{\phi} (2m)     <\check{\phi}_{b}(m)  < \overset{\times}{\phi} (2m+1)  <  \check{\phi}_{a} (m+1) & 
-      \hat{\phi}_{a}(m) & < \overset{\times}{\phi} (2m+1) <    \hat{\phi}_{b}(m)  < \overset{\times}{\phi} (2m+2)  <      \hat{\phi}_{a}(m+1) 
+ &\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 
 \end{align*}
+Separating the points of intersection into even and odd terms facilitates the identification. The following ranges are guaranteed to be true for all values of $m$ and $n$.
+\begin{alignat*}{5}
+ \check{\phi}_{a} (m) & < & \overset{\times}{\phi} (2m)      & < & \check{\phi}_{b}(m)  \\
+      \hat{\phi}_{a}(m) & < &  \overset{\times}{\phi} (2m+1) & < &     \hat{\phi}_{b}(m)  
+\end{alignat*}
+
+The other ranges can swap direction around the central value  $\overline{m}$ in a region governed by $\Gamma$
+\begin{gather*}
+\overline{m}=\frac{1}{2} \left(2^{n-3}-1\right) \\
+\varGamma(n)=\frac{1}{2} \sqrt{2^{2 (n-3)}-14\ 2^{n-3}+1} \\
+\hat{L}(m)=\begin{cases}
+< & m < \bar{m}-\Gamma \; \vee  \; m > \Gamma +\bar{m} \\
+> & \bar{m}-\Gamma \leq m \leq \Gamma +\bar{m}\\
+\end{cases} \\
+\end{gather*}
+defining
+\begin{align}
+\lessgtr &= \hat{L}(\scriptsize{m})  & \gtrless &= \hat{L}(\scriptsize{m+\frac{1}{2}})
+\end{align}
+\begin{alignat*}{5}
+ \hat{\phi}_{b}(m-1) && \gtrless  && \overset{\times}{\phi} (2m)       &&\gtrless  &&     \hat{\phi}_{a}(m)  \\
+ \check{\phi}_{b}(m)  && \lessgtr                   && \overset{\times}{\phi} (2m+1)  && \lessgtr                  &&\check{\phi}_{a} (m+1) 
+\end{alignat*}
+
+
+\begin{align}
+\begin{array}{cc}
+      \hat{\phi}_{a}(m)  & <            \\
+ \check{\phi}_{b}(m)  & \lessgtr   
+\end{array}
+\overset{\times}{\phi} (2m+1) 
+\begin{array}{cc}
+ <             &    \hat{\phi}_{b}(m)  \\
+\lessgtr    &\check{\phi}_{a} (m+1)  
+\end{array} 
+& 
+\begin{array}{cc}
+ \hat{\phi}_{b}(m-1) &\gtrless \\
+  \check{\phi}_{a} (m) & < 
+\end{array}
+\overset{\times}{\phi} (2m) 
+\begin{array}{cc}
+\gtrless &     \hat{\phi}_{a}(m)  \\
+  < & \check{\phi}_{b}(m)  
+\end{array} 
+\end{align}
 
 We want to classify the points of intersection as greater or lesser than a tolerance $\tau \in \{ \frac{1}{2}, \frac{1}{4},\frac{1}{8}, \cdots \}$. In order to do this we make a linear approximation to the perturbation between the extrema. There is one point of intersection between each of the maxima and corresponding minima. A bit of geometry allows us to write a classification criteria for each of the points of intersection.
 
 \begin{align*}
-a_1 & = \hat{\phi    }_{b}(m) - \hat{    \phi}_{a}(m) & a_2 & = \hat{\phi}_{a}(m+1) - \hat{\phi}_{b}(m)  \\
-b_1 & = \check{\phi}_{b}(m) - \check{\phi}_{a}(m) & b_2 & = \check{\phi}_{a}(m+1) - \check{\phi}_{b}(m)  \\
-\tau_1 &\ge \frac{\check{\phi}_{b}(m)     - \check{\phi}_{a}(m)}{\hat{\phi}_{b}(m)     - \hat{\phi}_{a}(m) +\check{\phi}_{b}(m)     - \check{\phi}_{a}(m)} &
-\tau_2 &\ge \frac{\check{\phi}_{a}(m+1) - \check{\phi}_{b}(m)}{\hat{\phi}_{a}(m+1) - \hat{\phi}_{b}(m)+\check{\phi}_{a}(m+1) - \check{\phi}_{b}(m)}\\
+a_1 & =     \hat{\phi}_{a}(m)     -      \hat{\phi}_{b}(m)  &
+a_2 &=     \| \hat{\phi}_{b}(m-1) -     \hat{\phi}_{a}(m) \|  \\
+b_1 &= \| \check{\phi}_{b}(m)     - \check{\phi}_{a} (m+1) \| &
+b_2 &= \check{\phi}_{a}(m)     - \check{\phi}_{b}(m) \\
+\tau_1 &\ge \frac{\| \check{\phi}_{b}(m)  - \check{\phi}_{a} (m+1) \| }{ \hat{\phi}_{a}(m)  - \hat{\phi}_{b}(m)+\| \check{\phi}_{b}(m)  - \check{\phi}_{a} (m+1) \| } & 
+\tau_2 &\ge \frac{\check{\phi}_{a}(m)  - \check{\phi}_{b}(m) }{\| \hat{\phi}_{b}(m-1) - \hat{\phi}_{a}(m) \| +\check{\phi}_{a}(m)  - \check{\phi}_{b}(m) }
 \end{align*}
 
 \parpic(64mm,64mm)[r]{\fbox{\parbox{64mm}{
