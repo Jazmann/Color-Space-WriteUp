@@ -1206,28 +1206,29 @@ Each point of intersection is defined and bounded by 4 extrema. Comparing with t
  &\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 
 \end{align*}
 Separating the points of intersection into even and odd terms facilitates the identification. The following ranges are guaranteed to be true for all values of $m$ and $n$.
-\begin{alignat*}{5}
- \check{\phi}_{a} (m) & < & \overset{\times}{\phi} (2m)      & < & \check{\phi}_{b}(m)  \\
-      \hat{\phi}_{a}(m) & < &  \overset{\times}{\phi} (2m+1) & < &     \hat{\phi}_{b}(m)  
-\end{alignat*}
+\begin{align*}
+ \check{\phi}_{a} (m) & < \; \overset{\times}{\phi} (2m)   \;    <  \;\check{\phi}_{b}(m)  & 
+      \hat{\phi}_{a}(m) & < \;  \overset{\times}{\phi} (2m+1)  < \;    \hat{\phi}_{b}(m)  
+\end{align*}
 
-The other ranges can swap direction around the central value  $\overline{m}$ in a region governed by $\Gamma$
+The other two ranges can swap direction around the central value  $\overline{m}$ in a region governed by $\Gamma$ which is the distance from $\overline{m}$ at which the order of the extrema switch between channels.
+
 \begin{gather*}
-\overline{m}=\frac{1}{2} \left(2^{n-3}-1\right) \\
+\overline{m}=\frac{1}{2} \left(2^{n-3}-1\right) \qquad
 \varGamma(n)=\frac{1}{2} \sqrt{2^{2 (n-3)}-14\ 2^{n-3}+1} \\
 \hat{L}(m)=\begin{cases}
-< & m < \bar{m}-\Gamma \; \vee  \; m > \Gamma +\bar{m} \\
-> & \bar{m}-\Gamma \leq m \leq \Gamma +\bar{m}\\
+< & \quad m < \bar{m}-\Gamma \; \vee  \; m > \Gamma +\bar{m} \\
+> & \quad \bar{m}-\Gamma \leq m \leq \Gamma +\bar{m}\\
 \end{cases} \\
 \end{gather*}
 defining
 \begin{align}
 \lessgtr &= \hat{L}(\scriptsize{m})  & \gtrless &= \hat{L}(\scriptsize{m+\frac{1}{2}})
 \end{align}
-\begin{alignat*}{5}
- \hat{\phi}_{b}(m-1) && \gtrless  && \overset{\times}{\phi} (2m)       &&\gtrless  &&     \hat{\phi}_{a}(m)  \\
- \check{\phi}_{b}(m)  && \lessgtr                   && \overset{\times}{\phi} (2m+1)  && \lessgtr                  &&\check{\phi}_{a} (m+1) 
-\end{alignat*}
+%\begin{alignat*}{5}
+% \hat{\phi}_{b}(m-1) && \gtrless  && \overset{\times}{\phi} (2m)       &&\gtrless  &&     \hat{\phi}_{a}(m)  \\
+% \check{\phi}_{b}(m)  && \lessgtr                   && \overset{\times}{\phi} (2m+1)  && \lessgtr                  &&\check{\phi}_{a} (m+1) 
+%\end{alignat*}
 
 
 \begin{align}
@@ -1239,8 +1240,8 @@ defining
 \begin{array}{cc}
  <             &    \hat{\phi}_{b}(m)  \\
 \lessgtr    &\check{\phi}_{a} (m+1)  
-\end{array} 
-& 
+\end{array} \quad
+& \quad
 \begin{array}{cc}
  \hat{\phi}_{b}(m-1) &\gtrless \\
   \check{\phi}_{a} (m) & < 
@@ -1398,13 +1399,13 @@ The error function distribution is mathematically correct, being directly relate
 
 Considering the preservation of information captured, mappings with a gradient greater than 1 are undesirable because they preserve all the information whilst being informatically wasteful in that there are functionally inaccessible discrete values in the destination range. Our stated aim is to preserve the information in the image pertaining to human skin; unevenly distributing this information across a discrete data type is not only wasteful in terms of memory, but also of processing resources because subsequent processing routines will treat the data as if it has a higher fidelity than it actually does.
 
-To construct a distribution function, we first need to describe the relationship of the error function to the Gaussian fit, and then produce a function with the appropriate range and domain. For a Gaussian fit with an amplitude A, a mean of $\mu$, and a standard deviation of $\sigma$, where $\mu$ and x lie in a source range $\xRange$ from $\xMin$ to $\xMax$. The cumulative distribution is found by integrating from $\xMin$ to the point x, as can be seen in (\ref{eq:ErfDefinition}):
+To construct a distribution function, we first need to describe the relationship of the error function to the Gaussian fit, and then produce a function with the appropriate range and domain. For a Gaussian fit with an amplitude A, a mean of $\mu$, and a standard deviation of $\sigma$, where $\mu$ and x lie in a source range $\srcRange$ from $\srcMin$ to $\srcMax$. The cumulative distribution is found by integrating from $\srcMin$ to the point x, as can be seen in (\ref{eq:ErfDefinition}):
 
 \begin{equation}\label{eq:ErfDefinition}
-  \int _{\xMin}^{\text{x}} A \frac{e^{-\frac{(t-\mu )^2}{2 \sigma ^2}}}{\sqrt{2 \pi } \sigma }dt=\frac{1}{2} A \left(\text{erf}\left(\frac{\text{x}-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\xMin-\mu }{\sqrt{2} \sigma }\right)\right)
+  \int _{\srcMin}^{\text{x}} A \frac{e^{-\frac{(t-\mu )^2}{2 \sigma ^2}}}{\sqrt{2 \pi } \sigma }dt=\frac{1}{2} A \left(\text{erf}\left(\frac{\text{x}-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\srcMin-\mu }{\sqrt{2} \sigma }\right)\right)
 \end{equation}
 
-The Gaussian distribution and the cumulative distribution are shown in Figure~\ref{fig:ErrorFunctionGraph} for some values chosen for illustrative purposes. All that is required now is to fix the range $\yMin$ to $\yMax$ for the domain $\xMin$ to $\xMax$.
+The Gaussian distribution and the cumulative distribution are shown in Figure~\ref{fig:ErrorFunctionGraph} for some values chosen for illustrative purposes. All that is required now is to fix the range $\yMin$ to $\yMax$ for the domain $\srcMin$ to $\srcMax$.
 
 \begin{figure}[h!]
   \caption{Error function.}  \label{fig:ErrorFunctionGraph}
@@ -1412,10 +1413,10 @@ The Gaussian distribution and the cumulative distribution are shown in Figure~\r
     \includegraphics[width=\textwidth]{Chapter2/Figs/errorFunction.eps}
 \end{figure}
 
-First, we determine the maximum value taken in the domain. This is simply found by evaluating the function at $\xMax$. It should be noted that --- if the Gaussian distribution is well-contained in the source domain --- the maximum value should be equal to the amplitude. For the sake of simplicity, we'll ignore the amplitude of the fitted Gaussian found previously as it is not relevant to the design of the redistribution function. So, to fix the range of the distribution function, we first scale to the range $0:1$ by simply dividing through by the maximum value, and then re-scale to the destination range $\yRange = \yMax - \yMin$ and shift by $\yMin$.
+First, we determine the maximum value taken in the domain. This is simply found by evaluating the function at $\srcMax$. It should be noted that --- if the Gaussian distribution is well-contained in the source domain --- the maximum value should be equal to the amplitude. For the sake of simplicity, we'll ignore the amplitude of the fitted Gaussian found previously as it is not relevant to the design of the redistribution function. So, to fix the range of the distribution function, we first scale to the range $0:1$ by simply dividing through by the maximum value, and then re-scale to the destination range $\yRange = \yMax - \yMin$ and shift by $\yMin$.
 
 \begin{equation}\label{eq:disFunction}
-  dis(x) = \frac{(\yRange) \left(\text{erf}\left(\frac{x-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\xMin-\mu }{\sqrt{2} \sigma }\right)\right)}{\text{erf}\left(\frac{\xMax-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\xMin-\mu }{\sqrt{2} \sigma }\right)}+\yMin
+  dis(x) = \frac{(\yRange) \left(\text{erf}\left(\frac{x-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\srcMin-\mu }{\sqrt{2} \sigma }\right)\right)}{\text{erf}\left(\frac{\srcMax-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\srcMin-\mu }{\sqrt{2} \sigma }\right)}+\yMin
 \end{equation}
 
 Mathematically, this distribution function~(\ref{eq:disFunction}) achieves all the stated objectives. However, on a device we are dealing with discrete numerics and limited processing power, so further analysis is required. Where we're using a discrete domain and range, the distribution is usefully divided into three characteristic behaviors:  where it is constant, where it preserves all the information, and where it selectively preserves information. Looking at the distribution, this divides the source domain into five regions: two where it is effectively constant, two where it is selective, and one region around the mean where it preserves all the information. In order to design an efficient algorithm, it is useful to identify the boundaries of these five regions.
@@ -1437,13 +1438,13 @@ The solution is found for the source domain in the range $0:1$ as:
 To find the region where all the information in the source domain is preserved, we differentiate the distribution and solve for where the gradient is equal to the destination range over the source range. This corresponds to the point at which a unit change in the source produces a unit change in the destination range:
 
 \begin{equation}\label{eq:Boundaries}
-\frac{\sqrt{\frac{2}{\pi }} e^{-\frac{(x-\mu )^2}{2 \sigma ^2}}}{\sigma  \left(\text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right)\right)}=\frac{\yRange}{\xRange}
+\frac{\sqrt{\frac{2}{\pi }} e^{-\frac{(x-\mu )^2}{2 \sigma ^2}}}{\sigma  \left(\text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right)\right)}=\frac{\yRange}{\srcRange}
 \end{equation}
 
 Rearranging for $x$, we find:
 
 \begin{equation}\label{eq:PreservedRegion}
- x=\mu \pm \sigma  \sqrt{-2 \log \left(\sigma  \left(\text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right)\right)\right)+2 \log \left(\frac{\xRange}{\yRange}\right)+\log \left(\frac{2}{\pi }\right)}
+ x=\mu \pm \sigma  \sqrt{-2 \log \left(\sigma  \left(\text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right)\right)\right)+2 \log \left(\frac{\srcRange}{\yRange}\right)+\log \left(\frac{2}{\pi }\right)}
 \end{equation}
 
 We now have equations which gives us the four points in the source domain which mark the boundaries of the five characteristic regions. The equations are valid in the unit source domain $0:1$. It is a simple matter to scale and shift these values to give the points in a more general source domain.
@@ -1454,21 +1455,21 @@ We now have equations which gives us the four points in the source domain which 
 \Sigma^- &= \text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right) &
  \Sigma^+ &= \text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right) &
   \text{dL} &= \frac{1}{\yRange} &
-  \kappa &= \frac{\yRange}{\xRange} 
+  \kappa &= \frac{\yRange}{\srcRange} 
 \end{aligned}
 \end{equation}
 
 \begin{equation}\label{eq:PreservedRegionGen}
 \begin{aligned}
-\Lambda^-(\mu,\sigma) &= \xMin + \xRange\left( \mu - \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right) - 2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\right) \\
-\Lambda^+(\mu,\sigma) &= \xMin + \xRange \left(\mu + \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right)-2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\right)
+\Lambda^-(\mu,\sigma) &= \srcMin + \srcRange\left( \mu - \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right) - 2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\right) \\
+\Lambda^+(\mu,\sigma) &= \srcMin + \srcRange \left(\mu + \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right)-2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\right)
 \end{aligned}
 \end{equation}
 
 \begin{equation}\label{eq:LowHighGen}
 \begin{aligned}
-\lambda^+(\mu,\sigma)  &=  \xMin + \xRange \left( \sigma \sqrt{2}  \text{erf}^{-1}\left((\text{dL}-1) \Sigma^- -\text{dL} \; \Sigma^+ \right)+\mu \right) \\
-\lambda^-(\mu,\sigma)  &=  \xMin + \xRange \left( \sigma \sqrt{2} \text{erf}^{-1}\left((\text{dL}-1) \Sigma^+-\text{dL} \; \Sigma^-\right)+\mu \right)
+\lambda^+(\mu,\sigma)  &=  \srcMin + \srcRange \left( \sigma \sqrt{2}  \text{erf}^{-1}\left((\text{dL}-1) \Sigma^- -\text{dL} \; \Sigma^+ \right)+\mu \right) \\
+\lambda^-(\mu,\sigma)  &=  \srcMin + \srcRange \left( \sigma \sqrt{2} \text{erf}^{-1}\left((\text{dL}-1) \Sigma^+-\text{dL} \; \Sigma^-\right)+\mu \right)
 \end{aligned}
 \end{equation}
 
