@@ -1183,11 +1183,15 @@ We are interested in a compromise between the perturbations to each channel whic
 \begin{gather*}
 \dqRe[\phi] = \dqRe[\frac{\pi}{6} -\phi]  \quad \textbf{when}\\
 \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\frac{\pi}{6} - \phi ) \right] 
-=  2^{n-3}\sqrt{3} \left( \tan (\frac{\pi}{6} - \phi ) - \tan (\phi ) \right) \\
-\text{recognising that the rounded part can only take certain values} \\
+=  2^{n-3}\sqrt{3} \left( \tan (\frac{\pi}{6} - \phi ) - \tan (\phi ) \right) 
+\end{gather*}
+recognising that the rounded part can only take certain values
+\begin{gather*}
 m =  \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\frac{\pi}{6} - \phi ) \right]
- \quad \text{where}\quad m=0,1,2 \cdots 2^{n-2}\\
-\text{then} \\
+ \quad \text{where}\quad m=0,1,2 \cdots 2^{n-2}
+ \end{gather*}
+then
+\begin{gather*}
 \overset{\times}{\phi} =\arctan\left(\frac{\sqrt{m^2 2^{6-2 n}-m 2^{4-n}+49}+m 2^{3-n}-7}{2 \sqrt{3}}\right) \quad \text{where}\quad m=0,1,2 \cdots 2^{n-2}
 \end{gather*}
 
