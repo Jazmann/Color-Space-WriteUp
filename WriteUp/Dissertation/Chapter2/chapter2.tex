@@ -1260,7 +1260,7 @@ We want to classify the points of intersection as greater or lesser than a toler
 a_{2m+1} & =     \hat{\phi}_{a}(m)     -      \hat{\phi}_{b}(m)  &
 a_{2m} &=     \| \hat{\phi}_{b}(m-1) -     \hat{\phi}_{a}(m) \|  \\
 b_{2m+1} &= \| \check{\phi}_{b}(m)     - \check{\phi}_{a} (m+1) \| &
-b__{2m} &= \check{\phi}_{a}(m)     - \check{\phi}_{b}(m) \\
+b_{2m} &= \check{\phi}_{a}(m)     - \check{\phi}_{b}(m) \\
 \tau_1 &\ge \frac{\| \check{\phi}_{b}(m)  - \check{\phi}_{a} (m+1) \| }{ \hat{\phi}_{a}(m)  - \hat{\phi}_{b}(m)+\| \check{\phi}_{b}(m)  - \check{\phi}_{a} (m+1) \| } & 
 \tau_2 &\ge \frac{\check{\phi}_{a}(m)  - \check{\phi}_{b}(m) }{\| \hat{\phi}_{b}(m-1) - \hat{\phi}_{a}(m) \| +\check{\phi}_{a}(m)  - \check{\phi}_{b}(m) }
 \end{align*}
@@ -1525,7 +1525,7 @@ L_3(\theta)  &= \sqrt{\frac{2}{3}} \sin \left(\widetilde{\theta}\right) + \sqrt{
 
 The destination color space is designed with a maximum discretization $\dstRange$ given by the required data type.
 
-The analysis of the distribution is mathematically stated in a unit, source, and domain range. The maximum gradient of the distribution, when looked at in these terms, must always be greater than or equal to 1. This indicates a focusing of interest around the mean. It's not possible to extract more information than is contained in the source. For this reason, the destination axis may usefully only be shorter than or of equal length to the source axis. In terms of the machine representation, this indicates that the destination data type may be designed to contain a smaller range of values. The question for the rotational transformation is whether the rotated axis should be rescaled with the associated loss of information or not. We can now write an algorithm which determines the necessary scaling for the axes, and whether truncation of the extreme values is significant.
+The analysis of the distribution is mathematically stated in a unit, source, and domain range. The maximum gradient of the distribution, when looked at in these terms, must always be greater than or equal to 1. This indicates a focusing of interest around the mean. It's not possible to extract more information than is contained in the source. For this reason, the destination axis may usefully only be shorter than or of equal length to the rotated axis $\tRange$. In terms of the machine representation, this indicates that the destination data type may be designed to contain a smaller range of values. The question for the rotational transformation is whether the rotated axis should be rescaled with the associated loss of information or not. We can now write an algorithm which determines the necessary scaling for the axes, and whether truncation of the extreme values is significant.
 
 The length of the axis after rescaling should be
 
@@ -1542,44 +1542,39 @@ The condition for rescaling the axis is
 We can now re-formulate the transformation matrix in three different ways: pure rotation without rescaling, 
 
 \begin{equation}\label{eq:Rotation}
- R_{xyz}(\theta) = \left(
-\begin{array}{ccc}
- \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} \\
- -\frac{\cos (\theta )}{\sqrt{6}}-\frac{\sin (\theta )}{\sqrt{2}} &
- \sqrt{\frac{2}{3}} \cos (\theta ) &
- \frac{\sin (\theta )}{\sqrt{2}}-\frac{\cos (\theta )}{\sqrt{6}} \\
- \frac{\sin (\theta )}{\sqrt{6}}-\frac{\cos (\theta )}{\sqrt{2}} &
- -\sqrt{\frac{2}{3}} \sin (\theta ) &
- \frac{\cos (\theta )}{\sqrt{2}}+\frac{\sin (\theta )}{\sqrt{6}} \\
-\end{array}
-\right) \quad \text{for} \quad  \Delta(\mu,\sigma) \ge 1
+ \R_{xyz}(\theta) =
+ \begin{pmatrix}
+  \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} \\
+  -\sqrt{\frac{2}{3}} \sine{\theta +\Pii{6} } & \sqrt{\frac{2}{3}} \cos (\theta ) & -\sqrt{\frac{2}{3}} \sine{\Pii{6}-\theta } \\
+  -\sqrt{\frac{2}{3}} \cos \left(\theta +\Pii{6}\right) & -\sqrt{\frac{2}{3}} \sin (\theta ) & \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-\theta \right) \\
+ \end{pmatrix} \quad \text{for} \quad  \Delta(\mu,\sigma) \ge 1
 \end{equation}
 
 maximum scaling --- which scales to the destination range
 
 
 \begin{equation}\label{eq:NormRxyz2}
- \overline{R}_{xyz}(\theta) =
+ \overline{\R}_{xyz}(\theta) =
 \kappa
 \bigotimes
-R_{xyz}(\theta) \quad where \quad
+\R_{xyz}(\theta) \quad where \quad
 \begin{array}{c}
 \kappa = \frac{\dstRange }{\srcRange \mathbf{L}(\theta)}
 \end{array} \quad \text{for} \quad    \Delta(\mu,\sigma) \le \kappa
 \end{equation}
 
- and scaled --- which shortens the axis as much as possible without losing statistically relavent data. 
+ and scaled --- which shortens the axis as much as possible without losing statistically relevant data. 
 
 \begin{equation}\label{eq:CompressedRotation}
- \widetilde{R}_{xyz}(\theta,\mathbf{\mu},\mathbf{\sigma}) =
+ \widetilde{\R}_{xyz}(\theta,\mathbf{\mu},\mathbf{\sigma}) =
 \Delta(\mu,\sigma)
 \bigotimes
-R_{xyz}(\theta) \quad \text{for} \quad  \kappa < \Delta(\mu,\sigma) < 1
+\R_{xyz}(\theta) \quad \text{for} \quad  \kappa < \Delta(\mu,\sigma) < 1
 \end{equation}
 because $\Delta$ is always greater or equal to $\kappa$ these special cases can be combined into a general scaling for each axis
 
 \begin{equation}\label{eq:CombinedRotation}
- \widehat{R}_{xyz}(\theta,\mu,\sigma) =
+ \widehat{\R}_{xyz}(\theta,\mu,\sigma) =
 \left(
 \begin{array}{c}
 \min\left\{\Delta(\mu_1,\sigma_1), 1 \right\} \\
@@ -1588,7 +1583,7 @@ because $\Delta$ is always greater or equal to $\kappa$ these special cases can 
 \end{array}
 \right)
 \bigotimes
-R_{xyz}(\theta) \quad where \quad
+\R_{xyz}(\theta) \quad where \quad
 \begin{array}{c}
 \kappa = \frac{\dstRange }{\srcRange \mathbf{L}(\theta)} \\
 \Delta(\mu,\sigma) = \kappa \delta(\mu,\sigma)
@@ -1596,76 +1591,19 @@ R_{xyz}(\theta) \quad where \quad
 \end{equation}
 this produces a $\tRange$ of
 
-\begin{equation}\label{eq:CombinedRotation}
+\begin{equation}\label{eq:CombinedRotationRange}
 \begin{aligned}
  \tRange(\theta,\mu,\sigma) &= \min\left\{\Delta(\mu,\sigma), 1 \right\} \srcRange \mathbf{L}(\theta) \\
  &= 
 \left(
-\begin{array}{c}
-\min\left\{\dstRange \delta(\mu_1,\sigma_1), \srcRange \text{L}_1 \right\} \\
-\min\left\{\dstRange \delta(\mu_2,\sigma_2), \srcRange \text{L}_2(\theta) \right\}  \\
-\min\left\{\dstRange \delta(\mu_3,\sigma_3), \srcRange \text{L}_3(\theta) \right\}  \\
+\begin{array}{cc}
+\min\left\{\dstRange \delta(\mu_1,\sigma_1) \right. &\left. \srcRange \text{L}_1 \right\} \\
+\min\left\{\dstRange \delta(\mu_2,\sigma_2) \right.&\left. \srcRange \text{L}_2(\theta) \right\}  \\
+\min\left\{\dstRange \delta(\mu_3,\sigma_3) \right.&\left. \srcRange \text{L}_3(\theta) \right\}  \\
 \end{array}
 \right)
 \end{aligned}
 \end{equation}
-\section{Setting up the 2-Channel Representation}\label{sec:SettingUp2-ChannelRepresentation}
-
-For all computer vision tasks, the most significant influence on the required processing power is the number of channels. This is true even if the total information spread amongst the channels is less than the information contained in a single channel. Partly, this is due to the way that sequential processors operate; there is little difference between processing two 8-bit numbers and two 16-bit numbers on modern 64-bit processors. In contrast, processing a set of three related numbers is significantly more demanding; not only do the numbers have to be loaded into the processor sequentially, but the correlation between the numbers has to be taken into account. So, it is highly desirable to reduce the number of channels necessary for any further processing. The challenge is to compress all the relevant information for the desired subsequent processing into as few channels as possible.
-
-It is not possible to compress all the information in such a way that it is appropriate for every computer vision application. It is, however, possible to tailor a compressing algorithm for a particular application.
-
-
-\section{Skin Detection}\label{sec:SkinDetection}
-
-With the image in the skin color space, skin detection is a significantly simplified problem; the average skin color is at the halfway point in both of the chromatic channels and the Gaussian distribution has already been applied, meaning that performing an elliptical thresholding in the normal color space is equivalent to a rectangular thresholding in the skin color space. The probability distribution can be obtained by combining the distributions in each chromatic channel. Because the thresholding levels in each channel are equivalent to the same points on the Gaussian, they can be straightforwardly combined, and then a single threshold used on the one resulting channel. This can be done by subtracting $\frac{1}{2}$ from both channels, squaring them, then adding them together.
-
-The next step is to identify the skin. For the purposes of this project, we're searching for a skin-colored object of a specific shape: a finger that comes into the frame, presses down on a surface, then exits the frame. One of its properties is that it meets the edge of the frame, appearing as a rectangle with a rounded end which --- on occasion --- can appear slightly bent due to the viewing angle or pressure placed on the finger as it presses down on the surface. But there's a limit to how great that deflection can be in the image.
-
-In order to find this shape, we begin by finding the contours in the binary probability image. This can be achieved by using the "findContours" method in OpenCV, which finds the contours and returns them as a vector of points. In the skin color space, finding the contours around the finger is very simple.
-
-\begin{figure}[h!]
-  \centering
-      \includegraphics[width=0.45\textwidth]{Chapter2/Figs/imgJIndex1.eps}
-    \includegraphics[width=0.45\textwidth]{Chapter2/Figs/indexContours.eps}
-    \caption{Finger contours in the probability image.}\label{fig:IndexContours}
-\end{figure}
-
-Once the contours have been identified, a rectangle is drawn around the finger using OpenCV's "rectangle" method, with the tip of the finger touching one of its sides. Next, lines are drawn along the sides of the finger using the "line" method, and a convex hull identifies the semicircular fingertip, again using an OpenCV method, in this case "convexHull." This produces a set of verteces which allow us to locate the fingernail, at which point we highlight it with a square drawn using the "rectangle" method once more. The fingernail image within this square is then sent to the edge detector method for further processing. (See Figure 2.17.)
-
-It should be noted that --- in the finger images in Figure~\ref{fig:IndexContours} --- the finger is deformed slightly due to the application of pressure on a flat surface, as was discussed previously. This doesn't necessarily share the same orientation as the tip. This can be remedied by taking the portion of the image highlighted by the rectangle and performing the operation again, thereby producing a rectangle which is properly oriented with the fingertip.
-
-Once the fingertip has been identified, its features are obtained using the SURF algorithm method provided by OpenCV's SURF class. An initial attempt was made to use the library functions in OpenCV, however the high resolution and the relative uniformity of the fingertip resulted in no stable feature points being automatically detected. The initial idea was to allow the automatic descriptor generator to use a set of aligned frames and the idea was to keep the features which were stable in time and space. (i.e. Present in every frame and in the same location.) This attempt was unsuccessful, so a bespoke method was designed instead.
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=\textwidth]{Chapter2/Figs/shapeDetection.eps}\label{fig:shapeDetection}
-    \caption{Shape detection in action.}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=\textwidth]{Chapter2/Figs/rainbowmanRGB.eps}
-    \caption{RGB channels.}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=\textwidth]{Chapter2/Figs/rainbowmanRotated.eps}
-    \caption{Rotated color space.}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=\textwidth]{Chapter2/Figs/binsFinal2.eps}
-    \caption{Final bins.}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=\textwidth]{Chapter2/Figs/rainbowmanRotatedScaled.eps}
-    \caption{Rotated and scaled color space.}
-\end{figure}
 
 
 
