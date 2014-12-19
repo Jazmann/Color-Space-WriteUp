@@ -1400,10 +1400,10 @@ The error function distribution is mathematically correct, being directly relate
 
 Considering the preservation of information captured, mappings with a gradient greater than 1 are undesirable because they preserve all the information whilst being informatically wasteful in that there are functionally inaccessible discrete values in the destination range. Our stated aim is to preserve the information in the image pertaining to human skin; unevenly distributing this information across a discrete data type is not only wasteful in terms of memory, but also of processing resources because subsequent processing routines will treat the data as if it has a higher fidelity than it actually does.
 
-To construct a distribution function, we first need to describe the relationship of the error function to the Gaussian fit, and then produce a function with the appropriate range and domain. For a Gaussian fit with an amplitude A, a mean of $\mu$, and a standard deviation of $\sigma$, where $\mu$ and x lie in a source range $\tRange$ from $\tMin$ to $\tMax$. The cumulative distribution is found by integrating from $\tMin$ to the point x, as can be seen in (\ref{eq:ErfDefinition}):
+To construct a distribution function, we first need to describe the relationship of the error function to the Gaussian fit, and then produce a function with the appropriate range and domain. For a Gaussian fit with an amplitude A, a mean of $\mu$, and a standard deviation of $\sigma$, where $\mu$ and t lie in a source range $\tRange$ from $\tMin$ to $\tMax$. The cumulative distribution is found by integrating from $\tMin$ to the point t, as can be seen in (\ref{eq:ErfDefinition}):
 
 \begin{equation}\label{eq:ErfDefinition}
-  \int _{\tMin}^{\text{x}} A \frac{e^{-\frac{(t-\mu )^2}{2 \sigma ^2}}}{\sqrt{2 \pi } \sigma }dt=\frac{1}{2} A \left(\text{erf}\left(\frac{\text{x}-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\tMin-\mu }{\sqrt{2} \sigma }\right)\right)
+  \int _{\tMin}^{\text{t}} A \frac{e^{-\frac{(x-\mu )^2}{2 \sigma ^2}}}{\sqrt{2 \pi } \sigma }dx=\frac{1}{2} A \left(\text{erf}\left(\frac{\text{x}-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\tMin-\mu }{\sqrt{2} \sigma }\right)\right)
 \end{equation}
 
 The Gaussian distribution and the cumulative distribution are shown in Figure~\ref{fig:ErrorFunctionGraph} for some values chosen for illustrative purposes. All that is required now is to fix the range $\yMin$ to $\yMax$ for the domain $\tMin$ to $\tMax$.
