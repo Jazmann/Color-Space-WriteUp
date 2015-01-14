@@ -581,8 +581,8 @@ If[TrueQ[txt==""],text=StringJoin[ToString[pnt[[1]]],"  ",ToString[pnt[[2]]]],te
 Disk[pnt,12],Disk[line[x+len],6],Disk[line[x-len],6],
 Thick,Line[{line[x-len],line[x+len]}],
 Black,Opacity[1],
-Text[text,pnt,align,line[x+len]],Text[ToString[NumberForm[N[m[x]],3]],line[x+len],{0,0},line[x+len]],
-Text[ToString[NumberForm[N[m[x]],3]],line[x-len],{0,0},line[x+len]]}];
+Text[text,pnt,align,line[x+len]-line[x-len]],Text[ToString[NumberForm[N[m[x]],3]],line[x+len],{0,0},line[x+len]-line[x-len]],
+Text[ToString[NumberForm[N[m[x]],3]],line[x-len],{0,0},line[x+len]-line[x-len]]}];
 
 
 

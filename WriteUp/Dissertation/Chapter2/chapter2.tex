@@ -1198,14 +1198,45 @@ then
 Each point of intersection is defined and bounded by 4 extrema. Comparing with the functional form of the extrema allows these 4 points to be identified.
 
 \begin{align*}
- \check{\phi}_{a} = & \arctan\left(\frac{2 \sqrt{3} m}{2^n - 2 m}\right) &
- \check{\phi}_{b} = & \arctan\left(\frac{m 2^{3-n}}{\sqrt{3}}       \right) \\ 
+ \check{\phi}_{a} = & \arctan\left(\frac{2m \sqrt{3} }{2^n - 2 m}\right) &
+ \check{\phi}_{b} = & \arctan\left(\frac{2m 2^{2-n}}{\sqrt{3}}       \right) \\ 
  & \text{with}\quad   m =  0,1,2,3 \cdots2^{n-3} \\
- \hat{\phi    }_{a}  = & \arctan\left(\frac{\sqrt{3} (2 m+1)}{2^n-2 m-1}  \right) &
+ \hat{\phi    }_{a}  = & \arctan\left(\frac{\sqrt{3} (2 m+1)}{2^n-(2 m+1)}  \right) &
  \hat{\phi   }_{b}  = & \arctan\left(\frac{(2 m+1) 2^{2-n}}{\sqrt{3}}          \right) \\
  &\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 
 \end{align*}
-Separating the points of intersection into even and odd terms facilitates the identification. The following ranges are guaranteed to be true for all values of $m$ and $n$.
+
+\newcommand{\extremaTheta}[1]{\hat{\check{\phi}}_{#1}}
+
+\begin{align*}
+ \extremaTheta{a} (l)= & \arctan\left(\frac{l \sqrt{3} }{2^n - l}\right) &
+ \extremaTheta{b} (l)= & \arctan\left(\frac{l \; 2^{2-n}}{\sqrt{3}}       \right) \\ 
+ \check{\phi}_{a} = & \extremaTheta{a} (2m) &
+ \check{\phi}_{b} = & \extremaTheta{b} (2m) 
+ & \text{with}\quad   m =  0,1,2,3 \cdots2^{n-3} \\
+  \hat{\phi}_{a} = & \extremaTheta{a} (2m+1) &
+  \hat{\phi}_{b} = & \extremaTheta{b} (2m+1) 
+ &\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 
+\end{align*}
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+  & Channel a & Channel b &  m \\ 
+\hline Minima  &  $ \check{\phi}_{a}(m)  =  \extremaTheta{a} (2m) $ & $ \check{\phi}_{b}(m)  = \extremaTheta{b} (2m) $ &  $m \in \{ 0,1,2,3 \cdots2^{n-3}  \} $\\ 
+\hline Maxima  &  $ \hat{\phi}_{a}(m)  = \extremaTheta{a} (2m+1)  $ & $ \hat{\phi}_{b}(m)  = \extremaTheta{b} (2m+1) $  & $ m \in \{ 0,1,2,3 \cdots2^{n-3} -1 \}  $ \\ 
+\hline 
+\end{tabular} 
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+  & Channel a & Channel b &  i \\ 
+\hline Minima  &  $ \check{\phi}_{a}(\frac{i}{2})=\extremaTheta{a} (i) $ & $ \check{\phi}_{b}(\frac{i}{2})=\extremaTheta{b} (i) $ & $ i \in \{0,2,4,6\cdots2^{n-2} \} $\\ 
+\hline Maxima  &  $     \hat{\phi}_{a}(\frac{i-1}{2})=\extremaTheta{a} (i) $ & $     \hat{\phi}_{b}(\frac{i-1}{2})=\extremaTheta{b} (i) $ & $ i \in \{1,3,5,7\cdots2^{n-2}-1\}  $ \\ 
+\hline 
+\end{tabular} 
+
+Separating the points of intersection into even and odd terms facilitates the identification. 
+The following ranges are guaranteed to be true for all values of $m$ and $n$.
 \begin{align*}
  \check{\phi}_{a} (m) & < \; \overset{\times}{\phi} (2m)   \;    <  \;\check{\phi}_{b}(m)  & 
       \hat{\phi}_{a}(m) & < \;  \overset{\times}{\phi} (2m+1)  < \;    \hat{\phi}_{b}(m)  
@@ -1217,32 +1248,24 @@ The other two ranges can swap direction around the central value  $\overline{m}$
 \overline{m}=\frac{1}{2} \left(2^{n-3}-1\right) \qquad
 \varGamma(n)=\frac{1}{2} \sqrt{2^{2 (n-3)}-14\ 2^{n-3}+1} \\
 \hat{L}(m)=\begin{cases}
-< & \quad m < \bar{m}-\Gamma \; \vee  \; m > \Gamma +\bar{m} \\
-> & \quad \bar{m}-\Gamma \leq m \leq \Gamma +\bar{m}\\
+< & \quad    m <   \bar{m} -\Gamma \vee m > \bar{m} + \Gamma   \\
+> & \quad  \bar{m} - \Gamma \leq m \leq \bar{m} + \Gamma \\
 \end{cases} \\
 \end{gather*}
-defining
+defining a relational operator which depends on $\hat{L}(m)$ 
 \begin{align}
-\lessgtr &= \hat{L}(\scriptsize{m})  & \gtrless &= \hat{L}(\scriptsize{m+\frac{1}{2}})
+\gtrless &= \hat{L}(\scriptsize{m-\frac{1}{2}}) & \lessgtr &= \hat{L}(\scriptsize{m})  
 \end{align}
-
+allows the bounds for the points of intersection to be concisely written
 %\begin{alignat*}{5}
 % \hat{\phi}_{b}(m-1) && \gtrless  && \overset{\times}{\phi} (2m)       &&\gtrless  &&     \hat{\phi}_{a}(m)  \\
 % \check{\phi}_{b}(m)  && \lessgtr                   && \overset{\times}{\phi} (2m+1)  && \lessgtr                  &&\check{\phi}_{a} (m+1) 
 %\end{alignat*}
 
 
+
+
 \begin{align}
-\begin{array}{cc}
-      \hat{\phi}_{a}(m)  & <            \\
- \check{\phi}_{b}(m)  & \lessgtr   
-\end{array}
-\overset{\times}{\phi} (2m+1) 
-\begin{array}{cc}
- <             &    \hat{\phi}_{b}(m)  \\
-\lessgtr    &\check{\phi}_{a} (m+1)  
-\end{array} \quad
-& \quad
 \begin{array}{cc}
  \hat{\phi}_{b}(m-1) &\gtrless \\
   \check{\phi}_{a} (m) & < 
@@ -1251,29 +1274,147 @@ defining
 \begin{array}{cc}
 \gtrless &     \hat{\phi}_{a}(m)  \\
   < & \check{\phi}_{b}(m)  
+\end{array} \quad
+& \quad
+\begin{array}{cc}
+      \hat{\phi}_{a}(m)  & <            \\
+ \check{\phi}_{b}(m)  & \lessgtr   
+\end{array}
+\overset{\times}{\phi} (2m+1) 
+\begin{array}{cc}
+ <             &    \hat{\phi}_{b}(m)  \\
+\lessgtr    &\check{\phi}_{a} (m+1)  
 \end{array} 
 \end{align}
 
-We want to classify the points of intersection as greater or lesser than a tolerance $\tau \in \{ \frac{1}{2}, \frac{1}{4},\frac{1}{8}, \cdots \}$. In order to do this we make a linear approximation to the perturbation between the extrema. There is one point of intersection between each of the maxima and corresponding minima. A bit of geometry allows us to write a classification criteria for each of the points of intersection.
+Adjusting for the intersection index $i$ allows us to see that the intersection points are best classified by being either odd or even values of $i$
+%
+%\begin{align}
+%\begin{array}{cc}
+% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
+%  \check{\phi}_{a} (\frac{i}{2}) & < 
+%\end{array}
+%\overset{\times}{\phi} (i) 
+%\begin{array}{cc}
+%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
+%  < & \check{\phi}_{b}(\frac{i}{2})  
+%\end{array} \quad
+%& \quad
+%\begin{array}{cc}
+%      \hat{\phi}_{a}(\frac{i}{2})  & <            \\
+% \check{\phi}_{b}(\frac{i}{2})  & \lessgtr   
+%\end{array}
+%\overset{\times}{\phi} (i+1) 
+%\begin{array}{cc}
+% <             &    \hat{\phi}_{b}(\frac{i}{2})  \\
+%\lessgtr    &\check{\phi}_{a} (\frac{i}{2}+1)  
+%\end{array} 
+%\end{align}
+%
+%\begin{align}
+%\begin{array}{cc}
+% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
+%  \check{\phi}_{a} (\frac{i}{2}) & < 
+%\end{array}
+%\overset{\times}{\phi} (i) 
+%\begin{array}{cc}
+%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
+%  < & \check{\phi}_{b}(\frac{i}{2})  
+%\end{array} \quad
+%& \quad
+%\begin{array}{cc}
+%      \hat{\phi}_{a}(\frac{i-1}{2})  & <            \\
+% \check{\phi}_{b}(\frac{i-1}{2})  & \lessgtr   
+%\end{array}
+%\overset{\times}{\phi} (i) 
+%\begin{array}{cc}
+% <             &    \hat{\phi}_{b}(\frac{i-1}{2})  \\
+%\lessgtr    &\check{\phi}_{a} (\frac{i-1}{2}+1)  
+%\end{array} 
+%\end{align}
+%
+%\begin{align*}
+%\overset{\times}{\phi} (i)  \in & \begin{cases}
+%\begin{array}{cc}
+% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
+%  \check{\phi}_{a} (\frac{i}{2}) & < 
+%\end{array}
+%\overset{\times}{\phi} (i) 
+%\begin{array}{cc}
+%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
+%  < & \check{\phi}_{b}(\frac{i}{2})  
+%\end{array} & 
+%i \in \{ 2 \mathbb{N} \} \\
+%\begin{array}{cc}
+%      \hat{\phi}_{a}(\frac{i-1}{2})  & <            \\
+% \check{\phi}_{b}(\frac{i-1}{2})  & \lessgtr   
+%\end{array}
+%\overset{\times}{\phi} (i) 
+%\begin{array}{cc}
+% <             &    \hat{\phi}_{b}(\frac{i-1}{2})  \\
+%\lessgtr    &\check{\phi}_{a} (\frac{i-1}{2}+1)  
+%\end{array}  & 
+%i \in \{ 2 \mathbb{N} +1 \}
+%\end{cases}
+%\end{align*}
+
 
 \begin{align*}
-a_{2m+1} & =     \hat{\phi}_{a}(m)     -      \hat{\phi}_{b}(m)  &
-a_{2m} &=     \| \hat{\phi}_{b}(m-1) -     \hat{\phi}_{a}(m) \|  \\
-b_{2m+1} &= \| \check{\phi}_{b}(m)     - \check{\phi}_{a} (m+1) \| &
-b_{2m} &= \check{\phi}_{a}(m)     - \check{\phi}_{b}(m) \\
-\tau_1 &\ge \frac{\| \check{\phi}_{b}(m)  - \check{\phi}_{a} (m+1) \| }{ \hat{\phi}_{a}(m)  - \hat{\phi}_{b}(m)+\| \check{\phi}_{b}(m)  - \check{\phi}_{a} (m+1) \| } & 
-\tau_2 &\ge \frac{\check{\phi}_{a}(m)  - \check{\phi}_{b}(m) }{\| \hat{\phi}_{b}(m-1) - \hat{\phi}_{a}(m) \| +\check{\phi}_{a}(m)  - \check{\phi}_{b}(m) }
+\begin{array}{cc}
+ \extremaTheta{b}(i-1) &\gtrless \\
+ \extremaTheta{a}(i)     & < 
+\end{array}
+& \overset{\times}{\phi} (i) 
+\begin{array}{cc}
+\gtrless & \extremaTheta{a}(i+1)  \\
+ <          & \extremaTheta{b}(i)  
+\end{array} & 
+i &\in \{ 2 \mathbb{N} \}  & \gtrless &= \hat{L}\left( \frac{i-1}{2} \right)   \\
+\begin{array}{cc}
+ \extremaTheta{a}(i)  & <            \\
+ \extremaTheta{b}(i-1)  & \gtrless  
+\end{array}
+& \overset{\times}{\phi} (i) 
+\begin{array}{cc}
+ <             &  \extremaTheta{b}(i)  \\
+\gtrless    &  \extremaTheta{a} (i+1)  
+\end{array}  & 
+i &\in \{ 2 \mathbb{N} +1 \} 
 \end{align*}
 
-\parpic(64mm,64mm)[r]{\fbox{\parbox{64mm}{
-\includegraphics[width=64mm]{Chapter2/Figs/GeometryClassifyPoint.jpg}  \\
-\centering  $\frac{h_1}{h_2} = \frac{b}{a} $ \\
-\centering  $ h_1 = \frac{b}{a+b} $ }}
+We want to classify the points of intersection as greater or lesser than a tolerance $0 < \tau \le 1$. In order to do this we make a linear approximation to the perturbation between the extrema. There is one point of intersection between each of the maxima and corresponding minima. A bit of geometry allows us to write a classification criteria for each of the points of intersection.
+
+\begin{align*}
+T ( \tau , m )  = & \begin{cases}
+\tau\ge\frac{ \extremaTheta{b}(i) -  \extremaTheta{a}(i) }{\| \extremaTheta{b}(i-1)- \extremaTheta{a}(i+1)  \| +\extremaTheta{b}(i) -  \extremaTheta{a}(i)  } & 
+i \in \{ 2 \mathbb{N} \} \\
+\tau\ge\frac{\| \extremaTheta{b}(i-1) - \extremaTheta{a}(i+1) \| }{ \| \extremaTheta{b}(i-1) - \extremaTheta{a}(i+1) \| + \extremaTheta{b}(i) - \extremaTheta{a}(i) } & 
+i \in \{ 2 \mathbb{N} +1 \}
+\end{cases}
+\end{align*}
+
+\begin{align*}
+T ( \tau , m )  = & \begin{cases}
+\tau\ge\frac{\check{\phi}_{a}(m)  - \check{\phi}_{b}(m) }{\| \hat{\phi}_{b}(m-1) - \hat{\phi}_{a}(m) \| +\check{\phi}_{a}(m)  - \check{\phi}_{b}(m) } & 
+m \in \{ 2 \mathbb{N} \} \\
+\tau\ge\frac{\| \check{\phi}_{b}(m)  - \check{\phi}_{a} (m+1) \| }{ \hat{\phi}_{a}(m)  - \hat{\phi}_{b}(m)+\| \check{\phi}_{b}(m)  - \check{\phi}_{a} (m+1) \| } & 
+m \in \{ 2 \mathbb{N} +1 \}
+\end{cases}
+\end{align*}
+
+\parpic(79mm,104mm)[r]{\fbox{\parbox{76mm}{
+\includegraphics[width=76mm]{Chapter2/Figs/GeometryClassifyPoint.jpg}  \\
+\centering  $\frac{h_1}{h_2} = \frac{b}{a} \quad h_1 = \frac{b}{a+b} $ \\
+\centering $a_{2m}  =     \| \hat{\phi}_{b}(m-1) -     \hat{\phi}_{a}(m) \|  $ \\
+\centering $b_{2m}  = \check{\phi}_{a}(m)     - \check{\phi}_{b}(m)$ \\
+\centering $a_{2m+1}   =     \hat{\phi}_{a}(m)     -      \hat{\phi}_{b}(m)$    \\   
+\centering $b_{2m+1}  = \| \check{\phi}_{b}(m)     - \check{\phi}_{a} (m+1) \| $  \\
+}}
 }
 
-The criteria for $\tau_1$ is used for the odd values of m and $\tau_2$ for the even values in the equation for the points of intersection $\check{\phi}_{a} (m)$. There are $2^{n-2}$ points of intersection and $2^{n-3}$ which satisfy the criteria $\tau = \frac{1}{2}$. The algorithm as implemented in openCV leaves the decision about the criteria up to the programmer. The programmer chooses a value for $\theta$ and selects a value for $\tau$. The algorithm returns the nearest value of $\theta$ which satisfies the condition defined by $\tau$. The programmer then decides whether the suggested value for $\theta$ is acceptable and either adopts the suggested value or chooses a value as close as possible and accepts the possibility of errors.
+The criteria for $\tau \le \text{\textonehalf}$ selects from either the odd values or the even values of m because if $T(\tau,m)$ is true then $T(\tau,m+1)$ is false and vice versa. There are $2^{n-2}$ points of intersection and $2^{n-3}$ which satisfy the criteria $\tau = \frac{1}{2}$. The algorithm as implemented in openCV leaves the decision about the criteria up to the programmer. The programmer chooses a value for $\theta$ and selects a value for $\tau$. The algorithm returns the nearest value of $\theta$ which satisfies the condition defined by $\tau$. The programmer then decides whether the suggested value for $\theta$ is acceptable and either adopts the suggested value or chooses a value as close as possible and accepts the possibility of errors.
 
-For example in this project $n$ is 8 which gives $12 (2^{8-3}-1) = 372$ possible values for $\theta$ which produces a maximum perturbation of less than $\frac{1}{2}$. This would allow the destination pixel values to be expressed in 8 bit numbers without error using a transformation matrix expressed in 6 bit signed integers. The statistics performed to determine $\theta$ are not demanding enough to justify rejecting a suggested value of theta within 1\textdegree of the requested value. It is however important to know the value actually used in the algorithm which is why the mechanism for adjusting $\theta$ is separate from the color-space algorithm and is under the control of the programmer. For instance in the implementation below the suggested value is accepted and used to adjust the statistical model keeping all the values in correct correspondence.
+For example in this project $n$ is 8 so $\intR \in \{ -2^{8-2} \cdots 2^{8-2} \}$ which gives $2^{8-3}-1$ values in each $\frac{\pi}{6}$ region which produce a maximum perturbation of less than \textonehalf. In total there are $12 (2^{8-3}-1) = 372$ possible values for $\theta$ which produces a maximum perturbation of less than \textonehalf. This would allow the destination pixel values to be expressed in 8 bit numbers without error using a transformation matrix expressed in 6 bit signed integers. The statistics performed to determine $\theta$ are not demanding enough to justify rejecting a suggested value of theta within 1\textdegree of the requested value. It is however important to know the value actually used in the algorithm which is why the mechanism for adjusting $\theta$ is separate from the color-space algorithm and is under the control of the programmer. For instance in the implementation below the suggested value is accepted and used to adjust the statistical model keeping all the values in correct correspondence.
 
 \hrule
 
@@ -1400,13 +1541,14 @@ The error function distribution is mathematically correct, being directly relate
 
 Considering the preservation of information captured, mappings with a gradient greater than 1 are undesirable because they preserve all the information whilst being informatically wasteful in that there are functionally inaccessible discrete values in the destination range. Our stated aim is to preserve the information in the image pertaining to human skin; unevenly distributing this information across a discrete data type is not only wasteful in terms of memory, but also of processing resources because subsequent processing routines will treat the data as if it has a higher fidelity than it actually does.
 
-To construct a distribution function, we first need to describe the relationship of the error function to the Gaussian fit, and then produce a function with the appropriate range and domain. For a Gaussian fit with an amplitude A, a mean of $\mu$, and a standard deviation of $\sigma$, where $\mu$ and t lie in a source range $\tRange$ from $\tMin$ to $\tMax$. The cumulative distribution is found by integrating from $\tMin$ to the point t, as can be seen in (\ref{eq:ErfDefinition}):
+To construct a distribution function, we first need to describe the relationship of the error function to the Gaussian fit, and then produce a function with the appropriate range and domain. For a Gaussian fit with an amplitude A, a mean of $\mu$, and a standard deviation of $\sigma$, where $\mu$ and $\text{x}$ lie in a source range $\xRange$ from $\xMin$ to $\xMax$. The cumulative distribution is found by integrating from $\xMin$ to the point $\text{x}$, as can be seen in (\ref{eq:ErfDefinition}):
 
 \begin{equation}\label{eq:ErfDefinition}
-  \int _{\tMin}^{\text{t}} A \frac{e^{-\frac{(x-\mu )^2}{2 \sigma ^2}}}{\sqrt{2 \pi } \sigma }dx=\frac{1}{2} A \left(\text{erf}\left(\frac{\text{x}-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\tMin-\mu }{\sqrt{2} \sigma }\right)\right)
+  \int _{\xMin}^{\text{x}} A \frac{e^{-\frac{(t-\mu )^2}{2 \sigma ^2}}}{\sqrt{2 \pi } \sigma }dt = 
+  \frac{1}{2} A \left(\text{erf}\left(\frac{\text{x}-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\xMin-\mu }{\sqrt{2} \sigma }\right)\right)
 \end{equation}
 
-The Gaussian distribution and the cumulative distribution are shown in Figure~\ref{fig:ErrorFunctionGraph} for some values chosen for illustrative purposes. All that is required now is to fix the range $\yMin$ to $\yMax$ for the domain $\tMin$ to $\tMax$.
+The Gaussian distribution and the cumulative distribution are shown in Figure~\ref{fig:ErrorFunctionGraph} for some values chosen for illustrative purposes. All that is required now is to fix the range $\yMin$ to $\yMax$ for the domain $\xMin$ to $\xMax$.
 
 \begin{figure}[h!]
   \caption{Error function.}  \label{fig:ErrorFunctionGraph}
@@ -1414,10 +1556,10 @@ The Gaussian distribution and the cumulative distribution are shown in Figure~\r
     \includegraphics[width=\textwidth]{Chapter2/Figs/errorFunction.eps}
 \end{figure}
 
-First, we determine the maximum value taken in the domain. This is simply found by evaluating the function at $\tMax$. It should be noted that --- if the Gaussian distribution is well-contained in the source domain --- the maximum value should be equal to the amplitude. For the sake of simplicity, we'll ignore the amplitude of the fitted Gaussian found previously as it is not relevant to the design of the redistribution function. So, to fix the range of the distribution function, we first scale to the range $0:1$ by simply dividing through by the maximum value, and then re-scale to the destination range $\yRange = \yMax - \yMin$ and shift by $\yMin$.
+First, we determine the maximum value taken in the domain. This is simply found by evaluating the function at $\xMax$. It should be noted that --- if the Gaussian distribution is well-contained in the source domain --- the maximum value should be equal to the amplitude. For the sake of simplicity, we'll ignore the amplitude of the fitted Gaussian found previously as it is not relevant to the design of the redistribution function. So, to fix the range of the distribution function, we first scale to the range $0:1$ by simply dividing through by the maximum value, and then re-scale to the destination range $\yRange = \yMax - \yMin$ and shift by $\yMin$.
 
 \begin{equation}\label{eq:disFunction}
-  dis(x) = \frac{(\yRange) \left(\text{erf}\left(\frac{x-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\tMin-\mu }{\sqrt{2} \sigma }\right)\right)}{\text{erf}\left(\frac{\tMax-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\tMin-\mu }{\sqrt{2} \sigma }\right)}+\yMin
+  dis(x) = \frac{(\yRange) \left(\text{erf}\left(\frac{x-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\xMin-\mu }{\sqrt{2} \sigma }\right)\right)}{\text{erf}\left(\frac{\tMax-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\xMin-\mu }{\sqrt{2} \sigma }\right)}+\yMin
 \end{equation}
 
 Mathematically, this distribution function~(\ref{eq:disFunction}) achieves all the stated objectives. However, on a device we are dealing with discrete numerics and limited processing power, so further analysis is required. Where we're using a discrete domain and range, the distribution is usefully divided into three characteristic behaviors:  where it is constant, where it preserves all the information, and where it selectively preserves information. Looking at the distribution, this divides the source domain into five regions: two where it is effectively constant, two where it is selective, and one region around the mean where it preserves all the information. In order to design an efficient algorithm, it is useful to identify the boundaries of these five regions.
