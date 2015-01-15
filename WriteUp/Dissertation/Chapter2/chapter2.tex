@@ -1187,12 +1187,15 @@ We are interested in a compromise between the perturbations to each channel whic
 \end{gather*}
 recognising that the rounded part can only take certain values
 \begin{gather*}
-m =  \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\frac{\pi}{6} - \phi ) \right]
- \quad \text{where}\quad m=0,1,2 \cdots 2^{n-2}
+i =  \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\frac{\pi}{6} - \phi ) \right]
+ \quad \text{where}\quad i=0,1,2 \cdots 2^{n-2}
  \end{gather*}
 then
+
+\newcommand{\thetaX}[1]{\overset{\times}{\phi}\left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
+
 \begin{gather*}
-\overset{\times}{\phi} =\arctan\left(\frac{\sqrt{m^2 2^{6-2 n}-m 2^{4-n}+49}+m 2^{3-n}-7}{2 \sqrt{3}}\right) \quad \text{where}\quad m=0,1,2 \cdots 2^{n-2}
+\thetaX{i}=\arctan\left(\frac{\sqrt{i^2 2^{6-2 n}-i 2^{4-n}+49}+i 2^{3-n}-7}{2 \sqrt{3}}\right) \quad \text{where}\quad i=0,1,2 \cdots 2^{n-2}
 \end{gather*}
 
 Each point of intersection is defined and bounded by 4 extrema. Comparing with the functional form of the extrema allows these 4 points to be identified.
@@ -1206,201 +1209,313 @@ Each point of intersection is defined and bounded by 4 extrema. Comparing with t
  &\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 
 \end{align*}
 
-\newcommand{\extremaTheta}[1]{\hat{\check{\phi}}_{#1}}
+
+
+\newcommand{\extremaTheta}[2]{\mathring{\phi} _{#1}\left( \scalebox{0.75}[1.0]{\( #2 \)}\right)}
 
 \begin{align*}
- \extremaTheta{a} (l)= & \arctan\left(\frac{l \sqrt{3} }{2^n - l}\right) &
- \extremaTheta{b} (l)= & \arctan\left(\frac{l \; 2^{2-n}}{\sqrt{3}}       \right) \\ 
- \check{\phi}_{a} = & \extremaTheta{a} (2m) &
- \check{\phi}_{b} = & \extremaTheta{b} (2m) 
+ \extremaTheta{a} {l}= & \arctan\left(\frac{l \sqrt{3} }{2^n - l}\right) &
+ \extremaTheta{b} {l}= & \arctan\left(\frac{l \; 2^{2-n}}{\sqrt{3}}       \right) \\ 
+ \check{\phi}_{a} = & \extremaTheta{a} {2m} &
+ \check{\phi}_{b} = & \extremaTheta{b} {2m} 
  & \text{with}\quad   m =  0,1,2,3 \cdots2^{n-3} \\
-  \hat{\phi}_{a} = & \extremaTheta{a} (2m+1) &
-  \hat{\phi}_{b} = & \extremaTheta{b} (2m+1) 
+  \hat{\phi}_{a} = & \extremaTheta{a} {2m+1} &
+  \hat{\phi}_{b} = & \extremaTheta{b} {2m+1} 
  &\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 
 \end{align*}
 
 \begin{tabular}{|c|c|c|c|}
 \hline
   & Channel a & Channel b &  m \\ 
-\hline Minima  &  $ \check{\phi}_{a}(m)  =  \extremaTheta{a} (2m) $ & $ \check{\phi}_{b}(m)  = \extremaTheta{b} (2m) $ &  $m \in \{ 0,1,2,3 \cdots2^{n-3}  \} $\\ 
-\hline Maxima  &  $ \hat{\phi}_{a}(m)  = \extremaTheta{a} (2m+1)  $ & $ \hat{\phi}_{b}(m)  = \extremaTheta{b} (2m+1) $  & $ m \in \{ 0,1,2,3 \cdots2^{n-3} -1 \}  $ \\ 
-\hline 
-\end{tabular} 
-
-\begin{tabular}{|c|c|c|c|}
-\hline
-  & Channel a & Channel b &  i \\ 
-\hline Minima  &  $ \check{\phi}_{a}(\frac{i}{2})=\extremaTheta{a} (i) $ & $ \check{\phi}_{b}(\frac{i}{2})=\extremaTheta{b} (i) $ & $ i \in \{0,2,4,6\cdots2^{n-2} \} $\\ 
-\hline Maxima  &  $     \hat{\phi}_{a}(\frac{i-1}{2})=\extremaTheta{a} (i) $ & $     \hat{\phi}_{b}(\frac{i-1}{2})=\extremaTheta{b} (i) $ & $ i \in \{1,3,5,7\cdots2^{n-2}-1\}  $ \\ 
+\hline Minima  &  $ \check{\phi}_{a}(m)  =  \extremaTheta{a}{2m}  $ & $ \check{\phi}_{b}(m)  = \extremaTheta{b}{2m}  $ &  $m \in \{ 0,1,2,3 \cdots2^{n-3}  \} $\\ 
+\hline Maxima  &  $ \hat{\phi}_{a}(m)  = \extremaTheta{a}{2m+1}   $ & $ \hat{\phi}_{b}(m)  = \extremaTheta{b}{2m+1}  $  & $ m \in \{ 0,1,2,3 \cdots2^{n-3} -1 \}  $ \\ 
 \hline 
 \end{tabular} 
 
 Separating the points of intersection into even and odd terms facilitates the identification. 
-The following ranges are guaranteed to be true for all values of $m$ and $n$.
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+  & Channel a & Channel b &  i \\ 
+\hline Minima  &  $ \check{\phi}_{a}(\frac{i}{2})=\extremaTheta{a}{i} $ & $ \check{\phi}_{b}(\frac{i}{2})=\extremaTheta{b}{i} $ & $ i \in \{0,2,4,6\cdots2^{n-2} \} $\\ 
+\hline Maxima  &  $     \hat{\phi}_{a}(\frac{i-1}{2})=\extremaTheta{a}{i} $ & $     \hat{\phi}_{b}(\frac{i-1}{2})=\extremaTheta{b}{i} $ & $ i \in \{1,3,5,7\cdots2^{n-2}-1\}  $ \\ 
+\hline 
+\end{tabular} 
+
+
+The following ranges are guaranteed to be true for even or odd values of $i$ with very specific values of  $p$ and $q$.
+
 \begin{align*}
- \check{\phi}_{a} (m) & < \; \overset{\times}{\phi} (2m)   \;    <  \;\check{\phi}_{b}(m)  & 
-      \hat{\phi}_{a}(m) & < \;  \overset{\times}{\phi} (2m+1)  < \;    \hat{\phi}_{b}(m)  
+\begin{array}{cc}
+  \extremaTheta{b}{p} & < \\
+  \extremaTheta{a} {q-1} & < 
+\end{array}
+&\thetaX{i} 
+\begin{array}{cc}
+  < & \extremaTheta{a}{q}  \\
+  < & \extremaTheta{b}{p+1}  
+\end{array} 
+& \bigvee
+\begin{array}{cc}
+  \extremaTheta{a}{q} & < \\
+  \extremaTheta{b} {p+1} & < 
+\end{array}
+&\thetaX{i+1}
+\begin{array}{cc}
+  < & \extremaTheta{b}{p+2}  \\
+  < & \extremaTheta{a}{q+1}  
+\end{array} & 
+\begin{array}{cc}
+p &\in \{ 2 \mathbb{N} +1 \}  \\
+q &\in \{ 2 \mathbb{N} +1 \}  \\
+i  &\in \{ 2 \mathbb{N} +1 \}
+\end{array}
 \end{align*}
 
-The other two ranges can swap direction around the central value  $\overline{m}$ in a region governed by $\Gamma$ which is the distance from $\overline{m}$ at which the order of the extrema switch between channels.
+
+\begin{align*}
+\begin{array}{cc}
+  \extremaTheta{b}{p-1} & < \\
+  \extremaTheta{a} {q} & < 
+\end{array}
+&\thetaX{i} 
+\begin{array}{cc}
+  < & \extremaTheta{a}{q+1}  \\
+  < & \extremaTheta{b}{p}  
+\end{array} 
+& \bigvee
+\begin{array}{cc}
+  \extremaTheta{a}{q+1} & < \\
+  \extremaTheta{b} {p} & < 
+\end{array}
+&\thetaX{i+1} 
+\begin{array}{cc}
+  < & \extremaTheta{b}{p+1}  \\
+  < & \extremaTheta{a}{q+2}  
+\end{array} & 
+\begin{array}{cc}
+p  &\in \{ 2 \mathbb{N}  \}  \\
+q  &\in \{ 2 \mathbb{N}  \}  \\
+2  & \le i  \le 2^{n-2} -1
+\end{array}
+\end{align*}
+
+\newcommand{\meanIndx}{\overline{\mathbf{i}}}
+
+This slightly glib definition illustrates the pattern for the extrema bounding the points of intersection. At the start of a $\frac{\Pi}{6}$ region i.e. for low values of $i$, $p=i$ and $q=i$. The maxima swap orderings between certain values of $i$ within a $\frac{\Pi}{6}$ region. This is evident in the inescapable indices of $i-1$ and $i+1$ regardless of the starting values for $i$ for either the maxima or minima. So whilst it is true that $\extremaTheta{a} {i} > \extremaTheta{b} {i}$ it is not always true that $\extremaTheta{a} {i+1} > \extremaTheta{b} {i-1}$. This leads to the question of what happens when this boundary $\extremaTheta{a} {i+1} = \extremaTheta{b} {i-1}$ is crossed. Firstly the even-odd ordering i.e. the a-b channel ordering is flipped and secondly the indices are shifted. A second transition restores the a-b ordering and shifts the indices again. As the index $i$ passes the half way point $\meanIndx = 2^{n-3}$ the transitions occur in the opposite direction restoring the indices and ordering. Transitions occur where $i$ satisfies $\extremaTheta{a} {i+\iota} = \extremaTheta{b} {i-\iota}$ with $\iota \in \{ 1,2,3 \cdots \left(7-4 \sqrt{3}\right) 2^{n-3}\} $. 
 
 \begin{gather*}
-\overline{m}=\frac{1}{2} \left(2^{n-3}-1\right) \qquad
-\varGamma(n)=\frac{1}{2} \sqrt{2^{2 (n-3)}-14\ 2^{n-3}+1} \\
-\hat{L}(m)=\begin{cases}
-< & \quad    m <   \bar{m} -\Gamma \vee m > \bar{m} + \Gamma   \\
-> & \quad  \bar{m} - \Gamma \leq m \leq \bar{m} + \Gamma \\
-\end{cases} \\
+\meanIndx = 2^{n-3} \qquad
+\varGamma(\iota, n) = \sqrt{\iota ^2-7 \iota  2^{n-2}+2^{2 (n-3)}} 
 \end{gather*}
-defining a relational operator which depends on $\hat{L}(m)$ 
-\begin{align}
-\gtrless &= \hat{L}(\scriptsize{m-\frac{1}{2}}) & \lessgtr &= \hat{L}(\scriptsize{m})  
-\end{align}
-allows the bounds for the points of intersection to be concisely written
-%\begin{alignat*}{5}
-% \hat{\phi}_{b}(m-1) && \gtrless  && \overset{\times}{\phi} (2m)       &&\gtrless  &&     \hat{\phi}_{a}(m)  \\
-% \check{\phi}_{b}(m)  && \lessgtr                   && \overset{\times}{\phi} (2m+1)  && \lessgtr                  &&\check{\phi}_{a} (m+1) 
-%\end{alignat*}
 
+The region $\iota$ for a given value of $i$ is the highest value of $\iota$ for which the following condition remains true.
 
+\begin{gather*}
+\meanIndx -\varGamma(\iota, n) \leq i \leq \varGamma(\iota, n) + \meanIndx 
+\end{gather*}
 
+For a given value of $\theta$ and $n$ we can find the intersection index $i$ and from this we can find $\iota$.
 
-\begin{align}
-\begin{array}{cc}
- \hat{\phi}_{b}(m-1) &\gtrless \\
-  \check{\phi}_{a} (m) & < 
-\end{array}
-\overset{\times}{\phi} (2m) 
-\begin{array}{cc}
-\gtrless &     \hat{\phi}_{a}(m)  \\
-  < & \check{\phi}_{b}(m)  
-\end{array} \quad
-& \quad
-\begin{array}{cc}
-      \hat{\phi}_{a}(m)  & <            \\
- \check{\phi}_{b}(m)  & \lessgtr   
-\end{array}
-\overset{\times}{\phi} (2m+1) 
-\begin{array}{cc}
- <             &    \hat{\phi}_{b}(m)  \\
-\lessgtr    &\check{\phi}_{a} (m+1)  
-\end{array} 
-\end{align}
+\begin{gather*}
+i(\delta\theta, n) = \frac{\meanIndx \tan (\delta \theta ) \left(\sqrt{3} \tan (\delta \theta )+7\right)}{\tan (\delta \theta )+\sqrt{3}} 
+\quad \text{where} \quad \delta\theta = \theta \mod{\frac{\pi}{6} }\\
+ \iota(i,n)  = \left\lfloor 7\ \meanIndx-\sqrt{i^2 - 2 i \; \meanIndx + 49\ \meanIndx^2 }\right\rfloor 
+\end{gather*}
 
-Adjusting for the intersection index $i$ allows us to see that the intersection points are best classified by being either odd or even values of $i$
-%
-%\begin{align}
-%\begin{array}{cc}
-% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
-%  \check{\phi}_{a} (\frac{i}{2}) & < 
-%\end{array}
-%\overset{\times}{\phi} (i) 
-%\begin{array}{cc}
-%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
-%  < & \check{\phi}_{b}(\frac{i}{2})  
-%\end{array} \quad
-%& \quad
-%\begin{array}{cc}
-%      \hat{\phi}_{a}(\frac{i}{2})  & <            \\
-% \check{\phi}_{b}(\frac{i}{2})  & \lessgtr   
-%\end{array}
-%\overset{\times}{\phi} (i+1) 
-%\begin{array}{cc}
-% <             &    \hat{\phi}_{b}(\frac{i}{2})  \\
-%\lessgtr    &\check{\phi}_{a} (\frac{i}{2}+1)  
-%\end{array} 
-%\end{align}
-%
-%\begin{align}
-%\begin{array}{cc}
-% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
-%  \check{\phi}_{a} (\frac{i}{2}) & < 
-%\end{array}
-%\overset{\times}{\phi} (i) 
-%\begin{array}{cc}
-%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
-%  < & \check{\phi}_{b}(\frac{i}{2})  
-%\end{array} \quad
-%& \quad
-%\begin{array}{cc}
-%      \hat{\phi}_{a}(\frac{i-1}{2})  & <            \\
-% \check{\phi}_{b}(\frac{i-1}{2})  & \lessgtr   
-%\end{array}
-%\overset{\times}{\phi} (i) 
-%\begin{array}{cc}
-% <             &    \hat{\phi}_{b}(\frac{i-1}{2})  \\
-%\lessgtr    &\check{\phi}_{a} (\frac{i-1}{2}+1)  
-%\end{array} 
-%\end{align}
-%
-%\begin{align*}
-%\overset{\times}{\phi} (i)  \in & \begin{cases}
-%\begin{array}{cc}
-% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
-%  \check{\phi}_{a} (\frac{i}{2}) & < 
-%\end{array}
-%\overset{\times}{\phi} (i) 
-%\begin{array}{cc}
-%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
-%  < & \check{\phi}_{b}(\frac{i}{2})  
-%\end{array} & 
-%i \in \{ 2 \mathbb{N} \} \\
-%\begin{array}{cc}
-%      \hat{\phi}_{a}(\frac{i-1}{2})  & <            \\
-% \check{\phi}_{b}(\frac{i-1}{2})  & \lessgtr   
-%\end{array}
-%\overset{\times}{\phi} (i) 
-%\begin{array}{cc}
-% <             &    \hat{\phi}_{b}(\frac{i-1}{2})  \\
-%\lessgtr    &\check{\phi}_{a} (\frac{i-1}{2}+1)  
-%\end{array}  & 
-%i \in \{ 2 \mathbb{N} +1 \}
-%\end{cases}
-%\end{align*}
-
+The sequence of a-b channel extrema depends on both the index $i$ and the region $\iota$ in the following way
 
 \begin{align*}
 \begin{array}{cc}
- \extremaTheta{b}(i-1) &\gtrless \\
- \extremaTheta{a}(i)     & < 
+  \extremaTheta{b}{i-\iota-1} & < \\
+  \extremaTheta{a} {i+\iota} & < 
 \end{array}
-& \overset{\times}{\phi} (i) 
+&\thetaX{i}
 \begin{array}{cc}
-\gtrless & \extremaTheta{a}(i+1)  \\
- <          & \extremaTheta{b}(i)  
+  < &  \extremaTheta{a}{i+\iota+1}  \\
+  < & \extremaTheta{b}{i-\iota}  
+\end{array} & \text{when} \quad 
+\begin{array}{lcl}
+i \in \{2 \mathbb{N}+1\}  & \land & \iota \in \{2 \mathbb{N}+1\} \  \lor \\ 
+i \in \{2 \mathbb{N}     \} &  \land & \iota \in \{2 \mathbb{N}    \} \\
+ \end{array}  \\
+\begin{array}{cc}
+  \extremaTheta{a}{i+\iota} & < \\
+  \extremaTheta{b} {i-\iota-1} & < 
+\end{array}
+&\thetaX{i}
+\begin{array}{cc}
+  < & \extremaTheta{b}{i-\iota}  \\
+  < & \extremaTheta{a}{i+\iota+1}  
 \end{array} & 
-i &\in \{ 2 \mathbb{N} \}  & \gtrless &= \hat{L}\left( \frac{i-1}{2} \right)   \\
-\begin{array}{cc}
- \extremaTheta{a}(i)  & <            \\
- \extremaTheta{b}(i-1)  & \gtrless  
-\end{array}
-& \overset{\times}{\phi} (i) 
-\begin{array}{cc}
- <             &  \extremaTheta{b}(i)  \\
-\gtrless    &  \extremaTheta{a} (i+1)  
-\end{array}  & 
-i &\in \{ 2 \mathbb{N} +1 \} 
+\text{when} \quad 
+\begin{array}{lcl}
+ (i\in \{2 \mathbb{N}+1\} & \land & \iota \in \{2 \mathbb{N}    \}) \ \lor \\
+ (i\in \{2 \mathbb{N}    \} & \land & \iota \in \{2 \mathbb{N}+1\})
+ \end{array} 
 \end{align*}
+
+%The other two ranges can swap direction around the central value  $\overline{m}$ in a region governed by $\Gamma$ which is the distance from $\overline{m}$ at which the order of the extrema switch between channels.
+%
+%\begin{gather*}
+%\overline{m}=\frac{1}{2} \left(2^{n-3}-1\right) \qquad
+%\varGamma(n)=\frac{1}{2} \sqrt{2^{2 (n-3)}-14\ 2^{n-3}+1} \\
+%\hat{L}(m)=\begin{cases}
+%< & \quad    m <   \bar{m} -\Gamma \vee m > \bar{m} + \Gamma   \\
+%> & \quad  \bar{m} - \Gamma \leq m \leq \bar{m} + \Gamma \\
+%\end{cases} \\
+%\end{gather*}
+%defining a relational operator which depends on $\hat{L}(m)$ 
+%\begin{align}
+%\gtrless &= \hat{L}(\scriptsize{m-\frac{1}{2}}) & \lessgtr &= \hat{L}(\scriptsize{m})  
+%\end{align}
+%allows the bounds for the points of intersection to be concisely written
+%%\begin{alignat*}{5}
+%% \hat{\phi}_{b}(m-1) && \gtrless  && \thetaX{}(2m)       &&\gtrless  &&     \hat{\phi}_{a}(m)  \\
+%% \check{\phi}_{b}(m)  && \lessgtr                   && \thetaX{}(2m+1)  && \lessgtr                  &&\check{\phi}_{a} (m+1) 
+%%\end{alignat*}
+%
+%
+%
+%
+%\begin{align}
+%\begin{array}{cc}
+% \hat{\phi}_{b}(m-1) &\gtrless \\
+%  \check{\phi}_{a} (m) & < 
+%\end{array}
+%\thetaX{2m}
+%\begin{array}{cc}
+%\gtrless &     \hat{\phi}_{a}(m)  \\
+%  < & \check{\phi}_{b}(m)  
+%\end{array} \quad
+%& \quad
+%\begin{array}{cc}
+%      \hat{\phi}_{a}(m)  & <            \\
+% \check{\phi}_{b}(m)  & \lessgtr   
+%\end{array}
+%\thetaX{2m+1}
+%\begin{array}{cc}
+% <             &    \hat{\phi}_{b}(m)  \\
+%\lessgtr    &\check{\phi}_{a} (m+1)  
+%\end{array} 
+%\end{align}
+%
+%Adjusting for the intersection index $i$ allows us to see that the intersection points are best classified by being either odd or even values of $i$
+%%
+%%\begin{align}
+%%\begin{array}{cc}
+%% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
+%%  \check{\phi}_{a} (\frac{i}{2}) & < 
+%%\end{array}
+%%\thetaX{i} 
+%%\begin{array}{cc}
+%%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
+%%  < & \check{\phi}_{b}(\frac{i}{2})  
+%%\end{array} \quad
+%%& \quad
+%%\begin{array}{cc}
+%%      \hat{\phi}_{a}(\frac{i}{2})  & <            \\
+%% \check{\phi}_{b}(\frac{i}{2})  & \lessgtr   
+%%\end{array}
+%%\thetaX{i+1}
+%%\begin{array}{cc}
+%% <             &    \hat{\phi}_{b}(\frac{i}{2})  \\
+%%\lessgtr    &\check{\phi}_{a} (\frac{i}{2}+1)  
+%%\end{array} 
+%%\end{align}
+%%
+%%\begin{align}
+%%\begin{array}{cc}
+%% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
+%%  \check{\phi}_{a} (\frac{i}{2}) & < 
+%%\end{array}
+%%\thetaX{i} 
+%%\begin{array}{cc}
+%%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
+%%  < & \check{\phi}_{b}(\frac{i}{2})  
+%%\end{array} \quad
+%%& \quad
+%%\begin{array}{cc}
+%%      \hat{\phi}_{a}(\frac{i-1}{2})  & <            \\
+%% \check{\phi}_{b}(\frac{i-1}{2})  & \lessgtr   
+%%\end{array}
+%%\thetaX{i} 
+%%\begin{array}{cc}
+%% <             &    \hat{\phi}_{b}(\frac{i-1}{2})  \\
+%%\lessgtr    &\check{\phi}_{a} (\frac{i-1}{2}+1)  
+%%\end{array} 
+%%\end{align}
+%%
+%%\begin{align*}
+%%\thetaX{i}  \in & \begin{cases}
+%%\begin{array}{cc}
+%% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
+%%  \check{\phi}_{a} (\frac{i}{2}) & < 
+%%\end{array}
+%%\thetaX{i} 
+%%\begin{array}{cc}
+%%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
+%%  < & \check{\phi}_{b}(\frac{i}{2})  
+%%\end{array} & 
+%%i \in \{ 2 \mathbb{N} \} \\
+%%\begin{array}{cc}
+%%      \hat{\phi}_{a}(\frac{i-1}{2})  & <            \\
+%% \check{\phi}_{b}(\frac{i-1}{2})  & \lessgtr   
+%%\end{array}
+%%\thetaX{i} 
+%%\begin{array}{cc}
+%% <             &    \hat{\phi}_{b}(\frac{i-1}{2})  \\
+%%\lessgtr    &\check{\phi}_{a} (\frac{i-1}{2}+1)  
+%%\end{array}  & 
+%%i \in \{ 2 \mathbb{N} +1 \}
+%%\end{cases}
+%%\end{align*}
+%
+%
+%\begin{align*}
+%\begin{array}{cc}
+% \extremaTheta{b}(i-1) &\gtrless \\
+% \extremaTheta{a}(i)     & < 
+%\end{array}
+%& \thetaX{i}
+%\begin{array}{cc}
+%\gtrless & \extremaTheta{a}(i+1)  \\
+% <          & \extremaTheta{b}(i)  
+%\end{array} & 
+%i &\in \{ 2 \mathbb{N} \}  & \gtrless &= \hat{L}\left( \frac{i-1}{2} \right)   \\
+%\begin{array}{cc}
+% \extremaTheta{a}(i)  & <            \\
+% \extremaTheta{b}(i-1)  & \gtrless  
+%\end{array}
+%& \thetaX{i} 
+%\begin{array}{cc}
+% <             &  \extremaTheta{b}(i)  \\
+%\gtrless    &  \extremaTheta{a} (i+1)  
+%\end{array}  & 
+%i &\in \{ 2 \mathbb{N} +1 \} 
+%\end{align*}
 
 We want to classify the points of intersection as greater or lesser than a tolerance $0 < \tau \le 1$. In order to do this we make a linear approximation to the perturbation between the extrema. There is one point of intersection between each of the maxima and corresponding minima. A bit of geometry allows us to write a classification criteria for each of the points of intersection.
 
+Defining a function for the degree of error at the point of intersection using the linear approximation from the four extrema surrounding the point and generalising to allow for different maximum errors $\alpha$ for channel $a$ and $\beta$ for channel b
 \begin{align*}
-T ( \tau , m )  = & \begin{cases}
-\tau\ge\frac{ \extremaTheta{b}(i) -  \extremaTheta{a}(i) }{\| \extremaTheta{b}(i-1)- \extremaTheta{a}(i+1)  \| +\extremaTheta{b}(i) -  \extremaTheta{a}(i)  } & 
-i \in \{ 2 \mathbb{N} \} \\
-\tau\ge\frac{\| \extremaTheta{b}(i-1) - \extremaTheta{a}(i+1) \| }{ \| \extremaTheta{b}(i-1) - \extremaTheta{a}(i+1) \| + \extremaTheta{b}(i) - \extremaTheta{a}(i) } & 
-i \in \{ 2 \mathbb{N} +1 \}
-\end{cases}
+h(i,\iota) & =
+\frac{\alpha  \beta  (\extremaTheta{a} {i+\iota }-\extremaTheta{b} {i-\iota })}
+{\beta  (\extremaTheta{a} {i+\iota } - \extremaTheta{a} {i+\iota +1} ) + \alpha  (\extremaTheta{b} {i-\iota -1} - \extremaTheta{b} {i-\iota } ) }  & \text{when} \quad 
+\begin{array}{lcl}
+i \in \{2 \mathbb{N}+1\}  & \land & \iota \in \{2 \mathbb{N}+1\} \  \lor \\ 
+i \in \{2 \mathbb{N}     \} &  \land & \iota \in \{2 \mathbb{N}    \} \\
+ \end{array}  \\
+h(i,\iota) & =
+\frac{\alpha  \beta  (\extremaTheta{b} {i-\iota -1}-\extremaTheta{a} {i+\iota +1})}
+{\beta  ( \extremaTheta{a} { i+\iota } -\extremaTheta{a} { i+\iota + 1 } ) +\alpha  ( \extremaTheta{b} {i-\iota -1} -\extremaTheta{b} {i-\iota } ) }  & \text{when} \quad 
+\begin{array}{lcl}
+i \in \{2 \mathbb{N}   \}  & \land & \iota \in \{2 \mathbb{N} + 1\} \  \lor \\ 
+i \in \{2 \mathbb{N}  +1 \} &  \land & \iota \in \{2 \mathbb{N}    \} \\
+ \end{array}  
 \end{align*}
 
-\begin{align*}
-T ( \tau , m )  = & \begin{cases}
-\tau\ge\frac{\check{\phi}_{a}(m)  - \check{\phi}_{b}(m) }{\| \hat{\phi}_{b}(m-1) - \hat{\phi}_{a}(m) \| +\check{\phi}_{a}(m)  - \check{\phi}_{b}(m) } & 
-m \in \{ 2 \mathbb{N} \} \\
-\tau\ge\frac{\| \check{\phi}_{b}(m)  - \check{\phi}_{a} (m+1) \| }{ \hat{\phi}_{a}(m)  - \hat{\phi}_{b}(m)+\| \check{\phi}_{b}(m)  - \check{\phi}_{a} (m+1) \| } & 
-m \in \{ 2 \mathbb{N} +1 \}
-\end{cases}
-\end{align*}
+allows the criteria for a channel to be written as $\tau \ge h(i,\iota)$. 
 
 \parpic(79mm,104mm)[r]{\fbox{\parbox{76mm}{
 \includegraphics[width=76mm]{Chapter2/Figs/GeometryClassifyPoint.jpg}  \\
@@ -1412,107 +1527,107 @@ m \in \{ 2 \mathbb{N} +1 \}
 }}
 }
 
-The criteria for $\tau \le \text{\textonehalf}$ selects from either the odd values or the even values of m because if $T(\tau,m)$ is true then $T(\tau,m+1)$ is false and vice versa. There are $2^{n-2}$ points of intersection and $2^{n-3}$ which satisfy the criteria $\tau = \frac{1}{2}$. The algorithm as implemented in openCV leaves the decision about the criteria up to the programmer. The programmer chooses a value for $\theta$ and selects a value for $\tau$. The algorithm returns the nearest value of $\theta$ which satisfies the condition defined by $\tau$. The programmer then decides whether the suggested value for $\theta$ is acceptable and either adopts the suggested value or chooses a value as close as possible and accepts the possibility of errors.
+The criteria $\tau =\text{\textonehalf}$ with $\alpha=\beta$ selects from either the odd values or the even values of i because if $h(i,n)<\text{\textonehalf}$ is true then $h(i+1,n)<\text{\textonehalf}$  is false and vice versa. There are $2^{n-2}$ points of intersection and $2^{n-3}$ which satisfy the criteria $\tau = \frac{1}{2}$. The algorithm as implemented in openCV leaves the decision about the criteria up to the programmer. The programmer chooses a value for $\theta$ and selects a value for $\tau$. The algorithm returns the nearest value of $\theta$ which satisfies the condition defined by $\tau$. The programmer then decides whether the suggested value for $\theta$ is acceptable and either adopts the suggested value or chooses a value as close as possible and accepts the possibility of errors.
 
 For example in this project $n$ is 8 so $\intR \in \{ -2^{8-2} \cdots 2^{8-2} \}$ which gives $2^{8-3}-1$ values in each $\frac{\pi}{6}$ region which produce a maximum perturbation of less than \textonehalf. In total there are $12 (2^{8-3}-1) = 372$ possible values for $\theta$ which produces a maximum perturbation of less than \textonehalf. This would allow the destination pixel values to be expressed in 8 bit numbers without error using a transformation matrix expressed in 6 bit signed integers. The statistics performed to determine $\theta$ are not demanding enough to justify rejecting a suggested value of theta within 1\textdegree of the requested value. It is however important to know the value actually used in the algorithm which is why the mechanism for adjusting $\theta$ is separate from the color-space algorithm and is under the control of the programmer. For instance in the implementation below the suggested value is accepted and used to adjust the statistical model keeping all the values in correct correspondence.
 
-\hrule
-
-this is junk which needs to be put in line with the succeeding section.
-
-\begin{equation}
-\intR =
-\text{int}\left(
-\left(
-\begin{array}{c}
- 1 \\
- 2^{1-n_2} \; \tRange_2\\
- 2^{1-n_3} \; \tRange_3 \\
-\end{array}
-\right) 
-\bigotimes
-\left(
-\begin{array}{ccc}
- 1 & 1 & 1 \\
- -\sin \left(\theta +\Pii{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\Pii{6}\right) \\
- -\cos \left(\theta +\Pii{6}\right) & - \sin (\theta ) & \cos \left(\theta -\Pii{6}\right) \\
-\end{array}
-\right)
-\right)
-\end{equation}
-
-\begin{equation}
-\widehat{R}_{xyz}(\theta,\mu,\sigma) =
-\left(
-\begin{array}{c}
- \frac{\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\}}{\sqrt{3}}  \\
- \sqrt{\frac{2}{3}} \frac{\min\left\{\Delta(\mu_2,\sigma_2), 1 \right\} }{2^{1-n_2} \; \tRange_2} \\
- \sqrt{\frac{2}{3}} \frac{\min\left\{\Delta(\mu_3,\sigma_3), 1 \right\}}{2^{1-n_3} \; \tRange_3} \\
-\end{array}
-\right) 
-\bigotimes
-\intR 
-\end{equation}
-
-using $\tRange(\theta,\mu,\sigma) = \min\left\{\Delta(\mu,\sigma), 1 \right\} \srcRange \mathbf{L}(\theta) $
-\begin{equation}
-\widehat{R}_{xyz}(\theta,\mu,\sigma) =
-\left(
-\begin{array}{c}
- \frac{\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\}}{\sqrt{3}}  \\
- \sqrt{\frac{2}{3}} \frac{1}{2^{1-n_2} \; \srcRange \text{L}_2(\theta)} \\
- \sqrt{\frac{2}{3}} \frac{1}{2^{1-n_3} \; \srcRange \text{L}_3(\theta)} \\
-\end{array}
-\right) 
-\bigotimes
-\intR 
-\end{equation}
-
-\begin{equation}
-\widehat{R}_{xyz}(\theta,\mu,\sigma) =
-\left(
-\begin{array}{c}
-\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\} \\
-\min\left\{\Delta(\mu_2,\sigma_2), 1 \right\}  \\
-\min\left\{\Delta(\mu_3,\sigma_3), 1 \right\}  \\
-\end{array}
-\right)
-\bigotimes
-\left(
-\begin{array}{c}
- \frac{1}{\sqrt{3}} \\
- \sqrt{\frac{2}{3}}  \\
- \sqrt{\frac{2}{3}} \\
-\end{array}
-\right) \bigotimes
-\left(
-\begin{array}{c}
- 1 \\
- \frac{1}{2^{1-n_2} \; \tRange_2} \\
- \frac{1}{2^{1-n_3} \; \tRange_3} \\
-\end{array}
-\right) 
-\bigotimes
-\text{int}\left(
-\left(
-\begin{array}{c}
- 1 \\
- 2^{1-n_2} \; \tRange_2\\
- 2^{1-n_3} \; \tRange_3 \\
-\end{array}
-\right) 
-\bigotimes
-\left(
-\begin{array}{ccc}
- 1 & 1 & 1 \\
- -\sin \left(\theta +\Pii{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\Pii{6}\right) \\
- -\cos \left(\theta +\Pii{6}\right) & - \sin (\theta ) & \cos \left(\theta -\Pii{6}\right) \\
-\end{array}
-\right)
-\right)
-\end{equation}
-
-All that remains is to determine if the statistics allow for a reduced representation of the rotation. An equtaion for the boundary of the one to one fidelity region must be found in the source color space and then checked against the conditions given above \ref{eq:errorFreeConditions}. 
+%\hrule
+%
+%this is junk which needs to be put in line with the succeeding section.
+%
+%\begin{equation}
+%\intR =
+%\text{int}\left(
+%\left(
+%\begin{array}{c}
+% 1 \\
+% 2^{1-n_2} \; \tRange_2\\
+% 2^{1-n_3} \; \tRange_3 \\
+%\end{array}
+%\right) 
+%\bigotimes
+%\left(
+%\begin{array}{ccc}
+% 1 & 1 & 1 \\
+% -\sin \left(\theta +\Pii{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\Pii{6}\right) \\
+% -\cos \left(\theta +\Pii{6}\right) & - \sin (\theta ) & \cos \left(\theta -\Pii{6}\right) \\
+%\end{array}
+%\right)
+%\right)
+%\end{equation}
+%
+%\begin{equation}
+%\widehat{R}_{xyz}(\theta,\mu,\sigma) =
+%\left(
+%\begin{array}{c}
+% \frac{\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\}}{\sqrt{3}}  \\
+% \sqrt{\frac{2}{3}} \frac{\min\left\{\Delta(\mu_2,\sigma_2), 1 \right\} }{2^{1-n_2} \; \tRange_2} \\
+% \sqrt{\frac{2}{3}} \frac{\min\left\{\Delta(\mu_3,\sigma_3), 1 \right\}}{2^{1-n_3} \; \tRange_3} \\
+%\end{array}
+%\right) 
+%\bigotimes
+%\intR 
+%\end{equation}
+%
+%using $\tRange(\theta,\mu,\sigma) = \min\left\{\Delta(\mu,\sigma), 1 \right\} \srcRange \mathbf{L}(\theta) $
+%\begin{equation}
+%\widehat{R}_{xyz}(\theta,\mu,\sigma) =
+%\left(
+%\begin{array}{c}
+% \frac{\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\}}{\sqrt{3}}  \\
+% \sqrt{\frac{2}{3}} \frac{1}{2^{1-n_2} \; \srcRange \text{L}_2(\theta)} \\
+% \sqrt{\frac{2}{3}} \frac{1}{2^{1-n_3} \; \srcRange \text{L}_3(\theta)} \\
+%\end{array}
+%\right) 
+%\bigotimes
+%\intR 
+%\end{equation}
+%
+%\begin{equation}
+%\widehat{R}_{xyz}(\theta,\mu,\sigma) =
+%\left(
+%\begin{array}{c}
+%\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\} \\
+%\min\left\{\Delta(\mu_2,\sigma_2), 1 \right\}  \\
+%\min\left\{\Delta(\mu_3,\sigma_3), 1 \right\}  \\
+%\end{array}
+%\right)
+%\bigotimes
+%\left(
+%\begin{array}{c}
+% \frac{1}{\sqrt{3}} \\
+% \sqrt{\frac{2}{3}}  \\
+% \sqrt{\frac{2}{3}} \\
+%\end{array}
+%\right) \bigotimes
+%\left(
+%\begin{array}{c}
+% 1 \\
+% \frac{1}{2^{1-n_2} \; \tRange_2} \\
+% \frac{1}{2^{1-n_3} \; \tRange_3} \\
+%\end{array}
+%\right) 
+%\bigotimes
+%\text{int}\left(
+%\left(
+%\begin{array}{c}
+% 1 \\
+% 2^{1-n_2} \; \tRange_2\\
+% 2^{1-n_3} \; \tRange_3 \\
+%\end{array}
+%\right) 
+%\bigotimes
+%\left(
+%\begin{array}{ccc}
+% 1 & 1 & 1 \\
+% -\sin \left(\theta +\Pii{6}\right) &  \cos (\theta ) &  \sin \left(\theta -\Pii{6}\right) \\
+% -\cos \left(\theta +\Pii{6}\right) & - \sin (\theta ) & \cos \left(\theta -\Pii{6}\right) \\
+%\end{array}
+%\right)
+%\right)
+%\end{equation}
+%
+%All that remains is to determine if the statistics allow for a reduced representation of the rotation. An equtaion for the boundary of the one to one fidelity region must be found in the source color space and then checked against the conditions given above \ref{eq:errorFreeConditions}. 
 
 \section{Preservation of Color Information}\label{sec:PreservationOfColorInformation}
 
