@@ -712,6 +712,26 @@ numDisk[{{x_,y_},{indxA_,indxB_},{occA_,occB_}}]:={Orange,Disk[{x,y},Scaled[{0.0
 numDisk[{{x_,y_},num_}]:={Orange,Disk[{x,y},Scaled[{0.02, 0.02}]],Blue,Text[num,{x,y}]}
 
 
+Clear[LabeldRectangle]
+LabeldRectangle[x_List,y_List,text_,pos:{_,_}:{0,0},margin_:0.9,color_:Blue]:=Module[{},
+center={Plus@@x/2,Plus@@y/2};
+shift={margin (x[[2]]-x[[1]])/2,margin (y[[2]]-y[[1]])/2};
+txtPos=center+pos shift;
+{color,Rectangle[{x[[1]],y[[1]]},{x[[2]],y[[2]]}],Opacity[1],Darker[color,0.8],Text[text,txtPos,pos]}
+]
+
+
+CheckerBoardFromList[x_,y_,color_:Null,text_:Null,pos:{_,_}:{0,0},margin_:0.9]:=Module[{clr,txt,txtPos},
+If[TrueQ[color==Null],clr=Table[ColorData[1][i j],{i,1,Length[x]-1,1},{j,1,Length[y]-1,1}],clr=color];
+If[TrueQ[text==Null],
+If[Length[y]>2&&Length[x]>2,
+txt=Table[{i,j},{i,1,Length[x]-1,1},{j,1,Length[y]-1,1}],
+txt=Table[i j,{i,1,Length[x]-1,1},{j,1,Length[y]-1,1}]],
+txt=text];
+Table[LabeldRectangle[{x[[i]],x[[i+1]]},{y[[j]],y[[j+1]]},txt[[i,j]],pos,margin,clr[[i,j]]],{i,1,Length[x]-1,1},{j,1,Length[y]-1,1}]
+]
+
+
 plotRegionsFromList[t_,color_:Blue,opacity_:0.6,text_:Null,yRange_:{0,2},opts:OptionsPattern[]]:=Module[{r,txt,txtPos},
 txtPos=0.9 (yRange[[2]]-yRange[[1]])+ yRange[[1]];
 If[TrueQ[text==Null],txt=Table[i,{i,1,Length[t]}],txt=text];
