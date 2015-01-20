@@ -321,7 +321,16 @@ nYABPolygon= Function[{\[Theta]},Evaluate[Transpose[{Take[RGBCube[nYAB][\[Theta]
 fracTicks[n_]:=List[Sequence@@Table[{N[-2^(-i)],-2^(-i)},{i,0,n}],Sequence@@Table[{N[2^(-i)],2^(-i)},{i,0,n}]]
 
 
-PiTicks[min_,max_,n_:6]:=Block[{d},(d=(max-min)/n;Table[{N[i d]+min,i d+min},{i,0,n}])]
+FracTicks[min_,max_,n_:6,minMax:_:{0.01,0},color_:Black]:=Module[{m},
+m=Max[Ceiling[Log2[max]],Ceiling[Log2[-min]]];
+List[Sequence@@Table[{N[-2^(-i)],-2^(-i),minMax,color},{i,-m,n}],Sequence@@Table[{N[2^(-i)],2^(-i),minMax,color},{i,-m,n}]]
+]
+
+
+Clear[PiTicks]
+PiTicks[min_,max_,n_:6,minMax:_:{0.01,0},color_:Black]:=Block[{s},
+s= Floor[n Pi/(max-min)];
+Table[{N[i Pi/s],(i "\[Pi]")/s, minMax, color},{i,Floor[s min/Pi],Ceiling[s max/Pi]}]]
 
 
 ApplyToPiecewise[func_,pwFunc_]:=Module[{posPi,pos},
@@ -713,7 +722,7 @@ numDisk[{{x_,y_},num_}]:={Orange,Disk[{x,y},Scaled[{0.02, 0.02}]],Blue,Text[num,
 
 
 Clear[LabeldRectangle]
-LabeldRectangle[x_List,y_List,text_,pos:{_,_}:{0,0},margin_:0.9,color_:Blue]:=Module[{},
+LabeldRectangle[x_List,y_List,text_,pos:{_,_}:{0,0},margin_:0.9,color_:Blue]:=Module[{center,shift,txtPos},
 center={Plus@@x/2,Plus@@y/2};
 shift={margin (x[[2]]-x[[1]])/2,margin (y[[2]]-y[[1]])/2};
 txtPos=center+pos shift;
