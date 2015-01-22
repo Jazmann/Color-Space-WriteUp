@@ -1190,8 +1190,10 @@ The maxima can be found by recognising that the maximum rounding error is a half
 We are interested in a compromise between the perturbations to each channel which is where the perturbations intersect. It would be useful to be able to assign a relative importance $\alpha$ and $\beta$ to each channel a and b respectively. 
 \begin{gather*}
 \beta \; \dqRe[\phi] = \alpha \; \dqRe[\frac{\pi}{6} -\phi]  \quad \textbf{when} \\
-\beta \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \alpha \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\frac{\pi}{6} - \phi ) \right] 
+\begin{split}
+\beta \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \alpha \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\frac{\pi}{6} - \phi ) \right] \\
 =   2^{n-3} \left(\sqrt{3} \alpha  \tan (\theta ) + 2 \beta  \sin (\theta ) \sec \left(\frac{\pi }{6}-\theta \right)\right)
+\end{split}
 \end{gather*}
 
 The values $\alpha$ and $\beta$ can only move the point of intersection within the bounds of the extrema. Therefore any solution for the point of intersection will enable the bounding extrema to be identified. 
