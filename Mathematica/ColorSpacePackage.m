@@ -321,6 +321,13 @@ nYABPolygon= Function[{\[Theta]},Evaluate[Transpose[{Take[RGBCube[nYAB][\[Theta]
 fracTicks[n_]:=List[Sequence@@Table[{N[-2^(-i)],-2^(-i)},{i,0,n}],Sequence@@Table[{N[2^(-i)],2^(-i)},{i,0,n}]]
 
 
+MixTicks[ticks_,specialTicks_,margin_:6]:=Module[{posFun,pos},
+posFun=Function[{x},Evaluate[Or@@Map[(#1-margin<x<#1+margin)&,specialTicks[[All,1]]]]];
+pos=Position[ticks[[All,1]],_?posFun];
+{Sequence@@Delete[ticks,pos],Sequence@@specialTicks}
+]
+
+
 FracTicks[min_,max_,n_:6,minMax:_:{0.01,0},color_:Black]:=Module[{m},
 m=Max[Ceiling[Log2[max]],Ceiling[Log2[-min]]];
 List[Sequence@@Table[{N[-2^(-i)],-2^(-i),minMax,color},{i,-m,n}],Sequence@@Table[{N[2^(-i)],2^(-i),minMax,color},{i,-m,n}]]
@@ -331,6 +338,12 @@ Clear[PiTicks]
 PiTicks[min_,max_,n_:6,minMax:_:{0.01,0},color_:Black]:=Block[{s},
 s= Floor[n Pi/(max-min)];
 Table[{N[i Pi/s],(i "\[Pi]")/s, minMax, color},{i,Floor[s min/Pi],Ceiling[s max/Pi]}]]
+
+
+BinaryTicks[min_,max_,m_:3]:=Module[{n,nn,mm},
+mm=Ceiling[Log2[max-min]]-m;
+Table[{i 2^(mm),i 2^(mm)},{i,Floor[min/2^(mm)],Ceiling[max/2^(mm)]}]
+]
 
 
 ApplyToPiecewise[func_,pwFunc_]:=Module[{posPi,pos},
@@ -578,16 +591,21 @@ Evaluate[List[minIn,vars,maxIn][[Span@@pos]]] = N[range]
 ]
 
 
-Clear[LablePoint]
-LablePoint[x_,fun_,txt_:"",color_:Green,align_:{0,0}]:=Block[{pnt,text},pnt=Round[N[{x,fun[x]}]];If[TrueQ[txt==""],text=StringJoin[ToString[pnt[[1]]],"  ",ToString[pnt[[2]]]],text=txt];{color,Opacity[0.6],Disk[pnt,12],Black,Opacity[1],Text[text,pnt,align]}];
+Clear[ LabelPoint];
+LabelPoint[x_,fun_,txt_:"",color_:Green,align_:{0,0},size_:12]:=Block[{pnt,text},
+pnt=Round[N[{x,fun[x]}]];
+If[TrueQ[txt==""],
+  text=StringJoin[ToString[pnt[[1]]],"  ",ToString[pnt[[2]]]],
+  text=txt];
+{color,Opacity[0.6],Disk[pnt,size],Black,Opacity[1],Text[text,pnt,align]}];
 
-Clear[LablePointGrad]
-LablePointGrad[x_,fun_,txt_:"",color_:Green,align_:{0,0},len_:40]:=Block[{pnt,text},
+Clear[ LabelPointGrad];
+ LabelPointGrad[x_,fun_,txt_:"",color_:Green,align_:{0,0},len_:40,size_:12]:=Block[{pnt,text},
 pnt=Round[N[{x,fun[x]}]];
 m=Function[{xx},Evaluate[D[fun[xx],xx]]];
 line=Function[{xx},Evaluate[{xx,m[x]*(xx-pnt[[1]]) + pnt[[2]]} ]];
 If[TrueQ[txt==""],text=StringJoin[ToString[pnt[[1]]],"  ",ToString[pnt[[2]]]],text=txt];{color,Opacity[0.6],
-Disk[pnt,12],Disk[line[x+len],6],Disk[line[x-len],6],
+Disk[pnt,size],Disk[line[x+len],size/2],Disk[line[x-len], size/2],
 Thick,Line[{line[x-len],line[x+len]}],
 Black,Opacity[1],
 Text[text,pnt,align,line[x+len]-line[x-len]],Text[ToString[NumberForm[N[m[x]],3]],line[x+len],{0,0},line[x+len]-line[x-len]],
@@ -722,22 +740,22 @@ numDisk[{{x_,y_},num_}]:={Orange,Disk[{x,y},Scaled[{0.02, 0.02}]],Blue,Text[num,
 
 
 Clear[LabeldRectangle]
-LabeldRectangle[x_List,y_List,text_,pos:{_,_}:{0,0},margin_:0.9,color_:Blue]:=Module[{center,shift,txtPos},
+LabeldRectangle[x_List,y_List,expr_, offset:{_,_}:{0,0}, dir:{_,_}:{1,0}, margin_:0.9,color_:Blue]:=Module[{center,shift,txtPos},
 center={Plus@@x/2,Plus@@y/2};
 shift={margin (x[[2]]-x[[1]])/2,margin (y[[2]]-y[[1]])/2};
-txtPos=center+pos shift;
-{color,Rectangle[{x[[1]],y[[1]]},{x[[2]],y[[2]]}],Opacity[1],Darker[color,0.8],Text[text,txtPos,pos]}
+txtPos=center+  offset shift;
+{color,Rectangle[{x[[1]],y[[1]]},{x[[2]],y[[2]]}],Opacity[1],Darker[color,0.8],Text[ expr, txtPos, offset, dir]}
 ]
 
 
-CheckerBoardFromList[x_,y_,color_:Null,text_:Null,pos:{_,_}:{0,0},margin_:0.9]:=Module[{clr,txt,txtPos},
+CheckerBoardFromList[x_,y_,color_:Null,text_:Null, offset:{_,_}:{0,0}, dir:{_,_}:{1,0}, margin_:0.9]:=Module[{clr,txt,txtPos},
 If[TrueQ[color==Null],clr=Table[ColorData[1][i j],{i,1,Length[x]-1,1},{j,1,Length[y]-1,1}],clr=color];
 If[TrueQ[text==Null],
 If[Length[y]>2&&Length[x]>2,
 txt=Table[{i,j},{i,1,Length[x]-1,1},{j,1,Length[y]-1,1}],
 txt=Table[i j,{i,1,Length[x]-1,1},{j,1,Length[y]-1,1}]],
 txt=text];
-Table[LabeldRectangle[{x[[i]],x[[i+1]]},{y[[j]],y[[j+1]]},txt[[i,j]],pos,margin,clr[[i,j]]],{i,1,Length[x]-1,1},{j,1,Length[y]-1,1}]
+Table[LabeldRectangle[{x[[i]],x[[i+1]]}, {y[[j]],y[[j+1]]}, txt[[i,j]], offset, dir, margin, clr[[i,j]]],{i,1,Length[x]-1,1},{j,1,Length[y]-1,1}]
 ]
 
 
