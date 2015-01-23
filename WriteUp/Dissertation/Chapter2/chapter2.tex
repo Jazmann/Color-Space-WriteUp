@@ -1827,62 +1827,7 @@ x - \eKeep_1 + \text{dis}(\eKeep_1) & \eKeep_1 \le x \le \eKeep_2  \\
 \end{cases}
 \end{equation}
 
-All three distribution techniques described earlier  
-
-\begin{equation}
-\begin{aligned}
-\Sigma^- &= \text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right) &
- \Sigma^+ &= \text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right) &
-  \text{dL} &= \frac{1}{\yRange} &
-  \kappa &= \frac{\yRange}{\tRange} 
-\end{aligned}
-\end{equation}
-
-
-\begin{equation}\label{eq:PreservedRegionGen}
-\begin{aligned}
-w(\mu,\sigma) &=  \sigma  \sqrt{ \log \left(\frac{2}{\pi } -2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right) - 2 \log \left(\kappa\right) \right)}\\
-\end{aligned}
-\end{equation}
-
-\begin{equation}\label{eq:PreservedRegionGen}
-\begin{aligned}
-\keep_1(\mu,\sigma) &=                                    \mu - w(\mu,\sigma) &            \keep_2(\mu,\sigma) &=                                   \mu + w(\mu,\sigma) \\
-\Keep_1(\mu,\sigma) &= \tMin + \tRange\left( \mu - w(\mu,\sigma) \right) & \Keep_2(\mu,\sigma) &= \tMin + \tRange \left(\mu +\mu - w(\mu,\sigma)\right)
-\end{aligned}
-\end{equation}
-
-\begin{equation}\label{eq:PreservedRegionGen}
-\begin{aligned}
-\keep_1(\mu,\sigma) &= \mu - \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right) - 2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\\
-\keep_2(\mu,\sigma) &=  \mu + \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right)-2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}
-\end{aligned}
-\end{equation}
-
-\begin{equation}\label{eq:PreservedRegionGen}
-\begin{aligned}
-\Keep_1(\mu,\sigma) &= \tMin + \tRange\left( \mu - \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right) - 2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\right) \\
-\Keep_2(\mu,\sigma) &= \tMin + \tRange \left(\mu + \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right)-2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\right)
-\end{aligned}
-\end{equation}
-
-
-\begin{equation}\label{eq:PreservedRegionGen}
-\begin{aligned}
-\discard_1(\mu,\sigma) &= \sigma \sqrt{2} \text{erf}^{-1}\left((\text{dL}-1) \Sigma^+-\text{dL} \; \Sigma^-\right)+\mu  &            
-\discard_2(\mu,\sigma) &= \sigma \sqrt{2}  \text{erf}^{-1}\left((\text{dL}-1) \Sigma^- -\text{dL} \; \Sigma^+ \right)+\mu \\
-\Discard_1(\mu,\sigma) &= \tMin + \tRange \left( \discard_1(\mu,\sigma) \right) & 
-\Discard_2(\mu,\sigma) &= \tMin + \tRange \left( \discard_2(\mu,\sigma) \right)
-\end{aligned}
-\end{equation}
-
-\begin{equation}\label{eq:LowHighGen}
-\begin{aligned}
-\Discard_2(\mu,\sigma)  &=  \tMin + \tRange \left( \sigma \sqrt{2}  \text{erf}^{-1}\left((\text{dL}-1) \Sigma^- -\text{dL} \; \Sigma^+ \right)+\mu \right) \\
-\Discard_1(\mu,\sigma)  &=  \tMin + \tRange \left( \sigma \sqrt{2} \text{erf}^{-1}\left((\text{dL}-1) \Sigma^+-\text{dL} \; \Sigma^-\right)+\mu \right)
-\end{aligned}
-\end{equation}
-
+All three distribution techniques \ref{sec:Partition} \ref{sec:Linear} \ref{sec:ERF} described earlier are special cases of this distribution. When the distribution has a very large variance the piecewise distribution can be simplified as a linear distribution \ref{fig:useLinear}. When the distribution has a very small variance a partitioning is more appropriate \ref{fig:usePartitioning}. The most interesting distributions, however, are the ones which require the use of the piecewise distribution \ref{fig:usePiecewiseERF}. 
 
 \begin{figure}[h]
 \centering
