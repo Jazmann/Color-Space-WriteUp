@@ -1685,12 +1685,16 @@ The Gaussian distribution and the cumulative distribution are shown in Figure~\r
 
 First, we determine the maximum value taken in the domain. This is simply found by evaluating the function at $\xMax$. It should be noted that --- if the Gaussian distribution is well contained in the source domain --- the maximum value should be equal to the amplitude. For the sake of simplicity, we'll ignore the amplitude of the fitted Gaussian found previously as it is not relevant to the design of the redistribution function. So, to fix the range of the distribution function, we first scale to the range $0:1$ by simply dividing through by the maximum value, and then re-scale to the destination range $\yRange = \yMax - \yMin$ and shift by $\yMin$.
 
+
 \begin{equation}\label{eq:disFunction}
   dis(x) = \frac{(\yRange) \left(\text{erf}\left(\frac{x-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\xMin-\mu }{\sqrt{2} \sigma }\right)\right)}{\text{erf}\left(\frac{\xMax-\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\xMin-\mu }{\sqrt{2} \sigma }\right)}+\yMin
 \end{equation}
 
-Mathematically, this distribution function~(\ref{eq:disFunction}) achieves all the stated objectives. However, on a device we are dealing with discrete numerics and limited processing power, so further analysis is required. Where we're using a discrete domain and range, the distribution is usefully divided into three characteristic behaviours:  where it is constant, where it preserves all the information, and where it selectively preserves information. Looking at the distribution, this divides the source domain into five regions: two where it is effectively constant, two where it is selective, and one region around the mean where it preserves all the information. In order to design an efficient algorithm, it is useful to identify the boundaries of these five regions.
 
+\subsection{Efficiently implementing the distribution function}
+Mathematically, the ERF distribution function~(\ref{eq:disFunction}) achieves all the stated objectives. However, on a device we are dealing with discrete numerics and limited processing power, so further analysis is required. Where we're using a discrete domain and range, the distribution is usefully divided into three characteristic behaviours:  where it is constant, where it preserves all the information, and where it selectively preserves information. Looking at the distribution, this divides the source domain into five regions: two where it is effectively constant, two where it is selective, and one region around the mean where it preserves all the information. In order to design an efficient algorithm, it is useful to identify the boundaries of these five regions.
+
+\subsubsection{The region which discards all information}
 First, we need to identify where the distribution is effectively constant. This can be found by solving the following equation in the region and domain $0 \le x \le 1$ and then generalized to the specific discrete numerics:
 
 \begin{equation}\label{eq:0to1}
@@ -1705,6 +1709,7 @@ The solution is found for the source domain in the range $0:1$ as:
  x = \sqrt{2} \sigma  \text{erf}^{-1}\left((\text{dL}-1) \text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right)-\text{dL} \; \text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right)\right)+\mu
 \end{equation}
 
+\subsubsection{The region which keeps all information}
 To find the region where all the information in the source domain is preserved, we differentiate the distribution and solve for where the gradient is equal to the destination range over the source range. This corresponds to the point at which a unit change in the source produces a unit change in the destination range:
 
 \begin{equation}\label{eq:Boundaries}
@@ -1717,8 +1722,57 @@ Rearranging for $x$, we find:
  x=\mu \pm \sigma  \sqrt{-2 \log \left(\sigma  \left(\text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right)-\text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right)\right)\right)+2 \log \left(\frac{\tRange}{\yRange}\right)+\log \left(\frac{2}{\pi }\right)}
 \end{equation}
 
-We now have equations which gives us the four points in the source domain which mark the boundaries of the five characteristic regions. The equations are valid in the unit source domain $0:1$. It is a simple matter to scale and shift these values to give the points in a more general source domain.
 
+\newcommand{\Keep}{\Omega}
+\newcommand{\keep}{\omega}
+\newcommand{\eKeep}{\Omega p}
+\newcommand{\ekeep}{\omega p}
+\newcommand{\Discard}{\Lambda}
+\newcommand{\discard}{\lambda}
+
+The boundaries of the region $\Keep_1 < x < \Keep_2$ for $x \in \{\tMin \cdots \tMax \}$ and $\keep_1 < x < \keep_2$ for $x \in \{0 \cdots 1 \}$ can be written using the following helpful constants of the distribution.
+
+\begin{equation}\label{eq:DistributionConstants}
+\begin{aligned}
+\Sigma^- &= \text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right) &
+ \Sigma^+ &= \text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right) &
+  \text{dL} &= \frac{1}{\yRange} &
+  \kappa &= \frac{\yRange}{\tRange} \\
+  w(\mu,\sigma) &=  \sigma  \sqrt{ \log \left(\frac{2}{\pi } -2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right) - 2 \log \left(\kappa\right) \right)}
+\end{aligned}
+\end{equation}
+
+\begin{equation}\label{eq:PreservedRegionGen}
+\begin{aligned}
+\keep_1(\mu,\sigma) &=                                    \mu - w(\mu,\sigma) &            \keep_2(\mu,\sigma) &=                                   \mu + w(\mu,\sigma) \\
+\Keep_1(\mu,\sigma) &= \tMin + \tRange\left( \mu - w(\mu,\sigma) \right) & \Keep_2(\mu,\sigma) &= \tMin + \tRange \left(\mu +\mu - w(\mu,\sigma)\right)
+\end{aligned}
+\end{equation}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{Chapter2/Figs/ExtensionToLinearRegion}
+\caption{The region which preserves all information extends beyond the analytic region due to the rounding involved in the discretisation. The shaded grid squares show the value actually taken by the discrete distribution. The cord is the tangent to the distribution curve shifted to the next discrete unit below the curve at $\Keep_2$. The point of intersection is the extended boundary at which the distribution begins to discard information.}
+\label{fig:ExtensionToLinearRegion}
+\end{figure}
+
+One refinement can be made to these values by recognising that the discrete distribution extends the effectively linear region past the analytic solution by rounding the values. This can be seen in \ref{fig:ExtensionToLinearRegion} where the shaded squares are the rounded values. The extended region boundary $\eKeep$ was found by numerically solving 
+
+\begin{equation}
+\left\lfloor\text{dis}\left(\Keep _2\right)\right\rfloor+\left(x-\Keep _2\right)=\text{dis}(x)
+\end{equation}
+
+In the C++ code, whilst numerical routines were used  MatLab and Mathematica to perform the analysis, the extended region boundary point was found by 'walking' along the distribution from the analytic point $\Keep_2$  until divergence from linear behaviour became apparent. This is regarded as a simpler solution not requiring the use of numerical library routines and proved to be a quick and elegant solution for the C++ implementation. The extended boundaries $\eKeep_1$ and $\eKeep_2$ are then defined by
+
+\begin{equation}
+\begin{aligned}
+\left\lceil\text{dis}\left(\Keep _1\right)\right\rceil-\Keep _1 & =\text{dis}\left(\eKeep _1\right)- \eKeep _1 &
+\left\lfloor\text{dis}\left(\Keep _2\right)\right\rfloor-\Keep _2 & =\text{dis}\left(\eKeep _2\right)- \eKeep _2 
+\end{aligned}
+\end{equation}
+
+\subsubsection{A piecewise approximation to the ERF distribution}
+We now have equations which gives us the four points in the source domain which mark the boundaries of the five characteristic regions. The equations are valid in the unit source domain $0:1$. It is a simple matter to scale and shift these values to give the points in a more general source domain.
 
 \begin{equation}
 \begin{aligned}
@@ -1729,17 +1783,48 @@ We now have equations which gives us the four points in the source domain which 
 \end{aligned}
 \end{equation}
 
+
 \begin{equation}\label{eq:PreservedRegionGen}
 \begin{aligned}
-\Lambda^-(\mu,\sigma) &= \tMin + \tRange\left( \mu - \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right) - 2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\right) \\
-\Lambda^+(\mu,\sigma) &= \tMin + \tRange \left(\mu + \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right)-2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\right)
+w(\mu,\sigma) &=  \sigma  \sqrt{ \log \left(\frac{2}{\pi } -2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right) - 2 \log \left(\kappa\right) \right)}\\
+\end{aligned}
+\end{equation}
+
+\begin{equation}\label{eq:PreservedRegionGen}
+\begin{aligned}
+\keep_1(\mu,\sigma) &=                                    \mu - w(\mu,\sigma) &            \keep_2(\mu,\sigma) &=                                   \mu + w(\mu,\sigma) \\
+\Keep_1(\mu,\sigma) &= \tMin + \tRange\left( \mu - w(\mu,\sigma) \right) & \Keep_2(\mu,\sigma) &= \tMin + \tRange \left(\mu +\mu - w(\mu,\sigma)\right)
+\end{aligned}
+\end{equation}
+
+\begin{equation}\label{eq:PreservedRegionGen}
+\begin{aligned}
+\keep_1(\mu,\sigma) &= \mu - \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right) - 2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\\
+\keep_2(\mu,\sigma) &=  \mu + \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right)-2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}
+\end{aligned}
+\end{equation}
+
+\begin{equation}\label{eq:PreservedRegionGen}
+\begin{aligned}
+\Keep_1(\mu,\sigma) &= \tMin + \tRange\left( \mu - \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right) - 2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\right) \\
+\Keep_2(\mu,\sigma) &= \tMin + \tRange \left(\mu + \sigma  \sqrt{-2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right)-2 \log \left(\kappa\right)+\log \left(\frac{2}{\pi }\right)}\right)
+\end{aligned}
+\end{equation}
+
+
+\begin{equation}\label{eq:PreservedRegionGen}
+\begin{aligned}
+\discard_1(\mu,\sigma) &= \sigma \sqrt{2} \text{erf}^{-1}\left((\text{dL}-1) \Sigma^+-\text{dL} \; \Sigma^-\right)+\mu  &            
+\discard_2(\mu,\sigma) &= \sigma \sqrt{2}  \text{erf}^{-1}\left((\text{dL}-1) \Sigma^- -\text{dL} \; \Sigma^+ \right)+\mu \\
+\Discard_1(\mu,\sigma) &= \tMin + \tRange \left( \discard_1(\mu,\sigma) \right) & 
+\Discard_2(\mu,\sigma) &= \tMin + \tRange \left( \discard_2(\mu,\sigma) \right)
 \end{aligned}
 \end{equation}
 
 \begin{equation}\label{eq:LowHighGen}
 \begin{aligned}
-\lambda^+(\mu,\sigma)  &=  \tMin + \tRange \left( \sigma \sqrt{2}  \text{erf}^{-1}\left((\text{dL}-1) \Sigma^- -\text{dL} \; \Sigma^+ \right)+\mu \right) \\
-\lambda^-(\mu,\sigma)  &=  \tMin + \tRange \left( \sigma \sqrt{2} \text{erf}^{-1}\left((\text{dL}-1) \Sigma^+-\text{dL} \; \Sigma^-\right)+\mu \right)
+\Discard_2(\mu,\sigma)  &=  \tMin + \tRange \left( \sigma \sqrt{2}  \text{erf}^{-1}\left((\text{dL}-1) \Sigma^- -\text{dL} \; \Sigma^+ \right)+\mu \right) \\
+\Discard_1(\mu,\sigma)  &=  \tMin + \tRange \left( \sigma \sqrt{2} \text{erf}^{-1}\left((\text{dL}-1) \Sigma^+-\text{dL} \; \Sigma^-\right)+\mu \right)
 \end{aligned}
 \end{equation}
 
@@ -1776,7 +1861,7 @@ There is one final value of interest to the development of the algorithm, which 
 
 The compression ratio is at most one-to-one, therefore $\kappa <=1$ and the gradient in the unit space must always be greater than 1 $ \kappa \le \Delta(\mu,\sigma) \le \delta(\mu,\sigma)$.
 
-The required fidelity in the source domain can be found using $ \Delta$ in the sense that the correspondence between one information step in the source must produce a step of $\Delta$ in the destination type. For the algorithm evaluating the maximum gradient $\Delta$ allows us to be sure that  $\Lambda$ --- the region on the x axis where all the information is to be preserved --- exists if $\Delta >1$ or tells us that the x axis can be shortened if  $\Delta < 1$. In the algorithm $\Delta$ is used to find an appropreate working data type for the rotated color space and to define the axis scaling for the rotation matrix.
+The required fidelity in the source domain can be found using $ \Delta$ in the sense that the correspondence between one information step in the source must produce a step of $\Delta$ in the destination type. For the algorithm evaluating the maximum gradient $\Delta$ allows us to be sure that  $\Keep$ --- the region on the x axis where all the information is to be preserved --- exists if $\Delta >1$ or tells us that the x axis can be shortened if  $\Delta < 1$. In the algorithm $\Delta$ is used to find an appropreate working data type for the rotated color space and to define the axis scaling for the rotation matrix.
 
 \section{The Skin Color Space Algorithm}
 
