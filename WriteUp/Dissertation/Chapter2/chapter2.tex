@@ -1694,7 +1694,22 @@ First, we determine the maximum value taken in the domain. This is simply found 
 \subsection{Efficiently implementing the distribution function}
 Mathematically, the ERF distribution function~(\ref{eq:disFunction}) achieves all the stated objectives. However, on a device we are dealing with discrete numerics and limited processing power, so further analysis is required. Where we're using a discrete domain and range, the distribution is usefully divided into three characteristic behaviours:  where it is constant, where it preserves all the information, and where it selectively preserves information. Looking at the distribution, this divides the source domain into five regions: two where it is effectively constant, two where it is selective, and one region around the mean where it preserves all the information. In order to design an efficient algorithm, it is useful to identify the boundaries of these five regions.
 
+\newcommand{\Keep}{\Omega}
+\newcommand{\keep}{\omega}
+\newcommand{\eKeep}{\Omega p}
+\newcommand{\ekeep}{\omega p}
+\newcommand{\Discard}{\Lambda}
+\newcommand{\discard}{\lambda}
+
 \subsubsection{The region which discards all information}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{Chapter2/Figs/EffectivlyConstantRange}
+\caption{The region which discards all information beyond $\Discard_2$ is shown above. The shaded grid squares show the value actually taken by the discrete distribution.}
+\label{fig:EffectivlyConstantRange}
+\end{figure}
+
+
 First, we need to identify where the distribution is effectively constant. This can be found by solving the following equation in the region and domain $0 \le x \le 1$ and then generalized to the specific discrete numerics:
 
 \begin{equation}\label{eq:0to1}
@@ -1707,6 +1722,25 @@ The solution is found for the source domain in the range $0:1$ as:
 
 \begin{equation}\label{eq:LowHigh}
  x = \sqrt{2} \sigma  \text{erf}^{-1}\left((\text{dL}-1) \text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right)-\text{dL} \; \text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right)\right)+\mu
+\end{equation}
+
+
+The boundaries of the regions $x < \Discard_1 $ and $ x > \Discard_2$ for $x \in \{\tMin \cdots \tMax \}$ or $x< \discard_1$  and $ x > \discard_2$ for $x \in \{0 \cdots 1 \}$ can be written using the following helpful constants of the distribution.
+
+\begin{align}\label{eq:DistributionConstants}
+\Sigma^- &= \text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right) &
+ \Sigma^+ &= \text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right) &
+  \text{dL} &= \frac{1}{\yRange} &
+  \kappa &= \frac{\yRange}{\tRange} 
+\end{align}
+
+\begin{equation}\label{eq:DiscardedRegionBounds}
+\begin{aligned}
+\discard_1 &= \sigma \sqrt{2} \; \text{erf}^{-1}\left((\text{dL}-1) \Sigma^+-\text{dL} \; \Sigma^-\right)+\mu  &            
+\discard_2 &= \sigma \sqrt{2} \; \text{erf}^{-1}\left((\text{dL}-1) \Sigma^- -\text{dL} \; \Sigma^+ \right)+\mu \\
+\Discard_1&= \tMin + \tRange \left( \discard_1(\mu,\sigma) \right) & 
+\Discard_2 &= \tMin + \tRange \left( \discard_2(\mu,\sigma) \right)
+\end{aligned}
 \end{equation}
 
 \subsubsection{The region which keeps all information}
@@ -1723,24 +1757,19 @@ Rearranging for $x$, we find:
 \end{equation}
 
 
-\newcommand{\Keep}{\Omega}
-\newcommand{\keep}{\omega}
-\newcommand{\eKeep}{\Omega p}
-\newcommand{\ekeep}{\omega p}
-\newcommand{\Discard}{\Lambda}
-\newcommand{\discard}{\lambda}
-
 The boundaries of the region $\Keep_1 < x < \Keep_2$ for $x \in \{\tMin \cdots \tMax \}$ and $\keep_1 < x < \keep_2$ for $x \in \{0 \cdots 1 \}$ can be written using the following helpful constants of the distribution.
 
-\begin{equation}\label{eq:DistributionConstants}
-\begin{aligned}
+\begin{align}\label{eq:DistributionConstants}
 \Sigma^- &= \text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right) &
  \Sigma^+ &= \text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right) &
-  \text{dL} &= \frac{1}{\yRange} &
-  \kappa &= \frac{\yRange}{\tRange} \\
-  w(\mu,\sigma) &=  \sigma  \sqrt{ \log \left(\frac{2}{\pi } -2 \log \left(\sigma  \left(\Sigma^+-\Sigma^-\right)\right) - 2 \log \left(\kappa\right) \right)}
-\end{aligned}
+  \kappa &= \frac{\yRange}{\tRange} 
+\end{align}
+
+\begin{equation}
+  w(\mu,\sigma)  =  \sigma  \sqrt{ \log \left(\frac{2}{\pi } \right) -2 \log \left(\kappa \sigma  \left(\Sigma^+-\Sigma^-\right)\right) }
 \end{equation}
+
+The equations are found in the unit source domain $0:1$. It is a simple matter to scale and shift these values to give the points in a more general source domain.
 
 \begin{equation}\label{eq:PreservedRegionGen}
 \begin{aligned}
@@ -1771,8 +1800,34 @@ In the C++ code, whilst numerical routines were used  MatLab and Mathematica to 
 \end{aligned}
 \end{equation}
 
+\subsubsection{The compression ratio}
+
+There is one final value of interest to the development of the algorithm, which is the gradient at the mean. The reason this is of interest is because we're trying to compress the relevant data as much as possible. If the destination region is small (i.e. the destination machine type is smaller than the source type), then the gradient at the mean allows us to assess the fidelity required of the source type. If it weren't for the fact that the source is the result of a rotation transformation, then there would be little purpose in assessing this value. However, it is entirely possible that the lengthening of the axes resulting from the rotation is insignificant for the desired destination type; there's no point preserving information during the rotation which is then discarded by the redistribution. The gradient is given by
+
+\begin{equation}\label{eq:gradient}
+\begin{aligned}
+\Delta(\mu,\sigma) &= \kappa  \delta(\mu,\sigma)  & \delta(\mu,\sigma)  &= \frac{ \sqrt{2} }{ \sigma \sqrt{\pi }  \left(\Sigma^+-\Sigma^-\right)}
+\end{aligned}
+\end{equation}
+
+The compression ratio is at most one-to-one, therefore $\kappa <=1$ and the gradient in the unit space must always be greater than 1 $ \kappa \le \Delta(\mu,\sigma) \le \delta(\mu,\sigma)$.
+
+The required fidelity in the source domain can be found using $ \Delta$ in the sense that the correspondence between one information step in the source must produce a step of $\Delta$ in the destination type. For the algorithm evaluating the maximum gradient $\Delta$ allows us to be sure that  $\Keep$ --- the region on the x axis where all the information is to be preserved --- exists if $\Delta >1$ or tells us that the x axis can be shortened if  $\Delta < 1$. In the algorithm $\Delta$ is used to find an appropriate working data type for the rotated color space and to define the axis scaling for the rotation matrix.
+
 \subsubsection{A piecewise approximation to the ERF distribution}
-We now have equations which gives us the four points in the source domain which mark the boundaries of the five characteristic regions. The equations are valid in the unit source domain $0:1$. It is a simple matter to scale and shift these values to give the points in a more general source domain.
+We now have equations which gives us the four points in the source domain which mark the boundaries of the five characteristic regions. We can now use them to define a piecewise function which uses the computationally problematic error function based distribution as little as possible
+
+\begin{equation}
+pDis(x) = \begin{cases}
+\tMin & x \le \Discard_1 \\
+\text{dis}(x) & \Discard_1 < x < \eKeep_1 \\
+x - \eKeep_1 + \text{dis}(\eKeep_1) & \eKeep_1 \le x \le \eKeep_2  \\
+\text{dis}(x) - \text{dis}(\eKeep_2) + \eKeep_2 - \eKeep_1 + \text{dis}(\eKeep_1)  & \eKeep_2 < x < \Discard_2  \\
+\tMax & x \ge \Discard_2 \\
+\end{cases}
+\end{equation}
+
+All three distribution techniques described earlier  
 
 \begin{equation}
 \begin{aligned}
@@ -1829,39 +1884,27 @@ w(\mu,\sigma) &=  \sigma  \sqrt{ \log \left(\frac{2}{\pi } -2 \log \left(\sigma 
 \end{equation}
 
 
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.49\textwidth]{Chapter2/Figs/partitionSmooth2.eps}
-    \includegraphics[width=0.49\textwidth]{Chapter2/Figs/partitionColor2.eps}
-    \caption{Linear partition approximation.}  \label{fig:Partition}
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\linewidth]{Chapter2/Figs/useLinear}
+\caption{Here the code will decide to use a linear redistribution.}
+\label{fig:useLinear}
 \end{figure}
 
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.49\textwidth]{Chapter2/Figs/linearSmooth2.eps}
-    \includegraphics[width=0.49\textwidth]{Chapter2/Figs/linearColor2.eps}
-    \caption{Linear approximation.}  \label{fig:Linear}
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\linewidth]{Chapter2/Figs/usePartitioning}
+\caption{With these values the code will likely decide to use partitioning if the tolerance $\tau_{\text{partitioning}}$is greater than $\Discard_2-\eKeep_2$.}
+\label{fig:usePartitioning}
 \end{figure}
 
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.49\textwidth]{Chapter2/Figs/ERFSmooth2.eps}
-    \includegraphics[width=0.49\textwidth]{Chapter2/Figs/ERFColor2.eps}
-    \caption{Error Function distribution.}  \label{fig:ERF}
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\linewidth]{Chapter2/Figs/usePiecewiseERF}
+\caption{With these values the code will decide to use a piecewise ERF based distribution (Labeled Compact Distribution in the figure).}
+\label{fig:usePiecewiseERF}
 \end{figure}
 
-There is one final value of interest to the development of the algorithm, which is the gradient at the mean. The reason this is of interest is because we're trying to compress the relevant data as much as possible. If the destination region is small (i.e. the destination machine type is smaller than the source type), then the gradient at the mean allows us to assess the fidelity required of the source type. If it weren't for the fact that the source is the result of a rotation transformation, then there would be little purpose in assessing this value. However, it is entirely possible that the lengthening of the axes resulting from the rotation is insignificant for the desired destination type; there's no point preserving information during the rotation which is then discarded by the redistribution. The gradient is given by
-
-\begin{equation}\label{eq:gradient}
-\begin{aligned}
-\Delta(\mu,\sigma) &= \kappa  \delta(\mu,\sigma)  & \delta(\mu,\sigma)  &= \frac{ \sqrt{2} }{ \sigma \sqrt{\pi }  \left(\Sigma^+-\Sigma^-\right)}
-\end{aligned}
-\end{equation}
-
-The compression ratio is at most one-to-one, therefore $\kappa <=1$ and the gradient in the unit space must always be greater than 1 $ \kappa \le \Delta(\mu,\sigma) \le \delta(\mu,\sigma)$.
-
-The required fidelity in the source domain can be found using $ \Delta$ in the sense that the correspondence between one information step in the source must produce a step of $\Delta$ in the destination type. For the algorithm evaluating the maximum gradient $\Delta$ allows us to be sure that  $\Keep$ --- the region on the x axis where all the information is to be preserved --- exists if $\Delta >1$ or tells us that the x axis can be shortened if  $\Delta < 1$. In the algorithm $\Delta$ is used to find an appropreate working data type for the rotated color space and to define the axis scaling for the rotation matrix.
 
 \section{The Skin Color Space Algorithm}
 
