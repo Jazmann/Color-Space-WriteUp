@@ -600,16 +600,17 @@ If[TrueQ[txt==""],
 {color,Opacity[0.6],Disk[pnt,size],Black,Opacity[1],Text[text,pnt,align]}];
 
 Clear[ LabelPointGrad];
- LabelPointGrad[x_,fun_,txt_:"",color_:Green,align_:{0,0},len_:40,size_:12]:=Block[{pnt,text},
+ LabelPointGrad[x_,fun_,txt_:"",color_:Green,align_:{0,0},len_:40,size_:12]:=Block[{pnt,text,m,line,theta},
 pnt=Round[N[{x,fun[x]}]];
 m=Function[{xx},Evaluate[D[fun[xx],xx]]];
-line=Function[{xx},Evaluate[{xx,m[x]*(xx-pnt[[1]]) + pnt[[2]]} ]];
+theta=ArcTan[m[x]];
+line=Function[{xx},Evaluate[ {xx Cos[theta], xx Sin[theta]} + pnt ]];
 If[TrueQ[txt==""],text=StringJoin[ToString[pnt[[1]]],"  ",ToString[pnt[[2]]]],text=txt];{color,Opacity[0.6],
-Disk[pnt,size],Disk[line[x+len],size/2],Disk[line[x-len], size/2],
-Thick,Line[{line[x-len],line[x+len]}],
+Disk[pnt,size],Disk[line[len],size/2],Disk[line[-len], size/2],
+Thick,Line[{line[-len],line[len]}],
 Black,Opacity[1],
-Text[text,pnt,align,line[x+len]-line[x-len]],Text[ToString[NumberForm[N[m[x]],3]],line[x+len],{0,0},line[x+len]-line[x-len]],
-Text[ToString[NumberForm[N[m[x]],3]],line[x-len],{0,0},line[x+len]-line[x-len]]}];
+Text[text,pnt,align,line[len]-line[-len]],Text[ToString[NumberForm[N[m[x]],3]],line[len],{0,0},line[len]-line[-len]],
+Text[ToString[NumberForm[N[m[x]],3]],line[-len],{0,0},line[len]-line[-len]]}];
 
 
 
