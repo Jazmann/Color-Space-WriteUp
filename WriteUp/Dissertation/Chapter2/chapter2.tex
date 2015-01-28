@@ -1810,7 +1810,7 @@ There is one final value of interest to the development of the algorithm, which 
 \end{aligned}
 \end{equation}
 
-The compression ratio is at most one-to-one, therefore $\kappa <=1$ and the gradient in the unit space must always be greater than 1 $ \kappa \le \Delta(\mu,\sigma) \le \delta(\mu,\sigma)$.
+The compression ratio is at most one-to-one, therefore $\kappa <=1$ and the gradient in the unit space must always be greater than one $1 \le \delta(\mu,\sigma)$. so $ \kappa \le \Delta(\mu,\sigma) \le \delta(\mu,\sigma)$.
 
 The required fidelity in the source domain can be found using $ \Delta$ in the sense that the correspondence between one information step in the source must produce a step of $\Delta$ in the destination type. For the algorithm evaluating the maximum gradient $\Delta$ allows us to be sure that  $\Keep$ --- the region on the x axis where all the information is to be preserved --- exists if $\Delta >1$ or tells us that the x axis can be shortened if  $\Delta < 1$. In the algorithm $\Delta$ is used to find an appropriate working data type for the rotated color space and to define the axis scaling for the rotation matrix.
 
@@ -1818,84 +1818,230 @@ The required fidelity in the source domain can be found using $ \Delta$ in the s
 We need to consider the requested compression of information alongside the spread of information caused by the rotation, and the desired focus on the specific region of interest dictated by the statistics. Each axis in the color space is to be represented by a discrete set of numbers. The size of these sets dictates the discretization of the axis, and the ratios between them indicates the spread or compression of the information they contain. We assume that the RGB axes are each discretized to the same extent, each containing $\srcRange$ values. After the application of the un-normalized rotational transformation, the axes contain differing numbers of values given by $\tRange_1 =\srcRange \; \sqrt{3} $, $\tRange_2 = \srcRange \; L_2(\theta) $  and $\tRange_3 = \srcRange \; L_3(\theta)$. These axis lengths preserve all the information contained in the source color space, and so are the maximum length the axis should take. The minumum length the axis may take is where the information is lost evenly throuought the axis, and corresponds to an axis length equal to the destination axis length $\tRange = \dstRange$. 
 
 We can now write an algorithm which determines the necessary scaling for the axes, and whether truncation of the extreme values is significant.
-
-The length of the axis after rescaling should be
-
-\begin{equation}\label{eq:RescaleAxis}
-\min\left\{ \Delta(\mu,\sigma) , 1\right\} \srcRange \; \mathbf{L}(\theta)
-\end{equation}
-
-The condition for rescaling the axis is
-
-\begin{equation}\label{eq:RescaleAxisCondition}
-\Delta(\mu,\sigma) \le 1
-\end{equation}
-
-We can now re-formulate the transformation matrix in three different ways: pure rotation without rescaling, 
-
-\begin{equation}\label{eq:Rotation}
- \R_{xyz}(\theta) =
- \begin{pmatrix}
-  \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} \\
-  -\sqrt{\frac{2}{3}} \sine{\theta +\Pii{6} } & \sqrt{\frac{2}{3}} \cos (\theta ) & -\sqrt{\frac{2}{3}} \sine{\Pii{6}-\theta } \\
-  -\sqrt{\frac{2}{3}} \cos \left(\theta +\Pii{6}\right) & -\sqrt{\frac{2}{3}} \sin (\theta ) & \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-\theta \right) \\
- \end{pmatrix} \quad \text{for} \quad  \Delta(\mu,\sigma) \ge 1
-\end{equation}
-
-maximum scaling --- which scales to the destination range
-
-
-\begin{equation}\label{eq:NormRxyz2}
- \overline{\R}_{xyz}(\theta) =
-\kappa
-\bigotimes
-\R_{xyz}(\theta) \quad where \quad
-\begin{array}{c}
-\kappa = \frac{\dstRange }{\srcRange \mathbf{L}(\theta)}
-\end{array} \quad \text{for} \quad    \Delta(\mu,\sigma) \le \kappa
-\end{equation}
-
- and scaled --- which shortens the axis as much as possible without losing statistically relevant data. 
-
-\begin{equation}\label{eq:CompressedRotation}
- \widetilde{\R}_{xyz}(\theta,\mathbf{\mu},\mathbf{\sigma}) =
-\Delta(\mu,\sigma)
-\bigotimes
-\R_{xyz}(\theta) \quad \text{for} \quad  \kappa < \Delta(\mu,\sigma) < 1
-\end{equation}
-because $\Delta$ is always greater or equal to $\kappa$ these special cases can be combined into a general scaling for each axis
-
-\begin{equation}\label{eq:CombinedRotation}
- \widehat{\R}_{xyz}(\theta,\mu,\sigma) =
-\left(
-\begin{array}{c}
-\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\} \\
-\min\left\{\Delta(\mu_2,\sigma_2), 1 \right\}  \\
-\min\left\{\Delta(\mu_3,\sigma_3), 1 \right\}  \\
-\end{array}
-\right)
-\bigotimes
-\R_{xyz}(\theta) \quad where \quad
-\begin{array}{c}
-\kappa = \frac{\dstRange }{\srcRange \mathbf{L}(\theta)} \\
-\Delta(\mu,\sigma) = \kappa \delta(\mu,\sigma)
-\end{array}
-\end{equation}
-this produces a $\tRange$ of
+As this will alter $\tRange$ we fix the values of $\kappa$ and $\Delta$ to be those for the working range $\tRange = \mathbf{L}(\theta) \srcRange$  which preserves all information. With this value the constants are
+\begin{align}
+K & =  \frac{\dstRange}{\srcRange}  &
+\kappa(\theta) &=  \frac{K}{\mathbf{L}(\theta)}  & 
+\Delta(\mu,\sigma)  &= \frac{K}{\mathbf{L}(\theta)} \delta(\mu,\sigma)  
+\end{align}
+The length of the axis $\tRange$ after rescaling should be
 
 \begin{equation}\label{eq:CombinedRotationRange}
 \begin{aligned}
- \tRange(\theta,\mu,\sigma) &= \min\left\{\Delta(\mu,\sigma), 1 \right\} \srcRange \mathbf{L}(\theta) \\
- &= 
-\left(
-\begin{array}{cc}
-\min\left\{\dstRange \delta(\mu_1,\sigma_1) \right. &\left. \srcRange \text{L}_1 \right\} \\
-\min\left\{\dstRange \delta(\mu_2,\sigma_2) \right.&\left. \srcRange \text{L}_2(\theta) \right\}  \\
-\min\left\{\dstRange \delta(\mu_3,\sigma_3) \right.&\left. \srcRange \text{L}_3(\theta) \right\}  \\
-\end{array}
-\right)
+ \tRange(\theta,\mu,\sigma) &= \min\left\{ \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) , 1 \right\} \mathbf{L}(\theta) \srcRange  \\
+  & =  \min\left\{K \delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\}  \srcRange
 \end{aligned}
 \end{equation}
+
+The scaling $\srcRange$ comes from the source pixel values, the remaining terms translates simply into a rotation matrix scaling
+
+\begin{equation*}
+\R[\theta]   =  \min\left\{K \delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\} \otimes \Scale[\theta] \otimes \fRO \left[   \qRe[ \theta, n ] \right]   \\
+\end{equation*}
+
+This satisfies the requirements placed on the gradient $\Delta(\mu,\sigma)>1$ because: if we substitute for $\tRange$ in the definition for the gradient \ref{eq:gradient}
+
+\begin{equation}\label{eq:newGradient}
+\begin{aligned}
+\Delta(\mu,\sigma) % &= \frac{\dstRange}{\tRange}  \delta(\mu,\sigma)  & \delta(\mu,\sigma)  &= \frac{ \sqrt{2} }{ \sigma \sqrt{\pi }  \left(\Sigma^+-\Sigma^-\right)} \\
+% &= \frac{\dstRange}{\min\left\{ \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) , 1 \right\} \mathbf{L}(\theta) \srcRange }  \delta(\mu,\sigma) \\
+%&= \frac{1}{\min\left\{ \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) , 1 \right\} }  \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) \\
+%&= \begin{cases}
+%1 & \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) < 1 \\
+% \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma)  & \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) > 1 \\
+%\end{cases} \\
+&= \max\left\{ \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) , 1 \right\}
+\end{aligned}
+\end{equation}
+And the compression ratio $\kappa$ is also explicitly restricted to being at most one and now is no longer defined in terms of $\tRange$.
+\begin{equation}\label{eq:newCompressionRatio}
+\begin{aligned}
+\kappa(\theta) % &=  \frac{\dstRange}{\tRange} \\
+% &= \frac{\dstRange}{\min\left\{ \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) , 1 \right\} \mathbf{L}(\theta) \srcRange }   \\
+%&= \frac{1}{\min\left\{ \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) , 1 \right\} }  \frac{K}{\mathbf{L}(\theta)}    \\
+%&= \begin{cases}
+%\frac{1}{\delta(\mu,\sigma)}   & \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) < 1 \\
+% \frac{K}{\mathbf{L}(\theta)}   & \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) > 1 \\
+%\end{cases} \\
+%&= \max\left\{ \frac{\mathbf{L}(\theta)}{K \delta(\mu,\sigma) }   , 1 \right\} \frac{K}{\mathbf{L}(\theta)}  \\
+&= \max\left\{ \frac{1}{\delta(\mu,\sigma) }   , \frac{K}{\mathbf{L}(\theta)} \right\}   
+\end{aligned}
+\end{equation}
+
+
+
+%
+%\begin{equation}
+%\R[\theta]  = 
+%\begin{cases}
+% \mathbf{L}(\theta) \otimes \Scale[\theta] \otimes \fRO \left[  \qRe[ \theta, n ] \right]    & \Delta(\mu,\sigma) = 1 \\
+%                                        K  \Scale[\theta] \otimes \fRO \left[  \qRe[ \theta, n ] \right]    & \Delta(\mu,\sigma)  = \kappa \\
+%        K  \delta(\mu,\sigma)  \Scale[\theta] \otimes \fRO \left[ \qRe[ \theta, n ] \right]    &  \kappa < \Delta(\mu,\sigma) < 1 \\
+%\end{cases}
+%\end{equation}
+%
+%\begin{equation}\label{eq:RescaleAxis}
+%\R[\theta]  = \min\left\{\Delta(\mu,\sigma), 1 \right\} \mathbf{L}(\theta) \otimes \nS[\theta] \otimes \rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]  
+%\end{equation}
+%
+%
+%\begin{equation}
+%\R[\theta]  = 
+%\begin{cases}
+%   \rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]   & \Delta(\mu,\sigma) = 1 \\
+% \kappa \otimes \mathbf{L}(\theta)  \otimes \nS[\theta] \otimes \rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]   & \Delta(\mu,\sigma)  = \kappa \\
+% \Delta(\mu,\sigma) \mathbf{L}(\theta)  \otimes \nS[\theta] \otimes \rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]    &  \kappa < \Delta(\mu,\sigma) < 1 \\
+%\end{cases}
+%\end{equation}
+%
+%There are several simplifications which can be applied here. Firstly remembering that :
+%\begin{align}
+%\srcRange &= 2^n &
+%\nS[\theta] \otimes \; \mathbf{L}(\theta)  & = 1 \\
+%\nS[\theta] \otimes \rS \otimes \fSe (\theta) & = 
+%\begin{pmatrix}
+% \frac{1}{3}  \\
+% \frac{1}{2}\\
+% \frac{1}{2} \\
+%\end{pmatrix} &
+%\qS[ n ] & = 
+%\begin{pmatrix}
+% 1  \\
+% 2^{2-n } \\
+% 2^{2-n }  \\
+%\end{pmatrix} \\
+%\rS \otimes \fSe (\theta) & = 
+%\begin{pmatrix}
+% \frac{1}{3}  \\
+% \frac{1}{2}\\
+% \frac{1}{2} \\
+%\end{pmatrix}  \otimes \; \mathbf{L}(\theta) &
+%\srcRange \; \qS[ n ] & = 
+%\begin{pmatrix}
+% 2^n  \\
+% 4 \\
+% 4  \\
+%\end{pmatrix} 
+%\end{align}
+%
+%
+%\begin{equation}
+%\R[\theta]  = 
+%\begin{cases}
+%\rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]  & \Delta(\mu,\sigma) = 1 \\
+%\nS[\theta] \otimes \rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]  & \Delta(\mu,\sigma)  = \kappa \\
+%\kappa(\theta) \otimes \rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]  &  \kappa < \Delta(\mu,\sigma) < 1 \\
+%\end{cases}
+%\end{equation}
+%
+%\begin{align}\label{eq:RescaleAxis}
+%\R[\theta] % & =  \min\left\{ \Delta(\mu,\sigma) , 1\right\} \otimes \srcRange \otimes \; \mathbf{L}(\theta) \otimes \nS[\theta] \otimes \rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]  \\
+%& = \min\left\{ \Delta(\mu,\sigma) , 1\right\}  \otimes \rS \otimes \fSe (\theta) \otimes
+%\begin{pmatrix}
+%2^n  \\
+% 4 \\
+%4  \\
+%\end{pmatrix}\otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]  \\
+%& = \min\left\{ \Delta(\mu,\sigma) , 1\right\}  \otimes \; \mathbf{L}(\theta) \begin{pmatrix}
+% \frac{1}{3}  \\
+% \frac{1}{2}\\
+% \frac{1}{2} \\
+%\end{pmatrix} \otimes
+%\begin{pmatrix}
+%2^n  \\
+% 4 \\
+%4  \\
+%\end{pmatrix}\otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]  \\
+%& = \min\left\{ \Delta(\mu,\sigma) , 1\right\}  \otimes \; \mathbf{L}(\theta) \otimes \begin{pmatrix}
+% \frac{2^n}{3}  \\
+% 2\\
+% 2 \\
+%\end{pmatrix} \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]  \\
+%\end{align}
+%
+%We can now re-formulate the transformation matrix in three different ways: pure rotation without rescaling, 
+%
+%\begin{equation}
+%\R[\theta]  = 
+%\begin{cases}
+%\rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]  & \Delta(\mu,\sigma) \ge 1\\
+%\nS[\theta] \otimes \rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]  & \begin{array}{c} \delta(\mu,\sigma) = 1 \\
+%  \Delta(\mu,\sigma)  = \kappa
+% \end{array} \\
+%\kappa[\theta] \otimes \rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  \right]  &  \kappa < \Delta(\mu,\sigma) < 1 \\
+%\end{cases}
+%\end{equation}
+%\begin{align*}
+%\nR[\theta] & = \nRa[\theta]+\dnR[\theta] \\
+%& = \nS[\theta] \otimes \rS \otimes \fSe (\theta) \otimes\qS[ n ] \otimes \fSs[\theta]  \otimes \fRO \left[ \qRe[ \theta, n ]  + \dqRe[ \theta, n ]  \right]  \\
+%& = 
+%\begin{pmatrix}
+% \frac{1}{3}  \\
+% \frac{1}{2}\\
+% \frac{1}{2} \\
+%\end{pmatrix}
+% \otimes
+%\begin{pmatrix}
+% 1  \\
+% 2^{2-n } \\
+% 2^{2-n }  \\
+%\end{pmatrix}
+%\otimes  \fSs(\theta) \otimes \fRO \left[ \qRe[ \theta, n ]  + \dqRe[ \theta, n ]  \right]   \\
+%\end{align*}
+%
+%\begin{equation}\label{eq:Rotation}
+% \R_{xyz}(\theta) =
+% \begin{pmatrix}
+%  \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} \\
+%  -\sqrt{\frac{2}{3}} \sine{\theta +\Pii{6} } & \sqrt{\frac{2}{3}} \cos (\theta ) & -\sqrt{\frac{2}{3}} \sine{\Pii{6}-\theta } \\
+%  -\sqrt{\frac{2}{3}} \cos \left(\theta +\Pii{6}\right) & -\sqrt{\frac{2}{3}} \sin (\theta ) & \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-\theta \right) \\
+% \end{pmatrix} \quad \text{for} \quad  
+% \begin{array}{c} \Delta(\mu,\sigma) \ge 1 
+% \end{array}
+%\end{equation}
+%
+%maximum scaling --- which scales to the destination range
+%
+%
+%\begin{equation}\label{eq:NormRxyz2}
+% \overline{\R}_{xyz}(\theta) =
+%\kappa
+%\bigotimes
+%\R_{xyz}(\theta) \quad where \quad
+%\begin{array}{c}
+%\kappa = \frac{\dstRange }{\srcRange \mathbf{L}(\theta)}
+%\end{array} \quad \text{for} \quad    
+% \begin{array}{c} \delta(\mu,\sigma) = 1 \\
+%  \Delta(\mu,\sigma)  = \kappa
+% \end{array}
+%\end{equation}
+%
+% and scaled --- which shortens the axis as much as possible without losing statistically relevant data. 
+%
+%\begin{equation}\label{eq:CompressedRotation}
+% \widetilde{\R}_{xyz}(\theta,\mathbf{\mu},\mathbf{\sigma}) =
+%\Delta(\mu,\sigma)
+%\bigotimes
+%\R_{xyz}(\theta) \quad \text{for} \quad  \kappa < \Delta(\mu,\sigma) < 1
+%\end{equation}
+%because $\Delta$ is always greater or equal to $\kappa$ these special cases can be combined into a general scaling for each axis
+%
+%\begin{equation}\label{eq:CombinedRotation}
+% \widehat{\R}_{xyz}(\theta,\mu,\sigma) =
+%\left(
+%\begin{array}{c}
+%\min\left\{\Delta(\mu_1,\sigma_1), 1 \right\} \\
+%\min\left\{\Delta(\mu_2,\sigma_2), 1 \right\}  \\
+%\min\left\{\Delta(\mu_3,\sigma_3), 1 \right\}  \\
+%\end{array}
+%\right)
+%\bigotimes
+%\R_{xyz}(\theta) \quad where \quad
+%\begin{array}{c}
+%\kappa = \frac{\dstRange }{\srcRange \mathbf{L}(\theta)} \\
+%\Delta(\mu,\sigma) = \kappa \delta(\mu,\sigma)
+%\end{array}
+%\end{equation}
 
 \subsubsection{A Piecewise Approximation to the ERF Distribution}
 We now have equations which give us the four points in the source domain which mark the boundaries of the five characteristic regions. We can now use them to define a piecewise function which uses the computationally problematic error function based distribution as little as possible
