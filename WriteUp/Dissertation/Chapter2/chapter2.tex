@@ -1015,6 +1015,26 @@ The perturbation $\dqR[\theta]$ is a rearrangement of $\dqR[\thetaA] $
 
 The perturbation introduced to each channel is further simplified by recognizing that $\fRe[-\phi]=-1-\fRe[\phi]$, which allows us to find $\dqRe[-\phi]=-\dqRe[\phi]$ i.e. that the sum of the two perturbations in each row equals zero. we can analyze the quantization error in terms of just one function $\dqRe$ and a matrix ordering function $\dqR[\theta] = \fROm \left[ \dqR[ \thetaA ]  \right]$.
 
+
+% The Ordering function which puts dqE into the correct form for the other regions  \dqR[\theta]=\dqEO[ \dqRe[\theta] \theta] \otimes \dqs[\theta],
+\newcommand\dqEO[1][]{
+  \ifstrempty{#1}{
+    \widehat{\mathbf{\delta qE}\text{O}}
+  }{
+    \widehat{\mathbf{\delta qE}\text{O}}\left[#1\right]
+  }
+}
+
+% The sign of the perturbation matrix \dqR[\theta]=\dqEO[ \dqRe[\theta] \theta] \otimes \dqs[\theta],
+\newcommand\dqs[1][]{
+  \ifstrempty{#1}{
+    \mathbf{\delta qS}
+  }{
+    \mathbf{\delta qS}\left(#1\right)
+  }
+}
+
+
 \begin{align*}
 \dqR[\theta] &= \fROm \left[  
 \begin{pmatrix}
@@ -1027,59 +1047,143 @@ The perturbation introduced to each channel is further simplified by recognizing
  1  &    0  & -1  \\
  1  & - 1  &   0  \\
 \end{pmatrix}
-  ,\theta \right]
+  ,\theta \right] \\
+  &= \dqEO \left[ 
+  \begin{pmatrix}
+   0                                     \\
+   \dqRe[ \thetaA ]              \\
+   \dqRe[ \Pii{6} -\thetaA]   \\
+  \end{pmatrix} 
+  \right]
+  \otimes
+  \dqs \left[ \theta \right] 
 \end{align*}
+
+where
+%\begin{equation}
+%\fROm \left[  \left(
+%\begin{smallmatrix}
+% 0   & 0   & 0  \\
+% a   & 0   & -a \\
+% b & - b & 0    \\
+% \end{smallmatrix} 
+%\right)  ,\theta \right] =
+%\begin{cases}
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% a & 0 & -a \\
+% b & -b & 0 \\
+%\end{smallmatrix} 
+%\right) & 0\leq (\theta  \bmod \pi )<\frac{\pi }{6} \\
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% 0 & b & -b \\
+% -a & a & 0 \\
+%\end{smallmatrix} 
+%\right) & \frac{\pi }{6}\leq (\theta  \bmod \pi )<\frac{\pi }{3} \\
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% 0 & -a & a \\
+% -b & 0 & b \\
+%\end{smallmatrix} 
+%\right) & \frac{\pi }{3}\leq (\theta  \bmod \pi )<\frac{\pi }{2} \\
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% b & -b & 0 \\
+% a & 0 & -a \\
+%\end{smallmatrix} 
+%\right) & \frac{\pi }{2}\leq (\theta  \bmod \pi )<\frac{2 \pi }{3} \\
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% -a & a & 0 \\
+% 0 & b & -b \\
+%\end{smallmatrix} 
+%\right) & \frac{2 \pi }{3}\leq (\theta  \bmod \pi )<\frac{5 \pi }{6} \\
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% -b & 0 & b \\
+% 0 & -a & a \\
+%\end{smallmatrix} 
+%\right) & \frac{5 \pi }{6}\leq (\theta  \bmod \pi )<\pi 
+%\end{cases}
+%\end{equation}
 
 
 \begin{equation}
-\fROm \left[  \left(
+\dqEO[  \left(
 \begin{smallmatrix}
- 0   & 0   & 0  \\
- a   & 0   & -a \\
- b & - b & 0    \\
+ 0   \\
+ a   \\
+ b  \\
  \end{smallmatrix} 
-\right)  ,\theta \right] =
+\right)  ,\theta ] =
+\begin{cases}
+ \left(
+\begin{smallmatrix}
+ 0 \\
+ a  \\
+ b \\
+\end{smallmatrix} 
+\right) & 0\leq (\theta  \bmod \frac{\pi}{3} )<\frac{\pi }{6} \\
+ \left(
+\begin{smallmatrix}
+ 0 \\
+ b  \\
+ a \\
+\end{smallmatrix} 
+\right) & \frac{\pi }{6} \leq (\theta  \bmod \frac{\pi}{3} ) < \frac{\pi }{3} 
+\end{cases}
+\end{equation}
+
+\begin{equation}
+\dqs[\theta] =
 \begin{cases}
  \left(
 \begin{smallmatrix}
  0 & 0 & 0 \\
- a & 0 & -a \\
- b & -b & 0 \\
+ 1 & 0 & -1 \\
+ 1 & -1 & 0 \\
 \end{smallmatrix} 
 \right) & 0\leq (\theta  \bmod \pi )<\frac{\pi }{6} \\
  \left(
 \begin{smallmatrix}
  0 & 0 & 0 \\
- 0 & b & -b \\
- -a & a & 0 \\
+ 0 & 1 & -1 \\
+ -1 & 1 & 0 \\
 \end{smallmatrix} 
 \right) & \frac{\pi }{6}\leq (\theta  \bmod \pi )<\frac{\pi }{3} \\
  \left(
 \begin{smallmatrix}
  0 & 0 & 0 \\
- 0 & -a & a \\
- -b & 0 & b \\
+ 0 & -1 & 1 \\
+ -1 & 0 & 1 \\
 \end{smallmatrix} 
 \right) & \frac{\pi }{3}\leq (\theta  \bmod \pi )<\frac{\pi }{2} \\
  \left(
 \begin{smallmatrix}
  0 & 0 & 0 \\
- b & -b & 0 \\
- a & 0 & -a \\
+ 1 & -1 & 0 \\
+ 1 & 0 & -1 \\
 \end{smallmatrix} 
 \right) & \frac{\pi }{2}\leq (\theta  \bmod \pi )<\frac{2 \pi }{3} \\
  \left(
 \begin{smallmatrix}
  0 & 0 & 0 \\
- -a & a & 0 \\
- 0 & b & -b \\
+ -1 & 1 & 0 \\
+ 0 & 1 & -1 \\
 \end{smallmatrix} 
 \right) & \frac{2 \pi }{3}\leq (\theta  \bmod \pi )<\frac{5 \pi }{6} \\
  \left(
 \begin{smallmatrix}
  0 & 0 & 0 \\
- -b & 0 & b \\
- 0 & -a & a \\
+ -1 & 0 & 1 \\
+ 0 & -1 & 1 \\
 \end{smallmatrix} 
 \right) & \frac{5 \pi }{6}\leq (\theta  \bmod \pi )<\pi 
 \end{cases}
@@ -1125,7 +1229,6 @@ defining
 \newcommand{\dW}{\vec{\delta w}}
 
 the perturbation to the rotated channel elements $\dW$ is found for an input set of pixel values $\rgb= 2^n\normed{\rgb} $
-
 
 \begin{align*}
 \w+\dW &= \nRa[\theta] \cdot \rgb+\dnR[\theta] \cdot \rgb \\
@@ -2090,7 +2193,56 @@ Now that all of the values necessary to preserve the skin information have been 
 
 Previously, we found a rotational transformation which allows a working type $\tRange$ to be chosen such that $\tRange \le 2 \srcRange$. If we were to keep the same data type for the color space $\dstRange$ as is used for the RGB values $\srcRange$, then the axes would have to be rescaled with the accompanying loss of information. Given that we have values which allow us to assess where all the relevant information lies, a more sophisticated approach is possible. For a chromatic axis --- which, after rotation, has a length $L(\theta)$ --- we can determine the positions on that axis at which the information is considered irrelevant using Equation~(\ref{eq:LowHigh}) and the positions where the information is all considered relevant. If the gradient $ \Delta$ \ref{eq:gradient} is less than 1, then the distribution loses information at all points on the axis and the axis can be shortened without loss of relevant information. The only further consideration is to ensure that the values outside that range are prevented from causing errors associated with overflow. To exclude this possibility, a conditional statement can be used which checks the bounds as stated, assigning an appropriate value as necessary. The alternative is to use an intermediate value with a higher bit depth, and then to recast into the destination data type in such a way that overflow and underflow are handled appropriately. The OpenCV library provides a casting method --- "saturateCast" --- which serves this purpose.
 
+\subsubsection{Setting the Value for the Tolerance}
+Now that we have the working type range $\tRange$, accounting for both the rotation and the statistics, we can set a meaningful tolerance on the error. Previously we calculated that the maximum error would occur for pixel values at the corners of the RGB cube, we have now seen that some values are more important than others and that it is more meaningful to use a smaller RGB cube which encloses only the values of interest. This cube is found by taking the values for $\Discard$ as the corners in the rotated space and rotating back to the RGB space. As this only needs to be done once it can be performed using floats in the unit spaces however the values of $\discard$ accounts for the discrete numerics in that they are calculated from the discrete values $\Discard$ using the new values for $\kappa$ and $\tRange$. 
 
+\begin{align}
+\discard^{RGB}_2 &= \nR^{-1} \cdot \left( \discard_2 - \begin{pmatrix}
+         0   \\
+         \frac{1}{2}    \\
+         \frac{1}{2}     \\
+        \end{pmatrix}
+        \right) \\
+&= \R^{T} \cdot \left( \nS \otimes \left( \discard_2 - \begin{pmatrix}
+                 0   \\
+                 \frac{1}{2}    \\
+                 \frac{1}{2}     \\
+                \end{pmatrix}
+                \right) \right)  \\
+\end{align}
+
+The perturbation to the rotated channel elements $\dW$ is found for an input set of pixel values $\discard^{RGB}_2$
+
+\begin{align*}
+\dW    &=  \min\left\{K \delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\} 
+ \otimes 
+        \begin{pmatrix}  0   \\   2   \\  2    \\ \end{pmatrix} 
+  \otimes
+        \dqEO\left[   \begin{pmatrix}  0   \\ \dqRe[ \thetaA ]  \\ \dqRe[ \Pii{6} -\thetaA]   \\ \end{pmatrix}  \right]
+ \otimes
+        \left( \dqs[\theta]  \cdot \discard^{RGB}_2 \right) 
+\end{align*}
+
+We have previously solved the case where both channels are of equal importance we now need to find the values of $\alpha$ and $\beta$ which set the relative importance of each channel. There are two factors here, the channel scaling and the new smaller RGB cube corners. The values for these also need to be put in correct correspondence with the $a$ and $b$ channel functions. For the scaling this is found by:
+
+\begin{align*}
+ \begin{pmatrix}  0   \\   \alpha_1   \\  \beta_1   \\ \end{pmatrix}     &=  
+\dqEO\left[  \min\left\{K \delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\} 
+ \otimes 
+        \begin{pmatrix}  0   \\   2   \\  2    \\ \end{pmatrix} \right]
+\end{align*}
+For the new RGB corners we need to find the largest element which can result from the inner product with $\dqs[\theta]$. As the elements of $\dqs[\theta]$ are in $\{-1,0,1\}$ with only one occurrence of each in the second and third rows we need to find the largest element of $\discard^{RGB}_2$ which is not in the zero position. The algorithm solves:
+
+\begin{align*}
+ \begin{pmatrix}  0   \\   \alpha_2   \\  \beta_2   \\ \end{pmatrix}     &=  
+\dqEO\left[  
+\max \left\{\text{abs}(\dqs[\theta]) \otimes \left(\mathbf{L}(\theta) \right)^T \right\}
+\right]
+\end{align*}
+where $\text{max}$ acts on each row and $\text{abs}(\dqs[\theta])  = \dqs[\theta] \otimes \dqs[\theta]$. 
+These then give a combined value for $\alpha = \alpha_1 \alpha_2$ and $\beta = \beta_1 \beta_2$
+
+The larger of the two is used to set the tolerance and the ratio is used to adjust the interception value of $\theta$. The acceptable values of $\theta$ can then be found as previously described.
 
 %You know those blue/black people? Melanin may not be expressed in the fingernails!
 
