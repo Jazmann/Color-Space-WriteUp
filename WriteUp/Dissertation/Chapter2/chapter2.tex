@@ -362,7 +362,7 @@ Any rotation about an axis can be represented by a 3x3 square matrix in a 3D spa
 
 Any rotation which orients the RGB color space such that one of the new axes lies along the luminosity direction is sufficient; a rotation which aligns the L axis along the luminosity direction is produced by a rotation of $\frac{\pi}4$ about the red (\textbf{R}) axis, followed by a rotation of $\arctan{\frac{1}{\sqrt{2}}}$ about the green (\textbf{G}) axis. This leaves one free rotational degree of freedom about the L axis. The resulting rotation matrix is given by:
 
-\begin{equation}
+\begin{equation}\label{eq:RotationMatrix}
 \R_{xyz}(\theta) =
 \begin{pmatrix}
  \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} \\
@@ -539,7 +539,7 @@ If we were to scale the entire matrix evenly, the top row would dominate as it i
 
 The second and third rows each sum to zero ($\uR \cdot \mathbf{1} = [\sqrt{3},0,0]$, where $\mathbf{1}$ is a vector of ones), allowing us to state that each of the rows has one element of the opposite sign to the other two elements. The discretization for the second and third rows then only requires $\rRange = 2 \; \tRange$. It is also possible to pull out common factors from the rows, resulting in all elements taking values between -1 and 1.
 
-\begin{equation}
+\begin{equation}\label{eq:RotCommonFactors}
 \uR(\theta) =
 \left(
 \begin{array}{c}
@@ -564,7 +564,8 @@ To facilitate the quantization, we next factor the second and third rows such th
 \end{itemize}
 
 The sign of the elements is most easily seen by looking at the rotation as phase shifted sine functions.
-\begin{equation}
+
+\begin{equation}\label{eq:RRot}
 \rR[\theta]=
 \begin{pmatrix}
  1 & 1 & 1 \\
@@ -575,7 +576,7 @@ The sign of the elements is most easily seen by looking at the rotation as phase
 
 So the signs look like
 
-\begin{equation}
+\begin{equation}\label{eq:MatrixSigns}
 \begin{pmatrix}
  1 & 1 & 1 \\
 \raisebox{-10mm}{\includegraphics[width = 20mm]{Chapter2/Figs/SignOfrR21.jpg}}
@@ -1800,7 +1801,7 @@ In the C++ code, whilst numerical routines were used  MatLab and Mathematica to 
 \end{aligned}
 \end{equation}
 
-\subsubsection{The compression ratio}
+\subsubsection{The Compression Ratio}
 
 There is one final value of interest to the development of the algorithm, which is the gradient at the mean. The reason this is of interest is because we're trying to compress the relevant data as much as possible. If the destination region is small (i.e. the destination machine type is smaller than the source type), then the gradient at the mean allows us to assess the fidelity required of the source type. If it weren't for the fact that the source is the result of a rotation transformation, then there would be little purpose in assessing this value. However, it is entirely possible that the lengthening of the axes resulting from the rotation is insignificant for the desired destination type; there's no point preserving information during the rotation which is then discarded by the redistribution. The gradient is given by
 
@@ -1856,7 +1857,7 @@ This satisfies the requirements placed on the gradient $\Delta(\mu,\sigma)>1$ be
 And the compression ratio $\kappa$ is also explicitly restricted to being at most one and now is no longer defined in terms of $\tRange$.
 \begin{equation}\label{eq:newCompressionRatio}
 \begin{aligned}
-\kappa(\theta) % &=  \frac{\dstRange}{\tRange} \\
+%\kappa(\theta)  &=  \frac{\dstRange}{\tRange} \\
 % &= \frac{\dstRange}{\min\left\{ \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) , 1 \right\} \mathbf{L}(\theta) \srcRange }   \\
 %&= \frac{1}{\min\left\{ \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) , 1 \right\} }  \frac{K}{\mathbf{L}(\theta)}    \\
 %&= \begin{cases}
@@ -1864,7 +1865,7 @@ And the compression ratio $\kappa$ is also explicitly restricted to being at mos
 % \frac{K}{\mathbf{L}(\theta)}   & \frac{K}{\mathbf{L}(\theta)}   \delta(\mu,\sigma) > 1 \\
 %\end{cases} \\
 %&= \max\left\{ \frac{\mathbf{L}(\theta)}{K \delta(\mu,\sigma) }   , 1 \right\} \frac{K}{\mathbf{L}(\theta)}  \\
-&= \max\left\{ \frac{1}{\delta(\mu,\sigma) }   , \frac{K}{\mathbf{L}(\theta)} \right\}   
+\kappa(\theta) &= \max\left\{ \frac{1}{\delta(\mu,\sigma) }   , \frac{K}{\mathbf{L}(\theta)} \right\}   
 \end{aligned}
 \end{equation}
 
