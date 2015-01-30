@@ -417,7 +417,6 @@ In the range $0:\frac{\pi}{3}$, both sin and cos are positive, therefore the axi
 
 \begin{tabular}{|c|c|c|}
   \hline
-  % after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
     & Min & Max \\ \hline
   L & \(0\) & \(\sqrt{3}\) \\
   Ca & \(- \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-(\left(\theta -\Pii{6}\right) \bmod \frac{\pi }{3})\right) \)&\( \sqrt{\frac{2}{3}} \cos \left(\Pii{6}-(\left(\theta -\Pii{6}\right) \bmod \frac{\pi }{3})\right) \)\\
@@ -436,8 +435,8 @@ The lengths of the axis after rotation are given by:
 \end{pmatrix}
 \quad \text{where}  \quad 
 \begin{array}{c}
-\widetilde{\theta} = \theta  \bmod \frac{\pi }{3} \\ 
-\widetilde{\vartheta} = \left(\theta - \Pii{6}\right) \bmod \frac{\pi }{3}
+\widetilde{\vartheta} = \left(\theta - \Pii{6}\right) \bmod \frac{\pi }{3} \\
+\widetilde{\theta} = \theta  \bmod \frac{\pi }{3} 
 \end{array}
 \end{equation}
 
@@ -1432,11 +1431,11 @@ The region $\iota$ for a given value of $i$ is the highest value of $\iota$ for 
 
 For a given value of $\theta$ and $n$, we can find the intersection index $i$, and from this we can find $\iota$:
 
-\begin{gather*}
+\begin{gather}\label{eq:indexFromTheta}
 i(\delta\theta, n) = \frac{\meanIndx \tan (\delta \theta ) \left(\sqrt{3} \tan (\delta \theta )+7\right)}{\tan (\delta \theta )+\sqrt{3}} 
 \quad \text{where} \quad \delta\theta = \theta \mod{\frac{\pi}{6} }\\
  \iota(i,n)  = \left\lfloor 7\ \meanIndx-\sqrt{i^2 - 2 i \; \meanIndx + 49\ \meanIndx^2 }\right\rfloor 
-\end{gather*}
+\end{gather}
 
 The sequence of a-b channel extrema depends on both the index $i$ and the region $\iota$ in the following way:
 
@@ -1612,23 +1611,17 @@ i \in \{2 \mathbb{N}     \} &  \land & \iota \in \{2 \mathbb{N}    \} \\
 
 We want to classify the points of intersection as greater or lesser than a tolerance $0 < \tau \le 1$. In order to do this, we make a linear approximation to the perturbation between the extrema. There is one point of intersection between each of the maxima and corresponding minima. A bit of geometry allows us to write a classification criteria for each of the points of intersection.
 
-Defining a function for the degree of error at the point of intersection using the linear approximation from the four extrema surrounding the point, and generalizing to allow for different maximum errors $\alpha$ for channel $a$ and $\beta$ for channel b
-\begin{align*}
-h(i,\iota) & =
+Defining a function for the degree of error at the point of intersection using the linear approximation from the four extrema surrounding the point, and generalizing to allow for different maximum errors $\alpha$ for channel $a$ and $\beta$ for channel b. The conditions on $i$ and $\iota$ can be more compactly written by applying a condition to their product.
+\begin{align}\label{eq:generalisedPerturbation}
+h(i,\iota) & = \begin{cases}
 \frac{\alpha  \beta  (\extremaTheta{a} {i+\iota }-\extremaTheta{b} {i-\iota })}
-{\beta  (\extremaTheta{a} {i+\iota } - \extremaTheta{a} {i+\iota +1} ) + \alpha  (\extremaTheta{b} {i-\iota -1} - \extremaTheta{b} {i-\iota } ) }  & \text{when} \quad 
-\begin{array}{lcl}
-i \in \{2 \mathbb{N}+1\}  & \land & \iota \in \{2 \mathbb{N}+1\} \  \lor \\ 
-i \in \{2 \mathbb{N}     \} &  \land & \iota \in \{2 \mathbb{N}    \} \\
- \end{array}  \\
-h(i,\iota) & =
+{\beta  (\extremaTheta{a} {i+\iota } - \extremaTheta{a} {i+\iota +1} ) + \alpha  (\extremaTheta{b} {i-\iota -1} - \extremaTheta{b} {i-\iota } ) }  &
+  i \iota \in \{2 \mathbb{N}     \}  \\
 \frac{\alpha  \beta  (\extremaTheta{b} {i-\iota -1}-\extremaTheta{a} {i+\iota +1})}
-{\beta  ( \extremaTheta{a} { i+\iota } -\extremaTheta{a} { i+\iota + 1 } ) +\alpha  ( \extremaTheta{b} {i-\iota -1} -\extremaTheta{b} {i-\iota } ) }  & \text{when} \quad 
-\begin{array}{lcl}
-i \in \{2 \mathbb{N}   \}  & \land & \iota \in \{2 \mathbb{N} + 1\} \  \lor \\ 
-i \in \{2 \mathbb{N}  +1 \} &  \land & \iota \in \{2 \mathbb{N}    \} \\
- \end{array}  
-\end{align*}
+{\beta  ( \extremaTheta{a} { i+\iota } -\extremaTheta{a} { i+\iota + 1 } ) +\alpha  ( \extremaTheta{b} {i-\iota -1} -\extremaTheta{b} {i-\iota } ) }  & 
+i \iota \in \{2 \mathbb{N}  + 1 \} 
+\end{cases}
+\end{align}
 
 allows the criteria for a channel to be written as $\tau \ge h(i,\iota)$. 
 
@@ -1868,7 +1861,7 @@ The boundaries of the region $\Keep_1 < x < \Keep_2$ for $x \in \{\tMin \cdots \
   \kappa &= \frac{\yRange}{\tRange} 
 \end{align}
 
-\begin{equation}
+\begin{equation}\label{eq:PreservedRegionConsts}
   w(\mu,\sigma)  =  \sigma  \sqrt{ \log \left(\frac{2}{\pi } \right) -2 \log \left(\kappa \sigma  \left(\Sigma^+-\Sigma^-\right)\right) }
 \end{equation}
 
@@ -1877,7 +1870,7 @@ The equations are found in the unit source domain $0:1$. It is a simple matter t
 \begin{equation}\label{eq:PreservedRegionGen}
 \begin{aligned}
 \keep_1(\mu,\sigma) &=                                    \mu - w(\mu,\sigma) &            \keep_2(\mu,\sigma) &=                                   \mu + w(\mu,\sigma) \\
-\Keep_1(\mu,\sigma) &= \tMin + \tRange\left( \mu - w(\mu,\sigma) \right) & \Keep_2(\mu,\sigma) &= \tMin + \tRange \left(\mu +\mu - w(\mu,\sigma)\right)
+\Keep_1(\mu,\sigma) &= \tMin + \tRange\left( \mu - w(\mu,\sigma) \right) & \Keep_2(\mu,\sigma) &= \tMin + \tRange \left(\mu + w(\mu,\sigma)\right)
 \end{aligned}
 \end{equation}
 
@@ -1894,7 +1887,7 @@ One refinement can be made to these values by recognizing that the discrete dist
 \left\lfloor\text{dis}\left(\Keep _2\right)\right\rfloor+\left(x-\Keep _2\right)=\text{dis}(x)
 \end{equation}
 
-In the C++ code, whilst numerical routines were used  MatLab and Mathematica to perform the analysis, the extended region boundary point was found by 'walking' along the distribution from the analytic point $\Keep_2$  until divergence from linear behavior became apparent. This is regarded as a simpler solution, not requiring the use of numerical library routines, and proved to be a quick and elegant solution for the C++ implementation. The extended boundaries $\eKeep_1$ and $\eKeep_2$ are then defined by
+In the C++ code, whilst numerical routines were used  MatLab and Mathematica to perform the analysis, the extended region boundary point was found by 'walking' along the distribution from the analytic point $\Keep_2$  until divergence from linear behaviour became apparent. This is regarded as a simpler solution, not requiring the use of numerical library routines, and proved to be a quick and elegant solution for the C++ implementation. The extended boundaries $\eKeep_1$ and $\eKeep_2$ are then defined by
 
 \begin{equation}
 \begin{aligned}
@@ -2194,22 +2187,20 @@ Now that all of the values necessary to preserve the skin information have been 
 Previously, we found a rotational transformation which allows a working type $\tRange$ to be chosen such that $\tRange \le 2 \srcRange$. If we were to keep the same data type for the color space $\dstRange$ as is used for the RGB values $\srcRange$, then the axes would have to be rescaled with the accompanying loss of information. Given that we have values which allow us to assess where all the relevant information lies, a more sophisticated approach is possible. For a chromatic axis --- which, after rotation, has a length $L(\theta)$ --- we can determine the positions on that axis at which the information is considered irrelevant using Equation~(\ref{eq:LowHigh}) and the positions where the information is all considered relevant. If the gradient $ \Delta$ \ref{eq:gradient} is less than 1, then the distribution loses information at all points on the axis and the axis can be shortened without loss of relevant information. The only further consideration is to ensure that the values outside that range are prevented from causing errors associated with overflow. To exclude this possibility, a conditional statement can be used which checks the bounds as stated, assigning an appropriate value as necessary. The alternative is to use an intermediate value with a higher bit depth, and then to recast into the destination data type in such a way that overflow and underflow are handled appropriately. The OpenCV library provides a casting method --- "saturateCast" --- which serves this purpose.
 
 \subsubsection{Setting the Value for the Tolerance}
-Now that we have the working type range $\tRange$, accounting for both the rotation and the statistics, we can set a meaningful tolerance on the error. Previously we calculated that the maximum error would occur for pixel values at the corners of the RGB cube, we have now seen that some values are more important than others and that it is more meaningful to use a smaller RGB cube which encloses only the values of interest. This cube is found by taking the values for $\Discard$ as the corners in the rotated space and rotating back to the RGB space. As this only needs to be done once it can be performed using floats in the unit spaces however the values of $\discard$ accounts for the discrete numerics in that they are calculated from the discrete values $\Discard$ using the new values for $\kappa$ and $\tRange$. 
-
+Now that we have the working type range $\tRange$, accounting for both the rotation and the statistics, we can set a meaningful tolerance on the error. Previously we calculated that the maximum error would occur for pixel values at the corners of the RGB cube, we have now seen that some values are more important than others and that it is more meaningful to use a smaller RGB cube which encloses only the values of interest. This cube is found by taking the values for $\Discard$ as the corners in the rotated space and rotating back to the RGB space. As this only needs to be done once it can be performed using floats in the unit spaces however the values of $\discard$ account for the discrete numerics in that they are calculated from the discrete values $\Discard$ using the new values for $\kappa$ and $\tRange$. In order to perform the inverse rotation the values must be shifted to compensate for the natural range of the rotation which is $\{0:1,-\text{\textonehalf}:\text{\textonehalf},-\text{\textonehalf}:\text{\textonehalf}\}$. 
+\newcommand{\Rc}{\mathbf{R}\text{c}}
 \begin{align}
-\discard^{RGB}_2 &= \nR^{-1} \cdot \left( \discard_2 - \begin{pmatrix}
-         0   \\
-         \frac{1}{2}    \\
-         \frac{1}{2}     \\
-        \end{pmatrix}
-        \right) \\
-&= \R^{T} \cdot \left( \nS \otimes \left( \discard_2 - \begin{pmatrix}
+\discard^{RGB}_2 &= \nR^{-1} \cdot \left( \discard_2 - \Rc
+        \right) & \text{where} \quad \Rc=\begin{pmatrix}
                  0   \\
                  \frac{1}{2}    \\
                  \frac{1}{2}     \\
-                \end{pmatrix}
-                \right) \right)  \\
+                \end{pmatrix} \\
+&= \R^{T} \cdot \left( \nS \otimes \left( \discard_2 - \Rc
+                \right) \right)  
 \end{align}
+
+Because rotations of any angle are allowed the values for $\discard^{RGB}_1$ may be larger than those for $\discard^{RGB}_2$ in the RGB space. A smart programmer could actually take advantage of this. The values may also be outside the RGB cube meaning that the values may have to be truncated to fit inside the RGB cube range. 
 
 The perturbation to the rotated channel elements $\dW$ is found for an input set of pixel values $\discard^{RGB}_2$
 
@@ -2236,13 +2227,116 @@ For the new RGB corners we need to find the largest element which can result fro
 \begin{align*}
  \begin{pmatrix}  0   \\   \alpha_2   \\  \beta_2   \\ \end{pmatrix}     &=  
 \dqEO\left[  
-\max \left\{\text{abs}(\dqs[\theta]) \otimes \left(\mathbf{L}(\theta) \right)^T \right\}
+\max \left\{\text{abs}(\dqs[\theta]) \otimes \left(\discard^{RGB}_2 \right)^T \right\}
 \right]
 \end{align*}
 where $\text{max}$ acts on each row and $\text{abs}(\dqs[\theta])  = \dqs[\theta] \otimes \dqs[\theta]$. 
-These then give a combined value for $\alpha = \alpha_1 \alpha_2$ and $\beta = \beta_1 \beta_2$
+These then give a combined value for $\alpha = \alpha_1 \alpha_2$ and $\beta = \beta_1 \beta_2$. Because the axis have been scaled so that the information on the axis is to be kept at least near the mean the tolerance should be set to $\tau =1$ the condition for accepting a value of $\theta$ $1 > h(i,\iota; \alpha,\beta)$ can be used.
 
-The larger of the two is used to set the tolerance and the ratio is used to adjust the interception value of $\theta$. The acceptable values of $\theta$ can then be found as previously described.
+\subsubsection{The complete algorithm}
+
+The programmer specifies a requested value of $\theta$ , values for the means $\uMean{ ab}$ and standard deviations $\uSTD{ ab}$ for each of the three axis in the rotated color space with a unit range and the data type ranges $\srcRange$ and $\dstRange$. The algorithm then proceeds as follows:
+\begin{enumerate}
+\item \textbf{Find the working type and range.} 
+Using the distribution constants \ref{eq:DistributionConstants} , the gradient at the mean in the unit range \ref{eq:gradient} and the natural rotated axis lengths \ref{eq:L}
+\begin{gather*}
+ \begin{aligned}
+  \delta  &= \frac{ \sqrt{2} }{ \sigma \sqrt{\pi }  \left(\Sigma^+-\Sigma^-\right)} & 
+ K & =  \frac{\dstRange}{\srcRange}  & 
+ \Sigma^- &= \text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right) &
+ \Sigma^+ &= \text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right) 
+  \end{aligned} \\
+  \mathbf{L}(\theta) =
+  \begin{pmatrix}
+  \sqrt{3} \\
+   \sqrt{\frac{2}{3}} \sin \left(\widetilde{\vartheta}\right) + \sqrt{2} \cos \left(\widetilde{\vartheta}\right) \\  
+  \sqrt{\frac{2}{3}} \sin \left(\widetilde{\theta}\right) + \sqrt{2} \cos \left(\widetilde{\theta}\right) 
+  \end{pmatrix}
+  \quad \text{where}  \quad 
+  \begin{array}{c}
+  \widetilde{\vartheta} = \left(\theta - \Pii{6}\right) \bmod \frac{\pi }{3} \\
+  \widetilde{\theta} = \theta  \bmod \frac{\pi }{3} 
+  \end{array}
+\end{gather*}
+
+The length of the axis $\tRange$ after rescaling is given by \ref{eq:CombinedRotationRange} and the axis limits are easily found.
+\begin{gather}
+ \tRange(\theta,\mu,\sigma)   =  \min\left\{K \delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\}  \srcRange \\
+ \begin{aligned}
+  \tMin(\theta,\mu,\sigma)   & =
+ \begin{pmatrix}
+ 0 \\
+  \frac{-\tRange_2(\theta,\mu_2,\sigma_2) }{2} \\  
+  \frac{-\tRange_3(\theta,\mu_3,\sigma_3) }{2} \\  
+ \end{pmatrix} & 
+  \tMax(\theta,\mu,\sigma)   & =
+ \begin{pmatrix}
+  \tRange_1(\theta,\mu_1,\sigma_1)  \\
+  \frac{\tRange_2(\theta,\mu_2,\sigma_2) }{2} \\  
+  \frac{\tRange_3(\theta,\mu_3,\sigma_3) }{2} \\  
+ \end{pmatrix} 
+ \end{aligned}
+\end{gather}
+and the compression ratio $\kappa$ \ref{eq:newCompressionRatio}
+\begin{equation}\label{eq:newCompressionRatio}
+\kappa(\theta) = \max\left\{ \frac{1}{\delta(\mu,\sigma) }   , \frac{K}{\mathbf{L}(\theta)} \right\}   
+\end{equation}
+\\
+\item \textbf{Set the distribution region boundary constants.} 
+Using the constants previously defined ( \ref{eq:PreservedRegionConsts} , \ref{eq:0to1} )
+
+\begin{align*}
+  w(\mu,\sigma)  & =  \sigma  \sqrt{ \log \left(\frac{2}{\pi } \right) -2 \log \left(\kappa \sigma  \left(\Sigma^+-\Sigma^-\right)\right) } &
+  \text{dL} &= \frac{1}{\dstRange} 
+\end{align*}
+
+we find the boundaries in the unit range 
+\begin{equation}
+\begin{aligned}
+\discard_1 &= \sigma \sqrt{2} \; \text{erf}^{-1}\left((\text{dL}-1) \Sigma^+-\text{dL} \; \Sigma^-\right)+\mu  &       
+\keep_1(\mu,\sigma) &= \mu - w(\mu,\sigma)  \\     
+\discard_2 &= \sigma \sqrt{2} \; \text{erf}^{-1}\left((\text{dL}-1) \Sigma^- -\text{dL} \; \Sigma^+ \right)+\mu &
+\keep_2(\mu,\sigma) &= \mu + w(\mu,\sigma) 
+\end{aligned}
+\end{equation}
+and the boundaries in the working range
+\begin{equation}\label{eq:DiscardedRegionBounds}
+\begin{aligned}
+\Discard &= \tMin + \tRange \left( \discard(\mu,\sigma) \right) & 
+\Keep(\mu,\sigma) &= \tMin + \tRange\left( \keep(\mu,\sigma) \right) 
+\end{aligned}
+\end{equation}
+
+The extended region in which all the information is kept is found by numerically solving the defining equations for the  extended boundaries $\eKeep_1$ and $\eKeep_2$ with the practical introduction of a parameter $ \tau_{p} $ which extends the acceptable deviation from linearity. So $ \tau_{p} =1$ would allow 1 discarded piece of information within the extended region.
+
+\begin{equation}
+\begin{aligned}
+\left\lceil\text{dis}\left(\Keep _1\right)\right\rceil-\Keep _1 - \tau_{p} & =\text{dis}\left(\eKeep _1\right)- \eKeep _1 &
+\left\lfloor\text{dis}\left(\Keep _2\right)\right\rfloor-\Keep _2 - \tau_{p} & =\text{dis}\left(\eKeep _2\right)- \eKeep _2 
+\end{aligned}
+\end{equation}
+the C++ code finds the points using the following algorithm
+
+
+\begin{algorithm}[H]
+ \KwData{$x = \Keep _2$ the starting point for the linear walk}
+ \KwResult{$\eKeep _2$ the extended boundary}
+ $y = dis(x)$ \tcc*[r]{$dis(x)$ is the distribution function}
+ \While{$dis(x) > \left\lfloor\text{dis}\left(\Keep _2\right)\right\rfloor + x -\Keep _2 - \tau_{p}$}{
+  x++ \;
+ } 
+ $\eKeep_2=x$ \;
+ $\eKeep_1=\Keep _1 - (\eKeep_2 - \Keep _2)$ \;
+ \caption{Finding the extended region in which all the information is kept in C++}
+\end{algorithm}
+
+
+\\
+\item \textbf{Suggest a new value for $\theta$.} stuff \\
+\item \textbf{Set the integer rotation matrix.} stuff \\
+\item \textbf{Design the distribution function.} stuff \\
+
+\end{enumerate} 
 
 %You know those blue/black people? Melanin may not be expressed in the fingernails!
 
