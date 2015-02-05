@@ -2,6 +2,12 @@
 %*********************************** Second Chapter **************************************
 %*****************************************************************************************
 
+\newcommand{\um}{\scalebox{0.75}[1.0]{\( - \)}}
+\newcommand{\Pii}[1]{\frac{\pi}{#1} }
+\newcommand{\sine}[1]{\sin \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
+\newcommand{\cosine}[1]{\cos \left( \scalebox{0.75}[1.0]{\( #1 \)} \right)}
+\newcommand{\secant}[1]{\sec \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
+\newcommand{\cosecant}[1]{\csc \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
 
 %\newcommand\mycmd[2][]{%
 %  \ifstrempty{#1}{%
@@ -232,18 +238,12 @@
 % The scaling for the matrix
 \newcommand\nS[1][]{
   \ifstrempty{#1}{
-    \vec{nS}
+    \vec{\mathbf{L}^{\um 1}}
   }{
-    \vec{nS}\left( #1 \right)
+    \vec{\mathbf{L}^{\um 1}}\left( #1 \right)
   }
 } 
 
-\newcommand{\um}{\scalebox{0.75}[1.0]{\( - \)}}
-\newcommand{\Pii}[1]{\frac{\pi}{#1} }
-\newcommand{\sine}[1]{\sin \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
-\newcommand{\cosine}[1]{\cos \left( \scalebox{0.75}[1.0]{\( #1 \)} \right)}
-\newcommand{\secant}[1]{\sec \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
-\newcommand{\cosecant}[1]{\csc \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
 
 % \newcommand{\fRe}[1]{\mathbf{fR}\text{e}\left(#1\right) }
 
@@ -1034,6 +1034,15 @@ The perturbation introduced to each channel is further simplified by recognizing
   }
 }
 
+% The absolute sign of the perturbation matrix by for row construction \dqR[\theta]=\dqEO[ \dqRe[\theta] \theta] \otimes \dqs[\theta],
+\newcommand\dqas[1][]{
+  \ifstrempty{#1}{
+    \mathbf{\delta qAS}
+  }{
+    \mathbf{\delta qAS}\left(#1\right)
+  }
+}
+
 
 \begin{align*}
 \dqR[\theta] &= \fROm \left[  
@@ -1115,7 +1124,7 @@ where
 %\end{equation}
 
 
-\begin{equation}
+\begin{equation}\label{eq:abPerturbationFunctionOrdering}
 \dqEO[  \left(
 \begin{smallmatrix}
  0   \\
@@ -1141,7 +1150,7 @@ where
 \end{cases}
 \end{equation}
 
-\begin{equation}
+\begin{equation}\label{eq:perturbationFunctionSigns}
 \dqs[\theta] =
 \begin{cases}
  \left(
@@ -1269,24 +1278,29 @@ The maxima for each function are where $\pm 2 \dqRe[ \thetaA ]  = \pm 1$ and $\p
 $0\le\sqrt{3} \tan (\phi )\le1$ for $0 \le \phi \le \Pii{6}$ we can say that $\text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] \in \{ 0, 1, 2, \cdots 2^{n-3} \}$ 
 
 
+\newcommand{\extremaTheta}[2]{\mathring{\phi} _{#1}\left( \scalebox{0.75}[1.0]{\( #2 \)}\right)}
+\newcommand{\maximaTheta}[1]{\hat{\phi}_{#1}}
+\newcommand{\minimaTheta}[1]{\check{\phi}_{#1}}
+\newcommand{\thetaX}[1]{\overset{\times}{\phi}\left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
+
 \begin{align*}
 \dqRe[\phi] & = 0 & \dqRe[\Pii{6}-\phi] & = 0 \quad \text{when} \\
 % 2^{n-3}\sqrt{3} \tan (\phi ) &= \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right]  & 
 % 2^{n-3}\sqrt{3} \tan (\Pii{6}-\phi ) &= \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\Pii{6}-\phi ) \right]\\
 2^{n-3}\sqrt{3} \tan (\phi ) & = m & 
 2^{n-3}\sqrt{3} \tan (\Pii{6}-\phi ) &= m \quad \text{where}\quad m=0,1,2 \cdots 2^{n-3} \\
- \check{\phi}_{b} = & \arctan\left(\frac{m 2^{3-n}}{\sqrt{3}}  \right) &
- \check{\phi}_{a} = & \arctan\left(\frac{2 \sqrt{3} m}{2^n - 2 m}\right) 
+ \minimaTheta{b} = & \arctan\left(\frac{m 2^{3-n}}{\sqrt{3}}  \right) &
+ \minimaTheta{a} = & \arctan\left(\frac{2 \sqrt{3} m}{2^n - 2 m}\right) 
 \end{align*}
 
 The maxima can be found by recognizing that the maximum rounding error is a half and evaluating at these points
 
 \begin{align*}
-\dqRe[\hat{\phi}_{b} ] & = \pm 1 & \dqRe[\Pii{6}-\hat{\phi}_{a} ] & = \pm 1  \quad \text{when} \\
-\hat{\phi}_{b} & =\arctan\left(\frac{ 2^{3-n} }{\sqrt{3}} \left(m+\frac{1}{2}\right) \right) &
-\hat{\phi}_{a} & = \arctan\left(\frac{2 \sqrt{3} \left(m+\frac{1}{2}\right)}{2^n - 2 \left(m+\frac{1}{2}\right)}\right)  \\
- \hat{\phi}_{b}  &=  \arctan\left(\frac{(2 m+1) 2^{2-n}}{\sqrt{3}}          \right) &
-  \hat{\phi}_{a}  &=  \arctan\left(\frac{\sqrt{3} (2 m+1)}{2^n-2 m-1}  \right) \\
+\dqRe[\maximaTheta{b} ] & = \pm 1 & \dqRe[\Pii{6}-\maximaTheta{a} ] & = \pm 1  \quad \text{when} \\
+\maximaTheta{b} & =\arctan\left(\frac{ 2^{3-n} }{\sqrt{3}} \left(m+\frac{1}{2}\right) \right) &
+\maximaTheta{a} & = \arctan\left(\frac{2 \sqrt{3} \left(m+\frac{1}{2}\right)}{2^n - 2 \left(m+\frac{1}{2}\right)}\right)  \\
+ \maximaTheta{b}  &=  \arctan\left(\frac{(2 m+1) 2^{2-n}}{\sqrt{3}}          \right) &
+  \maximaTheta{a}  &=  \arctan\left(\frac{\sqrt{3} (2 m+1)}{2^n-2 m-1}  \right) \\
   \quad&\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 
 \end{align*}
 
@@ -1302,13 +1316,12 @@ We are interested in a compromise between the perturbations to each channel whic
 The values $\alpha$ and $\beta$ can only move the point of intersection within the bounds of the extrema. Therefore, any solution for the point of intersection will enable the bounding extrema to be identified. 
 
 We solve first for the case where $\alpha=1$ and $\beta=1$. Recognizing that the rounded part can only take certain values
-\begin{gather*}
+\begin{equation}
 i =  \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] - \text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\frac{\pi}{6} - \phi ) \right]
  \quad \text{where}\quad i=0,1,2 \cdots 2^{n-2}
- \end{gather*}
+ \end{equation}
 then
 
-\newcommand{\thetaX}[1]{\overset{\times}{\phi}\left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
 
 \begin{gather*}
 \thetaX{i}=\arctan\left(\frac{\sqrt{i^2 2^{6-2 n}-i 2^{4-n}+49}+i 2^{3-n}-7}{2 \sqrt{3}}\right) \quad \text{where}\quad i=0,1,2 \cdots 2^{n-2}
@@ -1317,8 +1330,8 @@ then
 Each point of intersection is defined and bounded by 4 extrema. Comparing with the functional form of the extrema allows these 4 points to be identified.
 %
 %\begin{align*}
-% \check{\phi}_{a} = & \arctan\left(\frac{2m \sqrt{3} }{2^n - 2 m}\right) &
-% \check{\phi}_{b} = & \arctan\left(\frac{2m 2^{2-n}}{\sqrt{3}}       \right) \\ 
+% \minimaTheta{a} = & \arctan\left(\frac{2m \sqrt{3} }{2^n - 2 m}\right) &
+% \minimaTheta{b} = & \arctan\left(\frac{2m 2^{2-n}}{\sqrt{3}}       \right) \\ 
 % & \text{with}\quad   m =  0,1,2,3 \cdots2^{n-3} \\
 % \hat{\phi    }_{a}  = & \arctan\left(\frac{\sqrt{3} (2 m+1)}{2^n-(2 m+1)}  \right) &
 % \hat{\phi   }_{b}  = & \arctan\left(\frac{(2 m+1) 2^{2-n}}{\sqrt{3}}          \right) \\
@@ -1326,24 +1339,23 @@ Each point of intersection is defined and bounded by 4 extrema. Comparing with t
 %\end{align*}
 %
 
-\newcommand{\extremaTheta}[2]{\mathring{\phi} _{#1}\left( \scalebox{0.75}[1.0]{\( #2 \)}\right)}
 
-\begin{align*}
+\begin{align*}\label{eq:ExtremaFunctions}
  \extremaTheta{a} {l}= & \arctan\left(\frac{l \sqrt{3} }{2^n - l}\right) &
  \extremaTheta{b} {l}= & \arctan\left(\frac{l \; 2^{2-n}}{\sqrt{3}}       \right) \\ 
- \check{\phi}_{a} = & \extremaTheta{a} {2m} &
- \check{\phi}_{b} = & \extremaTheta{b} {2m} 
+ \minimaTheta{a} = & \extremaTheta{a} {2m} &
+ \minimaTheta{b} = & \extremaTheta{b} {2m} 
  & \text{with}\quad   m =  0,1,2,3 \cdots2^{n-3} \\
-  \hat{\phi}_{a} = & \extremaTheta{a} {2m+1} &
-  \hat{\phi}_{b} = & \extremaTheta{b} {2m+1} 
+  \maximaTheta{a} = & \extremaTheta{a} {2m+1} &
+  \maximaTheta{b} = & \extremaTheta{b} {2m+1} 
  &\text{with}\quad   m =  0,1,2,3 \cdots2^{n-3}-1 
 \end{align*}
 
 %\begin{tabular}{|c|c|c|c|}
 %\hline
 %  & Channel a & Channel b &  m \\ 
-%\hline Minima  &  $ \check{\phi}_{a}(m)  =  \extremaTheta{a}{2m}  $ & $ \check{\phi}_{b}(m)  = \extremaTheta{b}{2m}  $ &  $m \in \{ 0,1,2,3 \cdots2^{n-3}  \} $\\ 
-%\hline Maxima  &  $ \hat{\phi}_{a}(m)  = \extremaTheta{a}{2m+1}   $ & $ \hat{\phi}_{b}(m)  = \extremaTheta{b}{2m+1}  $  & $ m \in \{ 0,1,2,3 \cdots2^{n-3} -1 \}  $ \\ 
+%\hline Minima  &  $ \minimaTheta{a}(m)  =  \extremaTheta{a}{2m}  $ & $ \minimaTheta{b}(m)  = \extremaTheta{b}{2m}  $ &  $m \in \{ 0,1,2,3 \cdots2^{n-3}  \} $\\ 
+%\hline Maxima  &  $ \maximaTheta{a}(m)  = \extremaTheta{a}{2m+1}   $ & $ \maximaTheta{b}(m)  = \extremaTheta{b}{2m+1}  $  & $ m \in \{ 0,1,2,3 \cdots2^{n-3} -1 \}  $ \\ 
 %\hline 
 %\end{tabular} 
 
@@ -1352,8 +1364,8 @@ Separating the points of intersection into even and odd terms facilitates the id
 \begin{tabular}{|c|c|c|c|}
 \hline
   & Channel a & Channel b &  i \\ 
-\hline Minima  &  $ \check{\phi}_{a}(\frac{i}{2})=\extremaTheta{a}{i} $ & $ \check{\phi}_{b}(\frac{i}{2})=\extremaTheta{b}{i} $ & $ i \in \{0,2,4,6\cdots2^{n-2} \} $\\ 
-\hline Maxima  &  $     \hat{\phi}_{a}(\frac{i-1}{2})=\extremaTheta{a}{i} $ & $     \hat{\phi}_{b}(\frac{i-1}{2})=\extremaTheta{b}{i} $ & $ i \in \{1,3,5,7\cdots2^{n-2}-1\}  $ \\ 
+\hline Minima  &  $ \minimaTheta{a}(\frac{i}{2})=\extremaTheta{a}{i} $ & $ \minimaTheta{b}(\frac{i}{2})=\extremaTheta{b}{i} $ & $ i \in \{0,2,4,6\cdots2^{n-2} \} $\\ 
+\hline Maxima  &  $     \maximaTheta{a}(\frac{i-1}{2})=\extremaTheta{a}{i} $ & $     \maximaTheta{b}(\frac{i-1}{2})=\extremaTheta{b}{i} $ & $ i \in \{1,3,5,7\cdots2^{n-2}-1\}  $ \\ 
 \hline 
 \end{tabular} 
 
@@ -1440,7 +1452,7 @@ i(\delta\theta, n) = \frac{\meanIndx \tan (\delta \theta ) \left(\sqrt{3} \tan (
 
 The sequence of a-b channel extrema depends on both the index $i$ and the region $\iota$ in the following way:
 
-\begin{align*}
+\begin{align*}\label{eq:extremaBounds}
 \begin{array}{cc}
   \extremaTheta{b}{i-\iota-1} & < \\
   \extremaTheta{a} {i+\iota} & < 
@@ -1486,8 +1498,8 @@ i \in \{2 \mathbb{N}     \} &  \land & \iota \in \{2 \mathbb{N}    \} \\
 %\end{align}
 %allows the bounds for the points of intersection to be concisely written
 %%\begin{alignat*}{5}
-%% \hat{\phi}_{b}(m-1) && \gtrless  && \thetaX{}(2m)       &&\gtrless  &&     \hat{\phi}_{a}(m)  \\
-%% \check{\phi}_{b}(m)  && \lessgtr                   && \thetaX{}(2m+1)  && \lessgtr                  &&\check{\phi}_{a} (m+1) 
+%% \maximaTheta{b}(m-1) && \gtrless  && \thetaX{}(2m)       &&\gtrless  &&     \maximaTheta{a}(m)  \\
+%% \minimaTheta{b}(m)  && \lessgtr                   && \thetaX{}(2m+1)  && \lessgtr                  &&\minimaTheta{a} (m+1) 
 %%\end{alignat*}
 %
 %
@@ -1495,23 +1507,23 @@ i \in \{2 \mathbb{N}     \} &  \land & \iota \in \{2 \mathbb{N}    \} \\
 %
 %\begin{align}
 %\begin{array}{cc}
-% \hat{\phi}_{b}(m-1) &\gtrless \\
-%  \check{\phi}_{a} (m) & < 
+% \maximaTheta{b}(m-1) &\gtrless \\
+%  \minimaTheta{a} (m) & < 
 %\end{array}
 %\thetaX{2m}
 %\begin{array}{cc}
-%\gtrless &     \hat{\phi}_{a}(m)  \\
-%  < & \check{\phi}_{b}(m)  
+%\gtrless &     \maximaTheta{a}(m)  \\
+%  < & \minimaTheta{b}(m)  
 %\end{array} \quad
 %& \quad
 %\begin{array}{cc}
-%      \hat{\phi}_{a}(m)  & <            \\
-% \check{\phi}_{b}(m)  & \lessgtr   
+%      \maximaTheta{a}(m)  & <            \\
+% \minimaTheta{b}(m)  & \lessgtr   
 %\end{array}
 %\thetaX{2m+1}
 %\begin{array}{cc}
-% <             &    \hat{\phi}_{b}(m)  \\
-%\lessgtr    &\check{\phi}_{a} (m+1)  
+% <             &    \maximaTheta{b}(m)  \\
+%\lessgtr    &\minimaTheta{a} (m+1)  
 %\end{array} 
 %\end{align}
 %
@@ -1519,68 +1531,68 @@ i \in \{2 \mathbb{N}     \} &  \land & \iota \in \{2 \mathbb{N}    \} \\
 %%
 %%\begin{align}
 %%\begin{array}{cc}
-%% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
-%%  \check{\phi}_{a} (\frac{i}{2}) & < 
+%% \maximaTheta{b}(\frac{i}{2}-1) &\gtrless \\
+%%  \minimaTheta{a} (\frac{i}{2}) & < 
 %%\end{array}
 %%\thetaX{i} 
 %%\begin{array}{cc}
-%%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
-%%  < & \check{\phi}_{b}(\frac{i}{2})  
+%%\gtrless &     \maximaTheta{a}(\frac{i}{2})  \\
+%%  < & \minimaTheta{b}(\frac{i}{2})  
 %%\end{array} \quad
 %%& \quad
 %%\begin{array}{cc}
-%%      \hat{\phi}_{a}(\frac{i}{2})  & <            \\
-%% \check{\phi}_{b}(\frac{i}{2})  & \lessgtr   
+%%      \maximaTheta{a}(\frac{i}{2})  & <            \\
+%% \minimaTheta{b}(\frac{i}{2})  & \lessgtr   
 %%\end{array}
 %%\thetaX{i+1}
 %%\begin{array}{cc}
-%% <             &    \hat{\phi}_{b}(\frac{i}{2})  \\
-%%\lessgtr    &\check{\phi}_{a} (\frac{i}{2}+1)  
+%% <             &    \maximaTheta{b}(\frac{i}{2})  \\
+%%\lessgtr    &\minimaTheta{a} (\frac{i}{2}+1)  
 %%\end{array} 
 %%\end{align}
 %%
 %%\begin{align}
 %%\begin{array}{cc}
-%% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
-%%  \check{\phi}_{a} (\frac{i}{2}) & < 
+%% \maximaTheta{b}(\frac{i}{2}-1) &\gtrless \\
+%%  \minimaTheta{a} (\frac{i}{2}) & < 
 %%\end{array}
 %%\thetaX{i} 
 %%\begin{array}{cc}
-%%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
-%%  < & \check{\phi}_{b}(\frac{i}{2})  
+%%\gtrless &     \maximaTheta{a}(\frac{i}{2})  \\
+%%  < & \minimaTheta{b}(\frac{i}{2})  
 %%\end{array} \quad
 %%& \quad
 %%\begin{array}{cc}
-%%      \hat{\phi}_{a}(\frac{i-1}{2})  & <            \\
-%% \check{\phi}_{b}(\frac{i-1}{2})  & \lessgtr   
+%%      \maximaTheta{a}(\frac{i-1}{2})  & <            \\
+%% \minimaTheta{b}(\frac{i-1}{2})  & \lessgtr   
 %%\end{array}
 %%\thetaX{i} 
 %%\begin{array}{cc}
-%% <             &    \hat{\phi}_{b}(\frac{i-1}{2})  \\
-%%\lessgtr    &\check{\phi}_{a} (\frac{i-1}{2}+1)  
+%% <             &    \maximaTheta{b}(\frac{i-1}{2})  \\
+%%\lessgtr    &\minimaTheta{a} (\frac{i-1}{2}+1)  
 %%\end{array} 
 %%\end{align}
 %%
 %%\begin{align*}
 %%\thetaX{i}  \in & \begin{cases}
 %%\begin{array}{cc}
-%% \hat{\phi}_{b}(\frac{i}{2}-1) &\gtrless \\
-%%  \check{\phi}_{a} (\frac{i}{2}) & < 
+%% \maximaTheta{b}(\frac{i}{2}-1) &\gtrless \\
+%%  \minimaTheta{a} (\frac{i}{2}) & < 
 %%\end{array}
 %%\thetaX{i} 
 %%\begin{array}{cc}
-%%\gtrless &     \hat{\phi}_{a}(\frac{i}{2})  \\
-%%  < & \check{\phi}_{b}(\frac{i}{2})  
+%%\gtrless &     \maximaTheta{a}(\frac{i}{2})  \\
+%%  < & \minimaTheta{b}(\frac{i}{2})  
 %%\end{array} & 
 %%i \in \{ 2 \mathbb{N} \} \\
 %%\begin{array}{cc}
-%%      \hat{\phi}_{a}(\frac{i-1}{2})  & <            \\
-%% \check{\phi}_{b}(\frac{i-1}{2})  & \lessgtr   
+%%      \maximaTheta{a}(\frac{i-1}{2})  & <            \\
+%% \minimaTheta{b}(\frac{i-1}{2})  & \lessgtr   
 %%\end{array}
 %%\thetaX{i} 
 %%\begin{array}{cc}
-%% <             &    \hat{\phi}_{b}(\frac{i-1}{2})  \\
-%%\lessgtr    &\check{\phi}_{a} (\frac{i-1}{2}+1)  
+%% <             &    \maximaTheta{b}(\frac{i-1}{2})  \\
+%%\lessgtr    &\minimaTheta{a} (\frac{i-1}{2}+1)  
 %%\end{array}  & 
 %%i \in \{ 2 \mathbb{N} +1 \}
 %%\end{cases}
@@ -1613,26 +1625,26 @@ i \in \{2 \mathbb{N}     \} &  \land & \iota \in \{2 \mathbb{N}    \} \\
 We want to classify the points of intersection as greater or lesser than a tolerance $0 < \tau \le 1$. In order to do this, we make a linear approximation to the perturbation between the extrema. There is one point of intersection between each of the maxima and corresponding minima. A bit of geometry allows us to write a classification criteria for each of the points of intersection.
 
 Defining a function for the degree of error at the point of intersection using the linear approximation from the four extrema surrounding the point, and generalizing to allow for different maximum errors $\alpha$ for channel $a$ and $\beta$ for channel b. The conditions on $i$ and $\iota$ can be more compactly written by applying a condition to their product.
-\begin{align}\label{eq:generalisedPerturbation}
-h(i,\iota) & = \begin{cases}
+\begin{equation}\label{eq:generalisedPerturbation}
+h(i,\iota)  = \begin{cases}
 \frac{\alpha  \beta  (\extremaTheta{a} {i+\iota }-\extremaTheta{b} {i-\iota })}
 {\beta  (\extremaTheta{a} {i+\iota } - \extremaTheta{a} {i+\iota +1} ) + \alpha  (\extremaTheta{b} {i-\iota -1} - \extremaTheta{b} {i-\iota } ) }  &
-  i \iota \in \{2 \mathbb{N}     \}  \\
+  i + \iota \in \{2 \mathbb{N}     \}  \\
 \frac{\alpha  \beta  (\extremaTheta{b} {i-\iota -1}-\extremaTheta{a} {i+\iota +1})}
 {\beta  ( \extremaTheta{a} { i+\iota } -\extremaTheta{a} { i+\iota + 1 } ) +\alpha  ( \extremaTheta{b} {i-\iota -1} -\extremaTheta{b} {i-\iota } ) }  & 
-i \iota \in \{2 \mathbb{N}  + 1 \} 
+i + \iota \in \{2 \mathbb{N}  + 1 \} 
 \end{cases}
-\end{align}
+\end{equation}
 
 allows the criteria for a channel to be written as $\tau \ge h(i,\iota)$. 
 
 \parpic(79mm,104mm)[r]{\fbox{\parbox{76mm}{
 \includegraphics[width=76mm]{Chapter2/Figs/GeometryClassifyPoint.jpg}  \\
 \centering  $\frac{h_1}{h_2} = \frac{b}{a} \quad h_1 = \frac{b}{a+b} $ \\
-\centering $a_{2m}  =     \| \hat{\phi}_{b}(m-1) -     \hat{\phi}_{a}(m) \|  $ \\
-\centering $b_{2m}  = \check{\phi}_{a}(m)     - \check{\phi}_{b}(m)$ \\
-\centering $a_{2m+1}   =     \hat{\phi}_{a}(m)     -      \hat{\phi}_{b}(m)$    \\   
-\centering $b_{2m+1}  = \| \check{\phi}_{b}(m)     - \check{\phi}_{a} (m+1) \| $  \\
+\centering $a_{2m}  =     \| \maximaTheta{b}(m-1) -     \maximaTheta{a}(m) \|  $ \\
+\centering $b_{2m}  = \minimaTheta{a}(m)     - \minimaTheta{b}(m)$ \\
+\centering $a_{2m+1}   =     \maximaTheta{a}(m)     -      \maximaTheta{b}(m)$    \\   
+\centering $b_{2m+1}  = \| \minimaTheta{b}(m)     - \minimaTheta{a} (m+1) \| $  \\
 }}
 }
 
@@ -2259,7 +2271,6 @@ Using the distribution constants \ref{eq:DistributionConstants} , the gradient a
   \widetilde{\theta} = \theta  \bmod \frac{\pi }{3} 
   \end{array}
 \end{gather*}
-
 The length of the axis $\tRange$ after rescaling is given by \ref{eq:CombinedRotationRange} and the axis limits are easily found.
 \begin{gather}
  \tRange(\theta,\mu,\sigma)   =  \min\left\{K \delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\}  \srcRange \\
@@ -2285,12 +2296,10 @@ and the compression ratio $\kappa$ \ref{eq:newCompressionRatio}
 \\
 \item \textbf{Set the distribution region boundary constants.} 
 Using the constants previously defined ( \ref{eq:PreservedRegionConsts} , \ref{eq:0to1} )
-
 \begin{align*}
   w(\mu,\sigma)  & =  \sigma  \sqrt{ \log \left(\frac{2}{\pi } \right) -2 \log \left(\kappa \sigma  \left(\Sigma^+-\Sigma^-\right)\right) } &
   \text{dL} &= \frac{1}{\dstRange} 
 \end{align*}
-
 we find the boundaries in the unit range 
 \begin{equation}
 \begin{aligned}
@@ -2307,9 +2316,7 @@ and the boundaries in the working range
 \Keep(\mu,\sigma) &= \tMin + \tRange\left( \keep(\mu,\sigma) \right) 
 \end{aligned}
 \end{equation}
-
 The extended region in which all the information is kept is found by numerically solving the defining equations for the  extended boundaries $\eKeep_1$ and $\eKeep_2$ with the practical introduction of a parameter $ \tau_{p} $ which extends the acceptable deviation from linearity. So $ \tau_{p} =1$ would allow 1 discarded piece of information within the extended region.
-
 \begin{equation}
 \begin{aligned}
 \left\lceil\text{dis}\left(\Keep _1\right)\right\rceil-\Keep _1 - \tau_{p} & =\text{dis}\left(\eKeep _1\right)- \eKeep _1 &
@@ -2318,22 +2325,252 @@ The extended region in which all the information is kept is found by numerically
 \end{equation}
 the C++ code finds the points using the following algorithm
 
-
 \begin{algorithm}[H]
- \KwData{$x = \Keep _2$ the starting point for the linear walk}
- \KwResult{$\eKeep _2$ the extended boundary}
- $y = dis(x)$ \tcc*[r]{$dis(x)$ is the distribution function}
- \While{$dis(x) > \left\lfloor\text{dis}\left(\Keep _2\right)\right\rfloor + x -\Keep _2 - \tau_{p}$}{
+ \KwData{$\Keep _2$ the starting point for the linear walk \;
+$\tau_{p}$ the acceptable divergence from linearity }
+ \KwResult{$ \{\eKeep_1, \eKeep_2\} $ the extended boundaries}
+ $x \leftarrow \Keep_2$  \tcc*[r]{$dis(x)$ is the distribution function}
+ \While{$dis(x) > x + \left\lfloor\text{dis}\left(\Keep _2\right)\right\rfloor  -\Keep _2 - \tau_{p}$}{
   x++ \;
  } 
- $\eKeep_2=x$ \;
- $\eKeep_1=\Keep _1 - (\eKeep_2 - \Keep _2)$ \;
+ $\eKeep_2 \leftarrow x$ \;
+ $\eKeep_1 \leftarrow \Keep _1 - (\eKeep_2 - \Keep _2)$ \tcc*[r]{Exploiting a symetry dis(x)}
+ \KwRet{$\eKeep_1$ ,$\eKeep_2$ }
  \caption{Finding the extended region in which all the information is kept in C++}
+\end{algorithm}
+\\
+\item \textbf{Suggest a new value for $\theta$.} 
+
+First we find the perturbation scaling \ref{eq:perturbationFunctionSigns} and the perturbation function ordering function \ref{eq:abPerturbationFunctionOrdering}
+%\begin{gather}\label{eq:abPerturbationFunctionOrdering}
+%\dqEO[  \left(
+%\begin{smallmatrix}
+% 0   \\
+% a   \\
+% b  \\
+% \end{smallmatrix} 
+%\right)  ,\theta ] =
+%\begin{cases}
+% \left(
+%\begin{smallmatrix}
+% 0 \\
+% a  \\
+% b \\
+%\end{smallmatrix} 
+%\right) & 0\leq (\theta  \bmod \frac{\pi}{3} )<\frac{\pi }{6} \\
+% \left(
+%\begin{smallmatrix}
+% 0 \\
+% b  \\
+% a \\
+%\end{smallmatrix} 
+%\right) & \frac{\pi }{6} \leq (\theta  \bmod \frac{\pi}{3} ) < \frac{\pi }{3} 
+%\end{cases} \\
+%\dqs[\theta] =
+%\begin{cases}
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% 1 & 0 & -1 \\
+% 1 & -1 & 0 \\
+%\end{smallmatrix} 
+%\right) & 0\leq (\theta  \bmod \pi )<\frac{\pi }{6} \\
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% 0 & 1 & -1 \\
+% -1 & 1 & 0 \\
+%\end{smallmatrix} 
+%\right) & \frac{\pi }{6}\leq (\theta  \bmod \pi )<\frac{\pi }{3} \\
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% 0 & -1 & 1 \\
+% -1 & 0 & 1 \\
+%\end{smallmatrix} 
+%\right) & \frac{\pi }{3}\leq (\theta  \bmod \pi )<\frac{\pi }{2} \\
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% 1 & -1 & 0 \\
+% 1 & 0 & -1 \\
+%\end{smallmatrix} 
+%\right) & \frac{\pi }{2}\leq (\theta  \bmod \pi )<\frac{2 \pi }{3} \\
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% -1 & 1 & 0 \\
+% 0 & 1 & -1 \\
+%\end{smallmatrix} 
+%\right) & \frac{2 \pi }{3}\leq (\theta  \bmod \pi )<\frac{5 \pi }{6} \\
+% \left(
+%\begin{smallmatrix}
+% 0 & 0 & 0 \\
+% -1 & 0 & 1 \\
+% 0 & -1 & 1 \\
+%\end{smallmatrix} 
+%\right) & \frac{5 \pi }{6}\leq (\theta  \bmod \pi )<\pi 
+%\end{cases}
+%\end{gather}
+In order to set the values for the scaling of the perturbation $\alpha$ and $\beta$ the absolute value of the perturbation matrix sign $\left\lVert \dqs[\theta] \right\rVert$ can be writen in terms of a single row vector function $\dqas[\theta]$ 
+\begin{align*}
+\left\lVert \dqs[\theta] \right\rVert & = 
+\left( \begin{smallmatrix}  0&0&0   \\   \cdots & \dqas[\theta + \frac{\pi}{2}] & \cdots   \\  \cdots & \dqas[\theta]   & \cdots  \\ \end{smallmatrix}  \right) 
+&
+\dqas[\theta] &=\begin{cases}
+\left(\begin{smallmatrix} 1 & 1 & 0 \end{smallmatrix} \right)&  0                     \leq \scalebox{0.75}{ $(\theta \bmod \pi )$ }<\frac{   \pi }{3} \\
+\left(\begin{smallmatrix} 1 & 0 & 1 \end{smallmatrix} \right)&  \frac{   \pi }{3}\leq \scalebox{0.75}{ $(\theta \bmod \pi )$ }<\frac{2 \pi }{3} \\
+\left(\begin{smallmatrix} 0 & 1 & 1 \end{smallmatrix} \right) & \frac{2 \pi }{3}\leq \scalebox{0.75}{ $(\theta \bmod \pi )$ }<\pi  \\
+\end{cases} 
+\end{align*}
+Then we find the point at which loss of information does not matter in RGB space $\discard^{RGB}_2$ 
+\begin{align*}
+\discard^{RGB}_2 &= \max \left\{ 
+  \R^{T} \cdot \left( \nS \otimes \left( \discard_1 - \Rc \right) \right) , 
+  \R^{T} \cdot \left( \nS \otimes \left( \discard_2 - \Rc \right) \right) 
+\right\} &
+ \text{where} \quad \Rc=
+\begin{pmatrix}
+                 0   \\
+                 \frac{1}{2}    \\
+                 \frac{1}{2}     \\
+\end{pmatrix} 
+\end{align*}
+
+Then we numerically find 
+
+\begin{align*}
+ \begin{pmatrix}  0   \\   \alpha   \\  \beta   \\ \end{pmatrix}     % &=  
+%\dqEO\left[  \min\left\{K \delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\} 
+% \otimes 
+%        \begin{pmatrix}  0   \\   2   \\  2    \\ \end{pmatrix} 
+%         \otimes 
+%        \max \left\{\text{abs}(\dqs[\theta]) \otimes \left(\discard^{RGB}_2 \right)^T \right\}
+%        \right]\\
+        &=\dqEO\left[ \begin{pmatrix} 
+         0 \\ 
+         2 \min\left\{K \delta(\mu_2,\sigma_2) \right. ,  \left. \mathbf{L}_2(\theta) \right\}  \max \left\{\dqas[\theta + \frac{\pi}{2}]  \otimes \left(\discard^{RGB}_2 \right)^T \right\}  \\
+         2 \min\left\{K \delta(\mu_3,\sigma_3) \right. ,  \left. \mathbf{L}_3(\theta) \right\}  \max \left\{\dqas[\theta                       ] \otimes \left(\discard^{RGB}_2 \right)^T \right\}   \\
+          \end{pmatrix} \right]
+\end{align*}
+
+The algorithm then finds a starting value for the index \ref{eq:indexFromTheta} and returns the closest value which  satisfies the tolerance \ref{eq:generalisedPerturbation}
+
+%\setlength{\belowdisplayskip}{0pt} \setlength{\belowdisplayshortskip}{0pt}
+%\setlength{\abovedisplayskip}{0pt} \setlength{\abovedisplayshortskip}{0pt}
+
+\begin{align*}
+ i(\delta\theta, n) &= \frac{\meanIndx \tan (\delta \theta ) \left(\sqrt{3} \tan (\delta \theta )+7\right)}{\tan (\delta \theta )+\sqrt{3}} &
+  \delta\theta &= \theta \mod{\frac{\pi}{6} } &
+  \meanIndx & = 2^{n-3} 
+\end{align*}
+
+The region $\iota$ for a given value of $i$ is found and the appropriate values  \ref{eq:extremaBounds} for the extrema \ref{eq:ExtremaFunctions} are evaluated in the function which funds the perturbation at the index \ref{eq:generalisedPerturbation} and the intercept position $\thetaX{i}$ is found with the following routine.
+%\begin{gather*}
+%\begin{aligned}
+% \iota(i,n)  &= \left\lfloor 7\ \meanIndx-\sqrt{i^2 - 2 i \; \meanIndx + 49\ \meanIndx^2 }\right\rfloor &
+%  \extremaTheta{a} {l} = & \arctan\left(\frac{l \sqrt{3} }{2^n - l}\right) &
+%  \extremaTheta{b} {l} = & \arctan\left(\frac{l \; 2^{2-n}}{\sqrt{3}}       \right)
+%\end{aligned} \\
+%\begin{aligned}
+% \minimaTheta{a}  &= \extremaTheta{a}{i+\iota} &
+% \maximaTheta{b} &= \extremaTheta{b}{i-\iota-1} & 
+% \minimaTheta{b}  &= \extremaTheta{b}{i-\iota}  &
+% \maximaTheta{a} &= \extremaTheta{a}{i+\iota+1}  &
+%  \text{when} \quad 
+%i + \iota &\in \{2 \mathbb{N}     \} \\
+% \maximaTheta{a}  &= \extremaTheta{a}{i+\iota} & 
+% \minimaTheta{b}  &= \extremaTheta{b} {i-\iota-1} &
+% \maximaTheta{b} &= \extremaTheta{b}{i-\iota}  &
+% \minimaTheta{a}  &= \extremaTheta{a}{i+\iota+1}  & 
+%\text{when} \quad 
+%i + \iota &\in \{2 \mathbb{N}  + 1 \} 
+%\end{aligned}\\
+%\thetaX{i} = \left\{\frac{
+%\beta \minimaTheta{b} (\minimaTheta{a}  -\maximaTheta{a} )+\alpha  \minimaTheta{a} (\maximaTheta{b}-\minimaTheta{b})  }{
+%\beta  (\minimaTheta{a} -\maximaTheta{a})+\alpha  (\maximaTheta{b}-\minimaTheta{b})
+%},\frac{
+%\alpha  \beta  (\minimaTheta{a}-\minimaTheta{b})  }{
+%\beta  (\minimaTheta{a}-\maximaTheta{a})+\alpha  (\maximaTheta{b}-\minimaTheta{b})
+%}\right\}
+%\end{gather*}
+
+ \begin{algorithm}[H]
+ \SetKwProg{Fn}{Function}{is}{end}
+      \Fn{$\thetaX{i, \alpha, \beta, n}$}{
+       \KwData{$i$ integer index of the intercept \quad
+        $n$ the source bit depth }
+       \KwResult{$\thetaX{i} $ the angular position of the intercept and the maximum perturbation at that value}
+       $\meanIndx \leftarrow  2^{n-3}$  ; \quad 
+        $\iota(i,n)  \leftarrow  \left\lfloor 7\ \meanIndx-\sqrt{i^2 - 2 i \; \meanIndx + 49\ \meanIndx^2 }\right\rfloor $ \;
+        $\extremaTheta{b}{\mathbf{l} } = \arctan\left(\frac{\mathbf{l} \; 2^{2-n}}{\sqrt{3}}       \right)$ ; \quad 
+        $\extremaTheta{a}{\mathbf{l} } = \arctan\left(\frac{\mathbf{l} \sqrt{3} }{2^n - \mathbf{l}}\right)$\;
+        \eIf($i + \iota$ is even){$ i + \iota \bmod{2} = 0$}{
+                 $\maximaTheta{a} \leftarrow \extremaTheta{a}{i+\iota+1}  $ ;\quad
+                 $\minimaTheta{a}  \leftarrow \extremaTheta{a}{i+\iota} $ \;
+                 $\maximaTheta{b} \leftarrow \extremaTheta{b}{i-\iota-1} $ ;\quad
+                 $\minimaTheta{b}  \leftarrow \extremaTheta{b}{i-\iota}  $\;
+          }{
+                 $\maximaTheta{a}  \leftarrow \extremaTheta{a}{i+\iota} $ ;\quad
+                 $\minimaTheta{a}  \leftarrow \extremaTheta{a}{i+\iota+1}  $ \;
+                 $\maximaTheta{b} \leftarrow \extremaTheta{b}{i-\iota}  $ ;\quad
+                 $\minimaTheta{b}  \leftarrow \extremaTheta{b} {i-\iota-1} $ \;
+         }
+        $\thetaX{i} \leftarrow \left\{\frac{
+        \beta \minimaTheta{b} (\minimaTheta{a}  -\maximaTheta{a} )+\alpha  \minimaTheta{a} (\maximaTheta{b}-\minimaTheta{b})  }{
+        \beta  (\minimaTheta{a} -\maximaTheta{a})+\alpha  (\maximaTheta{b}-\minimaTheta{b})
+        },\frac{
+        \alpha  \beta  (\minimaTheta{a}-\minimaTheta{b})  }{
+        \beta  (\minimaTheta{a}-\maximaTheta{a})+\alpha  (\maximaTheta{b}-\minimaTheta{b})
+        }\right\} $ \;
+      \KwRet{$\thetaX{i}$}
+      }
+ \caption{A function which returns the angular position of compromise between the perturbations to the channels.}
 \end{algorithm}
 
 
+To find the angular value closest to $\theta$ which produces a perturbation less than the tolerance $\tau$ the algorithm finds the closest value which satisfies the tolerance in the positive and negative directions and returns the nearest one to the requested value of $\theta$. the algorithm is guaranteed to find a value which satisfies the tolerance in each direction within a $\frac{\pi}{6}$ region because the perturbation is zero at the ends of the $\frac{\pi}{6}$ region.
+ 
+\begin{algorithm}[H]
+\SetKwProg{Fn}{Function}{is}{end}
+ \KwData{$\alpha$, $\beta$ the relative importance of the channels \;
+  \quad\quad\quad  $\theta$ the requested angle \;
+   \quad\quad\quad $\tau$ the tolerance}
+ \KwResult{$\vartheta$ the suggested value for $\theta$ and 
+ $h$ the predicted maximum perturbation.}
+ $\delta\theta  \leftarrow \theta \mod{\frac{\pi}{6} } $\;
+ $\Theta  \leftarrow \theta - \delta\theta $\;
+  $\meanIndx \leftarrow  2^{n-3}$\;
+ $ i_{\circleddash} \leftarrow i_{\oplus} \leftarrow \frac{\meanIndx \tan (\delta \theta ) \left(\sqrt{3} \tan (\delta \theta )+7\right)}{\tan (\delta \theta )+\sqrt{3}} $ \;
+ $\left\{ \vartheta_{\circleddash}, h_{\circleddash} \right\} \leftarrow \left\{ \vartheta_{\oplus}, h_{\oplus} \right\} \leftarrow \thetaX{i, \alpha, \beta, n}$ \;
+ \While{$h_{\oplus} > \tau$}{
+  $i_{\oplus}++$ \;
+   $\left\{ \vartheta_{\oplus}, h_{\oplus}\right\} \leftarrow \thetaX{i_{\oplus}, \alpha, \beta, n}$
+ } 
+ \While{$h_{\circleddash} > \tau$}{
+   $i_{\circleddash}--$ \;
+    $\left\{ \vartheta_{\circleddash}, h_{\circleddash}\right\} \leftarrow \thetaX{i_{\circleddash}, \alpha, \beta, n}$
+  } 
+  \eIf{ $\vartheta_{\oplus} -\delta\theta < \delta\theta - \vartheta_{\circleddash}$ }{
+  $\left\{ \vartheta, h\right\}  = \left\{\Theta + \vartheta_{\oplus}, h_{\oplus}\right\}  $ }{
+  $\left\{ \vartheta, h\right\}  = \left\{\Theta + \vartheta_{\circleddash}, h_{\circleddash}\right\} $
+  }
+ \KwRet{$\left\{ \vartheta, h\right\} $ }
+  \caption{Suggest a new value for $\theta$}
+ \end{algorithm}
+ 
+
+For the new RGB corners we need to find the largest element which can result from the inner product with $\dqs[\theta]$. As the elements of $\dqs[\theta]$ are in $\{-1,0,1\}$ with only one occurrence of each in the second and third rows we need to find the largest element of $\discard^{RGB}_2$ which is not in the zero position. The algorithm solves:
+
+\begin{align*}
+ \begin{pmatrix}  0   \\   \alpha_2   \\  \beta_2   \\ \end{pmatrix}     &=  
+\dqEO\left[  
+\max \left\{\text{abs}(\dqs[\theta]) \otimes \left(\discard^{RGB}_2 \right)^T \right\}
+\right]
+\end{align*}
+
+
 \\
-\item \textbf{Suggest a new value for $\theta$.} stuff \\
 \item \textbf{Set the integer rotation matrix.} stuff \\
 \item \textbf{Design the distribution function.} stuff \\
 
