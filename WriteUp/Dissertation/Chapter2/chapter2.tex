@@ -61,6 +61,14 @@
   }
 } 
 
+% The matrix which is used in the algorithm \aR=\fSs \otimes \qR 
+\newcommand\aR[1][]{
+  \ifstrempty{#1}{
+    \mathbf{aR}
+  }{
+    \mathbf{aR}\left( #1 \right)
+  }
+} 
 
 % The matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
 \newcommand\qRe[1][]{
@@ -270,7 +278,10 @@
 \newcommand{\iT}{\intT}                    % Rotated values in the integer range tMin:tMax
 \newcommand{\tMax}{\text{tMax}}            % Rotated values integer range maximum
 \newcommand{\tMin}{\text{tMin}}            % Rotated values integer range mimimum
-\newcommand{\tRange}{\text{tRange}}        % Rotated values integer range
+\newcommand{\tRange}{\text{tRange}}        % Rotated values after integer rotation range 
+\newcommand{\aMax}{\text{aMax}}            % Rotated values after integer rotation integer range maximum
+\newcommand{\aMin}{\text{aMin}}            % Rotated values after integer rotation integer range mimimum
+\newcommand{\aRange}{\text{aRange}}        % Rotated values integer range
 \newcommand{\discreteT}{\widetilde{\uT}}   % Rotated values found using the discretized transformation matrix
 \newcommand{\dT}{\discreteT}               % Rotated values found using the discretized transformation matrix
 \newcommand{\delT}{\delta\uT}              % Error in the Rotated values found using the discretized transformation matrix
@@ -725,12 +736,12 @@ Scale : $fS[\theta]$ \\
 
 By defining $\theta$ as $\theta  = \Theta + \thetaA$ --- where $\thetaA = \theta \!\!\mod \Pii{6}$, and $\Theta$ is the starting value for the region in which $\theta$ lies --- and substituting in the function $\fRe[\phi] $:
 
-\begin{align}
+\begin{align}\label{eq:fReDef}
 \fRe[\phi] &= \frac{\um 1}{2} \left(1+\sqrt{3} \tan (\phi )\right) 
 \end{align}
 
-we can now rewrite the factored rotation as:
-
+we can now rewrite the factored rotation as shown in \ref{table:factoredRotationMatrix}
+\begin{table}[h]
 \begin{tabular}{|c|c|c|}
 \hline \rule[-2ex]{0pt}{5.5ex}  
 $\Theta$ & 
@@ -851,11 +862,12 @@ $\fSs[\theta] \otimes \fSe[\theta]$ \\
 \!\!\!\right)  \)  \\ 
 \hline 
 \end{tabular} 
-
+\label{table:factoredRotationMatrix}
+\end{table}
 
 We can now relate the functions to each other, since they are now essentially the same function, and $\thetaA$ has the same domain; the values they take have the same range, despite being in different positions in the matrix. This allows us to write the piecewise function $\fR$ independently as a function $\fRO$, which re-orders the elements of the matrix in region $\mathbf{A}$ appropriately for the other regions.
 
-\begin{align}
+\begin{align}\label{eq:factoredMatrixDef}
 \fR[\theta] & = \fRO \left[ \fRm{\thetaA} , \theta \right] \\
 & = \fRO \left[
 \begin{pmatrix}
@@ -940,7 +952,7 @@ The fully factorized matrix can now be written as
 
 The factored rotation $\mathbf{fR}$ contains 4 non-integer elements lying between $-1$ and $0$, which we wish to quantize. This can be done simply by multiplying it by $2^{n - 2}$, where $n$ is the bit depth of the integer type, and rounding the result: 
 
-\begin{align}
+\begin{align}\label{eq:quantizedMatrixDef}
  \qR[\theta, n] &=
 \textbf{Round}\left[
 \left(
@@ -1221,7 +1233,7 @@ We can now express the perturbation to the rotation and to the channel elements 
 
 defining
 
-\begin{align*}
+\begin{align}\label{eq:scaleDef}
 \Scale[\theta, n]   & =
 \begin{pmatrix}
   \frac{1}{3} \\
@@ -1231,7 +1243,7 @@ defining
 \otimes  \fSs(\theta)    \\
 \nRa[\theta]   & =  \Scale[\theta] \otimes \fRO \left[   \qRe[ \theta, n ] \right]   \\
 \dnR[\theta]   & =  \Scale[\theta] \otimes \fRO \left[ \dqRe[ \theta, n ] \right] \\
-\end{align*}
+\end{align}
 
 \newcommand{\rgb}{\vec{v}}
 \newcommand{\w}{\vec{w}}
@@ -2338,6 +2350,8 @@ $\tau_{p}$ the acceptable divergence from linearity }
  \KwRet{$\eKeep_1$ ,$\eKeep_2$ }
  \caption{Finding the extended region in which all the information is kept in C++}
 \end{algorithm}
+
+The unit range boundaries $\ekeep$ are found using  $\ekeep =  \frac{\eKeep - \tMin}{\tRange}$.
 \\
 \item \textbf{Suggest a new value for $\theta$.} 
 
@@ -2560,19 +2574,315 @@ To find the angular value closest to $\theta$ which produces a perturbation less
  \end{algorithm}
  
 
-For the new RGB corners we need to find the largest element which can result from the inner product with $\dqs[\theta]$. As the elements of $\dqs[\theta]$ are in $\{-1,0,1\}$ with only one occurrence of each in the second and third rows we need to find the largest element of $\discard^{RGB}_2$ which is not in the zero position. The algorithm solves:
+\item \textbf{Set the integer rotation matrix.} 
+\newcommand{\round}[1]{\text{Round}\left[ #1 \right] }
+\newcommand{\elemU}{\mathbf{U}}
+\newcommand{\elemAp}{\mathbf{A}_\oplus}
+\newcommand{\elemAm}{\mathbf{A}_\circleddash }
+\newcommand{\elemBp}{\mathbf{B}_\oplus}
+\newcommand{\elemBm}{\mathbf{B}_\circleddash }
+Expanding the definition of the quantized matrix $\qR[\theta, n]$ \ref{eq:quantizedMatrixDef} with the definitions of the factored matrix $\fR[\theta] $ \ref{eq:factoredMatrixDef}, the matrix ordering $ \fRO \left[ \cdots , \theta \right] $ \ref{table:factoredRotationMatrix} and the factored matrix function $\fRe[\phi]$ \ref{eq:fReDef} allows a more algorithm minded form to be written.
+%
+%\begin{align*}
+%\fRe[\phi] &= \frac{\um 1}{2} \left(1+\sqrt{3} \tan (\phi )\right)  \\
+% \qR[\theta, n] &=
+%\round{   \left( \begin{array}{c} 1  \\ 2^{n - 2} \\ 2^{n - 2}  \\ \end{array} \right) \bigotimes \fR[\theta] }
+%\quad \text{and} \quad 
+%\qS[n] = \left(\begin{array}{c} 1  \\ 2^{2-n } \\ 2^{2-n }  \\ \end{array} \right) \\
+% \qR[\theta, n] &=
+%\round{   \left( \begin{array}{c} 1  \\ 2^{n - 2} \\ 2^{n - 2}  \\ \end{array} \right) \bigotimes \fRO \left[ \fRm{\thetaA} , \theta \right]  } \\
+% \qR[\theta, n] &=
+%\round{   \left( \begin{array}{c} 1  \\ 2^{n - 2} \\ 2^{n - 2}  \\ \end{array} \right) \bigotimes 
+%\fRO \left[
+%\left(\begin{smallmatrix}
+% 1 & 1 & 1 \\
+% \text{fRe} (\thetaA)  & 1 & -1-\text{fRe} (\thetaA ) \\
+% \text{fRe} \left(\frac{\pi }{6}-\thetaA \right) & -1 - \text{fRe} \left(\frac{\pi }{6}-\thetaA \right) & 1 \\
+%\end{smallmatrix}\right) , \theta \right] } 
+%\end{align*}
+
+%\begin{align*}
+%\elemAp & = \fReq{\thetaA } &
+%\elemAm & = -1-\fReq{\thetaA }  & 
+%\elemBp & = \fReq{\frac{\pi }{6}-\thetaA } & 
+%\elemBm & =-1 - \fReq{\frac{\pi }{6}-\thetaA} \\
+%\elemAp & = \frac{\um 1}{2} \left(1+\sqrt{3} \tan (\thetaA )\right) &
+%\elemAm & = -1-\frac{\um 1}{2} \left(1+\sqrt{3} \tan (\thetaA )\right)  & 
+%\elemBp & = \frac{\um 1}{2} \left(1+\sqrt{3} \tan (\frac{\pi }{6}-\thetaA )\right)  & 
+%\elemBm & =-1 - \frac{\um 1}{2} \left(1+\sqrt{3} \tan (\frac{\pi }{6}-\thetaA )\right)  \\
+%\elemAp & = \frac{\um 1}{2} \left(1+\sqrt{3} \tan (\thetaA )\right) &
+%\elemAm & = \frac{\um 1}{2} \left(1-\sqrt{3} \tan (\thetaA )\right)  & 
+%\elemBp & = \frac{\um 1}{2} \left(1+\sqrt{3} \tan (\frac{\pi }{6}-\thetaA )\right)  & 
+%\elemBm & =\frac{\um 1}{2} \left(1-\sqrt{3} \tan (\frac{\pi }{6}-\thetaA )\right)   \\
+%\elemAp  & = -2^{n-3 } \left(1+\sqrt{3} \tan (\thetaA )\right) &
+%\elemAm & = -2^{n-3 } \left(1-\sqrt{3} \tan (\thetaA )\right)  & 
+%\elemBp  & = -2^{n-3 } \left(1+\sqrt{3} \tan (\frac{\pi }{6}-\thetaA )\right)  & 
+%\elemBm & =-2^{n-3 } \left(1-\sqrt{3} \tan (\frac{\pi }{6}-\thetaA )\right)   \\
+%\end{align*}
+
+
+\begin{gather*}
+\begin{aligned}
+\aR &= \fSs \otimes \qR & \elemU     &= 2^{n-2 } 
+\end{aligned} \\
+\begin{aligned}
+\elemAp  & = - \left(2^{n-3 }+\round{ 2^{n-3 }\sqrt{3} \tan (\thetaA ) }\right) & -2^{n-2} \le & \elemAp \le -2^{n-3} \\
+\elemAm & = - \left(2^{n-3 } -\round{ 2^{n-3 }\sqrt{3} \tan (\thetaA )}\right)  & -2^{n-3} \le  & \elemAm \le 0 \\
+\elemBp   & = - \left(2^{n-3 } +\round{ 2^{n-3 }\sqrt{3} \tan \left(\frac{\pi }{6}-\thetaA \right) }\right)  & -2^{n-2} \le & \elemBp  \le -2^{n-3} \\
+\elemBm  & = - \left(2^{n-3 } -\round{ 2^{n-3 }\sqrt{3} \tan \left(\frac{\pi }{6}-\thetaA \right) }\right)   & -2^{n-3} \le & \elemBm \le 0 \\
+\end{aligned} \\
+ \qR[\theta, n] % &=
+% \round{ \left(\begin{array}{c} 1  \\ 2^{n - 2} \\ 2^{n - 2}  \\\end{array} \right) \bigotimes \fR[\theta] } \\
+  =
+\begin{cases}
+\left(
+\begin{smallmatrix}
+ 1              & 1             & 1  \\
+ \elemAp  & \elemU    & \elemAm \\
+ \elemBp   & \elemBm & \elemU \\
+\end{smallmatrix}
+\right) & 0\leq (\theta  \bmod \pi )<\frac{\pi }{6} \\
+ \left(
+\begin{smallmatrix}
+ 1              & 1             & 1  \\
+ \elemU     & \elemBp  & \elemBm \\
+ \elemAm  & \elemAp  & \elemU \\
+\end{smallmatrix}
+\right) & \frac{\pi }{6}\leq (\theta  \bmod \pi )<\frac{\pi }{3} \\
+ \left(
+\begin{smallmatrix}
+ 1              & 1             & 1  \\
+ \elemU    & \elemAm & \elemAp \\
+ \elemBm  & \elemU   & \elemBp \\
+\end{smallmatrix}
+\right) & \frac{\pi }{3}\leq (\theta  \bmod \pi )<\frac{\pi }{2} \\
+ \left(
+\begin{smallmatrix}
+ 1              & 1             & 1  \\
+ \elemBp   & \elemBm & \elemU \\
+ \elemAp   & \elemU   & \elemAm \\
+\end{smallmatrix}
+\right) & \frac{\pi }{2}\leq (\theta  \bmod \pi )<\frac{2 \pi }{3} \\
+ \left(
+\begin{smallmatrix}
+ 1              & 1             & 1  \\
+ \elemAm  & \elemAp & \elemU \\
+ \elemU     & \elemBp  & \elemBm \\
+\end{smallmatrix}
+\right)  & \frac{2 \pi }{3}\leq (\theta  \bmod \pi )<\frac{5 \pi }{6} \\
+\left(
+\begin{smallmatrix}
+ 1              & 1             & 1  \\
+ \elemBm  & \elemU   & \elemBp \\
+ \elemU    & \elemAm & \elemAp \\
+\end{smallmatrix}
+\right)  & \frac{5 \pi }{6}\leq (\theta  \bmod \pi )<\pi 
+\end{cases} \\ 
+ \fSs[\theta]  =
+\begin{cases}
+\left( \begin{smallmatrix}  1 \\    1 \\   1\\ \end{smallmatrix} \right) & 0                   \leq (\theta  \bmod \frac{2 \pi }{3} ) < \frac{  \pi }{6} \\
+\left( \begin{smallmatrix}  1 \\  -1 \\   1\\ \end{smallmatrix} \right) & \frac{\pi }{6} \leq  (\theta  \bmod \frac{2 \pi }{3} ) < \frac{  \pi }{3} \\
+\left( \begin{smallmatrix}  1 \\  -1 \\ -1\\ \end{smallmatrix} \right) & \frac{\pi }{3} \leq  (\theta  \bmod \frac{2 \pi }{3} ) < \frac{  \pi }{2} \\
+\left( \begin{smallmatrix}  1 \\    1 \\ -1\\ \end{smallmatrix} \right) & \frac{\pi }{2} \leq  (\theta  \bmod \frac{2 \pi }{3} ) < \frac{2\pi }{3} 
+\end{cases} 
+\end{gather*}
+This $\aR[\theta, n]$ matrix is used to perform the rotation of the pixel values. Taking the inner product of $\aR$ with the pixel values produces 
+a rotated set of pixel values $\vec{a} = \aR \cdot \vec{rgb}$ with elements $ \vec{a}_1 \in \{0 \cdots 2^{n+2} \}$,  $ \vec{a}_2 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$ and $ \vec{a}_3 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$. 
+\begin{align*}
+\aMin     &= \left( \begin{smallmatrix}  0           \\  -2^{2n-1}  \\ -2^{2n-1} \\ \end{smallmatrix} \right) & 
+\aMax    &= \left( \begin{smallmatrix}  2^{n+2} \\    2^{2n-1}  \\   2^{2n-1} \\ \end{smallmatrix} \right) & 
+\aRange &= \left( \begin{smallmatrix}  2^{n+2} \\    2^{2n}      \\   2^{2n}     \\ \end{smallmatrix} \right) 
+\end{align*}
+\\
+\item \textbf{Design the distribution function.} 
+First the overall scaling for the quantised rotation matrix is found by combining the normalised scaling $\Scale[\theta, n]$ \ref{eq:scaleDef} with the desired scaling defined in equation \ref{eq:CombinedRotationRange}
+
+\begin{equation*}
+\Scale =
+ \min\left\{K \delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\}  \otimes
+\begin{pmatrix}
+  \frac{1}{3} \\
+ 2^{1-n } \\
+ 2^{1-n }  \\
+\end{pmatrix}    \\
+\end{equation*}
+
+Next we decide which of the distribution methods should be used. This is done by assessing the size of each of the regions relative to a tolerance. The algorithm avoids unnecessary operations by finding the region directly with the unscaled result of the inner product between the matrix $\aR$ and the pixel value.
+%\begin{align*}
+%\mathbf{Q}_{discard}     &\leftarrow \tau_{discard}     \le    1-\discard_2 + \discard_1 \\
+%\mathbf{Q}_{distribute} &\leftarrow \tau_{distribute}  \le    \discard_2 - \ekeep_2 + \ekeep_1 - \discard_1 \\
+%\mathbf{Q}_{keep}        &\leftarrow  \tau_{keep}         \le     \ekeep_2 - \ekeep_1 
+%\end{align*}
+%If $\mathbf{Q}_{discard} = \text{True} $ then we find the boundaries in the $0 \cdots 2^{2n}$ range and add the discard function to the distribution function.
+%\begin{align*}
+%\Discard_1^{q} &= \aRange \discard_1 +\aMin&
+%\eKeep_1^{q} &= \aRange \ekeep_1 +\aMin \\
+%\Discard_2^{q} &= \aRange \discard_2 + \aMin&
+%\eKeep_2^{q} &= \aRange \ekeep_2 + \aMin&
+%\end{align*}
+%
+% \begin{algorithm}[H]
+% \SetKwProg{Fn}{Function}{is}{end}
+%      \Fn{discard{t, n}}{
+%       \KwData{$t$ the channel value  \quad
+%        $n$ the source bit depth }
+%       \KwResult{$d$ the redistributed channel value}
+%       $\Discard_1^{q} \leftarrow \aRange \discard_1 + \aMin $; \quad 
+%       $\Discard_2^{q} \leftarrow \aRange \discard_2 + \aMin $ \;
+%       $\eKeep_1^{q}    \leftarrow \aRange \ekeep_1   + \aMin $; \quad 
+%       $\eKeep_2^{q}    \leftarrow \aRange \ekeep_2   + \aMin $ \;
+%       \SetAlgoLined
+%       \uIf{$t < \Discard_1^{q}$}{
+%       \KwRet{$\dstMin$ }
+%       }
+%       \uElseIf{$t > \Discard_2^{q}$}{
+%        \KwRet{$\dstMax$ }
+%       }
+%       \Else{
+%              \uIf{$ \eKeep_1^{q} \le t \le \eKeep_2^{q} $}{
+%              do linear stuff \;
+%              \KwRet{$val$ }
+%              }
+%	          \Else{
+%	              \uIf{$\Discard_1^{q} < t < \eKeep_1^{q}$}{
+%	               \KwRet{$val$ }
+%	              }
+%	               \Else($ \eKeep_2^{q} < t < \Discard_2^{q}$){
+%	               \KwRet{$val$ }
+%	              }
+%              do other distro stuff
+%              }
+%       }
+%       
+%      }
+% \caption{A function which returns the angular position of compromise between the perturbations to the channels.}
+%\end{algorithm}
+
+ \begin{algorithm}[H]
+% \SetKwProg{Fn}{Function}{is}{end}
+%      \Fn{chooseDistro}{
+       \KwData{$\{\eKeep_1, \eKeep_2\}$ the extended boundaries of the information preserving region\;
+       $ \{\discard_1, \discard_2\} $ the boundaries of the region which discards all information \;
+        $0<\tau<1$ the tolerances for counting a region as significant. }
+       \KwResult{$pDis$ a function which performs the re-distribution for a channel.}
+       \begin{flalign*}[l]
+       \mathbf{Q}_{discard}     & \leftarrow \tau_{discard}     \le    1-\discard_2 + \discard_1 \\
+       \mathbf{Q}_{distribute} & \leftarrow \tau_{distribute}  \le    \discard_2 - \ekeep_2 + \ekeep_1 - \discard_1 \\
+       \mathbf{Q}_{keep}         & \leftarrow \tau_{keep}         \le     \ekeep_2 - \ekeep_1 
+        \end{flalign*}
+        \begin{flalign*}
+       \Discard_1^{q} &\leftarrow \aRange \discard_1 + \aMin &
+       \Discard_2^{q} &\leftarrow \aRange \discard_2 + \aMin \\
+       \eKeep_1^{q}    &\leftarrow \aRange \ekeep_1   + \aMin &
+       \eKeep_2^{q}    &\leftarrow \aRange \ekeep_2   + \aMin 
+       \end{flalign*}
+          \SetAlgoLined
+          \uIf{$\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \mathbf{Q}_{distribute} $}{
+          \KwRet{
+          \begin{equation*}
+          pDis(x) = \begin{cases}
+          \dstMin & x \le \Discard_1^q \\
+          \text{dis}(\Scale x) & \Discard_1^q < x < \eKeep_1^q \\
+          \Scale x - \eKeep_1 + \text{dis}(\eKeep_1) & \eKeep_1^q \le x \le \eKeep_2^q  \\
+          \text{dis}(\Scale x) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1)  & \eKeep_2^q < x < \Discard_2^q  \\
+          \text{dis}(\Discard_2) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1) & x \ge \Discard_2^q \\
+          \end{cases}
+          \end{equation*} }
+          }
+          \uElseIf{$\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}{
+           \KwRet{
+           \begin{equation*}
+           pDis(x) = \begin{cases}
+           \dstMin & x \le \Discard_1^q \\
+           \Scale \; x  + \dstMin  & \Discard_1^q \le x \le \Discard_2^q  \\
+           \Discard_2 + \dstMin  & x \ge \Discard_2^q \\
+           \end{cases}
+           \end{equation*} }
+          }
+          \Else($\mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $){
+            \KwRet{
+            \begin{equation*}
+            pDis(x) = \Scale \; x + \dstMin
+            \end{equation*} }
+            }
+    %}
+ \caption{An algorithm which returns an appropriate distribution function for each channel}
+\end{algorithm}
+
+\begin{equation}
+pDis(x) = \begin{cases}
+\dstMin & x \le \Discard_1^q \\
+\text{dis}(\Scale x) & \Discard_1^q < x < \eKeep_1^q \\
+\Scale x - \eKeep_1 + \text{dis}(\eKeep_1) & \eKeep_1^q \le x \le \eKeep_2^q  \\
+\text{dis}(\Scale x) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1)  & \eKeep_2^q < x < \Discard_2^q  \\
+\text{dis}(\Discard_2) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1) & x \ge \Discard_2^q \\
+\end{cases}
+\end{equation}
+
+Partition
+\begin{equation}
+pDis(x) = \begin{cases}
+\dstMin & x \le \Discard_1^q \\
+\Scale \; x  + \dstMin  & \Discard_1^q \le x \le \Discard_2^q  \\
+\Discard_2 + \dstMin  & x \ge \Discard_2^q \\
+\end{cases}
+\end{equation}
+
+Linear
+\begin{equation}
+pDis(x) = \Scale \; x + \dstMin
+\end{equation}
 
 \begin{align*}
- \begin{pmatrix}  0   \\   \alpha_2   \\  \beta_2   \\ \end{pmatrix}     &=  
-\dqEO\left[  
-\max \left\{\text{abs}(\dqs[\theta]) \otimes \left(\discard^{RGB}_2 \right)^T \right\}
-\right]
+\fSe[\theta]  % &=
+% \round{ \left(\begin{array}{c} 1  \\ 2^{n - 2} \\ 2^{n - 2}  \\\end{array} \right) \bigotimes \fR[\theta] } \\
+ & =
+\begin{cases}
+\left(
+\begin{smallmatrix}
+1 \\
+ \cosine {\thetaA } \\
+ \cosine{\Pii{6}-\thetaA } \\
+\end{smallmatrix}
+\right) & 0\leq (\theta  \bmod \pi )<\frac{\pi }{6} \\
+ \left(
+\begin{smallmatrix}
+ 1 \\
+  \cosine{\Pii{6}-\thetaA } \\
+  \cosine {\thetaA } \\
+\end{smallmatrix}
+\right) & \frac{\pi }{6}\leq (\theta  \bmod \pi )<\frac{\pi }{3} \\
+ \left(
+\begin{smallmatrix}
+1 \\
+ \cosine {\thetaA } \\
+ \cosine{\Pii{6}-\thetaA } \\
+\end{smallmatrix}
+\right) & \frac{\pi }{3}\leq (\theta  \bmod \pi )<\frac{\pi }{2} \\
+ \left(
+\begin{smallmatrix}
+  1 \\
+   \cosine{\Pii{6}-\thetaA } \\
+   \cosine {\thetaA } \\
+\end{smallmatrix}
+\right) & \frac{\pi }{2}\leq (\theta  \bmod \pi )<\frac{2 \pi }{3} \\
+ \left(
+\begin{smallmatrix}
+1 \\
+ \cosine {\thetaA } \\
+ \cosine{\Pii{6}-\thetaA } \\
+\end{smallmatrix}
+\right)  & \frac{2 \pi }{3}\leq (\theta  \bmod \pi )<\frac{5 \pi }{6} \\
+\left(
+\begin{smallmatrix}
+ 1 \\
+  \cosine{\Pii{6}-\thetaA } \\
+  \cosine {\thetaA } \\
+\end{smallmatrix}
+\right)  & \frac{5 \pi }{6}\leq (\theta  \bmod \pi )<\pi 
+\end{cases} 
 \end{align*}
 
-
-\\
-\item \textbf{Set the integer rotation matrix.} stuff \\
-\item \textbf{Design the distribution function.} stuff \\
 
 \end{enumerate} 
 
