@@ -2259,9 +2259,13 @@ These then give a combined value for $\alpha = \alpha_1 \alpha_2$ and $\beta = \
 
 \subsubsection{The complete algorithm}
 
+\newcounter{algosection}[subsubsection]
+\newcommand{\algosection}[1]{\stepcounter{algosection} \textbf{\thealgosection. #1}}
+
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 The programmer specifies a requested value of $\theta$ , values for the means $\uMean{ ab}$ and standard deviations $\uSTD{ ab}$ for each of the three axis in the rotated color space with a unit range and the data type ranges $\srcRange$ and $\dstRange$. The algorithm then proceeds as follows:
-\begin{enumerate}
-\item \textbf{Find the working type and range.} 
+
+\algosection{Find the working type and range.} 
 Using the distribution constants \ref{eq:DistributionConstants} , the gradient at the mean in the unit range \ref{eq:gradient} and the natural rotated axis lengths \ref{eq:L}
 \begin{gather*}
  \begin{aligned}
@@ -2305,7 +2309,7 @@ and the compression ratio $\kappa$ \ref{eq:newCompressionRatio}
 \kappa(\theta) = \max\left\{ \frac{1}{\delta(\mu,\sigma) }   , \frac{K}{\mathbf{L}(\theta)} \right\}   
 \end{equation}
 \\
-\item \textbf{Set the distribution region boundary constants.} 
+\algosection{Set the distribution region boundary constants.} 
 Using the constants previously defined ( \ref{eq:PreservedRegionConsts} , \ref{eq:0to1} )
 \begin{align*}
   w(\mu,\sigma)  & =  \sigma  \sqrt{ \log \left(\frac{2}{\pi } \right) -2 \log \left(\kappa \sigma  \left(\Sigma^+-\Sigma^-\right)\right) } &
@@ -2337,23 +2341,23 @@ The extended region in which all the information is kept is found by numerically
 the C++ code finds the points using the following algorithm
 
 \begin{algorithm}[H]
- \KwData{$\Keep _2$ the starting point for the linear walk \;
-$\tau_{p}$ the acceptable divergence from linearity }
- \KwResult{$ \{\eKeep_1, \eKeep_2\} $ the extended boundaries}
- $x \leftarrow \Keep_2$  \tcc*[r]{$dis(x)$ is the distribution function}
- \While{$dis(x) > x + \left\lfloor\text{dis}\left(\Keep _2\right)\right\rfloor  -\Keep _2 - \tau_{p}$}{
-  x++ \;
- } 
- $\eKeep_2 \leftarrow x$ \;
- $\eKeep_1 \leftarrow \Keep _1 - (\eKeep_2 - \Keep _2)$ \tcc*[r]{Exploiting a symetry dis(x)}
- \KwRet{$\eKeep_1$ ,$\eKeep_2$ }
  \caption{Finding the extended region in which all the information is kept in C++}
+\begin{algorithmic}
+ \Require{$\Keep _2$ the starting point for the linear walk \;
+$\tau_{p}$ the acceptable divergence from linearity }
+ \Ensure{$ \{\eKeep_1, \eKeep_2\} $ the extended boundaries}
+ \State $x \gets \Keep_2$  \Comment{$dis(x)$ is the distribution function}
+ \While{$dis(x) > x + \left\lfloor\text{dis}\left(\Keep _2\right)\right\rfloor  -\Keep _2 - \tau_{p}$}
+     \State  x++ 
+ \EndWhile
+ \State $\eKeep_2 \gets x$ 
+ \State $\eKeep_1 \gets \Keep _1 - (\eKeep_2 - \Keep _2)$ \Comment{Exploiting a symetry dis(x)}
+ \State \textbf{Return} {$\eKeep_1$ ,$\eKeep_2$ }
+ \end{algorithmic}
 \end{algorithm}
 
 The unit range boundaries $\ekeep$ are found using  $\ekeep =  \frac{\eKeep - \tMin}{\tRange}$.
-\\
-\item \textbf{Suggest a new value for $\theta$.} 
-
+\algosection{Suggest a new value for $\theta$.} 
 First we find the perturbation scaling \ref{eq:perturbationFunctionSigns} and the perturbation function ordering function \ref{eq:abPerturbationFunctionOrdering}
 %\begin{gather}\label{eq:abPerturbationFunctionOrdering}
 %\dqEO[  \left(
@@ -2509,71 +2513,72 @@ The region $\iota$ for a given value of $i$ is found and the appropriate values 
 %\end{gather*}
 
  \begin{algorithm}[H]
- \SetKwProg{Fn}{Function}{is}{end}
-      \Fn{$\thetaX{i, \alpha, \beta, n}$}{
-       \KwData{$i$ integer index of the intercept \quad
+  \caption{A function which returns the angular position of compromise between the perturbations to the channels.}
+ \begin{algorithmic}
+      \Function {thetaX}{$ i, \alpha, \beta, n $}
+       \Require{$i$ integer index of the intercept \quad
         $n$ the source bit depth }
-       \KwResult{$\thetaX{i} $ the angular position of the intercept and the maximum perturbation at that value}
-       $\meanIndx \leftarrow  2^{n-3}$  ; \quad 
-        $\iota(i,n)  \leftarrow  \left\lfloor 7\ \meanIndx-\sqrt{i^2 - 2 i \; \meanIndx + 49\ \meanIndx^2 }\right\rfloor $ \;
-        $\extremaTheta{b}{\mathbf{l} } = \arctan\left(\frac{\mathbf{l} \; 2^{2-n}}{\sqrt{3}}       \right)$ ; \quad 
-        $\extremaTheta{a}{\mathbf{l} } = \arctan\left(\frac{\mathbf{l} \sqrt{3} }{2^n - \mathbf{l}}\right)$\;
-        \eIf($i + \iota$ is even){$ i + \iota \bmod{2} = 0$}{
-                 $\maximaTheta{a} \leftarrow \extremaTheta{a}{i+\iota+1}  $ ;\quad
-                 $\minimaTheta{a}  \leftarrow \extremaTheta{a}{i+\iota} $ \;
-                 $\maximaTheta{b} \leftarrow \extremaTheta{b}{i-\iota-1} $ ;\quad
-                 $\minimaTheta{b}  \leftarrow \extremaTheta{b}{i-\iota}  $\;
-          }{
-                 $\maximaTheta{a}  \leftarrow \extremaTheta{a}{i+\iota} $ ;\quad
-                 $\minimaTheta{a}  \leftarrow \extremaTheta{a}{i+\iota+1}  $ \;
-                 $\maximaTheta{b} \leftarrow \extremaTheta{b}{i-\iota}  $ ;\quad
-                 $\minimaTheta{b}  \leftarrow \extremaTheta{b} {i-\iota-1} $ \;
-         }
-        $\thetaX{i} \leftarrow \left\{\frac{
+       \Ensure{$\thetaX{i} $ the angular position of the intercept and the maximum perturbation at that value}
+       \State $\meanIndx \gets  2^{n-3}$  ; \quad  $\iota(i,n)  \gets  \left\lfloor 7\ \meanIndx-\sqrt{i^2 - 2 i \meanIndx + 49\ \meanIndx^2 }\right\rfloor $ 
+        \State $\extremaTheta{b}{\mathbf{l} } = \arctan\left(\frac{\mathbf{l} 2^{2-n}}{\sqrt{3}}       \right)$ ; \quad 
+        $\extremaTheta{a}{\mathbf{l} } = \arctan\left(\frac{\mathbf{l} \sqrt{3} }{2^n - \mathbf{l}}\right)$
+        \If{$ i + \iota \bmod{2} = 0$}  \Comment{$i + \iota$ is even}
+               \State   $\maximaTheta{a} \gets \extremaTheta{a}{i+\iota+1}  $ ;\quad
+                 $\minimaTheta{a}  \gets \extremaTheta{a}{i+\iota} $ 
+               \State   $\maximaTheta{b} \gets \extremaTheta{b}{i-\iota-1} $ ;\quad
+                 $\minimaTheta{b}  \gets \extremaTheta{b}{i-\iota}  $
+         \Else
+                \State  $\maximaTheta{a}  \gets \extremaTheta{a}{i+\iota} $ ;\quad
+                 $\minimaTheta{a}  \gets \extremaTheta{a}{i+\iota+1}  $ \;
+                \State  $\maximaTheta{b} \gets \extremaTheta{b}{i-\iota}  $ ;\quad
+                 $\minimaTheta{b}  \gets \extremaTheta{b} {i-\iota-1} $ \;
+         \EndIf
+       \State  $\thetaX{i} \gets \left\{\frac{
         \beta \minimaTheta{b} (\minimaTheta{a}  -\maximaTheta{a} )+\alpha  \minimaTheta{a} (\maximaTheta{b}-\minimaTheta{b})  }{
         \beta  (\minimaTheta{a} -\maximaTheta{a})+\alpha  (\maximaTheta{b}-\minimaTheta{b})
         },\frac{
         \alpha  \beta  (\minimaTheta{a}-\minimaTheta{b})  }{
         \beta  (\minimaTheta{a}-\maximaTheta{a})+\alpha  (\maximaTheta{b}-\minimaTheta{b})
         }\right\} $ \;
-      \KwRet{$\thetaX{i}$}
-      }
- \caption{A function which returns the angular position of compromise between the perturbations to the channels.}
+      \State \textbf{Return} {$\thetaX{i}$}
+\EndFunction
+ \end{algorithmic}
 \end{algorithm}
 
 
 To find the angular value closest to $\theta$ which produces a perturbation less than the tolerance $\tau$ the algorithm finds the closest value which satisfies the tolerance in the positive and negative directions and returns the nearest one to the requested value of $\theta$. the algorithm is guaranteed to find a value which satisfies the tolerance in each direction within a $\frac{\pi}{6}$ region because the perturbation is zero at the ends of the $\frac{\pi}{6}$ region.
  
 \begin{algorithm}[H]
-\SetKwProg{Fn}{Function}{is}{end}
- \KwData{$\alpha$, $\beta$ the relative importance of the channels \;
-  \quad\quad\quad  $\theta$ the requested angle \;
-   \quad\quad\quad $\tau$ the tolerance}
- \KwResult{$\vartheta$ the suggested value for $\theta$ and 
- $h$ the predicted maximum perturbation.}
- $\delta\theta  \leftarrow \theta \mod{\frac{\pi}{6} } $\;
- $\Theta  \leftarrow \theta - \delta\theta $\;
-  $\meanIndx \leftarrow  2^{n-3}$\;
- $ i_{\circleddash} \leftarrow i_{\oplus} \leftarrow \frac{\meanIndx \tan (\delta \theta ) \left(\sqrt{3} \tan (\delta \theta )+7\right)}{\tan (\delta \theta )+\sqrt{3}} $ \;
- $\left\{ \vartheta_{\circleddash}, h_{\circleddash} \right\} \leftarrow \left\{ \vartheta_{\oplus}, h_{\oplus} \right\} \leftarrow \thetaX{i, \alpha, \beta, n}$ \;
- \While{$h_{\oplus} > \tau$}{
-  $i_{\oplus}++$ \;
-   $\left\{ \vartheta_{\oplus}, h_{\oplus}\right\} \leftarrow \thetaX{i_{\oplus}, \alpha, \beta, n}$
- } 
- \While{$h_{\circleddash} > \tau$}{
-   $i_{\circleddash}--$ \;
-    $\left\{ \vartheta_{\circleddash}, h_{\circleddash}\right\} \leftarrow \thetaX{i_{\circleddash}, \alpha, \beta, n}$
-  } 
-  \eIf{ $\vartheta_{\oplus} -\delta\theta < \delta\theta - \vartheta_{\circleddash}$ }{
-  $\left\{ \vartheta, h\right\}  = \left\{\Theta + \vartheta_{\oplus}, h_{\oplus}\right\}  $ }{
-  $\left\{ \vartheta, h\right\}  = \left\{\Theta + \vartheta_{\circleddash}, h_{\circleddash}\right\} $
-  }
- \KwRet{$\left\{ \vartheta, h\right\} $ }
   \caption{Suggest a new value for $\theta$}
+ \begin{algorithmic}
+  \Require{ $\alpha$, $\beta$ the relative importance of the channels}
+  \Require{ $\theta$ the requested angle}
+  \Require{ $\tau$ the tolerance}
+ \Ensure{ $\vartheta$ the suggested value for $\theta$ and  $h$ the predicted maximum perturbation.}
+\State  $\delta\theta  \gets \theta \mod{\frac{\pi}{6} } $\;
+ \State $\Theta  \gets \theta - \delta\theta $\;
+ \State  $\meanIndx \gets  2^{n-3}$\;
+ \State $ i_{\circleddash} \gets i_{\oplus} \gets \frac{\meanIndx \tan (\delta \theta ) \left(\sqrt{3} \tan (\delta \theta )+7\right)}{\tan (\delta \theta )+\sqrt{3}} $ \;
+\State  $\left\{ \vartheta_{\circleddash}, h_{\circleddash} \right\} \gets \left\{ \vartheta_{\oplus}, h_{\oplus} \right\} \gets \thetaX{i, \alpha, \beta, n}$ \;
+ \While{$h_{\oplus} > \tau$}
+ \State  $i_{\oplus}++$ \;
+ \State  $\left\{ \vartheta_{\oplus}, h_{\oplus}\right\} \gets \thetaX{i_{\oplus}, \alpha, \beta, n}$
+ \EndWhile
+ \While{$h_{\circleddash} > \tau$}
+  \State   $i_{\circleddash}--$ \;
+  \State  $\left\{ \vartheta_{\circleddash}, h_{\circleddash}\right\} \gets \thetaX{i_{\circleddash}, \alpha, \beta, n}$
+ \EndWhile
+  \If{ $\vartheta_{\oplus} -\delta\theta < \delta\theta - \vartheta_{\circleddash}$ }
+ \State  $\left\{ \vartheta, h\right\}  = \left\{\Theta + \vartheta_{\oplus}, h_{\oplus}\right\}  $ 
+ \Else
+  \State $\left\{ \vartheta, h\right\}  = \left\{\Theta + \vartheta_{\circleddash}, h_{\circleddash}\right\} $
+  \EndIf
+ \State \textbf{Return} {$\left\{ \vartheta, h\right\} $ }
+  \end{algorithmic}
  \end{algorithm}
  
 
-\item \textbf{Set the integer rotation matrix.} 
+\algosection{Set the integer rotation matrix.} 
 \newcommand{\round}[1]{\text{Round}\left[ #1 \right] }
 \newcommand{\elemU}{\mathbf{U}}
 \newcommand{\elemAp}{\mathbf{A}_\oplus}
@@ -2619,7 +2624,7 @@ Expanding the definition of the quantized matrix $\qR[\theta, n]$ \ref{eq:quanti
 %\elemBm & =-2^{n-3 } \left(1-\sqrt{3} \tan (\frac{\pi }{6}-\thetaA )\right)   \\
 %\end{align*}
 
-
+%\begin{tabular}
 \begin{gather*}
 \begin{aligned}
 \aR &= \fSs \otimes \qR & \elemU     &= 2^{n-2 } 
@@ -2693,7 +2698,7 @@ a rotated set of pixel values $\vec{a} = \aR \cdot \vec{rgb}$ with elements $ \v
 \aRange &= \left( \begin{smallmatrix}  2^{n+2} \\    2^{2n}      \\   2^{2n}     \\ \end{smallmatrix} \right) 
 \end{align*}
 \\
-\item \textbf{Design the distribution function.} 
+\algosection{Design the distribution function.} 
 First the overall scaling for the quantised rotation matrix is found by combining the normalised scaling $\Scale[\theta, n]$ \ref{eq:scaleDef} with the desired scaling defined in equation \ref{eq:CombinedRotationRange}
 
 \begin{equation*}
@@ -2708,9 +2713,9 @@ First the overall scaling for the quantised rotation matrix is found by combinin
 
 Next we decide which of the distribution methods should be used. This is done by assessing the size of each of the regions relative to a tolerance. The algorithm avoids unnecessary operations by finding the region directly with the unscaled result of the inner product between the matrix $\aR$ and the pixel value.
 %\begin{align*}
-%\mathbf{Q}_{discard}     &\leftarrow \tau_{discard}     \le    1-\discard_2 + \discard_1 \\
-%\mathbf{Q}_{distribute} &\leftarrow \tau_{distribute}  \le    \discard_2 - \ekeep_2 + \ekeep_1 - \discard_1 \\
-%\mathbf{Q}_{keep}        &\leftarrow  \tau_{keep}         \le     \ekeep_2 - \ekeep_1 
+%\mathbf{Q}_{discard}     &\gets \tau_{discard}     \le    1-\discard_2 + \discard_1 \\
+%\mathbf{Q}_{distribute} &\gets \tau_{distribute}  \le    \discard_2 - \ekeep_2 + \ekeep_1 - \discard_1 \\
+%\mathbf{Q}_{keep}        &\gets  \tau_{keep}         \le     \ekeep_2 - \ekeep_1 
 %\end{align*}
 %If $\mathbf{Q}_{discard} = \text{True} $ then we find the boundaries in the $0 \cdots 2^{2n}$ range and add the discard function to the distribution function.
 %\begin{align*}
@@ -2723,31 +2728,31 @@ Next we decide which of the distribution methods should be used. This is done by
 % \begin{algorithm}[H]
 % \SetKwProg{Fn}{Function}{is}{end}
 %      \Fn{discard{t, n}}{
-%       \KwData{$t$ the channel value  \quad
+%       \Require{$t$ the channel value  \quad
 %        $n$ the source bit depth }
 %       \KwResult{$d$ the redistributed channel value}
-%       $\Discard_1^{q} \leftarrow \aRange \discard_1 + \aMin $; \quad 
-%       $\Discard_2^{q} \leftarrow \aRange \discard_2 + \aMin $ \;
-%       $\eKeep_1^{q}    \leftarrow \aRange \ekeep_1   + \aMin $; \quad 
-%       $\eKeep_2^{q}    \leftarrow \aRange \ekeep_2   + \aMin $ \;
+%       $\Discard_1^{q} \gets \aRange \discard_1 + \aMin $; \quad 
+%       $\Discard_2^{q} \gets \aRange \discard_2 + \aMin $ \;
+%       $\eKeep_1^{q}    \gets \aRange \ekeep_1   + \aMin $; \quad 
+%       $\eKeep_2^{q}    \gets \aRange \ekeep_2   + \aMin $ \;
 %       \SetAlgoLined
 %       \uIf{$t < \Discard_1^{q}$}{
-%       \KwRet{$\dstMin$ }
+%       \textbf{Return} {$\dstMin$ }
 %       }
 %       \uElseIf{$t > \Discard_2^{q}$}{
-%        \KwRet{$\dstMax$ }
+%        \textbf{Return} {$\dstMax$ }
 %       }
 %       \Else{
 %              \uIf{$ \eKeep_1^{q} \le t \le \eKeep_2^{q} $}{
 %              do linear stuff \;
-%              \KwRet{$val$ }
+%              \textbf{Return} {$val$ }
 %              }
 %	          \Else{
 %	              \uIf{$\Discard_1^{q} < t < \eKeep_1^{q}$}{
-%	               \KwRet{$val$ }
+%	               \textbf{Return} {$val$ }
 %	              }
 %	               \Else($ \eKeep_2^{q} < t < \Discard_2^{q}$){
-%	               \KwRet{$val$ }
+%	               \textbf{Return} {$val$ }
 %	              }
 %              do other distro stuff
 %              }
@@ -2758,54 +2763,62 @@ Next we decide which of the distribution methods should be used. This is done by
 %\end{algorithm}
 
  \begin{algorithm}[H]
-% \SetKwProg{Fn}{Function}{is}{end}
-%      \Fn{chooseDistro}{
-       \KwData{$\{\eKeep_1, \eKeep_2\}$ the extended boundaries of the information preserving region\;
-       $ \{\discard_1, \discard_2\} $ the boundaries of the region which discards all information \;
+  \caption{An algorithm which returns an appropriate distribution function for each channel}
+  \begin{algorithmic}
+       \Require{$\{\discard, \Discard, \ekeep,\eKeep\}$ the boundaries of the regions.
         $0<\tau<1$ the tolerances for counting a region as significant. }
-       \KwResult{$pDis$ a function which performs the re-distribution for a channel.}
-       \begin{flalign*}[l]
-       \mathbf{Q}_{discard}     & \leftarrow \tau_{discard}     \le    1-\discard_2 + \discard_1 \\
-       \mathbf{Q}_{distribute} & \leftarrow \tau_{distribute}  \le    \discard_2 - \ekeep_2 + \ekeep_1 - \discard_1 \\
-       \mathbf{Q}_{keep}         & \leftarrow \tau_{keep}         \le     \ekeep_2 - \ekeep_1 
-        \end{flalign*}
-        \begin{flalign*}
-       \Discard_1^{q} &\leftarrow \aRange \discard_1 + \aMin &
-       \Discard_2^{q} &\leftarrow \aRange \discard_2 + \aMin \\
-       \eKeep_1^{q}    &\leftarrow \aRange \ekeep_1   + \aMin &
-       \eKeep_2^{q}    &\leftarrow \aRange \ekeep_2   + \aMin 
-       \end{flalign*}
-          \SetAlgoLined
-          \uIf{$\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \mathbf{Q}_{distribute} $}{
-          \KwRet{
-          \begin{equation*}
+       \Ensure{$pDis$ a function which performs the re-distribution for a channel.}
+       \State \begin{tabular}{llrl}
+       $\mathbf{Q}_{discard} $    & \multicolumn{3}{l}{ $\gets \tau_{discard}     \le    1-\discard_2 + \discard_1$} \\
+       $\mathbf{Q}_{distribute}$ & \multicolumn{3}{l}{$\gets \tau_{distribute}  \le    \discard_2 - \ekeep_2 + \ekeep_1 - \discard_1$} \\
+       $\mathbf{Q}_{keep} $        & \multicolumn{3}{l}{$\gets \tau_{keep}         \le     \ekeep_2 - \ekeep_1$}\\
+       $\Discard_1^{q}$ &$\gets \aRange \; \discard_1 + \aMin$; &
+       $\Discard_2^{q}$ &$\gets \aRange \; \discard_2 + \aMin$ \\
+       $\eKeep_1^{q}$    &$\gets \aRange \; \ekeep_1   + \aMin$; &
+       $\eKeep_2^{q}$    &$\gets \aRange \; \ekeep_2   + \aMin$ 
+       \end{tabular} \;
+          \If{$\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \mathbf{Q}_{distribute} $}\Comment{Piecewise Erf Distribution}
+         \State \begin{equation*}
           pDis(x) = \begin{cases}
           \dstMin & x \le \Discard_1^q \\
           \text{dis}(\Scale x) & \Discard_1^q < x < \eKeep_1^q \\
           \Scale x - \eKeep_1 + \text{dis}(\eKeep_1) & \eKeep_1^q \le x \le \eKeep_2^q  \\
           \text{dis}(\Scale x) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1)  & \eKeep_2^q < x < \Discard_2^q  \\
-          \text{dis}(\Discard_2) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1) & x \ge \Discard_2^q \\
+          \text{dis}(\Discard_2) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1) & \Discard_2^q \le x\\
           \end{cases}
-          \end{equation*} }
-          }
-          \uElseIf{$\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}{
-           \KwRet{
-           \begin{equation*}
+          \end{equation*} 
+          \ElsIf{$\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Partitioning Distribution}
+          \State  \begin{equation*}
            pDis(x) = \begin{cases}
            \dstMin & x \le \Discard_1^q \\
            \Scale \; x  + \dstMin  & \Discard_1^q \le x \le \Discard_2^q  \\
-           \Discard_2 + \dstMin  & x \ge \Discard_2^q \\
+           \Discard_2 - \Discard_1 + \dstMin  & \Discard_2^q \le x\\
            \end{cases}
-           \end{equation*} }
-          }
-          \Else($\mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $){
-            \KwRet{
-            \begin{equation*}
+           \end{equation*} 
+          \ElsIf{$\mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Linear Distribution}
+          \State   \begin{equation*}
             pDis(x) = \Scale \; x + \dstMin
-            \end{equation*} }
-            }
-    %}
- \caption{An algorithm which returns an appropriate distribution function for each channel}
+            \end{equation*} 
+          \ElsIf{$\lnot \mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \mathbf{Q}_{distribute} $}\Comment{Truncated Erf Distribution}
+         \State  \begin{equation*}
+          pDis(x) = \begin{cases}
+          \dstMin & x \le \Discard_1^q \\
+          \text{dis}(\Scale x) & \Discard_1^q < x < \Discard_2^q \\
+          \dstMax & \Discard_2^q < x  \\
+          \end{cases}
+          \end{equation*} 
+          \ElsIf{$\lnot\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Step Distribution!}
+         \State   \begin{equation*}
+           pDis(x) = \begin{cases}
+           \dstMin & x \le \frac{\Discard_1^q + \Discard_2^q}{2} \\
+           1 + \dstMin  &  \frac{\Discard_1^q + \Discard_2^q}{2} < x\\
+           \end{cases}
+           \end{equation*} 
+            \Else \Comment{$\lnot \mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}
+            Error; The tolerances or something else must be wrong!
+            \EndIf
+            \textbf{Return} {$pDis(x)$}
+\end{algorithmic}
 \end{algorithm}
 
 \begin{equation}
@@ -2883,7 +2896,6 @@ pDis(x) = \Scale \; x + \dstMin
 \end{align*}
 
 
-\end{enumerate} 
 
 %You know those blue/black people? Melanin may not be expressed in the fingernails!
 
