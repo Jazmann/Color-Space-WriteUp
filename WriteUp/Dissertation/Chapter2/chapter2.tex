@@ -2484,7 +2484,7 @@ The algorithm then finds a starting value for the index \ref{eq:indexFromTheta} 
   \meanIndx & = 2^{n-3} 
 \end{align*}
 
-The region $\iota$ for a given value of $i$ is found and the appropriate values  \ref{eq:extremaBounds} for the extrema \ref{eq:ExtremaFunctions} are evaluated in the function which funds the perturbation at the index \ref{eq:generalisedPerturbation} and the intercept position $\thetaX{i}$ is found with the following routine.
+The region $\iota$ for a given value of $i$ is found and the appropriate values  \ref{eq:extremaBounds} for the extrema \ref{eq:ExtremaFunctions} are evaluated in the function which funds the perturbation at the index \ref{eq:generalisedPerturbation} and the intercept position $\thetaX{i}$ is found with the algorithm \ref{algo:thetaX}.
 %\begin{gather*}
 %\begin{aligned}
 % \iota(i,n)  &= \left\lfloor 7\ \meanIndx-\sqrt{i^2 - 2 i \; \meanIndx + 49\ \meanIndx^2 }\right\rfloor &
@@ -2514,7 +2514,7 @@ The region $\iota$ for a given value of $i$ is found and the appropriate values 
 %}\right\}
 %\end{gather*}
 
- \begin{algorithm}[H]
+ \begin{algorithm}[h]\label{algo:thetaX}
   \caption{A function which returns the angular position of compromise between the perturbations to the channels.}
  \begin{algorithmic}
       \Function { $\overset{\times}{\phi}$}{$ i, \alpha, \beta, n $} \Comment{$i$ integer index of the intercept }
@@ -2539,19 +2539,19 @@ The region $\iota$ for a given value of $i$ is found and the appropriate values 
         \alpha  \beta  (\minimaTheta{a}-\minimaTheta{b})  }{
         \beta  (\minimaTheta{a}-\maximaTheta{a})+\alpha  (\maximaTheta{b}-\minimaTheta{b})
         }\right\} $ \;
-      \State \textbf{Return} {$\thetaX{i}$}\Comment{$\thetaX{i} $ the angular position of the intercept and the maximum perturbation at that value}
+      \State \textbf{Return} {$\thetaX{i}$}\Comment{$\thetaX{i} $ \{angle,  maximum perturbation\} }
 \EndFunction
  \end{algorithmic}
 \end{algorithm}
+%the angular position of the intercept and the maximum perturbation at that value
 
-
-To find the angular value closest to $\theta$ which produces a perturbation less than the tolerance $\tau$ the algorithm finds the closest value which satisfies the tolerance in the positive and negative directions and returns the nearest one to the requested value of $\theta$. the algorithm is guaranteed to find a value which satisfies the tolerance in each direction within a $\frac{\pi}{6}$ region because the perturbation is zero at the ends of the $\frac{\pi}{6}$ region.
+To find the angular value closest to $\theta$ which produces a perturbation less than the tolerance $\tau$ the algorithm \ref{algo:newTheta} finds the closest value which satisfies the tolerance in the positive and negative directions and returns the nearest one to the requested value of $\theta$. The algorithm \ref{algo:newTheta} is guaranteed to find a value which satisfies the tolerance in each direction within a $\frac{\pi}{6}$ region because the perturbation is zero at the ends of the $\frac{\pi}{6}$ region.
  
-\begin{algorithm}[H]
+\begin{algorithm}[H]\label{algo:newTheta}
   \caption{Suggest a new value for $\theta$}
  \begin{algorithmic}
   \Require{ $\alpha$, $\beta$ the relative importance of the channels}
-  \linebreak \phantom{Require} { $\theta$ the requested angle; \quad \quad $\tau$ the tolerance}
+  \State \phantom{Require}  { $\theta$ the requested angle; \quad \quad $\tau$ the tolerance}
  \Ensure{ $\vartheta$ the suggested value for $\theta$ and  $h$ the predicted maximum perturbation.}
  \State  \begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}} lll}
  $\delta\theta \gets \theta \bmod{\frac{\pi}{6} }$; & $\Theta \gets \theta - \delta\theta$;  &  $\meanIndx \gets  2^{n-3} $;
