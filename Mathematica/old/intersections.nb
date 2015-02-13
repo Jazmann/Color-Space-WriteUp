@@ -1,0 +1,1292 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     40505,       1283]
+NotebookOptionsPosition[     38867,       1221]
+NotebookOutlinePosition[     39221,       1237]
+CellTagsIndexPosition[     39178,       1234]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"TraditionalForm", "[", "maxA", "]"}]], "Input",
+ CellChangeTimes->{{3.6319927633552027`*^9, 3.631992787723773*^9}}],
+
+Cell[BoxData[
+ FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Wedge]\\)], \\(a\\)]\\)\"\>", TraditionalForm]], "Output",
+ CellChangeTimes->{{3.6319927730892067`*^9, 3.6319927895390263`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pnt", "[", 
+  RowBox[{"[", 
+   RowBox[{"All", ",", "All"}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.6320306682337837`*^9, 3.632030686669156*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox[
+    RowBox[{
+     RowBox[{"maxB", " ", "minA", " ", "\[Alpha]"}], "-", 
+     RowBox[{"minA", " ", "minB", " ", "\[Alpha]"}], "-", 
+     RowBox[{"maxA", " ", "minB", " ", "\[Beta]"}], "+", 
+     RowBox[{"minA", " ", "minB", " ", "\[Beta]"}]}], 
+    RowBox[{
+     RowBox[{"maxB", " ", "\[Alpha]"}], "-", 
+     RowBox[{"minB", " ", "\[Alpha]"}], "-", 
+     RowBox[{"maxA", " ", "\[Beta]"}], "+", 
+     RowBox[{"minA", " ", "\[Beta]"}]}]], ",", 
+   FractionBox[
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"minA", "-", "minB"}], ")"}], " ", "\[Alpha]", " ", "\[Beta]"}], 
+    RowBox[{
+     RowBox[{"maxB", " ", "\[Alpha]"}], "-", 
+     RowBox[{"minB", " ", "\[Alpha]"}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "maxA"}], "+", "minA"}], ")"}], " ", "\[Beta]"}]}]]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.632030674111432*^9, 3.632030687426278*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Collect", "[", 
+     RowBox[{
+      RowBox[{"Numerator", "[", 
+       RowBox[{"pnt", "[", 
+        RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}], "/", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Collect", "[", 
+     RowBox[{
+      RowBox[{"Denominator", "[", 
+       RowBox[{"pnt", "[", 
+        RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}]}], ",", 
+   RowBox[{
+    RowBox[{"Collect", "[", 
+     RowBox[{
+      RowBox[{"Numerator", "[", 
+       RowBox[{"pnt", "[", 
+        RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}], "/", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Collect", "[", 
+     RowBox[{
+      RowBox[{"Denominator", "[", 
+       RowBox[{"pnt", "[", 
+        RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}]}]}], 
+  "}"}]], "Input",
+ CellChangeTimes->{{3.632031041144554*^9, 3.632031122291603*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox[
+    RowBox[{
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"maxB", " ", "minA"}], "-", 
+        RowBox[{"minA", " ", "minB"}]}], ")"}], " ", "\[Alpha]"}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "maxA"}], " ", "minB"}], "+", 
+        RowBox[{"minA", " ", "minB"}]}], ")"}], " ", "\[Beta]"}]}], 
+    RowBox[{
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"maxB", "-", "minB"}], ")"}], " ", "\[Alpha]"}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "maxA"}], "+", "minA"}], ")"}], " ", "\[Beta]"}]}]], ",", 
+   FractionBox[
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"minA", "-", "minB"}], ")"}], " ", "\[Alpha]", " ", "\[Beta]"}], 
+    RowBox[{
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"maxB", "-", "minB"}], ")"}], " ", "\[Alpha]"}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "maxA"}], "+", "minA"}], ")"}], " ", "\[Beta]"}]}]]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.632031050289033*^9, 3.632031063121422*^9}, {
+  3.632031098861075*^9, 3.632031122912684*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullForm", "[", "pnt", "]"}]], "Input",
+ CellChangeTimes->{{3.6320310058838987`*^9, 3.6320310110623703`*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   RowBox[{"List", "[", 
+    RowBox[{
+     RowBox[{"Times", "[", 
+      RowBox[{
+       RowBox[{"Power", "[", 
+        RowBox[{
+         RowBox[{"Plus", "[", 
+          RowBox[{
+           RowBox[{"Times", "[", 
+            RowBox[{"maxB", ",", "\\[Alpha]"}], "]"}], ",", 
+           RowBox[{"Times", "[", 
+            RowBox[{
+             RowBox[{"-", "1"}], ",", "minB", ",", "\\[Alpha]"}], "]"}], ",", 
+           
+           RowBox[{"Times", "[", 
+            RowBox[{
+             RowBox[{"-", "1"}], ",", "maxA", ",", "\\[Beta]"}], "]"}], ",", 
+           RowBox[{"Times", "[", 
+            RowBox[{"minA", ",", "\\[Beta]"}], "]"}]}], "]"}], ",", 
+         RowBox[{"-", "1"}]}], "]"}], ",", 
+       RowBox[{"Plus", "[", 
+        RowBox[{
+         RowBox[{"Times", "[", 
+          RowBox[{"maxB", ",", "minA", ",", "\\[Alpha]"}], "]"}], ",", 
+         RowBox[{"Times", "[", 
+          RowBox[{
+           RowBox[{"-", "1"}], ",", "minA", ",", "minB", ",", "\\[Alpha]"}], 
+          "]"}], ",", 
+         RowBox[{"Times", "[", 
+          RowBox[{
+           RowBox[{"-", "1"}], ",", "maxA", ",", "minB", ",", "\\[Beta]"}], 
+          "]"}], ",", 
+         RowBox[{"Times", "[", 
+          RowBox[{"minA", ",", "minB", ",", "\\[Beta]"}], "]"}]}], "]"}]}], 
+      "]"}], ",", 
+     RowBox[{"Times", "[", 
+      RowBox[{
+       RowBox[{"Plus", "[", 
+        RowBox[{"minA", ",", 
+         RowBox[{"Times", "[", 
+          RowBox[{
+           RowBox[{"-", "1"}], ",", "minB"}], "]"}]}], "]"}], ",", 
+       "\\[Alpha]", ",", "\\[Beta]", ",", 
+       RowBox[{"Power", "[", 
+        RowBox[{
+         RowBox[{"Plus", "[", 
+          RowBox[{
+           RowBox[{"Times", "[", 
+            RowBox[{"maxB", ",", "\\[Alpha]"}], "]"}], ",", 
+           RowBox[{"Times", "[", 
+            RowBox[{
+             RowBox[{"-", "1"}], ",", "minB", ",", "\\[Alpha]"}], "]"}], ",", 
+           
+           RowBox[{"Times", "[", 
+            RowBox[{
+             RowBox[{"Plus", "[", 
+              RowBox[{
+               RowBox[{"Times", "[", 
+                RowBox[{
+                 RowBox[{"-", "1"}], ",", "maxA"}], "]"}], ",", "minA"}], 
+              "]"}], ",", "\\[Beta]"}], "]"}]}], "]"}], ",", 
+         RowBox[{"-", "1"}]}], "]"}]}], "]"}]}], "]"}],
+   ShowSpecialCharacters->False,
+   ShowStringCharacters->True,
+   NumberMarks->True],
+  FullForm]], "Output",
+ CellChangeTimes->{3.632031011828969*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"MapAt", "[", 
+  RowBox[{"f", ",", "pnt", ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"2", ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"2", ",", "2"}], "}"}]}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.632030974134457*^9, 3.632030984860095*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox[
+    RowBox[{
+     RowBox[{"maxB", " ", "minA", " ", "\[Alpha]"}], "-", 
+     RowBox[{"minA", " ", "minB", " ", "\[Alpha]"}], "-", 
+     RowBox[{"maxA", " ", "minB", " ", "\[Beta]"}], "+", 
+     RowBox[{"minA", " ", "minB", " ", "\[Beta]"}]}], 
+    RowBox[{
+     RowBox[{"maxB", " ", "\[Alpha]"}], "-", 
+     RowBox[{"minB", " ", "\[Alpha]"}], "-", 
+     RowBox[{"maxA", " ", "\[Beta]"}], "+", 
+     RowBox[{"minA", " ", "\[Beta]"}]}]], ",", 
+   FractionBox[
+    RowBox[{"\[Beta]", " ", 
+     RowBox[{"f", "[", 
+      RowBox[{"minA", "-", "minB"}], "]"}], " ", 
+     RowBox[{"f", "[", "\[Alpha]", "]"}]}], 
+    RowBox[{
+     RowBox[{"maxB", " ", "\[Alpha]"}], "-", 
+     RowBox[{"minB", " ", "\[Alpha]"}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "maxA"}], "+", "minA"}], ")"}], " ", "\[Beta]"}]}]]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.632030975623497*^9, 3.632030985654669*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"MapAt", "[", 
+  RowBox[{"f", ",", "pnt", ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"1", ",", "1", ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", "2"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"2", ",", "1", ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"2", ",", "2"}], "}"}]}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.6320308462483263`*^9, 3.6320309579037848`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"MapAt", "[", 
+  RowBox[{"f", ",", 
+   RowBox[{"{", 
+    RowBox[{
+     FractionBox[
+      RowBox[{
+       RowBox[{"maxB", " ", "minA", " ", "\[Alpha]"}], "-", 
+       RowBox[{"minA", " ", "minB", " ", "\[Alpha]"}], "-", 
+       RowBox[{"maxA", " ", "minB", " ", "\[Beta]"}], "+", 
+       RowBox[{"minA", " ", "minB", " ", "\[Beta]"}]}], 
+      RowBox[{
+       RowBox[{"maxB", " ", "\[Alpha]"}], "-", 
+       RowBox[{"minB", " ", "\[Alpha]"}], "-", 
+       RowBox[{"maxA", " ", "\[Beta]"}], "+", 
+       RowBox[{"minA", " ", "\[Beta]"}]}]], ",", 
+     FractionBox[
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"minA", "-", "minB"}], ")"}], " ", "\[Alpha]", " ", 
+       "\[Beta]"}], 
+      RowBox[{
+       RowBox[{"maxB", " ", "\[Alpha]"}], "-", 
+       RowBox[{"minB", " ", "\[Alpha]"}], "+", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"-", "maxA"}], "+", "minA"}], ")"}], " ", "\[Beta]"}]}]]}], 
+    "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"1", ",", "1", ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", "2"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"2", ",", "2", ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"2", ",", "2"}], "}"}]}], "}"}]}], "]"}]], "Output",
+ CellChangeTimes->{{3.6320308472498407`*^9, 3.632030952228923*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"pnt", "=", 
+   RowBox[{"Simplify", "[", 
+    RowBox[{"intersectionFromPoints", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"maxB", ",", "\[Beta]"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"minB", ",", "0"}], "}"}]}], "}"}], ",", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"minA", ",", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"maxA", ",", "\[Alpha]"}], "}"}]}], "}"}]}], "]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pnt", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"Collect", "[", 
+       RowBox[{
+        RowBox[{"Numerator", "[", 
+         RowBox[{"pnt", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"\[Alpha]", ",", "\[Beta]", ",", "minA", ",", "minB"}], 
+         "}"}], ",", "Simplify"}], "]"}], "/", "\[IndentingNewLine]", 
+      RowBox[{"Collect", "[", 
+       RowBox[{
+        RowBox[{"Denominator", "[", 
+         RowBox[{"pnt", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}]}], ",", 
+     RowBox[{
+      RowBox[{"Collect", "[", 
+       RowBox[{
+        RowBox[{"Numerator", "[", 
+         RowBox[{"pnt", "[", 
+          RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}], "/", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Collect", "[", 
+       RowBox[{
+        RowBox[{"Denominator", "[", 
+         RowBox[{"pnt", "[", 
+          RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}]}]}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"TraditionalForm", "[", "pnt", "]"}]}], "Input",
+ CellChangeTimes->{{3.6320360288157673`*^9, 3.632036046677334*^9}}],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{"{", 
+   RowBox[{
+    FractionBox[
+     RowBox[{
+      RowBox[{"\[Beta]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          
+          FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+           TraditionalForm], " ", 
+          
+          FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+           TraditionalForm]}], "-", 
+         RowBox[{
+          
+          FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(a\\)]\\)\"\>",
+           TraditionalForm], " ", 
+          
+          FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+           TraditionalForm]}]}], ")"}]}], "+", 
+      RowBox[{"\[Alpha]", " ", 
+       FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+        TraditionalForm], " ", 
+       RowBox[{"(", 
+        RowBox[{
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm], "-", 
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm]}], ")"}]}]}], 
+     RowBox[{
+      RowBox[{"\[Beta]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+          TraditionalForm], "-", 
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(a\\)]\\)\"\>",
+          TraditionalForm]}], ")"}]}], "+", 
+      RowBox[{"\[Alpha]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm], "-", 
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm]}], ")"}]}]}]], ",", 
+    FractionBox[
+     RowBox[{"\[Alpha]", " ", "\[Beta]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+         TraditionalForm], "-", 
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+         TraditionalForm]}], ")"}]}], 
+     RowBox[{
+      RowBox[{"\[Beta]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+          TraditionalForm], "-", 
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(a\\)]\\)\"\>",
+          TraditionalForm]}], ")"}]}], "+", 
+      RowBox[{"\[Alpha]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm], "-", 
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm]}], ")"}]}]}]]}], "}"}], TraditionalForm]], "Output",\
+
+ CellChangeTimes->{3.6320360509988337`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"pnt", "=", 
+   RowBox[{"Simplify", "[", 
+    RowBox[{"intersectionFromPoints", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"maxA", ",", "\[Alpha]"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"minA", ",", "0"}], "}"}]}], "}"}], ",", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"minB", ",", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"maxB", ",", "\[Beta]"}], "}"}]}], "}"}]}], "]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pnt", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"Collect", "[", 
+       RowBox[{
+        RowBox[{"Numerator", "[", 
+         RowBox[{"pnt", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"\[Alpha]", ",", "\[Beta]", ",", "minA", ",", "minB"}], 
+         "}"}], ",", "Simplify"}], "]"}], "/", "\[IndentingNewLine]", 
+      RowBox[{"Collect", "[", 
+       RowBox[{
+        RowBox[{"Denominator", "[", 
+         RowBox[{"pnt", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}]}], ",", 
+     RowBox[{
+      RowBox[{"Collect", "[", 
+       RowBox[{
+        RowBox[{"Numerator", "[", 
+         RowBox[{"pnt", "[", 
+          RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}], "/", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Collect", "[", 
+       RowBox[{
+        RowBox[{"Denominator", "[", 
+         RowBox[{"pnt", "[", 
+          RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}]}]}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"TraditionalForm", "[", "pnt", "]"}]}], "Input",
+ CellChangeTimes->{
+  3.631992651698473*^9, {3.631992806975646*^9, 3.6319928815808573`*^9}, {
+   3.631992911941058*^9, 3.6319929477546043`*^9}, 3.631992979924582*^9, {
+   3.6320305207617407`*^9, 3.632030662751445*^9}, {3.632030764419354*^9, 
+   3.6320308204341393`*^9}, {3.63203113959092*^9, 3.632031153186554*^9}, {
+   3.632031334301071*^9, 3.632031340229178*^9}, {3.632031535216517*^9, 
+   3.6320315701503057`*^9}}],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{"{", 
+   RowBox[{
+    FractionBox[
+     RowBox[{
+      RowBox[{"\[Beta]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          
+          FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+           TraditionalForm], " ", 
+          
+          FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+           TraditionalForm]}], "-", 
+         RowBox[{
+          
+          FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(a\\)]\\)\"\>",
+           TraditionalForm], " ", 
+          
+          FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+           TraditionalForm]}]}], ")"}]}], "+", 
+      RowBox[{"\[Alpha]", " ", 
+       FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+        TraditionalForm], " ", 
+       RowBox[{"(", 
+        RowBox[{
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm], "-", 
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm]}], ")"}]}]}], 
+     RowBox[{
+      RowBox[{"\[Beta]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+          TraditionalForm], "-", 
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(a\\)]\\)\"\>",
+          TraditionalForm]}], ")"}]}], "+", 
+      RowBox[{"\[Alpha]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm], "-", 
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm]}], ")"}]}]}]], ",", 
+    FractionBox[
+     RowBox[{"\[Alpha]", " ", "\[Beta]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+         TraditionalForm], "-", 
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+         TraditionalForm]}], ")"}]}], 
+     RowBox[{
+      RowBox[{"\[Beta]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+          TraditionalForm], "-", 
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(a\\)]\\)\"\>",
+          TraditionalForm]}], ")"}]}], "+", 
+      RowBox[{"\[Alpha]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm], "-", 
+         FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+          TraditionalForm]}], ")"}]}]}]]}], "}"}], TraditionalForm]], "Output",\
+
+ CellChangeTimes->{
+  3.631992884485773*^9, {3.631992925935232*^9, 3.631992948383689*^9}, 
+   3.631992980447606*^9, {3.632030538130319*^9, 3.632030549642901*^9}, {
+   3.632030605063348*^9, 3.632030615200973*^9}, {3.6320306523807983`*^9, 
+   3.6320306633628807`*^9}, {3.632030766847191*^9, 3.6320307751188793`*^9}, 
+   3.63203082093766*^9, 3.632031154019601*^9, 3.632031341476441*^9, {
+   3.6320315407840347`*^9, 3.632031570698501*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["pnt"], "Input",
+ CellChangeTimes->{{3.6320315811070337`*^9, 3.632031581789925*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox[
+    RowBox[{
+     RowBox[{"minA", " ", 
+      RowBox[{"(", 
+       RowBox[{"maxB", "-", "minB"}], ")"}], " ", "\[Alpha]"}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "maxA"}], " ", "minB"}], "+", 
+        RowBox[{"minA", " ", "minB"}]}], ")"}], " ", "\[Beta]"}]}], 
+    RowBox[{
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"maxB", "-", "minB"}], ")"}], " ", "\[Alpha]"}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "maxA"}], "+", "minA"}], ")"}], " ", "\[Beta]"}]}]], ",", 
+   FractionBox[
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"minA", "-", "minB"}], ")"}], " ", "\[Alpha]", " ", "\[Beta]"}], 
+    RowBox[{
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"maxB", "-", "minB"}], ")"}], " ", "\[Alpha]"}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "maxA"}], "+", "minA"}], ")"}], " ", "\[Beta]"}]}]]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{3.6320315827016087`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Collect", "[", 
+  RowBox[{
+   RowBox[{"intersectionFromPoints", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"TraditionalForm", "[", "minA", "]"}], ",", "0"}], "}"}], 
+       ",", " ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"TraditionalForm", "[", "maxA", "]"}], ",", "\[Alpha]"}], 
+        "}"}]}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"TraditionalForm", "[", "maxB", "]"}], ",", "\[Beta]"}], 
+        "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"TraditionalForm", "[", "minB", "]"}], ",", "0"}], "}"}]}], 
+      "}"}]}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.63199302335499*^9, 3.631993065469483*^9}, {
+  3.631993436142396*^9, 3.631993453829191*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox[
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", "\[Beta]"}], " ", 
+      TagBox[
+       FormBox[
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(a\\)]\\)\"\>",
+         TraditionalForm],
+        TraditionalForm],
+       TraditionalForm,
+       Editable->True], " ", 
+      TagBox[
+       FormBox[
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+         TraditionalForm],
+        TraditionalForm],
+       TraditionalForm,
+       Editable->True]}], "+", 
+     RowBox[{
+      TagBox[
+       FormBox[
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+         TraditionalForm],
+        TraditionalForm],
+       TraditionalForm,
+       Editable->True], " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"\[Alpha]", " ", 
+         TagBox[
+          FormBox[
+           
+           FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>",
+            TraditionalForm],
+           TraditionalForm],
+          TraditionalForm,
+          Editable->True]}], "+", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "\[Alpha]"}], "+", "\[Beta]"}], ")"}], " ", 
+         TagBox[
+          FormBox[
+           
+           FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+            TraditionalForm],
+           TraditionalForm],
+          TraditionalForm,
+          Editable->True]}]}], ")"}]}]}], 
+    RowBox[{
+     RowBox[{"\[Alpha]", " ", 
+      TagBox[
+       FormBox[
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>",
+         TraditionalForm],
+        TraditionalForm],
+       TraditionalForm,
+       Editable->True]}], "+", 
+     RowBox[{"\[Beta]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", 
+         TagBox[
+          FormBox[
+           
+           FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(a\\)]\\)\"\>",
+            TraditionalForm],
+           TraditionalForm],
+          TraditionalForm,
+          Editable->True]}], "+", 
+        TagBox[
+         FormBox[
+          
+          FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+           TraditionalForm],
+          TraditionalForm],
+         TraditionalForm,
+         Editable->True]}], ")"}]}], "-", 
+     RowBox[{"\[Alpha]", " ", 
+      TagBox[
+       FormBox[
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+         TraditionalForm],
+        TraditionalForm],
+       TraditionalForm,
+       Editable->True]}]}]], ",", 
+   FractionBox[
+    RowBox[{
+     RowBox[{"\[Alpha]", " ", "\[Beta]", " ", 
+      TagBox[
+       FormBox[
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+         TraditionalForm],
+        TraditionalForm],
+       TraditionalForm,
+       Editable->True]}], "-", 
+     RowBox[{"\[Alpha]", " ", "\[Beta]", " ", 
+      TagBox[
+       FormBox[
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+         TraditionalForm],
+        TraditionalForm],
+       TraditionalForm,
+       Editable->True]}]}], 
+    RowBox[{
+     RowBox[{"\[Alpha]", " ", 
+      TagBox[
+       FormBox[
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>",
+         TraditionalForm],
+        TraditionalForm],
+       TraditionalForm,
+       Editable->True]}], "+", 
+     RowBox[{"\[Beta]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", 
+         TagBox[
+          FormBox[
+           
+           FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(a\\)]\\)\"\>",
+            TraditionalForm],
+           TraditionalForm],
+          TraditionalForm,
+          Editable->True]}], "+", 
+        TagBox[
+         FormBox[
+          
+          FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\"\>",
+           TraditionalForm],
+          TraditionalForm],
+         TraditionalForm,
+         Editable->True]}], ")"}]}], "-", 
+     RowBox[{"\[Alpha]", " ", 
+      TagBox[
+       FormBox[
+        FormBox["\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(b\\)]\\)\"\>",
+         TraditionalForm],
+        TraditionalForm],
+       TraditionalForm,
+       Editable->True]}]}]]}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.631993073332625*^9, {3.631993437823451*^9, 3.631993454497377*^9}}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"\[Alpha]", " ", "\[Beta]", " ", 
+     TagBox[
+      FormBox[
+       FormBox[
+        "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\[Vee]\\)], \
+\\(a\\)]\\)\>\"",
+        TraditionalForm],
+       TraditionalForm],
+      TraditionalForm,
+      Editable->True]}], "-", 
+    RowBox[{"\[Alpha]", " ", "\[Beta]", " ", 
+     TagBox[
+      FormBox[
+       FormBox[
+        "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\[Vee]\\)], \
+\\(b\\)]\\)\>\"",
+        TraditionalForm],
+       TraditionalForm],
+      TraditionalForm,
+      Editable->True]}]}], ")"}], "/", 
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"\[Alpha]", " ", 
+     TagBox[
+      FormBox[
+       FormBox[
+        "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Wedge]\\)], \\(b\\)]\\)\>\"",
+        TraditionalForm],
+       TraditionalForm],
+      TraditionalForm,
+      Editable->True]}], "+", 
+    RowBox[{"\[Beta]", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", 
+        TagBox[
+         FormBox[
+          
+          FormBox["\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(a\\)]\\)\>\"",
+           TraditionalForm],
+          TraditionalForm],
+         TraditionalForm,
+         Editable->True]}], "+", 
+       TagBox[
+        FormBox[
+         FormBox[
+          "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(a\\)]\\)\>\"",
+          TraditionalForm],
+         TraditionalForm],
+        TraditionalForm,
+        Editable->True]}], ")"}]}], "-", 
+    RowBox[{"\[Alpha]", " ", 
+     TagBox[
+      FormBox[
+       FormBox[
+        "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\[Vee]\\)], \
+\\(b\\)]\\)\>\"",
+        TraditionalForm],
+       TraditionalForm],
+      TraditionalForm,
+      Editable->True]}]}], ")"}]}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"Collect", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"\[Alpha]", " ", "\[Beta]", " ", 
+       TagBox[
+        FormBox[
+         FormBox[
+          "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(a\\)]\\)\>\"",
+          TraditionalForm],
+         TraditionalForm],
+        TraditionalForm,
+        Editable->True]}], "-", 
+      RowBox[{"\[Alpha]", " ", "\[Beta]", " ", 
+       TagBox[
+        FormBox[
+         FormBox[
+          "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(b\\)]\\)\>\"",
+          TraditionalForm],
+         TraditionalForm],
+        TraditionalForm,
+        Editable->True]}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}], ")"}], "/", 
+  RowBox[{"Collect", "[", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"\[Alpha]", " ", 
+       TagBox[
+        FormBox[
+         FormBox[
+          "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Wedge]\\)], \\(b\\)]\\)\>\"",
+          TraditionalForm],
+         TraditionalForm],
+        TraditionalForm,
+        Editable->True]}], "+", 
+      RowBox[{"\[Beta]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", 
+          TagBox[
+           FormBox[
+            
+            FormBox["\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Wedge]\\)], \\(a\\)]\\)\>\"",
+             TraditionalForm],
+            TraditionalForm],
+           TraditionalForm,
+           Editable->True]}], "+", 
+         TagBox[
+          FormBox[
+           
+           FormBox["\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\>\"",
+            TraditionalForm],
+           TraditionalForm],
+          TraditionalForm,
+          Editable->True]}], ")"}]}], "-", 
+      RowBox[{"\[Alpha]", " ", 
+       TagBox[
+        FormBox[
+         FormBox[
+          
+          "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(b\\)]\\)\>\"",
+          TraditionalForm],
+         TraditionalForm],
+        TraditionalForm,
+        Editable->True]}]}], ")"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.631993520660163*^9, 3.631993570525229*^9}}],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(a\\)]\\)\"\>", 
+     "-", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(b\\)]\\)\"\>"}], ")"}], " ", "\[Alpha]", " ", "\[Beta]"}], 
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>", 
+      "-", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(b\\)]\\)\"\>"}], ")"}], " ", "\[Alpha]"}], "+", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+      "-", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\[Wedge]\
+\\)], \\(a\\)]\\)\"\>"}], 
+      "+", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(a\\)]\\)\"\>"}], ")"}], " ", "\[Beta]"}]}]]], "Output",
+ CellChangeTimes->{3.631993571462953*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"Collect", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", "\[Beta]"}], " ", 
+       TagBox[
+        FormBox[
+         FormBox[
+          "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Wedge]\\)], \\(a\\)]\\)\>\"",
+          TraditionalForm],
+         TraditionalForm],
+        TraditionalForm,
+        Editable->True], " ", 
+       TagBox[
+        FormBox[
+         FormBox[
+          "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(b\\)]\\)\>\"",
+          TraditionalForm],
+         TraditionalForm],
+        TraditionalForm,
+        Editable->True]}], "+", 
+      RowBox[{
+       TagBox[
+        FormBox[
+         FormBox[
+          "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(a\\)]\\)\>\"",
+          TraditionalForm],
+         TraditionalForm],
+        TraditionalForm,
+        Editable->True], " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"\[Alpha]", " ", 
+          TagBox[
+           FormBox[
+            
+            FormBox["\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Wedge]\\)], \\(b\\)]\\)\>\"",
+             TraditionalForm],
+            TraditionalForm],
+           TraditionalForm,
+           Editable->True]}], "+", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "\[Alpha]"}], "+", "\[Beta]"}], ")"}], " ", 
+          TagBox[
+           FormBox[
+            
+            FormBox["\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(b\\)]\\)\>\"",
+             TraditionalForm],
+            TraditionalForm],
+           TraditionalForm,
+           Editable->True]}]}], ")"}]}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}], ")"}], "/", 
+  RowBox[{"(", 
+   RowBox[{"Collect", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"\[Alpha]", " ", 
+       TagBox[
+        FormBox[
+         FormBox[
+          "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Wedge]\\)], \\(b\\)]\\)\>\"",
+          TraditionalForm],
+         TraditionalForm],
+        TraditionalForm,
+        Editable->True]}], "+", 
+      RowBox[{"\[Beta]", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", 
+          TagBox[
+           FormBox[
+            
+            FormBox["\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Wedge]\\)], \\(a\\)]\\)\>\"",
+             TraditionalForm],
+            TraditionalForm],
+           TraditionalForm,
+           Editable->True]}], "+", 
+         TagBox[
+          FormBox[
+           
+           FormBox["\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Vee]\\)], \\(a\\)]\\)\>\"",
+            TraditionalForm],
+           TraditionalForm],
+          TraditionalForm,
+          Editable->True]}], ")"}]}], "-", 
+      RowBox[{"\[Alpha]", " ", 
+       TagBox[
+        FormBox[
+         FormBox[
+          "\"\<\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(b\\)]\\)\>\"",
+          TraditionalForm],
+         TraditionalForm],
+        TraditionalForm,
+        Editable->True]}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"\[Alpha]", ",", "\[Beta]"}], "}"}]}], "]"}], ")"}]}]], "Input",
+ 
+ CellChangeTimes->{{3.631993605639799*^9, 3.6319936469518623`*^9}}],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>", 
+       " ", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(a\\)]\\)\"\>"}], "-", 
+      RowBox[{"\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(a\\)]\\)\"\>", 
+       " ", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(b\\)]\\)\"\>"}]}], ")"}], " ", "\[Alpha]"}], "+", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+       "-", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Wedge]\\)], \\(a\\)]\\)\"\>"}], 
+       " ", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(b\\)]\\)\"\>"}], "+", 
+      RowBox[{"\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(a\\)]\\)\"\>", 
+       " ", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(b\\)]\\)\"\>"}]}], ")"}], " ", "\[Beta]"}]}], 
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\
+\[Wedge]\\)], \\(b\\)]\\)\"\>", 
+      "-", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(b\\)]\\)\"\>"}], ")"}], " ", "\[Alpha]"}], "+", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+      "-", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \\(\[Wedge]\
+\\)], \\(a\\)]\\)\"\>"}], 
+      "+", "\<\"\\!\\(\\*SubscriptBox[OverscriptBox[\\(\[Phi]\\), \
+\\(\[Vee]\\)], \\(a\\)]\\)\"\>"}], ")"}], " ", "\[Beta]"}]}]]], "Output",
+ CellChangeTimes->{3.631993648330172*^9}]
+}, Open  ]]
+},
+WindowSize->{808, 655},
+WindowMargins->{{Automatic, 26}, {42, Automatic}},
+FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (June 27, \
+2014)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 139, 2, 28, "Input"],
+Cell[722, 26, 213, 3, 50, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[972, 34, 175, 4, 28, "Input"],
+Cell[1150, 40, 943, 26, 50, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2130, 71, 1185, 36, 63, "Input"],
+Cell[3318, 109, 1179, 38, 50, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4534, 152, 133, 2, 28, "Input"],
+Cell[4670, 156, 2438, 69, 125, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7145, 230, 314, 9, 28, "Input"],
+Cell[7462, 241, 979, 27, 50, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8478, 273, 464, 13, 28, "Input"],
+Cell[8945, 288, 1368, 39, 78, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10350, 332, 1988, 57, 97, "Input"],
+Cell[12341, 391, 3273, 88, 127, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[15651, 484, 2338, 63, 97, "Input"],
+Cell[17992, 549, 3665, 94, 93, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[21694, 648, 97, 1, 28, "Input"],
+Cell[21794, 651, 1057, 35, 50, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[22888, 691, 937, 28, 46, "Input"],
+Cell[23828, 721, 4780, 160, 80, "Output"]
+}, Open  ]],
+Cell[28623, 884, 1873, 67, 114, "Input"],
+Cell[CellGroupData[{
+Cell[30521, 955, 2315, 77, 114, InheritFromParent],
+Cell[32839, 1034, 934, 23, 80, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[33810, 1062, 3334, 112, 165, InheritFromParent],
+Cell[37147, 1176, 1704, 42, 80, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

@@ -2261,9 +2261,8 @@ These then give a combined value for $\alpha = \alpha_1 \alpha_2$ and $\beta = \
 \subsubsection{The complete algorithm}
 
 \newcounter{algosection}[subsubsection]
-\newcommand{\algosection}[1]{\stepcounter{algosection} \textbf{\thealgosection. #1}}
+\newcommand{\algosection}[1]{\needspace{5\baselineskip} \stepcounter{algosection} \textbf{\thealgosection. #1} }
 
-{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 The programmer specifies a requested value of $\theta$ , values for the means $\uMean{ ab}$ and standard deviations $\uSTD{ ab}$ for each of the three axis in the rotated color space with a unit range and the data type ranges $\srcRange$ and $\dstRange$. The algorithm then proceeds as follows:
 
 \algosection{Find the working type and range.} 
@@ -2287,29 +2286,30 @@ Using the distribution constants \ref{eq:DistributionConstants} , the gradient a
   \widetilde{\theta} = \theta  \bmod \frac{\pi }{3} 
   \end{array}
 \end{gather*}
-The length of the axis $\tRange$ after rescaling is given by \ref{eq:CombinedRotationRange} and the axis limits are easily found.
-\begin{gather}
- \tRange(\theta,\mu,\sigma)   =  \min\left\{K \delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\}  \srcRange \\
+The length of the axis $\tRange$ after rescaling is given by \ref{eq:CombinedRotationRange} and the axis limits are easily found along with 
+the compression ratio $\kappa$ \ref{eq:newCompressionRatio}.
+\begin{gather*}
+\begin{aligned}
+ \tRange(\theta,\mu,\sigma)   & =  \min\left\{K \delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\}  \srcRange \quad&\quad
+ \kappa(\theta) & = \max\left\{ \frac{1}{\delta(\mu,\sigma) }   , \frac{K}{\mathbf{L}(\theta)} \right\}  
+ \end{aligned} \\
  \begin{aligned}
   \tMin(\theta,\mu,\sigma)   & =
  \begin{pmatrix}
  0 \\
-  \frac{-\tRange_2(\theta,\mu_2,\sigma_2) }{2} \\  
-  \frac{-\tRange_3(\theta,\mu_3,\sigma_3) }{2} \\  
- \end{pmatrix} & 
+  \frac{-1 }{2} \tRange_2(\theta,\mu_2,\sigma_2) \\  
+  \frac{-1 }{2} \tRange_3(\theta,\mu_3,\sigma_3) \\  
+ \end{pmatrix} \quad & \quad
   \tMax(\theta,\mu,\sigma)   & =
  \begin{pmatrix}
   \tRange_1(\theta,\mu_1,\sigma_1)  \\
-  \frac{\tRange_2(\theta,\mu_2,\sigma_2) }{2} \\  
-  \frac{\tRange_3(\theta,\mu_3,\sigma_3) }{2} \\  
+  \frac{1 }{2} \tRange_2(\theta,\mu_2,\sigma_2)  \\  
+  \frac{1 }{2} \tRange_3(\theta,\mu_3,\sigma_3)  \\  
  \end{pmatrix} 
  \end{aligned}
-\end{gather}
-and the compression ratio $\kappa$ \ref{eq:newCompressionRatio}
-\begin{equation}\label{eq:newCompressionRatio}
-\kappa(\theta) = \max\left\{ \frac{1}{\delta(\mu,\sigma) }   , \frac{K}{\mathbf{L}(\theta)} \right\}   
-\end{equation}
-\\
+\end{gather*}
+
+
 \algosection{Set the distribution region boundary constants.} 
 Using the constants previously defined ( \ref{eq:PreservedRegionConsts} , \ref{eq:0to1} )
 \begin{align*}
@@ -2344,8 +2344,8 @@ the C++ code finds the points using the following algorithm
 \begin{algorithm}[H]
  \caption{Finding the extended region in which all the information is kept in C++}
 \begin{algorithmic}
- \Require{$\Keep _2$ the starting point for the linear walk \;
-$\tau_{p}$ the acceptable divergence from linearity }
+ \Require{$\Keep _2$ the starting point for the linear walk } 
+ \linebreak \phantom{Require} $\tau_{p}$ the acceptable divergence from linearity 
  \Ensure{$ \{\eKeep_1, \eKeep_2\} $ the extended boundaries}
  \State $x \gets \Keep_2$  \Comment{$dis(x)$ is the distribution function}
  \While{$dis(x) > x + \left\lfloor\text{dis}\left(\Keep _2\right)\right\rfloor  -\Keep _2 - \tau_{p}$}
@@ -2358,6 +2358,8 @@ $\tau_{p}$ the acceptable divergence from linearity }
 \end{algorithm}
 
 The unit range boundaries $\ekeep$ are found using  $\ekeep =  \frac{\eKeep - \tMin}{\tRange}$.
+
+
 \algosection{Suggest a new value for $\theta$.} 
 First we find the perturbation scaling \ref{eq:perturbationFunctionSigns} and the perturbation function ordering function \ref{eq:abPerturbationFunctionOrdering}
 %\begin{gather}\label{eq:abPerturbationFunctionOrdering}
@@ -2483,7 +2485,7 @@ The algorithm then finds a starting value for the index \ref{eq:indexFromTheta} 
   \meanIndx & = 2^{n-3} 
 \end{align*}
 
-The region $\iota$ for a given value of $i$ is found and the appropriate values  \ref{eq:extremaBounds} for the extrema \ref{eq:ExtremaFunctions} are evaluated in the function which funds the perturbation at the index \ref{eq:generalisedPerturbation} and the intercept position $\thetaX{i}$ is found with the following routine.
+The region $\iota$ for a given value of $i$ is found and the appropriate values  \ref{eq:extremaBounds} for the extrema \ref{eq:ExtremaFunctions} are evaluated in the function which funds the perturbation at the index \ref{eq:generalisedPerturbation} and the intercept position $\thetaX{i}$ is found with the algorithm \ref{algo:thetaX}.
 %\begin{gather*}
 %\begin{aligned}
 % \iota(i,n)  &= \left\lfloor 7\ \meanIndx-\sqrt{i^2 - 2 i \; \meanIndx + 49\ \meanIndx^2 }\right\rfloor &
@@ -2513,14 +2515,11 @@ The region $\iota$ for a given value of $i$ is found and the appropriate values 
 %}\right\}
 %\end{gather*}
 
- \begin{algorithm}[H]
+ \begin{algorithm}[h]\label{algo:thetaX}
   \caption{A function which returns the angular position of compromise between the perturbations to the channels.}
  \begin{algorithmic}
-      \Function {thetaX}{$ i, \alpha, \beta, n $}
-       \Require{$i$ integer index of the intercept \quad
-        $n$ the source bit depth }
-       \Ensure{$\thetaX{i} $ the angular position of the intercept and the maximum perturbation at that value}
-       \State $\meanIndx \gets  2^{n-3}$  ; \quad  $\iota(i,n)  \gets  \left\lfloor 7\ \meanIndx-\sqrt{i^2 - 2 i \meanIndx + 49\ \meanIndx^2 }\right\rfloor $ 
+      \Function { $\overset{\times}{\phi}$}{$ i, \alpha, \beta, n $} \Comment{$i$ integer index of the intercept }
+       \State $\meanIndx \gets  2^{n-3}$  ; \quad  $\iota(i,n)  \gets  \left\lfloor 7\ \meanIndx-\sqrt{i^2 - 2 i \meanIndx + 49\ \meanIndx^2 }\right\rfloor $  \Comment{$n$ the source bit depth}
         \State $\extremaTheta{b}{\mathbf{l} } = \arctan\left(\frac{\mathbf{l} 2^{2-n}}{\sqrt{3}}       \right)$ ; \quad 
         $\extremaTheta{a}{\mathbf{l} } = \arctan\left(\frac{\mathbf{l} \sqrt{3} }{2^n - \mathbf{l}}\right)$
         \If{$ i + \iota \bmod{2} = 0$}  \Comment{$i + \iota$ is even}
@@ -2541,26 +2540,27 @@ The region $\iota$ for a given value of $i$ is found and the appropriate values 
         \alpha  \beta  (\minimaTheta{a}-\minimaTheta{b})  }{
         \beta  (\minimaTheta{a}-\maximaTheta{a})+\alpha  (\maximaTheta{b}-\minimaTheta{b})
         }\right\} $ \;
-      \State \textbf{Return} {$\thetaX{i}$}
+      \State \textbf{Return} {$\thetaX{i}$}\Comment{$\thetaX{i} $ \{angle,  maximum perturbation\} }
 \EndFunction
  \end{algorithmic}
 \end{algorithm}
+%the angular position of the intercept and the maximum perturbation at that value
 
-
-To find the angular value closest to $\theta$ which produces a perturbation less than the tolerance $\tau$ the algorithm finds the closest value which satisfies the tolerance in the positive and negative directions and returns the nearest one to the requested value of $\theta$. the algorithm is guaranteed to find a value which satisfies the tolerance in each direction within a $\frac{\pi}{6}$ region because the perturbation is zero at the ends of the $\frac{\pi}{6}$ region.
+To find the angular value closest to $\theta$ which produces a perturbation less than the tolerance $\tau$ the algorithm \ref{algo:newTheta} finds the closest value which satisfies the tolerance in the positive and negative directions and returns the nearest one to the requested value of $\theta$. The algorithm \ref{algo:newTheta} is guaranteed to find a value which satisfies the tolerance in each direction within a $\frac{\pi}{6}$ region because the perturbation is zero at the ends of the $\frac{\pi}{6}$ region.
  
-\begin{algorithm}[H]
+\begin{algorithm}[H]\label{algo:newTheta}
   \caption{Suggest a new value for $\theta$}
  \begin{algorithmic}
   \Require{ $\alpha$, $\beta$ the relative importance of the channels}
-  \Require{ $\theta$ the requested angle}
-  \Require{ $\tau$ the tolerance}
+  \State \phantom{Require}  { $\theta$ the requested angle; \quad \quad $\tau$ the tolerance}
  \Ensure{ $\vartheta$ the suggested value for $\theta$ and  $h$ the predicted maximum perturbation.}
-\State  $\delta\theta  \gets \theta \mod{\frac{\pi}{6} } $\;
- \State $\Theta  \gets \theta - \delta\theta $\;
- \State  $\meanIndx \gets  2^{n-3}$\;
- \State $ i_{\circleddash} \gets i_{\oplus} \gets \frac{\meanIndx \tan (\delta \theta ) \left(\sqrt{3} \tan (\delta \theta )+7\right)}{\tan (\delta \theta )+\sqrt{3}} $ \;
-\State  $\left\{ \vartheta_{\circleddash}, h_{\circleddash} \right\} \gets \left\{ \vartheta_{\oplus}, h_{\oplus} \right\} \gets \thetaX{i, \alpha, \beta, n}$ \;
+ \State  \begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}} lll}
+ $\delta\theta \gets \theta \bmod{\frac{\pi}{6} }$; & $\Theta \gets \theta - \delta\theta$;  &  $\meanIndx \gets  2^{n-3} $;
+ \end{tabular*}
+  \State  \begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}} ll}
+  $i_{\circleddash} \gets i_{\oplus} \gets \frac{\meanIndx \tan (\delta \theta ) \left(\sqrt{3} \tan (\delta \theta )+7\right)}{\tan (\delta \theta )+\sqrt{3}} $; & 
+  $  \left\{ \vartheta_{\circleddash}, h_{\circleddash} \right\} \gets \left\{ \vartheta_{\oplus}, h_{\oplus} \right\} \gets \thetaX{i, \alpha, \beta, n}$
+  \end{tabular*}
  \While{$h_{\oplus} > \tau$}
  \State  $i_{\oplus}++$ \;
  \State  $\left\{ \vartheta_{\oplus}, h_{\oplus}\right\} \gets \thetaX{i_{\oplus}, \alpha, \beta, n}$
@@ -2626,9 +2626,11 @@ Expanding the definition of the quantized matrix $\qR[\theta, n]$ \ref{eq:quanti
 %\end{align*}
 
 %\begin{tabular}
+\newcommand{\mTheta}[2]{\theta_#1^#2} 
 \begin{gather*}
 \begin{aligned}
-\aR &= \fSs \otimes \qR & \elemU     &= 2^{n-2 } 
+\aR &= \fSs \otimes \qR   &   \elemU  &= 2^{n-2 } &\quad&\quad\\
+\mTheta{6}{0} &= \theta  \bmod \pi  &   \mTheta{4}{0} &= \theta  \bmod \frac{2 \pi }{3}  & \mTheta{1}{0} &= \theta  \bmod \frac{ \pi }{6}\\
 \end{aligned} \\
 \begin{aligned}
 \elemAp  & = - \left(2^{n-3 }+\round{ 2^{n-3 }\sqrt{3} \tan (\thetaA ) }\right) & -2^{n-2} \le & \elemAp \le -2^{n-3} \\
@@ -2636,9 +2638,10 @@ Expanding the definition of the quantized matrix $\qR[\theta, n]$ \ref{eq:quanti
 \elemBp   & = - \left(2^{n-3 } +\round{ 2^{n-3 }\sqrt{3} \tan \left(\frac{\pi }{6}-\thetaA \right) }\right)  & -2^{n-2} \le & \elemBp  \le -2^{n-3} \\
 \elemBm  & = - \left(2^{n-3 } -\round{ 2^{n-3 }\sqrt{3} \tan \left(\frac{\pi }{6}-\thetaA \right) }\right)   & -2^{n-3} \le & \elemBm \le 0 \\
 \end{aligned} \\
+\begin{aligned}
  \qR[\theta, n] % &=
 % \round{ \left(\begin{array}{c} 1  \\ 2^{n - 2} \\ 2^{n - 2}  \\\end{array} \right) \bigotimes \fR[\theta] } \\
-  =
+  &=
 \begin{cases}
 \left(
 \begin{smallmatrix}
@@ -2646,50 +2649,51 @@ Expanding the definition of the quantized matrix $\qR[\theta, n]$ \ref{eq:quanti
  \elemAp  & \elemU    & \elemAm \\
  \elemBp   & \elemBm & \elemU \\
 \end{smallmatrix}
-\right) & 0\leq (\theta  \bmod \pi )<\frac{\pi }{6} \\
+\right) & 0\leq \mTheta{6}{0} <\frac{\pi }{6} \\
  \left(
 \begin{smallmatrix}
  1              & 1             & 1  \\
  \elemU     & \elemBp  & \elemBm \\
  \elemAm  & \elemAp  & \elemU \\
 \end{smallmatrix}
-\right) & \frac{\pi }{6}\leq (\theta  \bmod \pi )<\frac{\pi }{3} \\
+\right) & \frac{\pi }{6}\leq \mTheta{6}{0} <\frac{\pi }{3} \\
  \left(
 \begin{smallmatrix}
  1              & 1             & 1  \\
  \elemU    & \elemAm & \elemAp \\
  \elemBm  & \elemU   & \elemBp \\
 \end{smallmatrix}
-\right) & \frac{\pi }{3}\leq (\theta  \bmod \pi )<\frac{\pi }{2} \\
+\right) & \frac{\pi }{3}\leq \mTheta{6}{0} <\frac{\pi }{2} \\
  \left(
 \begin{smallmatrix}
  1              & 1             & 1  \\
  \elemBp   & \elemBm & \elemU \\
  \elemAp   & \elemU   & \elemAm \\
 \end{smallmatrix}
-\right) & \frac{\pi }{2}\leq (\theta  \bmod \pi )<\frac{2 \pi }{3} \\
+\right) & \frac{\pi }{2}\leq \mTheta{6}{0} <\frac{2 \pi }{3} \\
  \left(
 \begin{smallmatrix}
  1              & 1             & 1  \\
  \elemAm  & \elemAp & \elemU \\
  \elemU     & \elemBp  & \elemBm \\
 \end{smallmatrix}
-\right)  & \frac{2 \pi }{3}\leq (\theta  \bmod \pi )<\frac{5 \pi }{6} \\
+\right)  & \frac{2 \pi }{3}\leq \mTheta{6}{0} <\frac{5 \pi }{6} \\
 \left(
 \begin{smallmatrix}
  1              & 1             & 1  \\
  \elemBm  & \elemU   & \elemBp \\
  \elemU    & \elemAm & \elemAp \\
 \end{smallmatrix}
-\right)  & \frac{5 \pi }{6}\leq (\theta  \bmod \pi )<\pi 
-\end{cases} \\ 
- \fSs[\theta]  =
+\right)  & \frac{5 \pi }{6}\leq \mTheta{6}{0} <\pi 
+\end{cases} &
+ \fSs[\theta]  &=
 \begin{cases}
-\left( \begin{smallmatrix}  1 \\    1 \\   1\\ \end{smallmatrix} \right) & 0                   \leq (\theta  \bmod \frac{2 \pi }{3} ) < \frac{  \pi }{6} \\
-\left( \begin{smallmatrix}  1 \\  -1 \\   1\\ \end{smallmatrix} \right) & \frac{\pi }{6} \leq  (\theta  \bmod \frac{2 \pi }{3} ) < \frac{  \pi }{3} \\
-\left( \begin{smallmatrix}  1 \\  -1 \\ -1\\ \end{smallmatrix} \right) & \frac{\pi }{3} \leq  (\theta  \bmod \frac{2 \pi }{3} ) < \frac{  \pi }{2} \\
-\left( \begin{smallmatrix}  1 \\    1 \\ -1\\ \end{smallmatrix} \right) & \frac{\pi }{2} \leq  (\theta  \bmod \frac{2 \pi }{3} ) < \frac{2\pi }{3} 
+\left( \begin{smallmatrix}  1 \\    1 \\   1\\ \end{smallmatrix} \right) & 0                   \leq \mTheta{4}{0}  < \frac{  \pi }{6} \\
+\left( \begin{smallmatrix}  1 \\  -1 \\   1\\ \end{smallmatrix} \right) & \frac{\pi }{6} \leq  \mTheta{4}{0}  < \frac{  \pi }{3} \\
+\left( \begin{smallmatrix}  1 \\  -1 \\ -1\\ \end{smallmatrix} \right) & \frac{\pi }{3} \leq  \mTheta{4}{0}  < \frac{  \pi }{2} \\
+\left( \begin{smallmatrix}  1 \\    1 \\ -1\\ \end{smallmatrix} \right) & \frac{\pi }{2} \leq  \mTheta{4}{0}  < \frac{2\pi }{3} 
 \end{cases} 
+\end{aligned} \\
 \end{gather*}
 This $\aR[\theta, n]$ matrix is used to perform the rotation of the pixel values. Taking the inner product of $\aR$ with the pixel values produces 
 a rotated set of pixel values $\vec{a} = \aR \cdot \vec{rgb}$ with elements $ \vec{a}_1 \in \{0 \cdots 2^{n+2} \}$,  $ \vec{a}_2 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$ and $ \vec{a}_3 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$. 
@@ -2698,7 +2702,6 @@ a rotated set of pixel values $\vec{a} = \aR \cdot \vec{rgb}$ with elements $ \v
 \aMax    &= \left( \begin{smallmatrix}  2^{n+2} \\    2^{2n-1}  \\   2^{2n-1} \\ \end{smallmatrix} \right) & 
 \aRange &= \left( \begin{smallmatrix}  2^{n+2} \\    2^{2n}      \\   2^{2n}     \\ \end{smallmatrix} \right) 
 \end{align*}
-\\
 \algosection{Design the distribution function.} 
 First the overall scaling for the quantised rotation matrix is found by combining the normalised scaling $\Scale[\theta, n]$ \ref{eq:scaleDef} with the desired scaling defined in equation \ref{eq:CombinedRotationRange}
 
@@ -2764,140 +2767,69 @@ Next we decide which of the distribution methods should be used. This is done by
 %\end{algorithm}
 
  \begin{algorithm}[H]
-  \caption{An algorithm which returns an appropriate distribution function for each channel}
+  \caption{An algorithm which returns a channel appropriate distribution function}
   \begin{algorithmic}
-       \Require{$\{\discard, \Discard, \ekeep,\eKeep\}$ the boundaries of the regions.
-        $0<\tau<1$ the tolerances for counting a region as significant. }
+       \Require{$\{\discard, \Discard, \ekeep,\eKeep\}$ the boundaries of the regions.}
+       \State \phantom{Require} $0<\tau<1$ the tolerances for counting a region as significant.
        \Ensure{$pDis$ a function which performs the re-distribution for a channel.}
-       \State \begin{tabular}{llrl}
-       $\mathbf{Q}_{discard} $    & \multicolumn{3}{l}{ $\gets \tau_{discard}     \le    1-\discard_2 + \discard_1$} \\
-       $\mathbf{Q}_{distribute}$ & \multicolumn{3}{l}{$\gets \tau_{distribute}  \le    \discard_2 - \ekeep_2 + \ekeep_1 - \discard_1$} \\
-       $\mathbf{Q}_{keep} $        & \multicolumn{3}{l}{$\gets \tau_{keep}         \le     \ekeep_2 - \ekeep_1$}\\
-       $\Discard_1^{q}$ &$\gets \aRange \; \discard_1 + \aMin$; &
+       \State \begin{tabular}{llcrl}
+       $\mathbf{Q}_{discard} $    &  $\gets \tau_{discard}     \le    1-\discard_2 + \discard_1$ & \quad\quad&
+              $\mathbf{Q}_{keep} $        & $\gets \tau_{keep}         \le     \ekeep_2 - \ekeep_1$\\
+       $\mathbf{Q}_{distribute}$ & \multicolumn{4}{l}{$\gets \tau_{distribute}  \le    \discard_2 - \ekeep_2 + \ekeep_1 - \discard_1$} \\
+       $\Discard_1^{q}$ &$\gets \aRange \; \discard_1 + \aMin$; & \quad\quad &
        $\Discard_2^{q}$ &$\gets \aRange \; \discard_2 + \aMin$ \\
-       $\eKeep_1^{q}$    &$\gets \aRange \; \ekeep_1   + \aMin$; &
+       $\eKeep_1^{q}$    &$\gets \aRange \; \ekeep_1   + \aMin$; & \quad\quad &
        $\eKeep_2^{q}$    &$\gets \aRange \; \ekeep_2   + \aMin$ 
        \end{tabular} \;
           \If{$\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \mathbf{Q}_{distribute} $}\Comment{Piecewise Erf Distribution}
-         \State \begin{equation*}
-          pDis(x) = \begin{cases}
+         \State $
+          pDis(x) \gets \begin{cases}
           \dstMin & x \le \Discard_1^q \\
           \text{dis}(\Scale x) & \Discard_1^q < x < \eKeep_1^q \\
           \Scale x - \eKeep_1 + \text{dis}(\eKeep_1) & \eKeep_1^q \le x \le \eKeep_2^q  \\
           \text{dis}(\Scale x) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1)  & \eKeep_2^q < x < \Discard_2^q  \\
           \text{dis}(\Discard_2) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1) & \Discard_2^q \le x\\
-          \end{cases}
-          \end{equation*} 
+          \end{cases}   $
           \ElsIf{$\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Partitioning Distribution}
-          \State  \begin{equation*}
-           pDis(x) = \begin{cases}
+          \State  
+          $ pDis(x) \gets \begin{cases}
            \dstMin & x \le \Discard_1^q \\
            \Scale \; x  + \dstMin  & \Discard_1^q \le x \le \Discard_2^q  \\
            \Discard_2 - \Discard_1 + \dstMin  & \Discard_2^q \le x\\
-           \end{cases}
-           \end{equation*} 
+           \end{cases}$
           \ElsIf{$\mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Linear Distribution}
-          \State   \begin{equation*}
-            pDis(x) = \Scale \; x + \dstMin
-            \end{equation*} 
+          \algstore{bkbreak}
+\end{algorithmic}
+\end{algorithm}
+\addtocounter{algorithm}{-1}
+\begin{algorithm}[h]
+\caption{Part 2}
+\begin{algorithmic}[1]
+\algrestore{bkbreak}
+          \State   
+          $  pDis(x) \gets \Scale \; x + \dstMin $
           \ElsIf{$\lnot \mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \mathbf{Q}_{distribute} $}\Comment{Truncated Erf Distribution}
-         \State  \begin{equation*}
-          pDis(x) = \begin{cases}
+         \State  
+         $ pDis(x) \gets \begin{cases}
           \dstMin & x \le \Discard_1^q \\
           \text{dis}(\Scale x) & \Discard_1^q < x < \Discard_2^q \\
           \dstMax & \Discard_2^q < x  \\
-          \end{cases}
-          \end{equation*} 
+          \end{cases} $
           \ElsIf{$\lnot\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Step Distribution!}
-         \State   \begin{equation*}
-           pDis(x) = \begin{cases}
+         \State   
+         $  pDis(x) \gets \begin{cases}
            \dstMin & x \le \frac{\Discard_1^q + \Discard_2^q}{2} \\
            1 + \dstMin  &  \frac{\Discard_1^q + \Discard_2^q}{2} < x\\
-           \end{cases}
-           \end{equation*} 
+           \end{cases} $
             \Else \Comment{$\lnot \mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}
-            Error; The tolerances or something else must be wrong!
+            \State Error; \Comment{The tolerances or something else must be wrong!}
             \EndIf
-            \textbf{Return} {$pDis(x)$}
+            \State \textbf{Return} {$pDis(x)$}
 \end{algorithmic}
 \end{algorithm}
 
-\begin{equation}
-pDis(x) = \begin{cases}
-\dstMin & x \le \Discard_1^q \\
-\text{dis}(\Scale x) & \Discard_1^q < x < \eKeep_1^q \\
-\Scale x - \eKeep_1 + \text{dis}(\eKeep_1) & \eKeep_1^q \le x \le \eKeep_2^q  \\
-\text{dis}(\Scale x) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1)  & \eKeep_2^q < x < \Discard_2^q  \\
-\text{dis}(\Discard_2) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1) & x \ge \Discard_2^q \\
-\end{cases}
-\end{equation}
-
-Partition
-\begin{equation}
-pDis(x) = \begin{cases}
-\dstMin & x \le \Discard_1^q \\
-\Scale \; x  + \dstMin  & \Discard_1^q \le x \le \Discard_2^q  \\
-\Discard_2 + \dstMin  & x \ge \Discard_2^q \\
-\end{cases}
-\end{equation}
-
-Linear
-\begin{equation}
-pDis(x) = \Scale \; x + \dstMin
-\end{equation}
-
-\begin{align*}
-\fSe[\theta]  % &=
-% \round{ \left(\begin{array}{c} 1  \\ 2^{n - 2} \\ 2^{n - 2}  \\\end{array} \right) \bigotimes \fR[\theta] } \\
- & =
-\begin{cases}
-\left(
-\begin{smallmatrix}
-1 \\
- \cosine {\thetaA } \\
- \cosine{\Pii{6}-\thetaA } \\
-\end{smallmatrix}
-\right) & 0\leq (\theta  \bmod \pi )<\frac{\pi }{6} \\
- \left(
-\begin{smallmatrix}
- 1 \\
-  \cosine{\Pii{6}-\thetaA } \\
-  \cosine {\thetaA } \\
-\end{smallmatrix}
-\right) & \frac{\pi }{6}\leq (\theta  \bmod \pi )<\frac{\pi }{3} \\
- \left(
-\begin{smallmatrix}
-1 \\
- \cosine {\thetaA } \\
- \cosine{\Pii{6}-\thetaA } \\
-\end{smallmatrix}
-\right) & \frac{\pi }{3}\leq (\theta  \bmod \pi )<\frac{\pi }{2} \\
- \left(
-\begin{smallmatrix}
-  1 \\
-   \cosine{\Pii{6}-\thetaA } \\
-   \cosine {\thetaA } \\
-\end{smallmatrix}
-\right) & \frac{\pi }{2}\leq (\theta  \bmod \pi )<\frac{2 \pi }{3} \\
- \left(
-\begin{smallmatrix}
-1 \\
- \cosine {\thetaA } \\
- \cosine{\Pii{6}-\thetaA } \\
-\end{smallmatrix}
-\right)  & \frac{2 \pi }{3}\leq (\theta  \bmod \pi )<\frac{5 \pi }{6} \\
-\left(
-\begin{smallmatrix}
- 1 \\
-  \cosine{\Pii{6}-\thetaA } \\
-  \cosine {\thetaA } \\
-\end{smallmatrix}
-\right)  & \frac{5 \pi }{6}\leq (\theta  \bmod \pi )<\pi 
-\end{cases} 
-\end{align*}
-
-
-
+\subsubsection{Conclusion}
+Some words about how the algorithm performs and concluding comments.
 %You know those blue/black people? Melanin may not be expressed in the fingernails!
 
 %\subsection{Pigment vs. Blood}\label{sec:PigmentVs.Blood}
