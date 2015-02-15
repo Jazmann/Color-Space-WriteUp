@@ -23,8 +23,8 @@ Format[RotationMatrixXYZ, TraditionalForm]=TraditionalForm["\!\(\*SubscriptBox[\
 RotationMatrixLCaCb[\[Theta]:Except[_String]]:= Evaluate[TrigFactor[RotationMatrixX[\[Theta]].RotationMatrixZ[ArcTan[1/Sqrt[2]]].RotationMatrixY[-Pi/4]]];
 Format[RotationMatrixLCaCb, TraditionalForm]=TraditionalForm["\!\(\*
 StyleBox[\"R\",\nFontWeight->\"Bold\"]\)"];
-iRotationMatrix[\[Theta]:Except[_String]]:= Evaluate[TrigFactor[RotationMatrixY[Pi/4].RotationMatrixZ[-ArcTan[1/Sqrt[2]]].RotationMatrixX[-\[Theta]]]];
-Format[iRotationMatrix, TraditionalForm]=TraditionalForm["\!\(\*
+iRotationMatrixLCaCb[\[Theta]:Except[_String]]:= Evaluate[TrigFactor[RotationMatrixY[Pi/4].RotationMatrixZ[-ArcTan[1/Sqrt[2]]].RotationMatrixX[-\[Theta]]]];
+Format[iRotationMatrixLCaCb, TraditionalForm]=TraditionalForm["\!\(\*
 StyleBox[SuperscriptBox[
 StyleBox[\"R\",\nFontWeight->\"Bold\"], 
 RowBox[{\"-\", \"1\"}]],\nFontWeight->\"Bold\"]\)"];
@@ -145,7 +145,7 @@ RGBAxisRanges = {{0,1},{0,1},{0,1}};
 
 
 RGBCube["RGB"]=cubeCorners[RGBAxisRanges];
-RGBCube["LCaCb"]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[iRotationMatrixLCaCb[\[Theta]].RGBCube["RGB"]]]]]];
+RGBCube["LCaCb"]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[RotationMatrixLCaCb[\[Theta]].RGBCube["RGB"]]]]]];
 
 
 RGBCube3D[corners_]:=Module[{RGBCube,faces,ranges},
@@ -181,12 +181,13 @@ rgbCenter=Part[map,All,r+1,g+1,b+1];
 
 Clear[RGBCubeInYabFiniteBalls];
 RGBCubeInYabFiniteBalls[\[Theta]_,cut_:3,n_:8,opacity_:{1,0.03}]:=Module[{cube,color,rgbCenter,radius,T},
-T=iRotationMatrixLCaCb[\[Theta]];
+T=RotationMatrixLCaCb[\[Theta]];
 cube=Flatten[Table[
 color=RGBColor[(r)/n,(g)/n,(b)/n];
 rgbCenter = T . List[(r)/n,(g)/n,(b)/n];
 radius=1/(2n);
-{Opacity[If[r+g+b < n cut, opacity[[1]], opacity[[2]] ]],color,Sphere[rgbCenter,radius]},{b,0,n-1},{g,0,n-1},{r,0,n-1}]]
+{Opacity[If[r+g+b < n cut, opacity[[1]], opacity[[2]] ]],color,
+Sphere[rgbCenter,radius]},{b,0,n-1},{g,0,n-1},{r,0,n-1}]]
 ]
 
 
@@ -257,7 +258,7 @@ Table[{Glow[LCaCbColor[col[[i]],\[Theta]]],Black,Cylinder[{c1[[i]],c2[[i]]},0.1]
 LCaCbCube3D[\[Theta]_]:=Module[{RGBinLCaCbcorners,RGBCubeCorners,LCaCbCubeCorners,LCaCbinRGBCubeCorners,faces,ranges},
 RGBinLCaCbcorners = Transpose[RGBCube["LCaCb"][\[Theta]]];
 RGBCubeCorners = Transpose[cubeCorners[{{0,1},{0,1},{0,1}}]];LCaCbCubeCorners =Transpose[cubeCorners[ LCaCbAxisRanges[\[Theta]]]];
-LCaCbinRGBCubeCorners =Transpose[cubeCorners[ iRotationMatrixLCaCb[\[Theta]]. cubeCorners[ LCaCbAxisRanges[\[Theta]]]]];
+LCaCbinRGBCubeCorners =Transpose[cubeCorners[ Map[{Min[#],Max[#]}&,iRotationMatrixLCaCb[\[Theta]]. cubeCorners[ LCaCbAxisRanges[\[Theta]]]]]];
 faces = {{1,2,3,4},{5,6,7,8},{1,2,7,6},{2,3,8,7},{3,4,5,8},{1,4,5,6}};
 ranges = LCaCbAxisRanges[\[Theta]];
 {Polygon[LCaCbCubeCorners[[faces[[1]]]], VertexColors->MapThread[LCaCbColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[1]]]]]]], 
@@ -271,8 +272,10 @@ ranges = LCaCbAxisRanges[\[Theta]];
 
 RGBinLCaCbCube3D[\[Theta]_]:=Module[{RGBinLCaCbcorners,RGBCubeCorners,LCaCbCubeCorners,LCaCbinRGBCubeCorners,faces,ranges},
 RGBinLCaCbcorners = Transpose[RGBCube["LCaCb"][\[Theta]]];
-RGBCubeCorners = Transpose[cubeCorners[{{0,1},{0,1},{0,1}}]];LCaCbCubeCorners =Transpose[cubeCorners[ LCaCbAxisRanges[\[Theta]]]];
-LCaCbinRGBCubeCorners =Transpose[cubeCorners[ iRotationMatrixLCaCb[\[Theta]]. cubeCorners[ LCaCbAxisRanges[\[Theta]]]]];
+RGBCubeCorners    = Transpose[cubeCorners[{{0,1},{0,1},{0,1}}]];
+LCaCbCubeCorners  = Transpose[cubeCorners[ LCaCbAxisRanges[\[Theta]]]];
+LCaCbinRGBCubeCorners = Transpose[cubeCorners[ Map[{Min[#],Max[#]}&,iRotationMatrixLCaCb[\[Theta]]. cubeCorners[ LCaCbAxisRanges[\[Theta]]]]]];
+(*LCaCbinRGBCubeCorners = Transpose[cubeCorners[ iRotationMatrixLCaCb[\[Theta]]. cubeCorners[ LCaCbAxisRanges[\[Theta]]]]];*)
 faces = {{1,2,3,4},{5,6,7,8},{1,2,7,6},{2,3,8,7},{3,4,5,8},{1,4,5,6}};
 ranges = LCaCbAxisRanges[\[Theta]];
 {Polygon[RGBinLCaCbcorners[[faces[[1]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[1]]]]]]], 
