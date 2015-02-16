@@ -2,323 +2,6 @@
 %*********************************** Second Chapter **************************************
 %*****************************************************************************************
 
-\newcommand{\um}{\scalebox{0.75}[1.0]{\( - \)}}
-\newcommand{\Pii}[1]{\frac{\pi}{#1} }
-\newcommand{\sine}[1]{\sin \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
-\newcommand{\cosine}[1]{\cos \left( \scalebox{0.75}[1.0]{\( #1 \)} \right)}
-\newcommand{\secant}[1]{\sec \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
-\newcommand{\cosecant}[1]{\csc \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
-
-%\newcommand\mycmd[2][]{%
-%  \ifstrempty{#1}{%
-    % something with #2
-%  }{%
-    % some other thing with #1 and #2
-%  }%
-%}
-
-\newcommand{\discrete}[1]{\widehat{#1}}
-\newcommand{\apprx}[1]{\widetilde{#1}}
-\newcommand{\normed}[1]{\overline{#1}}
-
-
-\newcommand{\thetaA}{\delta\theta}
-
-
-\newcommand\R[1][]{
-  \ifstrempty{#1}{
-    \mathbf{R}
-  }{
-    \mathbf{R}\left( #1 \right)
-  }
-} 
-
-% The scaling for the matrix
-\newcommand\Scale[1][]{
-  \ifstrempty{#1}{
-    \vec{S}
-  }{
-    \vec{S}\left( #1 \right)
-  }
-} 
-
-% ----- qR definitions -------
-% The scaling for the matrix
-\newcommand\qS[1][]{
-  \ifstrempty{#1}{
-    \vec{qS}
-  }{
-    \vec{qS}\left( #1 \right)
-  }
-} 
-
-% The matrix
-\newcommand\qR[1][]{
-  \ifstrempty{#1}{
-    \mathbf{qR}
-  }{
-    \mathbf{qR}\left( #1 \right)
-  }
-} 
-
-% The matrix which is used in the algorithm \aR=\fSs \otimes \qR 
-\newcommand\aR[1][]{
-  \ifstrempty{#1}{
-    \mathbf{aR}
-  }{
-    \mathbf{aR}\left( #1 \right)
-  }
-} 
-
-% The matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
-\newcommand\qRe[1][]{
-  \ifstrempty{#1}{
-     \mathbf{qR}\text{e}
-  }{
-     \mathbf{qR}\text{e}\left( #1 \right)
-  }
-} 
-
-% The perturbation to the matrix 
-\newcommand\dqR[1][]{
-  \ifstrempty{#1}{
-    \delta \mathbf{qR}
-  }{
-    \delta \mathbf{qR}\left( #1 \right)
-  }
-} 
-
-% The perturbation to the matrix in the 0 < theta < Pi/6 region \dqR[\theta]=\fRO[ \dqRe[\theta], \theta]
-\newcommand\dqRe[1][]{
-  \ifstrempty{#1}{
-    \delta \mathbf{qR}\text{e}
-  }{
-    \delta \mathbf{qR}\text{e}\left( #1 \right)
-  }
-} 
-
-
-% ----- fR definitions -------
-% The scaling for the matrix
-\newcommand\fS[1][]{
-  \ifstrempty{#1}{
-    \vec{fS}
-  }{
-    \vec{fS}\left( #1 \right)
-  }
-} 
-% The sign for the scaling for the matrix
-\newcommand\fSs[1][]{
-  \ifstrempty{#1}{
-    \vec{fSs}
-  }{
-    \vec{fSs}\left( #1 \right)
-  }
-} 
-
-% The scaling ordering for the matrix
-\newcommand\fSO[1][]{
-  \ifstrempty{#1}{
-    \text{fSO}
-  }{
-    \text{fSO}\left[ #1 \right]
-  }
-} 
-
-% The scaling for the matrix  in the 0 < theta < Pi/6 region
-\newcommand\fSe[1][]{
-  \ifstrempty{#1}{
-    \text{fSe}
-  }{
-    \text{fSe}\left[#1 \right)
-  }
-} 
-
-% The matrix
-\newcommand\fR[1][]{
-  \ifstrempty{#1}{
-    \mathbf{fR}
-  }{
-    \mathbf{fR}\left( #1 \right)
-  }
-} 
-
-% The matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
-\newcommand\fRe[1][]{
-  \ifstrempty{#1}{
-     \mathbf{fR}\text{e}
-  }{
-     \mathbf{fR}\text{e}\left( #1 \right)
-  }
-} 
-
-% The matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
-\newcommand\fRm[1][]{
-  \ifstrempty{#1}{
-     \mathbf{fR}\text{m}
-  }{
-     \mathbf{fR}\text{m}\left( #1 \right)
-  }
-} 
-
-% The perturbation to the matrix 
-\newcommand\dfR[1][]{
-  \ifstrempty{#1}{
-    \delta \mathbf{fR}
-  }{
-    \delta \mathbf{fR}\left( #1 \right)
-  }
-} 
-
-% The perturbation to the matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
-\newcommand\dfRe[1][]{
-  \ifstrempty{#1}{
-    \delta \mathbf{fR}\text{e}
-  }{
-    \delta \mathbf{fR}\text{e}\left( #1 \right)
-  }
-} 
-
-% The Ordering function which puts fRe into the correct form for the other regions \fR[\theta]=\fRO[ \fRe[\theta], \theta]
-\newcommand\fRO[1][]{
-  \ifstrempty{#1}{
-    \mathbf{fR}\text{O}
-  }{
-    \mathbf{fR}\text{O}\left[#1\right]
-  }
-}
-
-% The Ordering function which puts fRe into the correct form for the other regions \fR[\theta]=\fRO[ \fRe[\theta], \theta]
-\newcommand\fROm[1][]{
-  \ifstrempty{#1}{
-    \widehat{\mathbf{fR}\text{O}}
-  }{
-    \widehat{\mathbf{fR}\text{O}}\left[#1\right]
-  }
-}
-
-% --------- rR
-
-\newcommand\rR[1][]{
-  \ifstrempty{#1}{
-    \mathbf{rR}
-  }{
-    \mathbf{rR}\left( #1 \right)
-  }
-} 
-
-\newcommand\nR[1][]{
-  \ifstrempty{#1}{
-    \normed{\mathbf{R}}
-  }{
-    \normed{\mathbf{R}}\left( #1 \right)
-  }
-} 
-
-\newcommand\nRa[1][]{
-  \ifstrempty{#1}{
-    \apprx{\normed{\mathbf{R}}}
-  }{
-   \apprx{ \normed{\mathbf{R}}} \left( #1 \right)
-  }
-} 
-
-\newcommand\dnR[1][]{
-  \ifstrempty{#1}{
-    \normed{\delta\mathbf{R}}
-  }{
-   \normed{\delta\mathbf{R}} \left( #1 \right)
-  }
-} 
-
-
-% The scaling for the matrix
-\newcommand\rS[1][]{
-  \ifstrempty{#1}{
-    \vec{rS}
-  }{
-    \vec{rS}\left( #1 \right)
-  }
-} 
-
-
-% ----- nR definitions -------
-% The scaling for the matrix
-\newcommand\nS[1][]{
-  \ifstrempty{#1}{
-    \vec{\mathbf{L}^{\um 1}}
-  }{
-    \vec{\mathbf{L}^{\um 1}}\left( #1 \right)
-  }
-} 
-
-
-% \newcommand{\fRe}[1]{\mathbf{fR}\text{e}\left(#1\right) }
-
-% \newcommand{\dfRe}[1]{\delta \mathbf{fR}\text{e}\left(#1\right) }
-
-% \newcommand{\fRO}[1]{\mathbf{fR}\text{O}\left[#1\right] }
-
-\newcommand{\fReq}[1]{\text{fRe}\left( \scalebox{0.75}[1.0]{\( #1 \)}\right) }
-
-\newcommand{\unitDst}{\text{uDst}} % Destination in the unit range 0:1
-\newcommand{\uDst}{\unitDst}       % Destination in the unit range 0:1
-\newcommand{\intDst}{\text{iDst}}  % Destination in the integer range dstMin:dstMax
-\newcommand{\iDst}{\intDst}        % Destination in the integer range dstMin:dstMax
-\newcommand{\dstMax}{\text{dstMax}}      % Destination integer range maximum
-\newcommand{\dstMin}{\text{dstMin}}      % Destination integer range mimimum
-\newcommand{\dstRange}{\text{dstRange}}  % Destination integer range
-\newcommand{\discreteDst}{\widetilde{\uDst}}   % Destination found using the discretized transformation matrix
-\newcommand{\dDst}{\discreteDst}               % Destination found using the discretized transformation matrix
-\newcommand{\delDst}{\delta\uDst}              % Error in the Destination found using the discretized transformation matrix
-
-\newcommand{\unitT}{\text{uT}}             % Rotated values in the unit range 0:1
-\newcommand{\uT}{\unitT}                   % Rotated values in the unit range 0:1
-\newcommand{\intT}{\text{iT}}              % Rotated values in the integer range tMin:tMax
-\newcommand{\iT}{\intT}                    % Rotated values in the integer range tMin:tMax
-\newcommand{\tMax}{\text{tMax}}            % Rotated values integer range maximum
-\newcommand{\tMin}{\text{tMin}}            % Rotated values integer range mimimum
-\newcommand{\tRange}{\text{tRange}}        % Rotated values after integer rotation range 
-\newcommand{\aMax}{\text{aMax}}            % Rotated values after integer rotation integer range maximum
-\newcommand{\aMin}{\text{aMin}}            % Rotated values after integer rotation integer range mimimum
-\newcommand{\aRange}{\text{aRange}}        % Rotated values integer range
-\newcommand{\discreteT}{\widetilde{\uT}}   % Rotated values found using the discretized transformation matrix
-\newcommand{\dT}{\discreteT}               % Rotated values found using the discretized transformation matrix
-\newcommand{\delT}{\delta\uT}              % Error in the Rotated values found using the discretized transformation matrix
-
-\newcommand{\unitSrc}{\text{uSrc}}       % Source in the unit range 0:1
-\newcommand{\uSrc}{\unitSrc}             % Source in the unit range 0:1
-\newcommand{\intSrc}{\text{iSrc}}        % Source in the integer range srcMin:srcMax
-\newcommand{\iSrc}{\intSrc}              % Source in the integer range srcMin:srcMax
-\newcommand{\srcMax}{\text{srcMax}}      % Source integer range maximum
-\newcommand{\srcMin}{\text{srcMin}}      % Source integer range mimimum
-\newcommand{\srcRange}{\text{srcRange}}  % Source integer range
-
-\newcommand{\unitX}{\text{uX}}       % Source in the unit range 0:1
-\newcommand{\uX}{\unitX}             % Source in the unit range 0:1
-\newcommand{\intX}{\text{iX}}        % Source in the integer range xMin:xMax
-\newcommand{\iX}{\intX}              % Source in the integer range xMin:xMax
-\newcommand{\xMax}{\text{xMax}}      % Source integer range maximum
-\newcommand{\xMin}{\text{xMin}}      % Source integer range mimimum
-\newcommand{\xRange}{\text{xRange}}  % Source integer range
-
-\newcommand{\unitY}{\text{uY}}       % Destination in the unit range 0:1
-\newcommand{\uY}{\unitY}             % Destination in the unit range 0:1
-\newcommand{\intY}{\text{iY}}        % Destination in the integer range yMin:yMax
-\newcommand{\iY}{\intY}              % Destination in the integer range yMin:yMax
-\newcommand{\yMax}{\text{yMax}}      % Destination integer range maximum
-\newcommand{\yMin}{\text{yMin}}      % Destination integer range mimimum
-\newcommand{\yRange}{\text{yRange}}  % Destination integer range
-
-\newcommand{\unitR}{\text{uR}}
-\newcommand{\uR}{\unitR}
-\newcommand{\intR}{\text{iR}}
-\newcommand{\iR}{\intR}
-\newcommand{\discreteR}{\widetilde{\uR}}
-\newcommand{\dR}{\discreteR}
-\newcommand{\delR}{\delta\uR}
-\newcommand{\rRange}{\text{rRange}}  % the discretization of the rotation matrix
-
 
 \chapter{Color Spaces and Information Storage for Computer Vision Processing} \label{sec:Chap2}
 
@@ -1027,33 +710,6 @@ The perturbation $\dqR[\theta]$ is a rearrangement of $\dqR[\thetaA] $
 The perturbation introduced to each channel is further simplified by recognizing that $\fRe[-\phi]=-1-\fRe[\phi]$, which allows us to find $\dqRe[-\phi]=-\dqRe[\phi]$ i.e. that the sum of the two perturbations in each row equals zero. we can analyze the quantization error in terms of just one function $\dqRe$ and a matrix ordering function $\dqR[\theta] = \fROm \left[ \dqR[ \thetaA ]  \right]$.
 
 
-% The Ordering function which puts dqE into the correct form for the other regions  \dqR[\theta]=\dqEO[ \dqRe[\theta] \theta] \otimes \dqs[\theta],
-\newcommand\dqEO[1][]{
-  \ifstrempty{#1}{
-    \widehat{\mathbf{\delta qE}\text{O}}
-  }{
-    \widehat{\mathbf{\delta qE}\text{O}}\left[#1\right]
-  }
-}
-
-% The sign of the perturbation matrix \dqR[\theta]=\dqEO[ \dqRe[\theta] \theta] \otimes \dqs[\theta],
-\newcommand\dqs[1][]{
-  \ifstrempty{#1}{
-    \mathbf{\delta qS}
-  }{
-    \mathbf{\delta qS}\left(#1\right)
-  }
-}
-
-% The absolute sign of the perturbation matrix by for row construction \dqR[\theta]=\dqEO[ \dqRe[\theta] \theta] \otimes \dqs[\theta],
-\newcommand\dqas[1][]{
-  \ifstrempty{#1}{
-    \mathbf{\delta qAS}
-  }{
-    \mathbf{\delta qAS}\left(#1\right)
-  }
-}
-
 
 \begin{align*}
 \dqR[\theta] &= \fROm \left[  
@@ -1244,9 +900,6 @@ defining
 \dnR[\theta]   & =  \Scale[\theta] \otimes \fRO \left[ \dqRe[ \theta, n ] \right] \\
 \end{align}
 
-\newcommand{\rgb}{\vec{v}}
-\newcommand{\w}{\vec{w}}
-\newcommand{\dW}{\vec{\delta w}}
 
 the perturbation to the rotated channel elements $\dW$ is found for an input set of pixel values $\rgb= 2^n\normed{\rgb} $
 
@@ -1288,11 +941,6 @@ So, to minimize the perturbation, we need to simultaneously minimize $\pm 2 \dqR
 The maxima for each function are where $\pm 2 \dqRe[ \thetaA ]  = \pm 1$ and $\pm 2 \dqRe[ \Pii{6} -\thetaA]= \pm 1$, and the minima are where $\pm 2 \dqRe[ \thetaA ]  = 0$ and $\pm 2 \dqRe[ \Pii{6} -\thetaA] = 0$. To find the corresponding values of $\thetaA$, all that is needed is an inverse function for $\dqRe$. In essence $\dqRe[\phi]$ discretizes $\sqrt{3} \tan (\phi )$ into steps of $2^{3-n}$. The minima can be found by taking the inverse of $\sqrt{3} \tan (\phi )$, given that
 $0\le\sqrt{3} \tan (\phi )\le1$ for $0 \le \phi \le \Pii{6}$ we can say that $\text{Round}\left[ 2^{n-3}\sqrt{3} \tan (\phi ) \right] \in \{ 0, 1, 2, \cdots 2^{n-3} \}$ 
 
-
-\newcommand{\extremaTheta}[2]{\mathring{\phi} _{#1}\left( \scalebox{0.75}[1.0]{\( #2 \)}\right)}
-\newcommand{\maximaTheta}[1]{\hat{\phi}_{#1}}
-\newcommand{\minimaTheta}[1]{\check{\phi}_{#1}}
-\newcommand{\thetaX}[1]{\overset{\times}{\phi}\left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
 
 \begin{align*}
 \dqRe[\phi] & = 0 & \dqRe[\Pii{6}-\phi] & = 0 \quad \text{when} \\
@@ -1438,7 +1086,6 @@ q  &\in \{ 2 \mathbb{N}  \}  \\
 \end{array}
 \end{align*}
 
-\newcommand{\meanIndx}{\overline{\mathbf{i}}}
 
 This slightly glib definition illustrates the pattern for the extrema bounding the points of intersection. At the start of a $\frac{\Pi}{6}$ region, i.e. for low values of $i$, $p=i$ and $q=i$. The maxima swap orderings between certain values of $i$ within a $\frac{\Pi}{6}$ region. This is evident in the inescapable indices of $i-1$ and $i+1$, regardless of the starting values for $i$ for either the maxima or minima. So, whilst it is true that $\extremaTheta{a} {i} > \extremaTheta{b} {i}$, it is not always true that $\extremaTheta{a} {i+1} > \extremaTheta{b} {i-1}$. This leads to the question of what happens when this boundary $\extremaTheta{a} {i+1} = \extremaTheta{b} {i-1}$ is crossed. Firstly, the even-odd ordering (i.e. the a-b channel ordering) is flipped; secondly, the indices are shifted. A second transition restores the a-b ordering and shifts the indices again. As the index $i$ passes the half way point $\meanIndx = 2^{n-3}$, the transitions occur in the opposite direction, restoring the indices and ordering. Transitions occur where $i$ satisfies $\extremaTheta{a} {i+\iota} = \extremaTheta{b} {i-\iota}$, with $\iota \in \{ 1,2,3 \cdots \left(7-4 \sqrt{3}\right) 2^{n-3}\} $. 
 
@@ -1814,12 +1461,6 @@ First, we determine the maximum value taken in the domain. This is simply found 
 \subsection{Efficiently Implementing the Distribution Function}
 Mathematically, the ERF distribution function~(\ref{eq:disFunction}) achieves all the stated objectives. However, on a device we are dealing with discrete numerics and limited processing power, so further analysis is required. Where we're using a discrete domain and range, the distribution is usefully divided into three characteristic behaviours:  where it is constant, where it preserves all the information, and where it selectively preserves information. Looking at the distribution, this divides the source domain into five regions: two where it is effectively constant, two where it is selective, and one region around the mean where it preserves all the information. In order to design an efficient algorithm, it is useful to identify the boundaries of these five regions.
 
-\newcommand{\Keep}{\Omega}
-\newcommand{\keep}{\omega}
-\newcommand{\eKeep}{\Omega p}
-\newcommand{\ekeep}{\omega p}
-\newcommand{\Discard}{\Lambda}
-\newcommand{\discard}{\lambda}
 
 \subsubsection{The Region Which Discards All Information}
 \begin{figure}[h]
@@ -2201,10 +1842,6 @@ All three distribution techniques ( \ref{sec:Partition} , \ref{sec:Linear} , \re
 
 
 \section{The Skin Color Space Algorithm}
-\newcommand{\uSTD}[1]{\sigma_#1}
-\newcommand{\STD}[1]{\text{s}_#1}
-\newcommand{\uMean}[1]{\mu_#1}
-\newcommand{\mean}[1]{\text{c}_#1}
 
 Now that all of the values necessary to preserve the skin information have been obtained, we can use them to build a color space transformation algorithm which can make intelligent decisions about the numerical precision for the intermediate and final variables, as well as determining the most efficient transformation methods. The algorithm described herein will take values of $\theta$, the rotation about the luminosity axis, the standard deviations $ \uSTD{a}$,$ \uSTD{b}$ and mean values $ \uMean{a}$,$ \uMean{b}$ for the two chromatic axes in the unit range  and will automatically decide upon the necessary intermediate working data types and the most efficient redistribution methods.
 
@@ -2212,7 +1849,7 @@ Previously, we found a rotational transformation which allows a working type $\t
 
 \subsubsection{Setting the Value for the Tolerance}
 Now that we have the working type range $\tRange$, accounting for both the rotation and the statistics, we can set a meaningful tolerance on the error. Previously we calculated that the maximum error would occur for pixel values at the corners of the RGB cube, we have now seen that some values are more important than others and that it is more meaningful to use a smaller RGB cube which encloses only the values of interest. This cube is found by taking the values for $\Discard$ as the corners in the rotated space and rotating back to the RGB space. As this only needs to be done once it can be performed using floats in the unit spaces however the values of $\discard$ account for the discrete numerics in that they are calculated from the discrete values $\Discard$ using the new values for $\kappa$ and $\tRange$. In order to perform the inverse rotation the values must be shifted to compensate for the natural range of the rotation which is $\{0:1,-\text{\textonehalf}:\text{\textonehalf},-\text{\textonehalf}:\text{\textonehalf}\}$. 
-\newcommand{\Rc}{\mathbf{R}\text{c}}
+
 \begin{align}
 \discard^{RGB}_2 &= \nR^{-1} \cdot \left( \discard_2 - \Rc
         \right) & \text{where} \quad \Rc=\begin{pmatrix}
@@ -2259,8 +1896,6 @@ These then give a combined value for $\alpha = \alpha_1 \alpha_2$ and $\beta = \
 
 \subsubsection{The complete algorithm}
 
-\newcounter{algosection}[subsubsection]
-\newcommand{\algosection}[1]{\needspace{5\baselineskip} \stepcounter{algosection} \textbf{\thealgosection. #1} }
 
 The programmer specifies a requested value of $\theta$ , values for the means $\uMean{ ab}$ and standard deviations $\uSTD{ ab}$ for each of the three axis in the rotated color space with a unit range and the data type ranges $\srcRange$ and $\dstRange$. The algorithm then proceeds as follows:
 
@@ -2579,12 +2214,7 @@ To find the angular value closest to $\theta$ which produces a perturbation less
  
 
 \algosection{Set the integer rotation matrix.} 
-\newcommand{\round}[1]{\text{Round}\left[ #1 \right] }
-\newcommand{\elemU}{\mathbf{U}}
-\newcommand{\elemAp}{\mathbf{A}_\oplus}
-\newcommand{\elemAm}{\mathbf{A}_\circleddash }
-\newcommand{\elemBp}{\mathbf{B}_\oplus}
-\newcommand{\elemBm}{\mathbf{B}_\circleddash }
+
 Expanding the definition of the quantized matrix $\qR[\theta, n]$ \ref{eq:quantizedMatrixDef} with the definitions of the factored matrix $\fR[\theta] $ \ref{eq:factoredMatrixDef}, the matrix ordering $ \fRO \left[ \cdots , \theta \right] $ \ref{table:factoredRotationMatrix} and the factored matrix function $\fRe[\phi]$ \ref{eq:fReDef} allows a more algorithm minded form to be written.
 %
 %\begin{align*}
@@ -2625,7 +2255,7 @@ Expanding the definition of the quantized matrix $\qR[\theta, n]$ \ref{eq:quanti
 %\end{align*}
 
 %\begin{tabular}
-\newcommand{\mTheta}[2]{\theta_#1^#2} 
+
 \begin{gather*}
 \begin{aligned}
 \aR &= \fSs \otimes \qR   &   \elemU  &= 2^{n-2 } &\quad&\quad\\

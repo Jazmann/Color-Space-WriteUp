@@ -1,5 +1,6 @@
 
 Representing the Rotation 
+
 The final piece of the metaphorical jigsaw is to add the capability to deal with the machine handling of the numerics. The transforms as defined above assume the capacity to represent the resulting numbers. Unfortunately, on a device, the numerics are not handled in such a pure way and — whilst we are uninterested in the information overflow outside the destination representation — this can cause instabilities in a practical implementation. In the development of the algorithm, it is therefore necessary to define these bounds. In the unit space, these bounds have already been defined by Equation XXX ; so long as the axis length can be represented on the device between these bounds, then overflow and underflow can be dealt with using a simple conditional statement. 
 It is significantly advantageous to perform calculations using integer types, particularly given that the input and output types are integers with small ranges, meaning it's possible to construct algorithms which avoid conversion to floating point operations. To this end, we wish to determine the most efficient internal representation for the transformation. 
 Principles of Optimization 
@@ -7,6 +8,7 @@ During the color space conversion, the pixel values are represented in three dif
 During the color space conversion, the pixel values are represented in three different ways: input, working and output representations. At each stage, we are concerned with preserving the information from the previous stage required by the next. For this reason, we have defined terms for the mathematical analysis of the problem, as well as terms for the algorithm development. The terms associated with each stage are as follows: 
  Data Types  	 Src Pixel Values  	 Trans Pixel Values  	 Dst Pixel Values  
  What?  	 Input  	 Working  	 Output  
+
  Where?  	 Initial  	 After Rotation  	 After Re-Distribution  
  Unit Range Value  	   	   	   
  1-1 Int Range Value  	   	   	   
@@ -22,6 +24,7 @@ Scale
 -
 
 )⊗[θ] where  [θ]∈Z
+
 Given an infinite set of integers, this is not a problem. However, we wish to choose  to lie in a finite range, which depends on the color depth of the source. Ideally, we'd like the result of the rotation to have a bit depth not greater than twice the bit depth of the source, i.e. for 8-bit pixel values, we would like the rotated LCaCb values to be expressible as 16-bit integers. To accommodate 3 multiplications and 2 additions, the matrix  needs to be represented in two fewer bits than the source. 
 This unit range is discretized into steps of 
 FractionBox["1"] and 
@@ -43,6 +46,7 @@ It should be noted that — unlike the source type — the perturbation can be n
 SubscriptBox[+, -] then the extrema are given by max(Subscript[, +]·1) and min(Subscript[, -]·1). Where the elements are positive or negative is determined by the sign of the elements in the rotation matrix .  
 
 Factoring the Rotation 
+
 If we were to scale the entire matrix evenly, the top row would dominate as it is always positive, and the necessary discrete representation would be characterised by ==3 . This would, however, necessitate the matrix being stored in a data type with at least 2 more bits than the source type. 
 The second and third rows each sum to zero (·1==[Sqrt[3],0,0], where 1 is a vector of ones), allowing us to state that each of the rows has one element of the opposite sign to the other two elements. The discretization for the second and third rows then only requires ==2 . It is also possible to pull out common factors from the rows, resulting in all elements taking values between -1 and 1.  
 
@@ -55,16 +59,19 @@ Sqrt[2/3]
  -cos(θ+6) 	 -sin(θ) 	 cos(θ-6) 
 
 )
+
 To facilitate the quantization, we next factor the second and third rows such that the largest element of each row equals exactly 1. As previously mentioned, the largest element has the opposite sign to the other two elements in a given row. So, the steps required to perform the factorization are as follows: 
 Find the sign of each of the elements. 
 Determine which of those elements is of the opposite sign. 
 Factor each row by that largest element. 
 The sign of the elements is most easily seen by looking at the rotation as phase shifted sine functions. 
+
 [θ]==( 1 	 1 	 1 
  θ-(5π)/6 	 θ+(3π)/6 	 θ-6 
  θ-(2π)/6 	 θ-(6π)/6 	 θ+(2π)/6 
 
 )
+
 So the signs look like  
 
 
@@ -100,7 +107,9 @@ The fully factorized matrix can now be written as
 
 
 Quantizing the Rotation
+
 The factored rotation fR contains 4 non-integer elements lying between -1 and 0, which we wish to quantize. This can be done simply by multiplying it by 2^(n-2), where n is the bit depth of the integer type, and rounding the result: 
+
  [θ,n] 	 ==Round[(1
 2
 2
@@ -117,6 +126,7 @@ Thus far, we have assumed that we can achieve a bit depth of two less than the b
 Given that the source type with a bit depth of n, we can work out any errors introduced by finding the difference between using the quantized rotation  and the unquantized rotation . All the factoring of the rotation is mathematically exact up to and including , so any errors that are introduced will be during the rounding. 
 We are interested in the error introduced by the quantization, so we introduce the perturbation [θ] associated with the transform [θ] produced by the rounding. Defining 
 The perturbation depends entirely on [θ,n]  
+
  [ϕ] 	 ==Round [2^(n-2) [ϕ]]-(2^(n-2)) [ϕ] 
   	 ==Round [2^(n-3) Sqrt[3]tan(ϕ)]-(2^(n-3)) Sqrt[3]tan(ϕ) 
  [ϕ] 	 ==(2^(2-n)) [ϕ] 
