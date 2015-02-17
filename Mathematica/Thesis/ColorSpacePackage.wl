@@ -59,8 +59,12 @@ Clear[scale];
 scale["LCaCb","rR"][\[Theta]:Except[_String]] = {1/Sqrt[3],Sqrt[2/3],Sqrt[2/3]};
 scale["LCaCb","rR"][_String] = "\!\(\*
 StyleBox[\"rS\",\nFontWeight->\"Bold\"]\)";
+
 scale["nLCaCb","LCaCb"][\[Theta]:Except[_String]] := {1/Sqrt[3],1/2 Sqrt[3/2] Sec[\[Pi]/6 - Mod[\[Theta]-\[Pi]/6,\[Pi]/3]],1/2 Sqrt[3/2] Sec[\[Pi]/6 - Mod[\[Theta],\[Pi]/3]]}
 Format[scale["nLCaCb","LCaCb"], TraditionalForm]=TraditionalForm["\!\(\*SuperscriptBox[\(L\), \(-1\)]\)"];
+scale["LCaCb","nLCaCb"][\[Theta]:Except[_String]] :={Sqrt[3],2 Sqrt[2/3] Cos[\[Pi]/6 - Mod[\[Theta]-\[Pi]/6,\[Pi]/3]],2 Sqrt[2/3] Cos[\[Pi]/6 - Mod[\[Theta],\[Pi]/3]]};
+Format[scale["LCaCb","nLCaCb"], TraditionalForm]=TraditionalForm["L"];
+
 scale["nLCaCb","rR"][\[Theta]:Except[_String]]:= {1/3,1/2 Sec[\[Pi]/6-Mod[-(\[Pi]/6)+\[Theta],\[Pi]/3]],1/2 Sec[\[Pi]/6-Mod[\[Theta],\[Pi]/3]]}
 Format[scale["nLCaCb","rR"], TraditionalForm]=TraditionalForm["\!\(\*
 StyleBox[\"nrS\",\nFontWeight->\"Bold\"]\)"];
@@ -189,18 +193,19 @@ RGBCube["RGB"]=cubeCorners[RGBAxisRanges];
 RGBCube["LCaCb"]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[RotationMatrixLCaCb[\[Theta]].RGBCube["RGB"]]]]]];
 
 
-RGBCube3D[corners_]:=Module[{RGBCube,faces,ranges},
-ranges =Transpose[{ Map[Min,corners],Map[Max,corners]}];
-Graphics3D[{
+Clear[RGBCube3D];
+RGBCube3D[corners:{{_,_,_,_,_,_,_,_},{_,_,_,_,_,_,_,_},{_,_,_,_,_,_,_,_}}]:=RGBCube3D[Transpose[corners]];
+RGBCube3D[corners:{{_,_,_},{_,_,_},{_,_,_},{_,_,_},{_,_,_},{_,_,_},{_,_,_},{_,_,_}}]:=Module[{RGBCube,faces,ranges},
+ranges =Transpose[{ Map[Min,Transpose[corners]],Map[Max,Transpose[corners]]}];
+faces = {{1,2,3,4},{5,6,7,8},{1,2,7,6},{2,3,8,7},{3,4,5,8},{1,4,5,6}};
+RGBCube = cubeCorners[{{0,1},{0,1},{0,1}}];
+{
 Polygon[corners[[faces[[1]]]],VertexColors->MapThread[RGBColor,Transpose[Transpose[RGBCube][[faces[[1]]]]]]],
 Polygon[corners[[faces[[2]]]],VertexColors->MapThread[RGBColor,Transpose[Transpose[RGBCube][[faces[[2]]]]]]],
 Polygon[corners[[faces[[3]]]],VertexColors->MapThread[RGBColor,Transpose[Transpose[RGBCube][[faces[[3]]]]]]],
 Polygon[corners[[faces[[4]]]],VertexColors->MapThread[RGBColor,Transpose[Transpose[RGBCube][[faces[[4]]]]]]],
 Polygon[corners[[faces[[5]]]],VertexColors->MapThread[RGBColor,Transpose[Transpose[RGBCube][[faces[[5]]]]]]],
-Polygon[corners[[faces[[6]]]],VertexColors->MapThread[RGBColor,Transpose[Transpose[RGBCube][[faces[[6]]]]]]]},
-Lighting->"Neutral",
-PlotRange->{{ranges[[1,1]],ranges[[1,2]]},{ranges[[2,1]],ranges[[2,2]]},{ranges[[3,1]],ranges[[3,2]]}},
-Axes->True]
+Polygon[corners[[faces[[6]]]],VertexColors->MapThread[RGBColor,Transpose[Transpose[RGBCube][[faces[[6]]]]]]]}
 ]
 
 
@@ -773,7 +778,8 @@ pos=Position[matSameSign[mat],1];out=MapAt[Framed[#]&,out,pos];
  out];
 
 
-mForm[mat_]:=ToString[MatrixForm[mat],TraditionalForm];
+mForm[mat_List]:=ToString[MatrixForm[mat],TraditionalForm];
+mForm[a_,b__]:=ToString[MatrixForm[List[a,b]],TraditionalForm];
 
 
 Clear[partShow];
