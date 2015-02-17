@@ -8,7 +8,8 @@ Camera RGB and Normalization for Discrete Range
 Due to the iPhone hardware being locked down at the application level, we do not have access to the raw camera feed. We do, however, have access to the post-processing (color-rebalanced and white-point-corrected) 8-bit RGB image data. 
 Because we're searching for particular points in the real color space — which, being a continuous function, is infinite dimensional — there is a possibility in the future that larger multi-channel color spaces will be much more common, such as the 8-channel color spaces currently in development. Though most such cameras are primarily designed for post-production editing for still pictures and film (e.g. changing the lighting independent of the scene), as well as visual effects, the possibilities for computer vision are exciting. However, computer vision tasks are computationally intensive, and more often than not require operation in real time, so there is a natural inclination to shy away from large data sets in practical computer vision applications; many tasks are done in grayscale or single-channel processing to expedite the process. 
 As such, there is a need to develop techniques which keep the relevant information while quickly and efficiently discarding the irrelevant information. This is true for the RGB space at the moment, and the aim of this first part of the work. 
-subsectionRotation Matrix  Any rotation about an axis can be represented by a 3x3 square matrix in a 3D space. Since they are invertible, they're guaranteed to be non-singular. However, as there are many ways in which to rotate an object from one position to another, or use a combination of different rotations to get to the same point, they aren't necessarily unique. For this application, we require rotation about three different axes, which can be expressed thus: 
+Rotation Matrix 
+ Any rotation about an axis can be represented by a 3x3 square matrix in a 3D space. Since they are invertible, they're guaranteed to be non-singular. However, as there are many ways in which to rotate an object from one position to another, or use a combination of different rotations to get to the same point, they aren't necessarily unique. For this application, we require rotation about three different axes, which can be expressed thus: 
  Subscript[1, x](θ) 	 ==[ 1 	 0 	 0 
  0 	 cos
 θ 	 -
@@ -85,7 +86,7 @@ Overscript[θ, ~]==θ mod π/3
 
 It is convenient to produce a transformation which will result in axes of known length. Because the rotation cannot include a translation, we desire a transformation matrix which will result in the ranges 0:1, -1/2:1/2, and -1/2:1/2. Such a transformation is easily obtained by multiplying the rotation matrix by a diagonal matrix with the reciprocal of the maximums found above placed along the diagonal. This will scale each axis to a unit length. 
 The normalized 'rotation' matrix is given by: 
- Subscript[, Overscript[Null, _]](θ) 	 ==[θ]⊗Subscript[R, x y z](θ) 
+ (θ) 	 ==[θ]⊗Subscript[R, x y z](θ) 
   	 ==(1
 1
 1
@@ -95,21 +96,9 @@ The normalized 'rotation' matrix is given by:
 
 This matrix is no longer technically a rotation matrix as its inverse is no longer equal to its transpose. It now equal to: 
 
-
-SubsuperscriptBox["", 
-OverscriptBox["Null", "_"], 
-StyleBox[
-RowBox[{"x", "y", "z"}], "TI"],
-"-1"] (θ) == 
-SubscriptBox[
-StyleBox["R", "TI"], 
-StyleBox[
-RowBox[{"x", "y", "z"}], "TI"]] 
-SuperscriptBox[
-RowBox[{"(", "θ", ")"}], 
-StyleBox["T", "TI"]]⊗(1/Sqrt[3]	1/Subscript[L, 2](θ)	1/Subscript[L, 3](θ)
+(θ)==Subscript[R, x y z](θ)^T⊗(1/Sqrt[3]	1/Subscript[L, 2](θ)	1/Subscript[L, 3](θ)
 
-)
+)
 Representing the Rotation 
 The final piece of the metaphorical jigsaw is to add the capability to deal with the machine handling of the numerics. The transforms as defined above assume the capacity to represent the resulting numbers. Unfortunately, on a device, the numerics are not handled in such a pure way and — whilst we are uninterested in the information overflow outside the destination representation — this can cause instabilities in a practical implementation. In the development of the algorithm, it is therefore necessary to define these bounds. In the unit space, these bounds have already been defined by Equation 1 ; so long as the axis length can be represented on the device between these bounds, then overflow and underflow can be dealt with using a simple conditional statement. 
 It is significantly advantageous to perform calculations using integer types, particularly given that the input and output types are integers with small ranges, meaning it's possible to construct algorithms which avoid conversion to floating point operations. To this end, we wish to determine the most efficient internal representation for the transformation. 
@@ -200,47 +189,11 @@ We can now relate the functions to each other, since they are now essentially th
 ),θ] 
 
 
-The scaling factor () can also be further simplified by separating the sign and combining the functional parts.   (θ) 	 =={ (
-1
-cos
-(
-π/6-()
-)
-cos
-(
-()
-)
+The scaling factor () can also be further simplified by separating the sign and combining the functional parts.   (θ) 	 
+1 	 
 
 
-) 	 
-BoxData[FormBox[GridBox[{{Cell[TextData[{Cell[RowBox[{FractionBox["π", "6"], "<=", RowBox[{"(", RowBox[{"θ", "mod", "π"}], ")"}], "<", FractionBox["π", "3"], "⋁"}], "InlineFormula"]}]]}, {Cell[TextData[{Cell[RowBox[{FractionBox["π", "2"], "<=", RowBox[{"(", RowBox[{"θ", "mod", "π"}], ")"}], "<", FractionBox[RowBox[{"2", "π"}], "3"], "⋁"}], "InlineFormula"]}]]}, {Cell[TextData[{Cell[RowBox[{FractionBox[RowBox[{"5", "π"}], "6"], "<=", RowBox[{"(", RowBox[{"θ", "mod", "π"}], ")"}], "<", "π"}], "InlineFormula"]}]]}}, ColumnAlignments -> Center], TraditionalForm]] 
- (
-1
-cos
-(
-()
-)
-cos
-(
-π/6-()
-)
-
-
-) 	 
-BoxData[FormBox[GridBox[{{Cell[TextData[{Cell[RowBox[{"0", "<=", RowBox[{"(", RowBox[{"θ", "mod", "π"}], ")"}], "<", FractionBox["π", "6"], "⋁"}], "InlineFormula"]}]]}, {Cell[TextData[{Cell[RowBox[{FractionBox["π", "3"], "<=", RowBox[{"(", RowBox[{"θ", "mod", "π"}], ")"}], "<", FractionBox["π", "2"], "⋁"}], "InlineFormula"]}]]}, {Cell[TextData[{Cell[RowBox[{FractionBox[RowBox[{"2", "π"}], "3"], "<=", RowBox[{"(", RowBox[{"θ", "mod", "π"}], ")"}], "<", FractionBox[RowBox[{"5", "π"}], "6"]}], "InlineFormula"]}]]}}, ColumnAlignments -> Center], TraditionalForm]] 
-
- 
-  	 ==(1
-cos
-(
-π/6-(Overscript[ϑ, ~])
-)
-cos
-(
-π/6-(Overscript[θ, ~])
-)
-
-)  where  Overscript[θ, ~]
+  	 ==()  where  Overscript[θ, ~]
 ==
 θ
 mod
@@ -328,8 +281,6 @@ i==arctan((Sqrt[i^2 2^(6-2n)-i 2^(4-n)+49]+i 2^(3-n)-7)/(2Sqrt[3]))  where  i==0
 
 
 Each point of intersection is defined and bounded by 4 extrema. Comparing with the functional form of the extrema allows these 4 points to be identified. 
-
-GridBox[{{Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["a", "TI"], StyleBox["l", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}], CellTags -> "eq:ExtremaFunctions"], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{"arctan", "(", FractionBox[RowBox[{StyleBox["l", "TI"], SqrtBox["3"]}], RowBox[{SuperscriptBox["2", StyleBox["n", "TI"]], "-", StyleBox["l", "TI"]}]], ")"}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["b", "TI"], StyleBox["l", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{"arctan", "(", FractionBox[RowBox[{StyleBox["l", "TI"], " ", SuperscriptBox["2", RowBox[{"2", "-", StyleBox["n", "TI"]}]]}], SqrtBox["3"]], ")"}], TraditionalForm]], "InlineFormula"], " "}]]}, {Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["a", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["a", "TI"], RowBox[{"2", StyleBox["m", "TI"]}]}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["b", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["b", "TI"], RowBox[{"2", StyleBox["m", "TI"]}]}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{"with", "  ", StyleBox["m", "TI"], "==", "0", ",", "1", ",", "2", ",", "3", "⋯", SuperscriptBox["2", RowBox[{StyleBox["n", "TI"], "-", "3"}]]}], TraditionalForm]], "InlineFormula"], " "}]]}, {Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["a", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["a", "TI"], RowBox[{"2", StyleBox["m", "TI"], "+", "1"}]}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["b", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["b", "TI"], RowBox[{"2", StyleBox["m", "TI"], "+", "1"}]}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{"with", "  ", StyleBox["m", "TI"], "==", "0", ",", "1", ",", "2", ",", "3", "⋯", SuperscriptBox["2", RowBox[{StyleBox["n", "TI"], "-", "3"}]], "-", "1"}], TraditionalForm]], "InlineFormula"], " "}]]}}]
 Separating the points of intersection into even and odd terms facilitates the identification. 
   	 Channel a  	 Channel b  	 i  
  Minima  	 a
@@ -486,13 +437,12 @@ The Gaussian distribution and the cumulative distribution are shown in Figure X
 First, we determine the maximum value taken in the domain. This is simply found by evaluating the function at . It should be noted that — if the Gaussian distribution is well contained in the source domain — the maximum value should be equal to the amplitude. For the sake of simplicity, we'll ignore the amplitude of the fitted Gaussian found previously as it is not relevant to the design of the redistribution function. So, to fix the range of the distribution function, we first scale to the range 0:1 by simply dividing through by the maximum value, and then re-scale to the destination range ==- and shift by . 
 
 dis(x)==(()(erf((x-μ)/(Sqrt[2]σ))-erf(-μ/(Sqrt[2]σ))))/(erf(-μ/(Sqrt[2]σ))-erf(-μ/(Sqrt[2]σ)))+
-subsectionEfficiently Implementing the Distribution Function Mathematically, the ERF distribution function (2 ) achieves all the stated objectives. However, on a device we are dealing with discrete numerics and limited processing power, so further analysis is required. Where we're using a discrete domain and range, the distribution is usefully divided into three characteristic behaviours: where it is constant, where it preserves all the information, and where it selectively preserves information. Looking at the distribution, this divides the source domain into five regions: two where it is effectively constant, two where it is selective, and one region around the mean where it preserves all the information. In order to design an efficient algorithm, it is useful to identify the boundaries of these five regions. 
+Efficiently Implementing the Distribution Function 
+Mathematically, the ERF distribution function (2 ) achieves all the stated objectives. However, on a device we are dealing with discrete numerics and limited processing power, so further analysis is required. Where we're using a discrete domain and range, the distribution is usefully divided into three characteristic behaviours: where it is constant, where it preserves all the information, and where it selectively preserves information. Looking at the distribution, this divides the source domain into five regions: two where it is effectively constant, two where it is selective, and one region around the mean where it preserves all the information. In order to design an efficient algorithm, it is useful to identify the boundaries of these five regions. 
 The Region Which Discards All Information 
 First, we need to identify where the distribution is effectively constant. This can be found by solving the following equation in the region and domain 0<=x<=1 and then generalized to the specific discrete numerics: 
 
-(erf(μ/(Sqrt[2]σ))+erf((x-μ)/(Sqrt[2]σ)))/(erf(μ/(Sqrt[2]σ))-erf((μ-1)/(Sqrt[2]σ)))==dL  where  dL=={
-FractionBox["1"],1-
-FractionBox["1"]}
+(erf(μ/(Sqrt[2]σ))+erf((x-μ)/(Sqrt[2]σ)))/(erf(μ/(Sqrt[2]σ))-erf((μ-1)/(Sqrt[2]σ)))==dL  where  dL==
 The solution is found for the source domain in the range 0:1 as: 
 
 x==Sqrt[2]σ erf^-1 ((dL-1)erf(μ/(Sqrt[2]σ))-dL erf((μ-1)/(Sqrt[2]σ)))+μ
@@ -505,9 +455,7 @@ StyleBox["x", "TI"]
 SubscriptBox[<, 1] and 
 StyleBox["x", "TI"]
 SubscriptBox[>, 2] for x∈{0⋯ 1} can be written using the following helpful constants of the distribution. 
- Σ^- 	 ==erf((μ-1)/(Sqrt[2]σ)) 	 Σ^+ 	 ==erf(μ/(Sqrt[2]σ)) 	 dL 	 ==
-FractionBox["1"] 	 κ 	 ==
-FractionBox[] 
+ Σ^- 	 ==erf((μ-1)/(Sqrt[2]σ)) 	 Σ^+ 	 ==erf(μ/(Sqrt[2]σ)) 	 dL 	 == 	 κ 	 == 
 
 
 
@@ -515,14 +463,13 @@ FractionBox[]
  Subscript[, 1] 	 ==+(Subscript[, 1](μ,σ)) 	 Subscript[, 2] 	 ==+(Subscript[, 2](μ,σ)) 
 
 
-subsubsectionThe Region Which Keeps All Information To find the region where all the information in the source domain is preserved, we differentiate the distribution and solve for where the gradient is equal to the destination range over the source range. This corresponds to the point at which a unit change in the source produces a unit change in the destination range: 
+The Region Which Keeps All Information
+ To find the region where all the information in the source domain is preserved, we differentiate the distribution and solve for where the gradient is equal to the destination range over the source range. This corresponds to the point at which a unit change in the source produces a unit change in the destination range: 
 
-(Sqrt[2/π] e^(-((x-μ)^2/(2σ^2))))/σ(erf(μ/(Sqrt[2]σ))-erf((μ-1)/(Sqrt[2]σ)))==
-FractionBox[]
+((Sqrt[2/π] e^(-((x-μ)^2/(2σ^2))))/σ(erf(μ/(Sqrt[2]σ))-erf((μ-1)/(Sqrt[2]σ))))==
 Rearranging for x, we find: 
 
-x==μ±σ Sqrt[-2log(σ(erf(μ/(Sqrt[2]σ))-erf((μ-1)/(Sqrt[2]σ))))+2log(
-FractionBox[])+log(2/π)]
+x==μ±σ Sqrt[-2log(σ(erf(μ/(Sqrt[2]σ))-erf((μ-1)/(Sqrt[2]σ))))+2log()+log(2/π)]
 The boundaries of the region 
 SubscriptBox[, 1] < 
 StyleBox["x", "TI"]
@@ -560,7 +507,7 @@ In the C++ code, whilst numerical routines were used MatLab and Mathematica to p
 SubscriptBox[-, 2] 
 
 
-subsubsectionThe compression ratio 
+The compression ratio 
 There is one final value of interest to the development of the algorithm, which is the gradient at the mean. The reason this is of interest is because we're trying to compress the relevant data as much as possible. If the destination region is small (i.e. the destination machine type is smaller than the source type), then the gradient at the mean allows us to assess the fidelity required of the source type. If it weren't for the fact that the source is the result of a rotation transformation, then there would be little purpose in assessing this value. However, it is entirely possible that the lengthening of the axes resulting from the rotation is insignificant for the desired destination type; there's no point preserving information during the rotation which is then discarded by the redistribution. The gradient is given by 
 The compression ratio is at most one-to-one, therefore κ<==1 and the gradient in the unit space must always be greater than one 1<=δ(μ,σ). so κ<=Δ(μ,σ)<=δ(μ,σ). 
 The required fidelity in the source domain can be found using Δ in the sense that the correspondence between one information step in the source must produce a step of Δ in the destination type. For the algorithm evaluating the maximum gradient Δ allows us to be sure that  — the region on the x axis where all the information is to be preserved — exists if Δ>1 or tells us that the x axis can be shortened if Δ<1. In the algorithm Δ is used to find an appropriate working data type for the rotated color space and to define the axis scaling for the rotation matrix. 
@@ -582,7 +529,8 @@ And the compression ratio κ is also explicitly restricted to being at most one 
  κ(θ) 	 ==max{1/δ(μ,σ),K/L(θ)} 
 
 
-subsubsectionA Piecewise Approximation to the ERF Distribution We now have equations which give us the four points in the source domain which mark the boundaries of the five characteristic regions. We can now use them to define a piecewise function which uses the computationally problematic error function based distribution as little as possible 
+A Piecewise Approximation to the ERF Distribution 
+We now have equations which give us the four points in the source domain which mark the boundaries of the five characteristic regions. We can now use them to define a piecewise function which uses the computationally problematic error function based distribution as little as possible 
 
 pDis(x)=={  	 
 StyleBox["x", "TI"]
@@ -618,10 +566,11 @@ StyleBox["x", "TI"]
 
 
 All three distribution techniques ( 2  , 2  , 2  ) described earlier are special cases of this distribution. When the distribution has a very large variance the piecewise distribution can be simplified as a linear distribution figXXX . When the distribution has a very small variance a partitioning is more appropriate fig XXX . The most interesting distributions, however, are the ones which require the use of the piecewise distribution fig XXX .  
-sectionThe Skin Color Space Algorithm 
+The Skin Color Space Algorithm 
 Now that all of the values necessary to preserve the skin information have been obtained, we can use them to build a color space transformation algorithm which can make intelligent decisions about the numerical precision for the intermediate and final variables, as well as determining the most efficient transformation methods. The algorithm described herein will take values of θ, the rotation about the luminosity axis, the standard deviations a,b and mean values a,b for the two chromatic axes in the unit range and will automatically decide upon the necessary intermediate working data types and the most efficient redistribution methods. 
 Previously, we found a rotational transformation which allows a working type  to be chosen such that <=2. If we were to keep the same data type for the color space  as is used for the RGB values , then the axes would have to be rescaled with the accompanying loss of information. Given that we have values which allow us to assess where all the relevant information lies, a more sophisticated approach is possible. For a chromatic axis — which, after rotation, has a length L(θ) — we can determine the positions on that axis at which the information is considered irrelevant using Equation (2 ) and the positions where the information is all considered relevant. If the gradient Δ XXX  is less than 1, then the distribution loses information at all points on the axis and the axis can be shortened without loss of relevant information. The only further consideration is to ensure that the values outside that range are prevented from causing errors associated with overflow. To exclude this possibility, a conditional statement can be used which checks the bounds as stated, assigning an appropriate value as necessary. The alternative is to use an intermediate value with a higher bit depth, and then to recast into the destination data type in such a way that overflow and underflow are handled appropriately. The OpenCV library provides a casting method — saturateCast — which serves this purpose. 
-subsubsectionSetting the Value for the Tolerance Now that we have the working type range , accounting for both the rotation and the statistics, we can set a meaningful tolerance on the error. Previously we calculated that the maximum error would occur for pixel values at the corners of the RGB cube, we have now seen that some values are more important than others and that it is more meaningful to use a smaller RGB cube which encloses only the values of interest. This cube is found by taking the values for  as the corners in the rotated space and rotating back to the RGB space. As this only needs to be done once it can be performed using floats in the unit spaces however the values of  account for the discrete numerics in that they are calculated from the discrete values  using the new values for κ and . In order to perform the inverse rotation the values must be shifted to compensate for the natural range of the rotation which is {0:1,-:,-:}. 
+Setting the Value for the Tolerance 
+Now that we have the working type range , accounting for both the rotation and the statistics, we can set a meaningful tolerance on the error. Previously we calculated that the maximum error would occur for pixel values at the corners of the RGB cube, we have now seen that some values are more important than others and that it is more meaningful to use a smaller RGB cube which encloses only the values of interest. This cube is found by taking the values for  as the corners in the rotated space and rotating back to the RGB space. As this only needs to be done once it can be performed using floats in the unit spaces however the values of  account for the discrete numerics in that they are calculated from the discrete values  using the new values for κ and . In order to perform the inverse rotation the values must be shifted to compensate for the natural range of the rotation which is {0:1,-:,-:}. 
  Subsuperscript[, 2, R G B] 	 (==^-1)·(Subscript[, 2]-) 	 where  ==( 0 
  1 
  1 
