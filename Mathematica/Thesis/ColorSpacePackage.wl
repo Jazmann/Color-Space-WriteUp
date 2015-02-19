@@ -141,7 +141,13 @@ ShowFun[scale["fR","qR"][\[Theta]]]
 
 
 fRe=Function[{\[Theta]},-1/2 (1+Sqrt[3] Tan[\[Theta]])];
-fREqnForm=Function[{\[Theta]6,\[Theta]1,fReqq},Piecewise[{{{{1,1,1},{fReqq[\[Theta]1],1,-1-fReqq[\[Theta]1]},{fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1],1}},0<=\[Theta]6<\[Pi]/6},{{{1,1,1},{1,fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1]},{-1-fReqq[\[Theta]1],fReqq[\[Theta]1],1}},\[Pi]/6<=\[Theta]6<\[Pi]/3},{{{1,1,1},{1,-1-fReqq[\[Theta]1],fReqq[\[Theta]1]},{-1-fReqq[\[Pi]/6-\[Theta]1],1,fReqq[\[Pi]/6-\[Theta]1]}},\[Pi]/3<=\[Theta]6<\[Pi]/2},{{{1,1,1},{fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1],1},{fReqq[\[Theta]1],1,-1-fReqq[\[Theta]1]}},\[Pi]/2<=\[Theta]6<(2 \[Pi])/3},{{{1,1,1},{-1-fReqq[\[Theta]1],fReqq[\[Theta]1],1},{1,fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1]}},(2 \[Pi])/3<=\[Theta]6<(5 \[Pi])/6},{{{1,1,1},{-1-fReqq[\[Pi]/6-\[Theta]1],1,fReqq[\[Pi]/6-\[Theta]1]},{1,-1-fReqq[\[Theta]1],fReqq[\[Theta]1]}},(5 \[Pi])/6<=\[Theta]6<\[Pi]}},0]];
+fREqnForm=Function[{\[Theta]6,\[Theta]1,fReqq},Piecewise[{
+{{{1,1,1},{fReqq[\[Theta]1],1,-1-fReqq[\[Theta]1]},{fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1],1}},0<=\[Theta]6<\[Pi]/6},
+{{{1,1,1},{1,fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1]},{-1-fReqq[\[Theta]1],fReqq[\[Theta]1],1}},\[Pi]/6<=\[Theta]6<\[Pi]/3},
+{{{1,1,1},{1,-1-fReqq[\[Theta]1],fReqq[\[Theta]1]},{-1-fReqq[\[Pi]/6-\[Theta]1],1,fReqq[\[Pi]/6-\[Theta]1]}},\[Pi]/3<=\[Theta]6<\[Pi]/2},
+{{{1,1,1},{fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1],1},{fReqq[\[Theta]1],1,-1-fReqq[\[Theta]1]}},\[Pi]/2<=\[Theta]6<(2 \[Pi])/3},
+{{{1,1,1},{-1-fReqq[\[Theta]1],fReqq[\[Theta]1],1},{1,fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1]}},(2 \[Pi])/3<=\[Theta]6<(5 \[Pi])/6},
+{{{1,1,1},{-1-fReqq[\[Pi]/6-\[Theta]1],1,fReqq[\[Pi]/6-\[Theta]1]},{1,-1-fReqq[\[Theta]1],fReqq[\[Theta]1]}},(5 \[Pi])/6<=\[Theta]6<\[Pi]}},0]];
 Clear[fR]
 fR[\[Theta]6:Except[_String],\[Theta]1_,fReqq_]:=fREqnForm[\[Theta]6,\[Theta]1,fReqq];
 fR[\[Theta]:Except[_String],fReqq_]:=fREqnForm[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fReqq];
@@ -155,16 +161,17 @@ Row[{ShowFun[fR[\[Theta]]],
 ShowFun[fR[\[Theta]6,\[Theta]1,"fRe"]]}]
 
 
+Clear[fRmFun,fROFun]
 fRmFun=Function[{\[Theta]1,f},{{1,1,1},{f[\[Theta]1],1,-1-f[\[Theta]1]},{f[\[Pi]/6-\[Theta]1],-1-f[\[Pi]/6-\[Theta]1],1}}];
-fROFun=Function[{m,\[Theta]},Piecewise[{{
-{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[2,1]],m[[2,2]],m[[2,3]]},{m[[3,1]],m[[3,2]],m[[3,3]]}},0<=Mod[\[Theta],\[Pi]]<\[Pi]/6},
-{{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[3,3]],m[[3,1]],m[[3,2]]},{m[[2,3]],m[[2,1]],m[[2,2]]}},\[Pi]/6<=Mod[\[Theta],\[Pi]]<\[Pi]/3},
-{{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[2,2]],m[[2,3]],m[[2,1]]},{m[[3,2]],m[[3,3]],m[[3,1]]}},\[Pi]/3<=Mod[\[Theta],\[Pi]]<\[Pi]/2},
-{{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[3,1]],m[[3,2]],m[[3,3]]},{m[[2,1]],m[[2,2]],m[[2,3]]}},\[Pi]/2<=Mod[\[Theta],\[Pi]]<(2 \[Pi])/3},
-{{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[2,3]],m[[2,1]],m[[2,2]]},{m[[3,3]],m[[3,1]],m[[3,2]]}},(2 \[Pi])/3<=Mod[\[Theta],\[Pi]]<(5 \[Pi])/6},
-{{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[3,2]],m[[3,3]],m[[3,1]]},{m[[2,2]],m[[2,3]],m[[2,1]]}},(5 \[Pi])/6<=Mod[\[Theta],\[Pi]]<\[Pi]}},0]];
+fROFun=Function[{m,\[Theta]6},Piecewise[{{
+{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[2,1]],m[[2,2]],m[[2,3]]},{m[[3,1]],m[[3,2]],m[[3,3]]}},0<=\[Theta]6<\[Pi]/6},
+{{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[3,3]],m[[3,1]],m[[3,2]]},{m[[2,3]],m[[2,1]],m[[2,2]]}},\[Pi]/6<=\[Theta]6<\[Pi]/3},
+{{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[2,2]],m[[2,3]],m[[2,1]]},{m[[3,2]],m[[3,3]],m[[3,1]]}},\[Pi]/3<=\[Theta]6<\[Pi]/2},
+{{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[3,1]],m[[3,2]],m[[3,3]]},{m[[2,1]],m[[2,2]],m[[2,3]]}},\[Pi]/2<=\[Theta]6<(2 \[Pi])/3},
+{{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[2,3]],m[[2,1]],m[[2,2]]},{m[[3,3]],m[[3,1]],m[[3,2]]}},(2 \[Pi])/3<=\[Theta]6<(5 \[Pi])/6},
+{{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[3,2]],m[[3,3]],m[[3,1]]},{m[[2,2]],m[[2,3]],m[[2,1]]}},(5 \[Pi])/6<=\[Theta]6 <\[Pi]}},0]];
 Clear[fRO,fRm]
-fRO[m:{{_,_,_},{_,_,_},{_,_,_}},\[Theta]:Except[_String]]:=fROFun[m,\[Theta]];
+fRO[m:{{_,_,_},{_,_,_},{_,_,_}},\[Theta]:Except[_String]]:=fROFun[m,Mod[\[Theta],\[Pi]]];
 fRm[\[Theta]1:Except[_String],f_:fRe]:=fRmFun[\[Theta]1,f]
 Format[fRO, TraditionalForm]\!\(\*
 TagBox[
@@ -188,32 +195,32 @@ Format[#, TraditionalForm]& ]\)="fRm";
 (**)
 
 
+qRmFun = Function[{\[Theta]1, f, n}, {{1, 1, 1}, {Round[2^(-2 + n)*f[\[Theta]1]], 2^(-2 + n), -2^(-2 + n) - Round[2^(-2 + n)*f[\[Theta]1]]}, 
+     {Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], -2^(-2 + n) - Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 2^(-2 + n)}}];
+qRFun = Function[{\[Theta]6, \[Theta]1, f, n}, Piecewise[{{{{1, 1, 1}, {Round[2^(-2 + n)*f[\[Theta]1]], 2^(-2 + n), -2^(-2 + n) - Round[2^(-2 + n)*f[\[Theta]1]]}, 
+        {Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], -2^(-2 + n) - Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 2^(-2 + n)}}, 
+       Inequality[0, LessEqual, \[Theta]6, Less, Pi/6]}, {{{1, 1, 1}, {2^(-2 + n), Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 
+         -2^(-2 + n) - Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]]}, {-2^(-2 + n) - Round[2^(-2 + n)*f[\[Theta]1]], Round[2^(-2 + n)*f[\[Theta]1]], 2^(-2 + n)}}, 
+       Inequality[Pi/6, LessEqual, \[Theta]6, Less, Pi/3]}, {{{1, 1, 1}, {2^(-2 + n), -2^(-2 + n) - Round[2^(-2 + n)*f[\[Theta]1]], 
+         Round[2^(-2 + n)*f[\[Theta]1]]}, {-2^(-2 + n) - Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 2^(-2 + n), Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]]}}, 
+       Inequality[Pi/3, LessEqual, \[Theta]6, Less, Pi/2]}, {{{1, 1, 1}, {Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 
+         -2^(-2 + n) - Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 2^(-2 + n)}, {Round[2^(-2 + n)*f[\[Theta]1]], 2^(-2 + n), 
+         -2^(-2 + n) - Round[2^(-2 + n)*f[\[Theta]1]]}}, Inequality[Pi/2, LessEqual, \[Theta]6, Less, (2*Pi)/3]}, 
+      {{{1, 1, 1}, {-2^(-2 + n) - Round[2^(-2 + n)*f[\[Theta]1]], Round[2^(-2 + n)*f[\[Theta]1]], 2^(-2 + n)}, 
+        {2^(-2 + n), Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], -2^(-2 + n) - Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]]}}, 
+       Inequality[(2*Pi)/3, LessEqual, \[Theta]6, Less, (5*Pi)/6]}, {{{1, 1, 1}, {-2^(-2 + n) - Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 2^(-2 + n), 
+         Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]]}, {2^(-2 + n), -2^(-2 + n) - Round[2^(-2 + n)*f[\[Theta]1]], Round[2^(-2 + n)*f[\[Theta]1]]}}, 
+       Inequality[(5*Pi)/6, LessEqual, \[Theta]6, Less, Pi]}}, 0]];
 Clear[qR]
-qR[\[Theta]:Except[_String],n_:8]:=Piecewise[{{{{1, 1, 1}, {-Round[2^(-2 + n)*Sec[\[Theta]]*Sin[Pi/6 + \[Theta]]], Round[2^(-2 + n)], 
-     -Round[2^(-2 + n)*Sec[\[Theta]]*Sin[Pi/6 - \[Theta]]]}, {-Round[2^(-2 + n)*Cos[Pi/6 + \[Theta]]*Sec[Pi/6 - \[Theta]]], 
-     -Round[2^(-2 + n)*Sec[Pi/6 - \[Theta]]*Sin[\[Theta]]], Round[2^(-2 + n)]}}, Inequality[0, LessEqual, Mod[\[Theta], 2*Pi], Less, Pi/6] || 
-    Inequality[Pi, LessEqual, Mod[\[Theta], 2*Pi], Less, (7*Pi)/6]}, 
-  {{{1, 1, 1}, {Round[2^(-2 + n)], -Round[2^(-2 + n)*Cos[\[Theta]]*Csc[Pi/6 + \[Theta]]], Round[2^(-2 + n)*Csc[Pi/6 + \[Theta]]*Sin[Pi/6 - \[Theta]]]}, 
-    {-Round[2^(-2 + n)*Cos[Pi/6 + \[Theta]]*Sec[Pi/6 - \[Theta]]], -Round[2^(-2 + n)*Sec[Pi/6 - \[Theta]]*Sin[\[Theta]]], Round[2^(-2 + n)]}}, 
-   Inequality[Pi/6, LessEqual, Mod[\[Theta], 2*Pi], Less, Pi/3] || Inequality[(7*Pi)/6, LessEqual, Mod[\[Theta], 2*Pi], Less, (4*Pi)/3]}, 
-  {{{1, 1, 1}, {Round[2^(-2 + n)], -Round[2^(-2 + n)*Cos[\[Theta]]*Csc[Pi/6 + \[Theta]]], Round[2^(-2 + n)*Csc[Pi/6 + \[Theta]]*Sin[Pi/6 - \[Theta]]]}, 
-    {Round[2^(-2 + n)*Cos[Pi/6 + \[Theta]]*Csc[\[Theta]]], Round[2^(-2 + n)], -Round[2^(-2 + n)*Cos[Pi/6 - \[Theta]]*Csc[\[Theta]]]}}, 
-   Inequality[Pi/3, LessEqual, Mod[\[Theta], 2*Pi], Less, Pi/2] || Inequality[(4*Pi)/3, LessEqual, Mod[\[Theta], 2*Pi], Less, (3*Pi)/2]}, 
-  {{{1, 1, 1}, {Round[2^(-2 + n)*Csc[Pi/6 - \[Theta]]*Sin[Pi/6 + \[Theta]]], -Round[2^(-2 + n)*Cos[\[Theta]]*Csc[Pi/6 - \[Theta]]], Round[2^(-2 + n)]}, 
-    {Round[2^(-2 + n)*Cos[Pi/6 + \[Theta]]*Csc[\[Theta]]], Round[2^(-2 + n)], -Round[2^(-2 + n)*Cos[Pi/6 - \[Theta]]*Csc[\[Theta]]]}}, 
-   Inequality[Pi/2, LessEqual, Mod[\[Theta], 2*Pi], Less, (2*Pi)/3] || Inequality[(3*Pi)/2, LessEqual, Mod[\[Theta], 2*Pi], Less, 
-     (5*Pi)/3]}, {{{1, 1, 1}, {Round[2^(-2 + n)*Csc[Pi/6 - \[Theta]]*Sin[Pi/6 + \[Theta]]], -Round[2^(-2 + n)*Cos[\[Theta]]*Csc[Pi/6 - \[Theta]]], 
-     Round[2^(-2 + n)]}, {Round[2^(-2 + n)], Round[2^(-2 + n)*Sec[Pi/6 + \[Theta]]*Sin[\[Theta]]], 
-     -Round[2^(-2 + n)*Cos[Pi/6 - \[Theta]]*Sec[Pi/6 + \[Theta]]]}}, Inequality[(2*Pi)/3, LessEqual, Mod[\[Theta], 2*Pi], Less, (5*Pi)/6] || 
-    Inequality[(5*Pi)/3, LessEqual, Mod[\[Theta], 2*Pi], Less, (11*Pi)/6]}, 
-  {{{1, 1, 1}, {-Round[2^(-2 + n)*Sec[\[Theta]]*Sin[Pi/6 + \[Theta]]], Round[2^(-2 + n)], -Round[2^(-2 + n)*Sec[\[Theta]]*Sin[Pi/6 - \[Theta]]]}, 
-    {Round[2^(-2 + n)], Round[2^(-2 + n)*Sec[Pi/6 + \[Theta]]*Sin[\[Theta]]], -Round[2^(-2 + n)*Cos[Pi/6 - \[Theta]]*Sec[Pi/6 + \[Theta]]]}}, 
-   Inequality[(5*Pi)/6, LessEqual, Mod[\[Theta], 2*Pi], Less, Pi] || Inequality[(11*Pi)/6, LessEqual, Mod[\[Theta], 2*Pi], Less, 2*Pi]}}, 0]
-Format[qR, TraditionalForm]="q\!\(\*
-StyleBox[\"R\",\nFontWeight->\"Bold\"]\)";
+qR[\[Theta]6:Except[_String],\[Theta]1_,fReqq_,n_]:=qRFun[\[Theta]6,\[Theta]1,fReqq,n];
+qR[\[Theta]:Except[_String],fReqq_,n_]:=qRFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fReqq,n];
+qR[\[Theta]:Except[_String],n_]:=qRFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fRe,n];
+qR[\[Theta]:Except[_String]]:=qRFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fRe,8];
+
+Format[qR, TraditionalForm]=Style["qR",FontWeight->"Bold"];
 
 
-ShowFun[qR[\[Theta],8]]
+ShowFun[qR[\[Theta]6,\[Theta]1,"fRe",n]]
 
 
 (* ::Section:: *)
