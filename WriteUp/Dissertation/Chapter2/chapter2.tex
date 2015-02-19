@@ -2258,8 +2258,8 @@ Expanding the definition of the quantized matrix $\qR[\theta, n]$ \ref{eq:quanti
 
 \begin{gather*}
 \begin{aligned}
-\aR &= \fSs \otimes \qR   &   \elemU  &= 2^{n-2 } &\quad&\quad\\
-\mTheta{6}{0} &= \theta  \bmod \pi  &   \mTheta{4}{0} &= \theta  \bmod \frac{2 \pi }{3}  & \mTheta{1}{0} &= \theta  \bmod \frac{ \pi }{6}\\
+\aR &= \fSs \otimes \qR   &   \elemU  &= 2^{n-2 } &
+\mTheta{6} &= \theta  \bmod \pi  & \mTheta{1} &= \theta  \bmod \frac{ \pi }{6}\\
 \end{aligned} \\
 \begin{aligned}
 \elemAp  & = - \left(2^{n-3 }+\round{ 2^{n-3 }\sqrt{3} \tan (\thetaA ) }\right) & -2^{n-2} \le & \elemAp \le -2^{n-3} \\
@@ -2278,49 +2278,51 @@ Expanding the definition of the quantized matrix $\qR[\theta, n]$ \ref{eq:quanti
  \elemAp  & \elemU    & \elemAm \\
  \elemBp   & \elemBm & \elemU \\
 \end{smallmatrix}
-\right) & 0\leq \mTheta{6}{0} <\frac{\pi }{6} \\
+\right) & 0\leq \mTheta{6}<\frac{\pi }{6} \\
  \left(
 \begin{smallmatrix}
  1              & 1             & 1  \\
  \elemU     & \elemBp  & \elemBm \\
  \elemAm  & \elemAp  & \elemU \\
 \end{smallmatrix}
-\right) & \frac{\pi }{6}\leq \mTheta{6}{0} <\frac{\pi }{3} \\
+\right) & \frac{\pi }{6}\leq \mTheta{6} <\frac{\pi }{3} \\
  \left(
 \begin{smallmatrix}
  1              & 1             & 1  \\
  \elemU    & \elemAm & \elemAp \\
  \elemBm  & \elemU   & \elemBp \\
 \end{smallmatrix}
-\right) & \frac{\pi }{3}\leq \mTheta{6}{0} <\frac{\pi }{2} \\
+\right) & \frac{\pi }{3}\leq \mTheta{6} <\frac{\pi }{2} \\
  \left(
 \begin{smallmatrix}
  1              & 1             & 1  \\
  \elemBp   & \elemBm & \elemU \\
  \elemAp   & \elemU   & \elemAm \\
 \end{smallmatrix}
-\right) & \frac{\pi }{2}\leq \mTheta{6}{0} <\frac{2 \pi }{3} \\
+\right) & \frac{\pi }{2}\leq \mTheta{6} <\frac{2 \pi }{3} \\
  \left(
 \begin{smallmatrix}
  1              & 1             & 1  \\
  \elemAm  & \elemAp & \elemU \\
  \elemU     & \elemBp  & \elemBm \\
 \end{smallmatrix}
-\right)  & \frac{2 \pi }{3}\leq \mTheta{6}{0} <\frac{5 \pi }{6} \\
+\right)  & \frac{2 \pi }{3}\leq \mTheta{6} <\frac{5 \pi }{6} \\
 \left(
 \begin{smallmatrix}
  1              & 1             & 1  \\
  \elemBm  & \elemU   & \elemBp \\
  \elemU    & \elemAm & \elemAp \\
 \end{smallmatrix}
-\right)  & \frac{5 \pi }{6}\leq \mTheta{6}{0} <\pi 
+\right)  & \frac{5 \pi }{6}\leq \mTheta{6} <\pi 
 \end{cases} &
  \fSs[\theta]  &=
 \begin{cases}
-\left( \begin{smallmatrix}  1 \\    1 \\   1\\ \end{smallmatrix} \right) & 0                   \leq \mTheta{4}{0}  < \frac{  \pi }{6} \\
-\left( \begin{smallmatrix}  1 \\  -1 \\   1\\ \end{smallmatrix} \right) & \frac{\pi }{6} \leq  \mTheta{4}{0}  < \frac{  \pi }{3} \\
-\left( \begin{smallmatrix}  1 \\  -1 \\ -1\\ \end{smallmatrix} \right) & \frac{\pi }{3} \leq  \mTheta{4}{0}  < \frac{  \pi }{2} \\
-\left( \begin{smallmatrix}  1 \\    1 \\ -1\\ \end{smallmatrix} \right) & \frac{\pi }{2} \leq  \mTheta{4}{0}  < \frac{2\pi }{3} 
+\left( \begin{smallmatrix}  1 \\    1 \\   1\\ \end{smallmatrix} \right) & 0                   \leq    \mTheta{6}  < \frac{   \pi }{6} \\
+\left( \begin{smallmatrix}  1 \\  -1 \\   1\\ \end{smallmatrix} \right) & \frac{  \pi }{6} \leq  \mTheta{6}  < \frac{   \pi }{3} \\
+\left( \begin{smallmatrix}  1 \\  -1 \\ -1\\ \end{smallmatrix} \right) & \frac{  \pi }{3} \leq  \mTheta{6}  < \frac{   \pi }{2} \\
+\left( \begin{smallmatrix}  1 \\    1 \\ -1\\ \end{smallmatrix} \right) & \frac{  \pi }{2} \leq  \mTheta{6}  < \frac{2 \pi }{3} \\
+\left( \begin{smallmatrix}  1 \\    1 \\   1\\ \end{smallmatrix} \right) & \frac{2\pi }{3} \leq  \mTheta{6}  < \frac{5 \pi }{6} \\
+\left( \begin{smallmatrix}  1 \\  -1 \\   1\\ \end{smallmatrix} \right) & \frac{5\pi }{6} \leq  \mTheta{6}  <             \pi  \\
 \end{cases} 
 \end{aligned} \\
 \end{gather*}

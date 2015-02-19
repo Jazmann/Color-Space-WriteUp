@@ -197,6 +197,16 @@ Format[#, TraditionalForm]& ]\)="fRm";
 
 qRmFun = Function[{\[Theta]1, f, n}, {{1, 1, 1}, {Round[2^(-2 + n)*f[\[Theta]1]], 2^(-2 + n), -2^(-2 + n) - Round[2^(-2 + n)*f[\[Theta]1]]}, 
      {Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], -2^(-2 + n) - Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 2^(-2 + n)}}];
+qRm[\[Theta]1:Except[_String],f_:fRe]:=fRmFun[\[Theta]1,f];
+\!\(\*
+TagBox[
+FormBox[
+FormBox[
+RowBox[{"Format", "[", 
+RowBox[{"qRm", ",", " ", "TraditionalForm"}], "]"}],
+TraditionalForm],
+TraditionalForm],
+Format[#, TraditionalForm]& ]\)="qRm";
 qRFun = Function[{\[Theta]6, \[Theta]1, f, n}, Piecewise[{{{{1, 1, 1}, {Round[2^(-2 + n)*f[\[Theta]1]], 2^(-2 + n), -2^(-2 + n) - Round[2^(-2 + n)*f[\[Theta]1]]}, 
         {Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], -2^(-2 + n) - Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 2^(-2 + n)}}, 
        Inequality[0, LessEqual, \[Theta]6, Less, Pi/6]}, {{{1, 1, 1}, {2^(-2 + n), Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 
