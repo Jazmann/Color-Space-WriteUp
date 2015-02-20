@@ -1,0 +1,450 @@
+
+Representing the Rotation 
+
+The final piece of the metaphorical jigsaw is to add the capability to deal with the machine handling of the numerics. The transforms as defined above assume the capacity to represent the resulting numbers. Unfortunately, on a device, the numerics are not handled in such a pure way and — whilst we are uninterested in the information overflow outside the destination representation — this can cause instabilities in a practical implementation. In the development of the algorithm, it is therefore necessary to define these bounds. In the unit space, these bounds have already been defined by Equation XXX ; so long as the axis length can be represented on the device between these bounds, then overflow and underflow can be dealt with using a simple conditional statement. 
+It is significantly advantageous to perform calculations using integer types, particularly given that the input and output types are integers with small ranges, meaning it's possible to construct algorithms which avoid conversion to floating point operations. To this end, we wish to determine the most efficient internal representation for the transformation. 
+Principles of Optimization 
+During the color space conversion, the pixel values are represented in three different ways: input, working and output representations. At each stage, we are concerned with preserving the information from the previous stage required by the next. For this reason, we have defined terms for the mathematical analysis of the problem, as well as terms for the algorithm development. The terms associated with each stage are as follows:  
+During the color space conversion, the pixel values are represented in three different ways: input, working and output representations. At each stage, we are concerned with preserving the information from the previous stage required by the next. For this reason, we have defined terms for the mathematical analysis of the problem, as well as terms for the algorithm development. The terms associated with each stage are as follows: 
+ Data Types  	 Src Pixel Values  	 Trans Pixel Values  	 Dst Pixel Values  
+ What?  	 Input  	 Working  	 Output  
+
+ Where?  	 Initial  	 After Rotation  	 After Re-Distribution  
+ Unit Range Value  	   	   	   
+ 1-1 Int Range Value  	   	   	   
+ 1-1 Max  	   	   	   
+ 1-1 Min  	   	   	   
+ 1-1 Range  	   	   	   
+
+
+The rotation operation consists of 9 multiplications and 6 additions and constitutes the majority of the computational cost. It is this operation which we will focus our optimization efforts upon. The redistribution transformation, which comes after the rotation, processes each pixel channel value separately. This allows us to pull apart the rotation matrix by scaling each row arbitrarily, handing the knowledge of the scaling to the distribution. The goal of this section is to represent the matrix multiplication in such a way that we avoid floating-point operations. 
+
+[θ]==(-
+Scale
+-
+
+)⊗[θ] where  [θ]∈Z
+
+Given an infinite set of integers, this is not a problem. However, we wish to choose  to lie in a finite range, which depends on the color depth of the source. Ideally, we'd like the result of the rotation to have a bit depth not greater than twice the bit depth of the source, i.e. for 8-bit pixel values, we would like the rotated LCaCb values to be expressible as 16-bit integers. To accommodate 3 multiplications and 2 additions, the matrix  needs to be represented in two fewer bits than the source. 
+This unit range is discretized into steps of 
+FractionBox["1"] and 
+FractionBox["1"]. The question then is to what degree of accuracy do we need to represent the internal numerics? If we represent the transformation in a discrete type , we can express the problem in terms of the largest perturbation which can be made to the transformation without affecting the result. 
+
+ · 	 == 	 let   	 ==+ 
+ (+)· 	 ==+ 		
+ therefore if · 	 == 	 then  ·== 	
+
+
+The continuous rotation  can be expressed as the sum of its discrete representation  with a discretization factor  and the correction . The elements of the discrete rotation can be expressed as rational fractions. 
+
+(==int(·))/(  where  int(1.5)==1,int(-1.5)==-1)
+(therefore  -1)/(<<1)/
+
+
+It should be noted that — unlike the source type — the perturbation can be negative. The definition of the function i n t results in the sign of the perturbation matching the sign of the discretized transformation matrix. We must therefore consider both the maximum and minimum of . As 0<=<=1 the extrema of  are found where  is a vector with elements of 0 and 1. If the matrix is decomposed into a sum of positive and negative elements 
+SubscriptBox[==, +]
+SubscriptBox[+, -] then the extrema are given by max(Subscript[, +]·1) and min(Subscript[, -]·1). Where the elements are positive or negative is determined by the sign of the elements in the rotation matrix .  
+
+Factoring the Rotation 
+
+If we were to scale the entire matrix evenly, the top row would dominate as it is always positive, and the necessary discrete representation would be characterised by ==3 . This would, however, necessitate the matrix being stored in a data type with at least 2 more bits than the source type. 
+The second and third rows each sum to zero (·1==[Sqrt[3],0,0], where 1 is a vector of ones), allowing us to state that each of the rows has one element of the opposite sign to the other two elements. The discretization for the second and third rows then only requires ==2 . It is also possible to pull out common factors from the rows, resulting in all elements taking values between -1 and 1.  
+
+(θ)==(1/Sqrt[3]
+Sqrt[2/3]
+Sqrt[2/3]
+
+)⊗( 1 	 1 	 1 
+ -sin(θ+6) 	 cos(θ) 	 sin(θ-6) 
+ -cos(θ+6) 	 -sin(θ) 	 cos(θ-6) 
+
+)
+
+To facilitate the quantization, we next factor the second and third rows such that the largest element of each row equals exactly 1. As previously mentioned, the largest element has the opposite sign to the other two elements in a given row. So, the steps required to perform the factorization are as follows: 
+Find the sign of each of the elements. 
+Determine which of those elements is of the opposite sign. 
+Factor each row by that largest element. 
+The sign of the elements is most easily seen by looking at the rotation as phase shifted sine functions. 
+
+[θ]==( 1 	 1 	 1 
+ θ-(5π)/6 	 θ+(3π)/6 	 θ-6 
+ θ-(2π)/6 	 θ-(6π)/6 	 θ+(2π)/6 
+
+)
+
+So the signs look like  
+
+
+Each row is a series of three sin waves each (2π)/3 out of phase with each other. The rows areπ/2 out of phase with each other. The largest element changes every π/6 radians repeating every π radians.  
+
+
+By defining θ as θ==Θ+ — where ==θ  mod 6, and Θ is the starting value for the region in which θ lies — and substituting in the function [ϕ]:  
+
+
+We can now relate the functions to each other, since they are now essentially the same function, and  has the same domain; the values they take have the same range, despite being in different positions in the matrix. This allows us to write the piecewise function  independently as a function , which re-orders the elements of the matrix in region A appropriately for the other regions.  
+
+
+we can now rewrite the factored rotation as shown in XXX   
+
+
+We can now relate the functions to each other, since they are now essentially the same function, and  has the same domain; the values they take have the same range, despite being in different positions in the matrix. This allows us to write the piecewise function  independently as a function , which re-orders the elements of the matrix in region A appropriately for the other regions.  
+The scaling factor () can also be further simplified by separating the sign and combining the functional parts.  
+
+then (θ)==(θ)⊗(θ), where  is a piecewise function containing the signs. 
+The scaling factors combine in a simple way 
+[θ]⊗⊗(θ)==(1/3
+1/2
+1/2
+
+)
+The fully factorized matrix can now be written as 
+ [θ] 	 ==[θ]⊗⊗(θ)⊗(θ)⊗[,θ] 
+  	 ==(1
+1
+1
+
+)⊗(θ)⊗[,θ] 
+
+
+Quantizing the Rotation
+
+The factored rotation fR contains 4 non-integer elements lying between -1 and 0, which we wish to quantize. This can be done simply by multiplying it by 2^(n-2), where n is the bit depth of the integer type, and rounding the result: 
+
+ [θ,n] 	 ==Round[(1
+2
+2
+
+)⊗[θ]]   	 and  [n] 	 ==(1
+2
+2
+
+) 
+
+
+Since every row in  always has an element equal to 1, we will exploit the full range -2^(n-2)<=<=2^(n-2) of the integer type.  
+Thus far, we have assumed that we can achieve a bit depth of two less than the bit depth of the source type for the representation of the rotation matrix. We are now in a position to assess whether the representation introduces any errors. 
+Given that the source type with a bit depth of n, we can work out any errors introduced by finding the difference between using the quantized rotation  and the unquantized rotation . All the factoring of the rotation is mathematically exact up to and including , so any errors that are introduced will be during the rounding. 
+We are interested in the error introduced by the quantization, so we introduce the perturbation [θ] associated with the transform [θ] produced by the rounding. Defining 
+The perturbation depends entirely on [θ,n]  
+
+ [ϕ] 	 ==Round [2^(n-2) [ϕ]]-(2^(n-2)) [ϕ] 
+  	 ==Round [2^(n-3) Sqrt[3]tan(ϕ)]-(2^(n-3)) Sqrt[3]tan(ϕ) 
+ [ϕ] 	 ==(2^(2-n)) [ϕ] 
+
+
+The perturbation [θ] is a rearrangement of []   [] 	 ==[,] 
+  	 ==( 0 	 0 	 0 
+ [
+] 	 0 	 [
+-
+] 
+ [
+6-
+] 	 [
+-6
+] 	 0 
+
+) 
+
+ 
+The perturbation introduced to each channel is further simplified by recognizing that [-ϕ]==-1-[ϕ], which allows us to find [-ϕ]==-[ϕ] i.e. that the sum of the two perturbations in each row equals zero. we can analyze the quantization error in terms of just one function  and a matrix ordering function [θ]==[[]]. 
+ [θ] 	 ==[( 0 
+ [
+] 
+ [
+6-
+] 
+
+)⊗( 0 	 0 	 0 
+ 1 	 0 	 -1 
+ 1 	 -1 	 0 
+
+),θ] 
+  	 ==[( 0 
+ [
+] 
+ [
+6-
+] 
+
+)]⊗[θ] 
+
+
+where 
+
+[( 0 
+ a 
+ b 
+
+),θ]=={ ( 0 
+ a 
+ b 
+
+) 	 0<=(θ mod π/3)<π/6 
+ ( 0 
+ b 
+ a 
+
+) 	 π/6<=(θ mod π/3)<π/3 
+
+
+
+[θ]=={ ( 0 	 0 	 0 
+ 1 	 0 	 -1 
+ 1 	 -1 	 0 
+
+) 	 0<=(θ mod π)<π/6 
+ ( 0 	 0 	 0 
+ 0 	 1 	 -1 
+ -1 	 1 	 0 
+
+) 	 π/6<=(θ mod π)<π/3 
+ ( 0 	 0 	 0 
+ 0 	 -1 	 1 
+ -1 	 0 	 1 
+
+) 	 π/3<=(θ mod π)<π/2 
+ ( 0 	 0 	 0 
+ 1 	 -1 	 0 
+ 1 	 0 	 -1 
+
+) 	 π/2<=(θ mod π)<(2π)/3 
+ ( 0 	 0 	 0 
+ -1 	 1 	 0 
+ 0 	 1 	 -1 
+
+) 	 (2π)/3<=(θ mod π)<(5π)/6 
+ ( 0 	 0 	 0 
+ -1 	 0 	 1 
+ 0 	 -1 	 1 
+
+) 	 (5π)/6<=(θ mod π)<π 
+
+
+We can now express the perturbation to the rotation and to the channel elements themselves. The structure of  means that the perturbation to each channel is the product of either [] or [6-] with the difference between two of the pixel values. Given that we can assume that the pixel values are positive, being unsigned integers, the extreme values of the perturbation are when one of the two pixel values is zero.  
+ [θ] 	 ==[θ]+[θ] 
+  	 ==[θ]⊗⊗(θ)⊗[n]⊗[θ]⊗[[θ,n]+[θ,n]] 
+  	 ==( 1 
+ 1 
+ 1 
+
+)⊗( 1 
+ 2 
+ 2 
+
+)⊗(θ)⊗[[θ,n]+[θ,n]] 
+
+
+defining 
+ [θ,n] 	 ==( 1 
+ 2 
+ 2 
+
+)⊗(θ) 
+ [θ] 	 ==[θ]⊗[[θ,n]] 
+ [θ] 	 ==[θ]⊗[[θ,n]] 
+
+
+the perturbation to the rotated channel elements Overscript[δ w, ⇀] is found for an input set of pixel values Overscript[v, ⇀]==2^n Overscript[v, ⇀] 
+ Overscript[w, ⇀]+Overscript[δ w, ⇀] 	 ==[θ]·Overscript[v, ⇀]+[θ]·Overscript[v, ⇀] 
+ Overscript[δ w, ⇀] 	 ==(2^n) [θ]·Overscript[v, ⇀] 
+  	 ==(2^n) [θ]⊗[[θ,n]]·Overscript[v, ⇀] 
+  	 ==[( 0 
+ 2
+[] 
+ 2
+[6-] 
+
+)⊗( 0 	 0 	 0 
+ 1 	 0 	 -1 
+ 1 	 -1 	 0 
+
+),θ] 
+
+
+So, to minimize the perturbation, we need to simultaneously minimize ±2[] and ±2[6-] 
+The maxima for each function are where ±2[]==±1 and ±2[6-]==±1, and the minima are where ±2[]==0 and ±2[6-]==0. To find the corresponding values of , all that is needed is an inverse function for . In essence [ϕ] discretizes Sqrt[3]tan(ϕ) into steps of 2^(3-n). The minima can be found by taking the inverse of Sqrt[3]tan(ϕ), given that 0<=Sqrt[3]tan(ϕ)<=1 for 0<=ϕ<=6 we can say that Round [2^(n-3) Sqrt[3]tan(ϕ)]∈{0,1,2,⋯ 2^(n-3)} 
+ [ϕ] 	 ==0 	 [6-ϕ] 	 ==0  when 
+ 2^(n-3) Sqrt[3]tan(ϕ) 	 ==m 	 2^(n-3) Sqrt[3]tan(6-ϕ) 	 ==m  where  m==0,1,2⋯ (2^(n-3)) 
+ Subscript[Overscript[ϕ, ˇ], b]== 	 arctan((m 2^(3-n))/Sqrt[3]) 	 Subscript[Overscript[ϕ, ˇ], a]== 	 arctan((2Sqrt[3]m)/(2^n-2m)) 
+
+
+The maxima can be found by recognizing that the maximum rounding error is a half and evaluating at these points 
+ [Subscript[Overscript[ϕ, ^], b]] 	 ==±1 	 [6-Subscript[Overscript[ϕ, ^], a]] 	 ==±1  when 
+ Subscript[Overscript[ϕ, ^], b] 	 ==arctan(2^(3-n)/Sqrt[3](m+1/2)) 	 Subscript[Overscript[ϕ, ^], a] 	 ==arctan((2Sqrt[3](m+1/2))/(2^n-2(m+1/2))) 
+ Subscript[Overscript[ϕ, ^], b] 	 ==arctan(((2m+1)2^(2-n))/Sqrt[3]) 	 Subscript[Overscript[ϕ, ^], a] 	 ==arctan((Sqrt[3](2m+1))/(2^n-2m-1)) 
+    	 with  m==0,1,2,3⋯ 2^(n-3)-1 		
+
+
+We are interested in a compromise between the perturbations to each channel which is where the perturbations intersect. It would be useful to be able to assign a relative importance α and β to each channel a and b respectively.  
+β [ϕ]==α [π/6-ϕ]  when
+ β Round [2^(n-3) Sqrt[3]tan(ϕ)]-α Round [2^(n-3) Sqrt[3]tan(π/6-ϕ)] 
+ ==(2^(n-3)) (Sqrt[3]α tan(θ)+2β sin(θ)sec(π/6-θ)) 
+
+
+
+
+The values α and β can only move the point of intersection within the bounds of the extrema. Therefore, any solution for the point of intersection will enable the bounding extrema to be identified. 
+We solve first for the case where α==1 and β==1. Recognizing that the rounded part can only take certain values 
+i==Round [2^(n-3) Sqrt[3]tan(ϕ)]-Round [2^(n-3) Sqrt[3]tan(π/6-ϕ)]  where  i==0,1,2⋯ 2^(n-2)
+then 
+
+i==arctan((Sqrt[i^2 2^(6-2n)-i 2^(4-n)+49]+i 2^(3-n)-7)/(2Sqrt[3]))  where  i==0,1,2⋯ 2^(n-2)
+
+
+Each point of intersection is defined and bounded by 4 extrema. Comparing with the functional form of the extrema allows these 4 points to be identified.  
+
+GridBox[{{Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["a", "TI"], StyleBox["l", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}], CellTags -> "eq:ExtremaFunctions"], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{"arctan", "(", FractionBox[RowBox[{StyleBox["l", "TI"], SqrtBox["3"]}], RowBox[{SuperscriptBox["2", StyleBox["n", "TI"]], "-", StyleBox["l", "TI"]}]], ")"}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["b", "TI"], StyleBox["l", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{"arctan", "(", FractionBox[RowBox[{StyleBox["l", "TI"], " ", SuperscriptBox["2", RowBox[{"2", "-", StyleBox["n", "TI"]}]]}], SqrtBox["3"]], ")"}], TraditionalForm]], "InlineFormula"], " "}]]}, {Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["a", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["a", "TI"], RowBox[{"2", StyleBox["m", "TI"]}]}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["b", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["b", "TI"], RowBox[{"2", StyleBox["m", "TI"]}]}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{"with", "  ", StyleBox["m", "TI"], "==", "0", ",", "1", ",", "2", ",", "3", "⋯", SuperscriptBox["2", RowBox[{StyleBox["n", "TI"], "-", "3"}]]}], TraditionalForm]], "InlineFormula"], " "}]]}, {Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["a", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["a", "TI"], RowBox[{"2", StyleBox["m", "TI"], "+", "1"}]}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["b", "TI"], "=="}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{StyleBox["b", "TI"], RowBox[{"2", StyleBox["m", "TI"], "+", "1"}]}], TraditionalForm]], "InlineFormula"], " "}]], Cell[TextData[{" ", Cell[BoxData[FormBox[RowBox[{"with", "  ", StyleBox["m", "TI"], "==", "0", ",", "1", ",", "2", ",", "3", "⋯", SuperscriptBox["2", RowBox[{StyleBox["n", "TI"], "-", "3"}]], "-", "1"}], TraditionalForm]], "InlineFormula"], " "}]]}}]
+Separating the points of intersection into even and odd terms facilitates the identification. 
+  	 Channel a  	 Channel b  	 i  
+ Minima  	 a
+(i/2)
+==
+a
+i  	 b
+(i/2)
+==
+b
+i  	 i
+∈
+{0,2,4,6⋯ 2^(n-2)} 
+ Maxima  	 a
+((i-1)/2)
+==
+a
+i  	 b
+((i-1)/2)
+==
+b
+i  	 i
+∈
+{1,3,5,7⋯ 2^(n-2)-1}  
+
+ 
+The following ranges are guaranteed to be true for even or odd values of i, with very specific values of p and q. 
+ b
+p-1	<
+a
+q	<
+
+ 	 i<	a
+q+1
+<	b
+p
+
+ 	 ⋁a
+q+1	<
+b
+p	<
+
+ 	 i+1<	b
+p+1
+<	a
+q+2
+
+ 	 p	∈
+{2N}
+q	∈
+{2N}
+2	<=
+i
+<=
+(2^(n-2))
+-
+1
+
+ 
+
+
+This slightly glib definition illustrates the pattern for the extrema bounding the points of intersection. At the start of a Π/6 region, i.e. for low values of i, p==i and q==i. The maxima swap orderings between certain values of i within a Π/6 region. This is evident in the inescapable indices of i-1 and i+1, regardless of the starting values for i for either the maxima or minima. So, whilst it is true that ai>bi, it is not always true that ai+1>bi-1. This leads to the question of what happens when this boundary ai+1==bi-1 is crossed. Firstly, the even-odd ordering (i.e. the a-b channel ordering) is flipped; secondly, the indices are shifted. A second transition restores the a-b ordering and shifts the indices again. As the index i passes the half way point Overscript[i, _]==2^(n-3), the transitions occur in the opposite direction, restoring the indices and ordering. Transitions occur where i satisfies ai+ι==bi-ι, with ι∈{1,2,3⋯(7-4Sqrt[3])2^(n-3)}.  
+
+==(2^(n-3))    Γ(ι,n)==Sqrt[ι^2-14ι+^2]
+
+
+The region ι for a given value of i is the highest value of ι for which the following condition remains true: 
+
+-Γ(ι,n)<=i<=Γ(ι,n)+
+
+
+For a given value of θ and n, we can find the intersection index i, and from this we can find ι: 
+
+i(δθ,n)==(tan(δθ)(Sqrt[3]tan(δθ)+7))/(tan(δθ)+Sqrt[3])  where  δθ==θ  mod π/6
+ι(i,n)==⌊7 -Sqrt[i^2-2i +49 2]⌋
+
+
+The sequence of a-b channel extrema depends on both the index i and the region ι in the following way: 
+ b
+i-ι-1	<
+a
+i+ι	<
+
+ 	 i<	a
+i+ι+1
+<	b
+i-ι
+
+ 	 when  i
+∈
+{2N+1}	⋀	ι
+∈
+{2N+1}
+ 
+⋁
+i
+∈
+{2N}	⋀	ι
+∈
+{2N}
+
+ 
+ a
+i+ι	<
+b
+i-ι-1	<
+
+ 	 i<	b
+i-ι
+<	a
+i+ι+1
+
+ 	 when  (
+i∈{2N+1}	⋀	ι
+∈
+{2N}
+) 
+⋁
+(
+i∈{2N}	⋀	ι
+∈
+{2N+1}
+)
+
+ 
+
+
+We want to classify the points of intersection as greater or lesser than a tolerance 0<τ<=1. In order to do this, we make a linear approximation to the perturbation between the extrema. There is one point of intersection between each of the maxima and corresponding minima. A bit of geometry allows us to write a classification criteria for each of the points of intersection. 
+Defining a function for the degree of error at the point of intersection using the linear approximation from the four extrema surrounding the point, and generalizing to allow for different maximum errors α for channel a and β for channel b. The conditions on i and ι can be more compactly written by applying a condition to their product. 
+h(i,ι)=={ αβ(ai+ι-bi-ι)/(β(ai+ι-ai+ι+1)+α(bi-ι-1-bi-ι)) 	 i+ι∈{2N} 
+ αβ(bi-ι-1-ai+ι+1)/(β(ai+ι-ai+ι+1)+α(bi-ι-1-bi-ι)) 	 i+ι∈{2N+1} 
+
+
+
+
+allows the criteria for a channel to be written as τ>=h(i,ι).  
+The criteria τ== with α==β selects from either the odd values or the even values of i, because if h(i,n)< is true, then h(i+1,n)< is false and vice versa. There are 2^(n-2) points of intersection and 2^(n-3) which satisfy the criteria τ==1/2. The algorithm as implemented in openCV leaves the decision about the criteria up to the programmer. The programmer chooses a value for θ and selects a value for τ. The algorithm returns the nearest value of θ which satisfies the condition defined by τ. The programmer then decides whether the suggested value for θ is acceptable and either adopts the suggested value, or chooses a value as close as possible, accepting the possibility of errors. 
+For example, in this project n is 8, so ∈{-2^(8-2) ⋯ 2^(8-2)}, which gives 2^(8-3)-1 values in each π/6 region, producing a maximum perturbation of less than . In total, there are 12(2^(8-3)-1)==372 possible values for θ which produces a maximum perturbation of less than . This would allow the destination pixel values to be expressed in 8-bit numbers without error using a transformation matrix expressed in 6-bit signed integers. The statistics performed to determine θ are not demanding enough to justify rejecting a suggested value of theta within 1of the requested value. It is, however, important to know the value actually used in the algorithm, which is why the mechanism for adjusting θ is separate from the color-space algorithm and is under the control of the programmer. For instance, in the implementation below, the suggested value is accepted and used to adjust the statistical model, keeping all the values in correct correspondence.  
+ImportString[",
+"LaTeX "]//NotebookPut
+Out[189]= NotebookObject[
+GraphicsBox[RasterBox[CompressedData["
+1:eJxTTMoPSmVmYGDghWImBhj4YM+AAt7Yo4oPNj66e0l1/4tBzifkH0L6Lwwy
+/hMS4wNdP6H4pjcf3X209g+142Ow+YfU/EFv/zxAE0fnD3X/DLf4Ger5h5B/
+CPEp1U/v/EMqn1L/oMsP9fqHkHr0+pfa+YFSPsJ9AAiMS8I=
+"],
+ColorFunction->GrayLevel],
+ImageSize->{13, 13},
+PlotRange->{{0, 13}, {0, 13}}]	Untitled-38
+
+]
+
+In[164]:= 
