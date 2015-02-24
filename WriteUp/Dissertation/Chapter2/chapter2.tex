@@ -153,17 +153,10 @@ R_{xyz}(\theta)
 \end{align}
 
 This matrix is no longer technically a rotation matrix as its inverse is no longer equal to its transpose. It now equal to:
-
 \begin{equation}\label{eq:NormRxyz3Inverse}
  \overline{\R}_{xyz}^{-1}(\theta) =
- R_{xyz}(\theta)^{T} \bigotimes
-\left(
-\begin{array}{ccc}
- \frac{1}{\sqrt{3}}  &
- \frac{1}{L_2(\theta)} &
- \frac{1}{L_3(\theta) }
-\end{array}
-\right)
+\left(  \mathbf{L}(\theta)  \bigotimes R_{xyz}(\theta)
+\right)^{T} 
 \end{equation}
 
 \subsection{Representing the Rotation}
@@ -1901,6 +1894,18 @@ The programmer specifies a requested value of $\theta$ , values for the means $\
 
 \algosection{Find the working type and range.} 
 Using the distribution constants \ref{eq:DistributionConstants} , the gradient at the mean in the unit range \ref{eq:gradient} and the natural rotated axis lengths \ref{eq:L}
+\begin{tabular}{|c|c|c|c|}
+\hline  \LaTeX & Mathematica & MatLab & C++ \\ 
+\hline  &  &  &  \\ 
+\hline  &  &  &  \\ 
+\hline  &  &  &  \\ 
+\hline  &  &  &  \\ 
+\hline  &  &  &  \\ 
+\hline  &  &  &  \\ 
+\hline  &  &  &  \\ 
+\hline  &  &  &  \\ 
+\hline 
+\end{tabular} 
 \begin{gather*}
  \begin{aligned}
   \delta  &= \frac{ \sqrt{2} }{ \sigma \sqrt{\pi }  \left(\Sigma^+-\Sigma^-\right)} & 
