@@ -19,23 +19,114 @@ Format[\[Theta]6, TraditionalForm] = Subscript[\[Theta], 6];
 
 ClearAll[RotationMatrixX,RotationMatrixY,RotationMatrixZ,R,\[Alpha]]
 RotationMatrixX[\[Alpha]:Except[_String]]:={{1, 0, 0}, {0, Cos[\[Alpha]], Sin[\[Alpha]]}, {0, -Sin[\[Alpha]], Cos[\[Alpha]]}};
-Format[RotationMatrixX, TraditionalForm]=TraditionalForm["\!\(\*SubscriptBox[\(R\), \(X\)]\)"];
+Format[RotationMatrixX, TraditionalForm]=Subscript[Style["R",Bold],"X"];
 RotationMatrixY[\[Beta]:Except[_String]]:={{Cos[\[Beta]], 0, -Sin[\[Beta]]}, {0, 1, 0}, {Sin[\[Beta]], 0, Cos[\[Beta]]}};
-Format[RotationMatrixY, TraditionalForm]=TraditionalForm["\!\(\*SubscriptBox[\(R\), \(Y\)]\)"];
+Format[RotationMatrixY, TraditionalForm]=Subscript[Style["R",Bold],"Y"];
 RotationMatrixZ[\[Gamma]:Except[_String]]:={{Cos[\[Gamma]], Sin[\[Gamma]], 0}, {-Sin[\[Gamma]], Cos[\[Gamma]], 0}, {0, 0, 1}};
-Format[RotationMatrixZ, TraditionalForm]=TraditionalForm["\!\(\*SubscriptBox[\(R\), \(Z\)]\)"];
+Format[RotationMatrixZ, TraditionalForm]=Subscript[Style["R",Bold],"Z"];
 RotationMatrixXYZ[\[Alpha]:Except[_String],\[Beta]:Except[_String],\[Gamma]:Except[_String]]:=Evaluate[TrigReduce[RotationMatrixX[\[Alpha]].RotationMatrixZ[\[Gamma]].RotationMatrixY[\[Beta]]]];
-Format[RotationMatrixXYZ, TraditionalForm]=TraditionalForm["\!\(\*SubscriptBox[\(R\), \(XYZ\)]\)"];
+Format[RotationMatrixXYZ, TraditionalForm]=Subscript[Style["R",Bold],"XYZ"];
 
 
-RotationMatrixLCaCb[\[Theta]:Except[_String]]:= Evaluate[TrigFactor[RotationMatrixX[\[Theta]].RotationMatrixZ[ArcTan[1/Sqrt[2]]].RotationMatrixY[-Pi/4]]];
-Format[RotationMatrixLCaCb, TraditionalForm]=TraditionalForm["\!\(\*
-StyleBox[\"R\",\nFontWeight->\"Bold\"]\)"];
-iRotationMatrixLCaCb[\[Theta]:Except[_String]]:= Evaluate[TrigFactor[RotationMatrixY[Pi/4].RotationMatrixZ[-ArcTan[1/Sqrt[2]]].RotationMatrixX[-\[Theta]]]];
-Format[iRotationMatrixLCaCb, TraditionalForm]=TraditionalForm["\!\(\*
-StyleBox[SuperscriptBox[
-StyleBox[\"R\",\nFontWeight->\"Bold\"], 
-RowBox[{\"-\", \"1\"}]],\nFontWeight->\"Bold\"]\)"];
+Row[{ShowFun[RotationMatrixX[\[Alpha]]],"    ",ShowFun[RotationMatrixY[\[Beta]]],"    ",ShowFun[RotationMatrixZ[\[Gamma]]]}]
+ShowFun[RotationMatrixXYZ[\[Alpha],\[Beta],\[Gamma]]]
+
+
+(* ::Subsection::Closed:: *)
+(*R*)
+
+
+LCaCb[\[Theta]:Except[_String]]:= Evaluate[TrigFactor[RotationMatrixX[\[Theta]].RotationMatrixZ[ArcTan[1/Sqrt[2]]].RotationMatrixY[-Pi/4]]];
+Format[LCaCb, TraditionalForm]=Style["R",Bold];
+iLCaCb[\[Theta]:Except[_String]]:= Evaluate[TrigFactor[RotationMatrixY[Pi/4].RotationMatrixZ[-ArcTan[1/Sqrt[2]]].RotationMatrixX[-\[Theta]]]];
+Format[iLCaCb, TraditionalForm]=Superscript[Style["R",Bold],"-1"];
+
+
+ShowFun[LCaCb[\[Theta]]]
+ShowFun[iLCaCb[\[Theta]]]
+
+
+(* ::Subsection::Closed:: *)
+(*nR*)
+
+
+(* ::Subsubsection:: *)
+(*Matrix*)
+
+
+Format[\[Theta]2m1, TraditionalForm] = Subsuperscript[Style["\[Theta]",Bold],2,-1];
+Format[\[Theta]2,   TraditionalForm] = Subscript[Style["\[Theta]",Bold],2];
+
+
+nLCaCb[\[Theta]:Except[_String]]:={{1/3, 1/3, 1/3}, {-(Sec[Pi/6 - Mod[-Pi/6 + \[Theta], Pi/3]]*Sin[Pi/6 + \[Theta]])/2, 
+  (Cos[\[Theta]]*Sec[Pi/6 - Mod[-Pi/6 + \[Theta], Pi/3]])/2, 
+  -(Sec[Pi/6 - Mod[-Pi/6 + \[Theta], Pi/3]]*Sin[Pi/6 - \[Theta]])/2}, 
+ {-(Cos[Pi/6 + \[Theta]]*Sec[Pi/6 - Mod[\[Theta], Pi/3]])/2, -(Sec[Pi/6 - Mod[\[Theta], Pi/3]]*Sin[\[Theta]])/
+   2, (Cos[Pi/6 - \[Theta]]*Sec[Pi/6 - Mod[\[Theta], Pi/3]])/2}}
+
+
+Clear[nLCaCbFun,nLCaCb]
+nLCaCbFun=Function[{\[Theta], \[Theta]2m1, \[Theta]2},{
+{1/3, 1/3, 1/3}, 
+{-(Sec[Pi/6 - \[Theta]2m1]*Sin[Pi/6 + \[Theta] ])/2, (Cos[\[Theta]]*Sec[Pi/6 - \[Theta]2m1])/2, -(Sec[Pi/6 - \[Theta]2m1]*Sin[Pi/6 - \[Theta] ])/2}, 
+{-(Cos[Pi/6 + \[Theta]   ]*Sec[Pi/6 - \[Theta]2])/2,  -(Sec[Pi/6 - \[Theta]2]*Sin[\[Theta]])/2,  (Cos[Pi/6 - \[Theta]   ]*Sec[Pi/6 - \[Theta]2])/2}}];
+
+nLCaCb[\[Theta]:Except[_String], \[Theta]2m1_, \[Theta]2_]:=nLCaCbFun[\[Theta], \[Theta]2m1,\[Theta]2];
+nLCaCb[\[Theta]:Except[_String]]:=nLCaCbFun[\[Theta], Mod[\[Theta] - Pi/6, Pi/3], Mod[\[Theta], Pi/3]];
+Format[nLCaCb, TraditionalForm]=Style["nR",Bold];
+
+
+ShowFun[nLCaCb[\[Theta]]]
+
+
+inLCaCbFun=Function[{\[Theta],\[Theta]2m1,\[Theta]2},{
+{1,-(4/3) Cos[\[Pi]/6-\[Theta]2m1] Sin[\[Pi]/6+\[Theta]], -(4/3) Cos[\[Pi]/6+\[Theta]] Cos[\[Pi]/6-\[Theta]2]},
+{1, 4/3 Cos[\[Theta]] Cos[\[Pi]/6-\[Theta]2m1],    -(4/3) Cos[\[Pi]/6-\[Theta]2] Sin[\[Theta]]},
+{1,-(4/3) Cos[\[Pi]/6-\[Theta]2m1] Sin[\[Pi]/6-\[Theta]],  4/3 Cos[\[Pi]/6-\[Theta]] Cos[\[Pi]/6-\[Theta]2]}}];
+
+inLCaCb[\[Theta]:Except[_String], \[Theta]2m1_, \[Theta]2_]:=inLCaCbFun[\[Theta], \[Theta]2m1,\[Theta]2];
+inLCaCb[\[Theta]:Except[_String]]:=inLCaCbFun[\[Theta], Mod[\[Theta] - Pi/6, Pi/3], Mod[\[Theta], Pi/3]];
+Format[inLCaCb, TraditionalForm]=Superscript[Style["nLCaCb",Bold],"-1"];
+
+
+
+TraditionalForm[Row[{inLCaCb["\[Theta]"]," = ",inLCaCb[\[Theta], \[Theta]2m1, \[Theta]2],"      where     ",
+Column[{Row[{\[Theta]2m1," = ",Mod[\[Theta] - Pi/6, Pi/3]}],Row[{\[Theta]2," = ",Mod[\[Theta], Pi/3]}]}]}]]
+ShowFun[inLCaCb[\[Theta]]]
+
+
+(* ::Subsubsection:: *)
+(*Scale*)
+
+
+scaleFun["nLCaCb","LCaCb"]=Function[{\[Theta],\[Theta]2m1,\[Theta]2}, {1/Sqrt[3],1/2 Sqrt[3/2] Sec[\[Pi]/6 - \[Theta]2m1],1/2 Sqrt[3/2] Sec[\[Pi]/6 - \[Theta]2]}];
+scale["nLCaCb","LCaCb"][\[Theta]:Except[_String], \[Theta]2m1_, \[Theta]2_]:=scaleFun["nLCaCb","LCaCb"][\[Theta], \[Theta]2m1,\[Theta]2];
+scale["nLCaCb","LCaCb"][\[Theta]:Except[_String]] := scaleFun["nLCaCb","LCaCb"][\[Theta], Mod[\[Theta] - Pi/6, Pi/3], Mod[\[Theta], Pi/3]];
+Format[scale["nLCaCb","LCaCb"], TraditionalForm]= Superscript[Style["L",Bold],"-1"];
+
+scaleFun["LCaCb","nLCaCb"]=Function[{\[Theta],\[Theta]2m1,\[Theta]2}, {Sqrt[3],2 Sqrt[2/3] Cos[\[Pi]/6 - \[Theta]2m1],2 Sqrt[2/3] Cos[\[Pi]/6 - \[Theta]2]}];
+scale["LCaCb","nLCaCb"][\[Theta]:Except[_String], \[Theta]2m1_, \[Theta]2_]:=scaleFun["LCaCb","nLCaCb"][\[Theta], \[Theta]2m1,\[Theta]2];
+scale["LCaCb","nLCaCb"][\[Theta]:Except[_String]] := scaleFun["LCaCb","nLCaCb"][\[Theta], Mod[\[Theta] - Pi/6, Pi/3], Mod[\[Theta], Pi/3]];
+Format[scale["LCaCb","nLCaCb"], TraditionalForm]= Style["L",Bold];
+
+
+TraditionalForm[Row[{scale["LCaCb","nLCaCb"]["\[Theta]"]," = ",MatrixForm@scale["LCaCb","nLCaCb"][\[Theta], \[Theta]2m1, \[Theta]2],"           ",
+scale["nLCaCb","LCaCb"]["\[Theta]"]," = ",MatrixForm@scale["nLCaCb","LCaCb"][\[Theta], \[Theta]2m1, \[Theta]2],"      where     ",
+Column[{Row[{\[Theta]2m1," = ",Mod[\[Theta] - Pi/6, Pi/3]}],Row[{\[Theta]2," = ",Mod[\[Theta], Pi/3]}]}]}]]
+TraditionalForm[Row[{scale["LCaCb","nLCaCb"]["\[Theta]"]," = ",MatrixForm@scale["LCaCb","nLCaCb"][\[Theta]],"           ",
+scale["nLCaCb","LCaCb"]["\[Theta]"]," = ",MatrixForm@scale["nLCaCb","LCaCb"][\[Theta]]}]]
+
+
+Style[TraditionalForm[Row[{nLCaCb["\[Theta]"]," = ",scale["nLCaCb","LCaCb"]["\[Theta]"]," \[CircleTimes] ",LCaCb["\[Theta]"]}]],Larger]
+Style[TraditionalForm[Row[{LCaCb["\[Theta]"]," = ",scale["LCaCb","nLCaCb"]["\[Theta]"]," \[CircleTimes] ",nLCaCb["\[Theta]"]}]],Larger]
+
+
+(* ::Subsection:: *)
+(*rR*)
+
+
+(* ::Subsubsection:: *)
+(*Matrix*)
 
 
 Clear[rR];
@@ -44,8 +135,7 @@ rR[\[Theta]:Except[_String]]:= ({
  {- Sin[\[Theta]+\[Pi]/6],  Cos[\[Theta]],  Sin[\[Theta]-\[Pi]/6]},
  {- Cos[\[Theta]+\[Pi]/6], - Sin[\[Theta]],  Cos[\[Theta]-\[Pi]/6]}
 });
-Format[rR, TraditionalForm]=TraditionalForm["r\!\(\*
-StyleBox[\"R\",\nFontWeight->\"Bold\"]\)"];
+Format[rR, TraditionalForm]=TraditionalForm["r\!\(\*StyleBox[\"R\",\nFontWeight->\"Bold\"]\)"];
 
 
 ShowFun[rR[\[Theta]]]
@@ -56,91 +146,37 @@ irR[\[Theta]:Except[_String]]:={
 {1/3, (-(2/3))*Sin[Pi/6 + \[Theta]], (-(2/3))*Cos[Pi/6 + \[Theta]]}, 
 {1/3,           (2*Cos[\[Theta]])/3, -((2*Sin[\[Theta]])/3)}, 
 {1/3, (-(2/3))*Sin[Pi/6 - \[Theta]], (2/3)*Cos[Pi/6 - \[Theta]]}};
-Format[irR, TraditionalForm]=TraditionalForm["ir\!\(\*
-StyleBox[\"R\",\nFontWeight->\"Bold\"]\)"];
+Format[irR, TraditionalForm]=TraditionalForm["ir\!\(\*StyleBox[\"R\",\nFontWeight->\"Bold\"]\)"];
 
 
 ShowFun[irR[\[Theta]]]
 
 
-Clear[scale];
+(* ::Subsubsection:: *)
+(*Scale*)
+
+
 scale["LCaCb","rR"][\[Theta]:Except[_String]] = {1/Sqrt[3],Sqrt[2/3],Sqrt[2/3]};
-scale["LCaCb","rR"][_String] = "\!\(\*
-StyleBox[\"rS\",\nFontWeight->\"Bold\"]\)";
-
-scale["nLCaCb","LCaCb"][\[Theta]:Except[_String]] := {1/Sqrt[3],1/2 Sqrt[3/2] Sec[\[Pi]/6 - Mod[\[Theta]-\[Pi]/6,\[Pi]/3]],1/2 Sqrt[3/2] Sec[\[Pi]/6 - Mod[\[Theta],\[Pi]/3]]}
-Format[scale["nLCaCb","LCaCb"], TraditionalForm]=TraditionalForm["\!\(\*SuperscriptBox[\(L\), \(-1\)]\)"];
-scale["LCaCb","nLCaCb"][\[Theta]:Except[_String]] :={Sqrt[3],2 Sqrt[2/3] Cos[\[Pi]/6 - Mod[\[Theta]-\[Pi]/6,\[Pi]/3]],2 Sqrt[2/3] Cos[\[Pi]/6 - Mod[\[Theta],\[Pi]/3]]};
-Format[scale["LCaCb","nLCaCb"], TraditionalForm]=TraditionalForm["L"];
-
-scale["nLCaCb","rR"][\[Theta]:Except[_String]]:= {1/3,1/2 Sec[\[Pi]/6-Mod[-(\[Pi]/6)+\[Theta],\[Pi]/3]],1/2 Sec[\[Pi]/6-Mod[\[Theta],\[Pi]/3]]}
-Format[scale["nLCaCb","rR"], TraditionalForm]=TraditionalForm["\!\(\*
-StyleBox[\"nrS\",\nFontWeight->\"Bold\"]\)"];
-scale["rR","fR"][\[Theta]:Except[_String]]:= Piecewise[{{{1, Cos[\[Theta]], Cos[Pi/6 - \[Theta]]}, Inequality[0, LessEqual, Mod[\[Theta], 2*Pi], Less, Pi/6] || 
-    Inequality[Pi, LessEqual, Mod[\[Theta], 2*Pi], Less, (7*Pi)/6]}, {{1, -Sin[Pi/6 + \[Theta]], Cos[Pi/6 - \[Theta]]}, 
-   Inequality[Pi/6, LessEqual, Mod[\[Theta], 2*Pi], Less, Pi/3] || Inequality[(7*Pi)/6, LessEqual, Mod[\[Theta], 2*Pi], Less, (4*Pi)/3]}, 
-  {{1, -Sin[Pi/6 + \[Theta]], -Sin[\[Theta]]}, Inequality[Pi/3, LessEqual, Mod[\[Theta], 2*Pi], Less, Pi/2] || 
-    Inequality[(4*Pi)/3, LessEqual, Mod[\[Theta], 2*Pi], Less, (3*Pi)/2]}, {{1, -Sin[Pi/6 - \[Theta]], -Sin[\[Theta]]}, 
-   Inequality[Pi/2, LessEqual, Mod[\[Theta], 2*Pi], Less, (2*Pi)/3] || Inequality[(3*Pi)/2, LessEqual, Mod[\[Theta], 2*Pi], Less, 
-     (5*Pi)/3]}, {{1, -Sin[Pi/6 - \[Theta]], -Cos[Pi/6 + \[Theta]]}, Inequality[(2*Pi)/3, LessEqual, Mod[\[Theta], 2*Pi], Less, (5*Pi)/6] || 
-    Inequality[(5*Pi)/3, LessEqual, Mod[\[Theta], 2*Pi], Less, (11*Pi)/6]}, {{1, Cos[\[Theta]], -Cos[Pi/6 + \[Theta]]}, 
-   Inequality[(5*Pi)/6, LessEqual, Mod[\[Theta], 2*Pi], Less, Pi] || Inequality[(11*Pi)/6, LessEqual, Mod[\[Theta], 2*Pi], Less, 2*Pi]}}, 0]
-Format[scale["rR","fR"], TraditionalForm]=TraditionalForm["\!\(\*
-StyleBox[\"fS\",\nFontWeight->\"Bold\"]\)"];
-scale["rR", "qR"][\[Theta]:Except[_String], n_: 8] := Piecewise[{{{1, -(2^(2 - n)*Sin[Pi/6 + \[Theta]]), -(2^(2 - n)*Cos[Pi/6 + \[Theta]])}, Inequality[0, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/6]},
-   {{1, 2^(2 - n)*Cos[\[Theta]], -(2^(2 - n)*Sin[\[Theta]])}, Inequality[Pi/6, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/3]},
-   {{1, -(2^(2 - n)*Sin[Pi/6 - \[Theta]]), 2^(2 - n)*Cos[Pi/6 - \[Theta]]}, Inequality[Pi/3, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/2]}}, Null]
-Format[scale["rR", "qR"], TraditionalForm]=TraditionalForm["fqS"];
-scale["qR","rR"][\[Theta]:Except[_String],n_:8]:=Piecewise[{{{1,-(2^(-2+n)*Csc[Pi/6+\[Theta]]),-(2^(-2+n)*Sec[Pi/6+\[Theta]])},Inequality[0,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/6]},
-{{1,2^(-2+n)*Sec[\[Theta]],-(2^(-2+n)*Csc[\[Theta]])},Inequality[Pi/6,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/3]},
-{{1,-(2^(-2+n)*Csc[Pi/6-\[Theta]]),2^(-2+n)*Sec[Pi/6-\[Theta]]},Inequality[Pi/3,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/2]}},Null]
-Format[scale["qR","rR"], TraditionalForm]=TraditionalForm["\!\(\*SuperscriptBox[\(fqS\), \(-1\)]\)"];
-scale["qR","fR"][\[Theta]:Except[_String],n_:8]:={1,2^(n-2),2^(n-2)};
-Format[scale["qR","fR"], TraditionalForm]=TraditionalForm["\!\(\*SuperscriptBox[\(qS\), \(-1\)]\)"];
-scale["fR","qR"][\[Theta]:Except[_String],n_:8]:={1,2^(2-n),2^(2-n)};
-Format[scale["fR","qR"], TraditionalForm]=TraditionalForm["qS"];
+Format[scale["LCaCb","rR"], TraditionalForm][_String] = Style["rS",Bold];
 
 
-Clear[fSse,fSs]; 
-fSse[\[Theta]:Except[_String]] = {1, Cos[Mod[\[Theta] - Pi/6, Pi/3] - Pi/6], Cos[Mod[\[Theta], Pi/3] - Pi/6]}; 
-fSs[\[Theta]:Except[_String]] = Piecewise[{{
-       {1,  1,  1}, Inequality[0,        LessEqual, Mod[\[Theta], Pi], Less, Pi/6]}, 
-      {{1, -1,  1}, Inequality[Pi/6,     LessEqual, Mod[\[Theta], Pi], Less, Pi/3]},
-      {{1, -1, -1}, Inequality[Pi/3,     LessEqual, Mod[\[Theta], Pi], Less, Pi/2]},
-      {{1,  1, -1}, Inequality[Pi/2,     LessEqual, Mod[\[Theta], Pi], Less, (2*Pi)/3]}, 
-      {{1,  1,  1}, Inequality[(2*Pi)/3, LessEqual, Mod[\[Theta], Pi], Less, (5*Pi)/6]}, 
-      {{1, -1,  1}, Inequality[(5*Pi)/6, LessEqual, Mod[\[Theta], Pi], Less, Pi]}}, 0]; 
-Format[fSse, TraditionalForm]=TraditionalForm["fSse"];
-Format[fSs,  TraditionalForm]=TraditionalForm["fSs"];
+Style[TraditionalForm[Row[{LCaCb["\[Theta]"]," = ",scale["LCaCb","rR"]["\[Theta]"]," \[CircleTimes] ",rR["\[Theta]"]}]],Larger]
+Style[TraditionalForm[Row[{LCaCb["\[Theta]"]," = ",MatrixForm[scale["LCaCb","rR"][\[Theta]]]," \[CircleTimes] ",rR[\[Theta]]}]],Larger]
 
 
-Clear[fSoo,fSo];
-fSoo[\[Theta]:Except[_String]] = Piecewise[{
-      {{1,  1,  1}, Inequality[0,    LessEqual, Mod[\[Theta], 2*(Pi/3)], Less, Pi/6]}, 
-      {{1, -1,  1}, Inequality[Pi/6, LessEqual, Mod[\[Theta], 2*(Pi/3)], Less, Pi/3]}, 
-      {{1, -1, -1}, Inequality[Pi/3, LessEqual, Mod[\[Theta], 2*(Pi/3)], Less, Pi/2]}, 
-      {{1,  1, -1}, Inequality[Pi/2, LessEqual, Mod[\[Theta], 2*(Pi/3)], Less, (2*Pi)/3]}}, 0]; 
-fSo[\[Theta]:Except[_String]] = Piecewise[{
-      {{1,  1,  1}, Inequality[0,  LessEqual, Mod[\[Theta], 2*Pi], Less,   Pi]}, 
-      {{1, -1, -1}, Inequality[Pi, LessEqual, Mod[\[Theta], 2*Pi], Less, 2*Pi]}}, 0]; 
-Format[fSoo, TraditionalForm]=TraditionalForm["fSoo"];
-Format[fSo,  TraditionalForm]=TraditionalForm["fSo"];
+(* ::Subsection::Closed:: *)
+(*fR*)
 
 
-ShowFun[scale["LCaCb","rR"][\[Theta]]]
-ShowFun[scale["nLCaCb","LCaCb"][\[Theta]]]
-ShowFun[scale["LCaCb","nLCaCb"][\[Theta]]]
-ShowFun[scale["nLCaCb","rR"][\[Theta]]]
-ShowFun[scale["rR","fR"][\[Theta]]]
-
-ShowFun[scale["rR", "qR"][\[Theta]]]
-ShowFun[scale["qR","rR"][\[Theta]]]
-
-ShowFun[scale["qR","fR"][\[Theta]]]
-ShowFun[scale["fR","qR"][\[Theta]]]
+(* ::Subsubsection:: *)
+(*Matrix*)
 
 
-fRe=Function[{\[Theta]},-1/2 (1+Sqrt[3] Tan[\[Theta]])];
+Clear[fReEqn,fRe,fREqnForm,fR]
+fReEqn=Function[{\[Theta]1},-1/2 (1+Sqrt[3] Tan[\[Theta]1])];
+fRe[\[Theta]1:Except[_String]]=fReEqn[\[Theta]1];
+Format[fRe, TraditionalForm]=Style["fRe",Bold];
+
 fREqnForm=Function[{\[Theta]6,\[Theta]1,fReqq},Piecewise[{
 {{{1,1,1},{fReqq[\[Theta]1],1,-1-fReqq[\[Theta]1]},{fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1],1}},0<=\[Theta]6<\[Pi]/6},
 {{{1,1,1},{1,fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1]},{-1-fReqq[\[Theta]1],fReqq[\[Theta]1],1}},\[Pi]/6<=\[Theta]6<\[Pi]/3},
@@ -148,23 +184,29 @@ fREqnForm=Function[{\[Theta]6,\[Theta]1,fReqq},Piecewise[{
 {{{1,1,1},{fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1],1},{fReqq[\[Theta]1],1,-1-fReqq[\[Theta]1]}},\[Pi]/2<=\[Theta]6<(2 \[Pi])/3},
 {{{1,1,1},{-1-fReqq[\[Theta]1],fReqq[\[Theta]1],1},{1,fReqq[\[Pi]/6-\[Theta]1],-1-fReqq[\[Pi]/6-\[Theta]1]}},(2 \[Pi])/3<=\[Theta]6<(5 \[Pi])/6},
 {{{1,1,1},{-1-fReqq[\[Pi]/6-\[Theta]1],1,fReqq[\[Pi]/6-\[Theta]1]},{1,-1-fReqq[\[Theta]1],fReqq[\[Theta]1]}},(5 \[Pi])/6<=\[Theta]6<\[Pi]}},0]];
-Clear[fR]
+
 fR[\[Theta]6:Except[_String],\[Theta]1_,fReqq_]:=fREqnForm[\[Theta]6,\[Theta]1,fReqq];
 fR[\[Theta]:Except[_String],fReqq_]:=fREqnForm[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fReqq];
 fR[\[Theta]:Except[_String]]:=fREqnForm[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fRe];
 
-Format[fR, TraditionalForm]="\!\(\*
-StyleBox[\"fR\",\nFontWeight->\"Bold\"]\)";
+Format[fR, TraditionalForm]=Style["fR",Bold];
 
 
-Row[{ShowFun[fR[\[Theta]]],
-ShowFun[fR[\[Theta]6,\[Theta]1,"fRe"]]}]
+TraditionalForm[ShowFun[fR[\[Theta]]]]
+
+
+TraditionalForm[Row[{ShowFun[fR[\[Theta]6,\[Theta]1,"fRe"]],"      where     ",
+Column[{Row[{\[Theta]6," = ",Mod[\[Theta], Pi]}],Row[{\[Theta]1," = ",Mod[\[Theta], Pi/6]}]}]}]]
+
+
+(* ::Subsubsection:: *)
+(*Matrix Decomposition*)
 
 
 Clear[fRmFun,fROFun]
 fRmFun=Function[{\[Theta]1,f},{{1,1,1},{f[\[Theta]1],1,-1-f[\[Theta]1]},{f[\[Pi]/6-\[Theta]1],-1-f[\[Pi]/6-\[Theta]1],1}}];
-fROFun=Function[{m,\[Theta]6},Piecewise[{{
-{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[2,1]],m[[2,2]],m[[2,3]]},{m[[3,1]],m[[3,2]],m[[3,3]]}},0<=\[Theta]6<\[Pi]/6},
+fROFun=Function[{m,\[Theta]6},Piecewise[{
+{{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[2,1]],m[[2,2]],m[[2,3]]},{m[[3,1]],m[[3,2]],m[[3,3]]}},0<=\[Theta]6<\[Pi]/6},
 {{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[3,3]],m[[3,1]],m[[3,2]]},{m[[2,3]],m[[2,1]],m[[2,2]]}},\[Pi]/6<=\[Theta]6<\[Pi]/3},
 {{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[2,2]],m[[2,3]],m[[2,1]]},{m[[3,2]],m[[3,3]],m[[3,1]]}},\[Pi]/3<=\[Theta]6<\[Pi]/2},
 {{{m[[1,1]],m[[1,2]],m[[1,3]]},{m[[3,1]],m[[3,2]],m[[3,3]]},{m[[2,1]],m[[2,2]],m[[2,3]]}},\[Pi]/2<=\[Theta]6<(2 \[Pi])/3},
@@ -173,13 +215,7 @@ fROFun=Function[{m,\[Theta]6},Piecewise[{{
 Clear[fRO,fRm]
 fRO[m:{{_,_,_},{_,_,_},{_,_,_}},\[Theta]:Except[_String]]:=fROFun[m,Mod[\[Theta],\[Pi]]];
 fRm[\[Theta]1:Except[_String],f_:fRe]:=fRmFun[\[Theta]1,f]
-Format[fRO, TraditionalForm]\!\(\*
-TagBox[
-FormBox[
-FormBox["\[Placeholder]",
-TraditionalForm],
-TraditionalForm],
-Format[#, TraditionalForm]& ]\)="fRO";
+Format[fRO, TraditionalForm]=Style["fRO",Bold];
 \!\(\*
 TagBox[
 FormBox[
@@ -188,12 +224,142 @@ RowBox[{"Format", "[",
 RowBox[{"fRm", ",", " ", "TraditionalForm"}], "]"}],
 TraditionalForm],
 TraditionalForm],
-Format[#, TraditionalForm]& ]\)="fRm";
+Format[#, TraditionalForm]& ]\)=Style["fRm",Bold];
 
 
-(* ::Text:: *)
-(**)
+Style[TraditionalForm[Row[{fR["\[Theta]"]," = ",fRO[fRm["\[Theta]"],"\[Theta]"]}]],Larger]
+Style[TraditionalForm[Row[{fR["\[Theta]"]," = ",fRO[MatrixForm[fRm[\[Theta]1,"fRe"]],\[Theta]6],"      where     ",
+Column[{Row[{ "fRe = ",fRe[\[Theta]]}],Row[{TraditionalForm[\[Theta]1]," = ",TraditionalForm[Mod[\[Theta],\[Pi]/6]]}],Row[{TraditionalForm[\[Theta]6]," = ",TraditionalForm[Mod[\[Theta],\[Pi]]]}]}]}]],Larger]
+Style[TraditionalForm[Row[{fRO[MatrixForm[{{a1,a2,a3},{b1,b2,b3},{c1,c2,c3}}],\[Theta]]," = ",ApplyToPiecewise[TraditionalForm,fRO[{{a1,a2,a3},{b1,b2,b3},{c1,c2,c3}},\[Theta]]]}]],Larger]
 
+
+ShowFun[fR[\[Theta]6,\[Theta]1,"fRe"]]
+
+
+(* ::Subsubsection:: *)
+(*Scale*)
+
+
+scale["rR","fR"][\[Theta]:Except[_String]]:= Piecewise[{
+{{1,  Cos[\[Theta]],        Cos[Pi/6 - \[Theta]]},  Inequality[0,        LessEqual, Mod[\[Theta], Pi], Less, Pi/6]}, 
+{{1, -Sin[Pi/6 + \[Theta]], Cos[Pi/6 - \[Theta]]},  Inequality[Pi/6,     LessEqual, Mod[\[Theta], Pi], Less, Pi/3]}, 
+{{1, -Sin[Pi/6 + \[Theta]], -Sin[\[Theta]]},        Inequality[Pi/3,     LessEqual, Mod[\[Theta], Pi], Less, Pi/2]}, 
+{{1, -Sin[Pi/6 - \[Theta]], -Sin[\[Theta]]},        Inequality[Pi/2,     LessEqual, Mod[\[Theta], Pi], Less, (2*Pi)/3]},
+{{1, -Sin[Pi/6 - \[Theta]], -Cos[Pi/6 + \[Theta]]}, Inequality[(2*Pi)/3, LessEqual, Mod[\[Theta], Pi], Less, (5*Pi)/6]}, 
+{{1,  Cos[\[Theta]],        -Cos[Pi/6 + \[Theta]]}, Inequality[(5*Pi)/6, LessEqual, Mod[\[Theta], Pi], Less, Pi]}}
+, 0]
+Format[scale["rR","fR"], TraditionalForm]=Style["fS",Bold];
+
+
+(* ::Subsubsection:: *)
+(*Scale Decomposition*)
+
+
+Clear[fSse,fSs]; 
+fSse[\[Theta]:Except[_String]] = {1, Cos[Mod[\[Theta] - Pi/6, Pi/3] - Pi/6], Cos[Mod[\[Theta], Pi/3] - Pi/6]}; 
+fSsFun = Function[{\[Theta]6},Piecewise[{{
+       {1,  1,  1}, Inequality[0,        LessEqual, \[Theta]6, Less, Pi/6]}, 
+      {{1, -1,  1}, Inequality[Pi/6,     LessEqual, \[Theta]6, Less, Pi/3]},
+      {{1, -1, -1}, Inequality[Pi/3,     LessEqual, \[Theta]6, Less, Pi/2]},
+      {{1,  1, -1}, Inequality[Pi/2,     LessEqual, \[Theta]6, Less, (2*Pi)/3]}, 
+      {{1,  1,  1}, Inequality[(2*Pi)/3, LessEqual, \[Theta]6, Less, (5*Pi)/6]}, 
+      {{1, -1,  1}, Inequality[(5*Pi)/6, LessEqual, \[Theta]6, Less, Pi]}}, 0]];
+fSs[\[Theta]:Except[_String]] = fSsFun[Mod[\[Theta], Pi]];
+Format[fSse, TraditionalForm]=Style["fSse",Bold];
+Format[fSs,  TraditionalForm]=Style["fSs", Bold];
+
+
+Style[TraditionalForm[Row[{scale["rR","fR"]["\[Theta]"]," = ",fSse["\[Theta]"]," \[CircleTimes] ",fSs["\!\(\*SubscriptBox[\(\[Theta]\), \(6\)]\)"]}]],Larger]
+Style[TraditionalForm[Row[{fSs["\!\(\*SubscriptBox[\(\[Theta]\), \(6\)]\)"]," = ",MatrixForm[fSse[\[Theta]6]]," \[CircleTimes] ",fSsFun[\[Theta]4]}]],Larger]
+
+
+Clear[fSoo,fSo];
+fSooFun = Function[{\[Theta]4},Piecewise[{
+      {{1,  1,  1}, Inequality[0,    LessEqual, \[Theta]4, Less, Pi/6]}, 
+      {{1, -1,  1}, Inequality[Pi/6, LessEqual, \[Theta]4, Less, Pi/3]}, 
+      {{1, -1, -1}, Inequality[Pi/3, LessEqual, \[Theta]4, Less, Pi/2]}, 
+      {{1,  1, -1}, Inequality[Pi/2, LessEqual, \[Theta]4, Less, (2*Pi)/3]}}, 0]]; 
+fSoo[\[Theta]:Except[_String]] := fSooFun[Mod[\[Theta], 2*(Pi/3)]];
+fSoFun[\[Theta]6:Except[_String]] = Piecewise[{
+      {{1,  1,  1}, Inequality[0,  LessEqual, \[Theta]6, Less,   Pi]}, 
+      {{1, -1, -1}, Inequality[Pi, LessEqual, \[Theta]6, Less, 2*Pi]}}, 0]; 
+fSo[\[Theta]:Except[_String]] := fSoFun[Mod[\[Theta], 2*Pi]];
+Format[fSoo, TraditionalForm]=Style["fSoo",Bold];
+Format[fSo,  TraditionalForm]=Style["fSo", Bold];
+
+
+
+Style[TraditionalForm[Row[{scale["rR","fR"]["\[Theta]"]," = ",fSse["\[Theta]"]," \[CircleTimes] ",fSs["\[Theta]"]}]],Larger]
+Style[TraditionalForm[Row[{fSs["\!\(\*SubscriptBox[\(\[Theta]\), \(6\)]\)"]," = ",fSo["\[Theta]"]," \[CircleTimes] ",fSoo["\[Theta]"]}]],Larger]
+Style[TraditionalForm[Row[{fSs["\!\(\*SubscriptBox[\(\[Theta]\), \(6\)]\)"]," = ",fSoFun[\[Theta]6]," \[CircleTimes] ",fSooFun[\[Theta]4]}]],Larger]
+
+
+(* ::Subsubsection:: *)
+(*Relationships*)
+
+
+Style[TraditionalForm[Row[{LCaCb["\[Theta]"]," = ",scale["LCaCb","rR"]["\[Theta]"]," \[CircleTimes] ",scale["rR","fR"]["\[Theta]"]," \[CircleTimes] ",fR["\!\(\*SubscriptBox[\(\[Theta]\), \(6\)]\)",\[Theta]1,"fRe"]}]],Larger]
+
+
+Style[TraditionalForm[Row[{LCaCb["\[Theta]"]," = ",MatrixForm[scale["LCaCb","rR"][\[Theta]]]," \[CircleTimes] ",MatrixForm[scale["rR","fR"][\[Theta]]]," \[CircleTimes] ",fR[\[Theta]6,\[Theta]1,"fRe"]}]],Larger]
+
+
+(* ::Subsection::Closed:: *)
+(*fRs*)
+
+
+(* ::Subsubsection:: *)
+(*Matrix*)
+
+
+fRsFun=Function[{\[Theta]6,\[Theta]1,fReqq},Piecewise[{{{{1, 1, 1}, {-1, -fReqq[Pi/6 - \[Theta]1], 1 + fReqq[Pi/6 - \[Theta]1]}, 
+    {-1 - fReqq[\[Theta]1], fReqq[\[Theta]1], 1}}, Inequality[Pi/6, LessEqual, \[Theta]6, Less, Pi/3]}, 
+  {{{1, 1, 1}, {-1, 1 + fReqq[\[Theta]1], -fReqq[\[Theta]1]}, {1 + fReqq[Pi/6 - \[Theta]1], -1, 
+     -fReqq[Pi/6 - \[Theta]1]}}, Inequality[Pi/3, LessEqual, \[Theta]6, Less, Pi/2]}, 
+  {{{1, 1, 1}, {fReqq[Pi/6 - \[Theta]1], -1 - fReqq[Pi/6 - \[Theta]1], 1}, 
+    {-fReqq[\[Theta]1], -1, 1 + fReqq[\[Theta]1]}}, Inequality[Pi/2, LessEqual, \[Theta]6, Less, 
+    (2*Pi)/3]}, {{{1, 1, 1}, {1 + fReqq[Pi/6 - \[Theta]1], -1, -fReqq[Pi/6 - \[Theta]1]}, 
+    {1, -1 - fReqq[\[Theta]1], fReqq[\[Theta]1]}}, Inequality[(5*Pi)/6, LessEqual, \[Theta]6, Less, Pi]}, 
+  {{{1, 1, 1}, {-1 - fReqq[\[Theta]1], fReqq[\[Theta]1], 1}, {1, fReqq[Pi/6 - \[Theta]1], 
+     -1 - fReqq[Pi/6 - \[Theta]1]}}, Inequality[(2*Pi)/3, LessEqual, \[Theta]6, Less, (5*Pi)/6]}, 
+  {{{1, 1, 1}, {fReqq[\[Theta]1], 1, -1 - fReqq[\[Theta]1]}, {fReqq[Pi/6 - \[Theta]1], 
+     -1 - fReqq[Pi/6 - \[Theta]1], 1}}, Inequality[0, LessEqual, \[Theta]6, Less, Pi/6]}}, 0]];
+Clear[fRs]
+fRs[\[Theta]6:Except[_String],\[Theta]1_,fReqq_]:=fRsFun[\[Theta]6,\[Theta]1,fReqq];
+fRs[\[Theta]:Except[_String],fReqq_]:=fRsFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fReqq];
+fRs[\[Theta]:Except[_String]]:=fRsFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fRe];
+
+Format[fRs, TraditionalForm]=Style["fRs",Bold];
+
+
+(* ::Subsubsection:: *)
+(*Scale*)
+
+
+scale["rR","fRs"][\[Theta]:Except[_String]]:= {1, Cos[Mod[\[Theta] - Pi/6, Pi/3] - Pi/6], Cos[Mod[\[Theta], Pi/3] - Pi/6]}; 
+Format[scale["rR","fRs"], TraditionalForm]=Style["fSse",Bold];
+
+
+Style[TraditionalForm[Row[{LCaCb["\[Theta]"]," = ",scale["LCaCb","rR"]["\[Theta]"]," \[CircleTimes] ",scale["rR","fRs"]["\[Theta]"]," \[CircleTimes] ",fRs["\[Theta]"]}]],Larger]
+Style[TraditionalForm[Row[{nLCaCb["\[Theta]"]," = ",scale["nLCaCb","LCaCb"]["\[Theta]"]," \[CircleTimes] ",scale["LCaCb","rR"]["\[Theta]"]," \[CircleTimes] ",scale["rR","fRs"]["\[Theta]"]," \[CircleTimes] ",fRs["\[Theta]"]}]],Larger]
+Style[TraditionalForm[Row[{fRs["\[Theta]"]," = ",fSs["\[Theta]"]," \[CircleTimes] ",fR["\[Theta]"]}]],Larger]
+
+
+(* ::Subsection::Closed:: *)
+(*qR*)
+
+
+(* ::Subsubsection:: *)
+(*Matrix*)
+
+
+,n_:8]:={1,2^(n-2)
+
+
+Clear[qReFun,qRe,qRmFun,qRm,qR]
+qReFun=Function[{\[Theta],n},-2^(n-3) (1+Sqrt[3] Tan[\[Theta]])];
+qRe[\[Theta]1:Except[_String]]:=qReFun[\[Theta]1];
+Format[qRe, TraditionalForm]=Style["qRe",FontWeight->"Bold"];
 
 qRmFun = Function[{\[Theta]1, f, n}, {{1, 1, 1}, {Round[2^(-2 + n)*f[\[Theta]1]], 2^(-2 + n), -2^(-2 + n) - Round[2^(-2 + n)*f[\[Theta]1]]}, 
      {Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], -2^(-2 + n) - Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 2^(-2 + n)}}];
@@ -221,7 +387,6 @@ qRFun = Function[{\[Theta]6, \[Theta]1, f, n}, Piecewise[{{{{1, 1, 1}, {Round[2^
        Inequality[(2*Pi)/3, LessEqual, \[Theta]6, Less, (5*Pi)/6]}, {{{1, 1, 1}, {-2^(-2 + n) - Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]], 2^(-2 + n), 
          Round[2^(-2 + n)*f[Pi/6 - \[Theta]1]]}, {2^(-2 + n), -2^(-2 + n) - Round[2^(-2 + n)*f[\[Theta]1]], Round[2^(-2 + n)*f[\[Theta]1]]}}, 
        Inequality[(5*Pi)/6, LessEqual, \[Theta]6, Less, Pi]}}, 0]];
-Clear[qR]
 qR[\[Theta]6:Except[_String],\[Theta]1_,fReqq_,n_]:=qRFun[\[Theta]6,\[Theta]1,fReqq,n];
 qR[\[Theta]:Except[_String],fReqq_,n_]:=qRFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fReqq,n];
 qR[\[Theta]:Except[_String],n_]:=qRFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fRe,n];
@@ -231,6 +396,244 @@ Format[qR, TraditionalForm]=Style["qR",FontWeight->"Bold"];
 
 
 ShowFun[qR[\[Theta]6,\[Theta]1,"fRe",n]]
+
+
+(* ::Subsubsection:: *)
+(*Scale*)
+
+
+scale["qR","fR"][\[Theta]:Except[_String],n_:8]:={1,2^(n-2),2^(n-2)};
+Format[scale["qR","fR"], TraditionalForm]= Superscript[Style["qS",Bold],"-1"];
+scale["fR","qR"][\[Theta]:Except[_String],n_:8]:={1,2^(2-n),2^(2-n)};
+Format[scale["fR","qR"], TraditionalForm]=Style["qS",Bold];
+
+
+Style[TraditionalForm[Row[{fR["\[Theta]"]," = ",scale["fR","qR"]," \[CircleTimes] ",qR["\[Theta]"]}]],Larger]
+Style[TraditionalForm[Row[{nLCaCb["\[Theta]"]," = ",scale["nLCaCb","LCaCb"]["\[Theta]"]," \[CircleTimes] ",scale["LCaCb","rR"]["\[Theta]"]," \[CircleTimes] ",scale["rR","fRs"]["\[Theta]"]," \[CircleTimes] ",fSs["\[Theta]"]," \[CircleTimes] ",scale["fR","qR"]," \[CircleTimes] ",qR["\[Theta]"]}]],Larger]
+
+
+(* ::Subsection::Closed:: *)
+(*dqR*)
+
+
+(* ::Subsubsection:: *)
+(*Matrix*)
+
+
+Clear[\[Delta]qRe,\[Delta]qReFun,\[Delta]qRm,\[Delta]qRmFun,\[Delta]qR]
+\[Delta]qReFun=Function[{\[Theta]1,f,n},Assuming[Element[n,Integers]&&n>3,Simplify[2^(-2+n) f[\[Theta]1]-Distribute[Round[(Expand[2^(-2+n) f[\[Theta]1]])],Plus]/.
+{Round[Times[-1,expr_]]:> Times[-1,Round[expr]],Round[Plus[expr__]]:> Distribute[Round[Plus[expr]],Plus,Round]}]]];
+\[Delta]qRe[\[Theta]1:Except[_String],fRe_,n_]:=Assuming[Element[n,Integers]&&n>3,Simplify[\[Delta]qReFun[\[Theta]1,fRe,n]]];
+\[Delta]qRe[\[Theta]1:Except[_String],n_]:=Assuming[Element[n,Integers]&&n>3,Simplify[\[Delta]qReFun[\[Theta]1,fRe,n]]];
+\[Delta]qRe[\[Theta]1:Except[_String]]:=Assuming[Element[n,Integers]&&n>3,Simplify[\[Delta]qReFun[\[Theta]1,fRe,8]]];
+Format[\[Delta]qRe, TraditionalForm]=Style["\[Delta]qRe",Bold];
+\[Delta]qRmFun=Function[{\[Theta]1,\[Delta]qRe,fRe,n},{{0,0,0},
+{\[Delta]qRe[   \[Theta]1,fRe,n],0, - \[Delta]qRe[\[Theta]1,fRe,n]},
+{\[Delta]qRe[\[Pi]/6-\[Theta]1,fRe,n], - \[Delta]qRe[\[Pi]/6-\[Theta]1,fRe,n],0}}];
+(* \[Delta]qRmFun=Function[{\[Theta]1,f,n},Evaluate[Assuming[Element[n,Integers]&&n>3,Simplify[Expand[scale["qR","fR"][\[Theta],n] fRm[\[Theta]1,f] - qRmFun[\[Theta]1,f,n]]] ]]]; *)
+\[Delta]qRm[\[Theta]1:Except[_String],\[Delta]qRe_,fRe_,n_]:=\[Delta]qRmFun[\[Theta]1,\[Delta]qRe,fRe,n];
+\[Delta]qRm[\[Theta]1:Except[_String],\[Delta]qRe_,n_]:=\[Delta]qRmFun[\[Theta]1,\[Delta]qRe,n];
+\[Delta]qRm[\[Theta]1:Except[_String],n_]:=\[Delta]qRmFun[\[Theta]1,\[Delta]qRe,fRe,n];
+\[Delta]qRm[\[Theta]1:Except[_String]]:=\[Delta]qRmFun[\[Theta]1,\[Delta]qRe,fRe,8];
+Format[\[Delta]qRm, TraditionalForm]=Style["\[Delta]qRm",Bold];
+\[Delta]qRFun=Function[{\[Theta]6,\[Theta]1,fReq,n},Evaluate[fROFun[\[Delta]qRmFun[\[Theta]1,\[Delta]qRe,fReq,n],\[Theta]6]]];
+
+\[Delta]qR[\[Theta]6:Except[_String],\[Theta]1_,fRe_,n_]:=\[Delta]qRFun[\[Theta]6,\[Theta]1,fRe,n];
+\[Delta]qR[\[Theta]:Except[_String],fRe_,n_]:=\[Delta]qRFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fRe,n];
+\[Delta]qR[\[Theta]:Except[_String],n_]:=\[Delta]qRFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fRe,n];
+\[Delta]qR[\[Theta]:Except[_String]]:=\[Delta]qRFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fRe,8];
+Format[\[Delta]qR, TraditionalForm]=Style["\[Delta]qR",Bold];
+
+
+Style[TraditionalForm[Row[{ShowFun[\[Delta]qRe[\[Theta]1,"fRe",n]]}]],Larger]
+Style[TraditionalForm[Row[{\[Delta]qRe["\[Theta]1","fRe",n]," = ",\[Delta]qRe[Mod[\[Theta],\[Pi]/6],fRe,n]}]],Larger]
+Style[TraditionalForm[Row[{ShowFun[\[Delta]qRe[\[Theta]1,n]]}]],Larger]
+
+
+Style[TraditionalForm[Row[{ShowFun[\[Delta]qRm[\[Theta]1,\[Delta]qRe,"fRe",n]]}]],Larger]
+Style[TraditionalForm[Row[{ShowFun[\[Delta]qRm[\[Theta]1,"\[Delta]qRe",fRe,n]]}]],Larger]
+Style[TraditionalForm[Row[{ShowFun[\[Delta]qRm[\[Theta]1,\[Delta]qRe,fRe,n]]}]],Larger]
+
+
+Style[TraditionalForm[Row[{ShowFun[\[Delta]qR[\[Theta]6,\[Theta]1,"fRe",n]]}]]]
+
+
+Style[TraditionalForm[Row[{ShowFun[\[Delta]qRm[\[Theta]1,\[Delta]qRe,fRe,n]]}]],Larger]
+TraditionalForm[Row[{\[Delta]qR["\[Theta]"]," = ",fRO[\[Delta]qRm[\[Theta]1,\[Delta]qRe,fRe,n],"\!\(\*SubscriptBox[\(\[Theta]\), \(6\)]\)"],"  where  ",Column[{Row[{ "fRe = ",fRe[\[Theta]]}],Row[{TraditionalForm[\[Theta]1]," = ",TraditionalForm[Mod[\[Theta],\[Pi]/6]]}],Row[{TraditionalForm[\[Theta]6]," = ",TraditionalForm[Mod[\[Theta],\[Pi]]]}]}]}]]
+Style[TraditionalForm[Row[{ShowFun[\[Delta]qR[\[Theta]6,\[Theta]1,"fRe",n]],"  where  ",Column[{Row[{ "fRe = ",fRe[\[Theta]]}],Row[{TraditionalForm[\[Theta]1]," = ",TraditionalForm[Mod[\[Theta],\[Pi]/6]]}],Row[{TraditionalForm[\[Theta]6]," = ",TraditionalForm[Mod[\[Theta],\[Pi]]]}]}]}]],Larger]
+
+
+Style[TraditionalForm[Row[{fRe["\[Theta]"]," = ",scale["fR","qR"]\[CircleTimes](qRe["\[Theta]"]+\[Delta]qRe["\[Theta]"])}]],Larger]
+Style[TraditionalForm[Row[{fR["\[Theta]"]," = ",scale["fR","qR"]\[CircleTimes](qR["\[Theta]"]+\[Delta]qR["\[Theta]"])}]],Larger]
+Style[TraditionalForm[Row[{nLCaCb["\[Theta]"]," = ",scale["nLCaCb","LCaCb"]["\[Theta]"] \[CircleTimes] scale["LCaCb","rR"]["\[Theta]"] \[CircleTimes] scale["rR","fRs"]["\[Theta]"] \[CircleTimes] fSs["\[Theta]"] \[CircleTimes] scale["fR","qR"]\[CircleTimes](qR["\[Theta]"]+\[Delta]qR["\[Theta]"])}]],Larger]
+
+
+(* ::Subsection:: *)
+(*qRs*)
+
+
+(* ::Subsubsection:: *)
+(*Matrix*)
+
+
+qRsFun = Function[{\[Theta]6, \[Theta]1, f, n}, 
+    Piecewise[{{
+{{1, 1, 1}, 
+{-2^(n-2)                       , -Round[2^(n-2)*f[Pi/6 - \[Theta]1]], 2^(n-2) + Round[2^(n-2)*f[Pi/6 - \[Theta]1]]}, 
+{-2^(n-2) - Round[2^(n-2)*f[\[Theta]1]] ,  Round[2^(n-2)*f[\[Theta]1]]      , 2^(n-2)}}, 
+       Inequality[Pi/6, LessEqual, \[Theta]6, Less, Pi/3]}, 
+{{{1, 1, 1}, 
+{-2^(n-2), 2^(n-2) + Round[2^(n-2)*f[\[Theta]1]]        , -Round[2^(n-2)*f[\[Theta]1]]}, 
+{ 2^(n-2) + Round[2^(n-2)*f[Pi/6 - \[Theta]1]], -2^(n-2), -Round[2^(n-2)*f[Pi/6 - \[Theta]1]]}}, 
+       Inequality[Pi/3, LessEqual, \[Theta]6, Less, Pi/2]}, 
+{{{1, 1, 1}, 
+{ Round[2^(n-2)*f[Pi/6 - \[Theta]1]], -2^(n-2) - Round[2^(n-2)*f[Pi/6 - \[Theta]1]], 2^(n-2)},
+{-Round[2^(n-2)*f[\[Theta]1]]       , -2^(n-2)                             , 2^(n-2) + Round[2^(n-2)*f[\[Theta]1]]}}, 
+       Inequality[Pi/2, LessEqual, \[Theta]6, Less, (2*Pi)/3]}, 
+ {{{1, 1, 1}, 
+{2^(n-2) + Round[2^(n-2)*f[Pi/6 - \[Theta]1]], -2^(n-2)                      , -Round[2^(n-2)*f[Pi/6 - \[Theta]1]]}, 
+{2^(n-2)                             , -2^(n-2) - Round[2^(n-2)*f[\[Theta]1]], Round[2^(n-2)*f[\[Theta]1]]}}, 
+       Inequality[(5*Pi)/6, LessEqual, \[Theta]6, Less,  Pi]}, 
+{{{1, 1, 1}, 
+{-2^(n-2) - Round[2^(n-2)*f[\[Theta]1]], Round[2^(n-2)*f[\[Theta]1]], 2^(n-2)}, 
+{ 2^(n-2),  Round[2^(n-2)*f[Pi/6 - \[Theta]1]], -2^(n-2) - Round[2^(n-2)*f[Pi/6 - \[Theta]1]]}}, 
+       Inequality[(2*Pi)/3, LessEqual, \[Theta]6, Less, (5*Pi)/6]}, 
+{{{1, 1, 1}, 
+{Round[2^(n-2)*f[\[Theta]1]], 2^(n-2), -2^(n-2) - Round[2^(n-2)*f[\[Theta]1]]}, 
+{Round[2^(n-2)*f[Pi/6 - \[Theta]1]], -2^(n-2) - Round[2^(n-2)*f[Pi/6 - \[Theta]1]], 2^(n-2)}}, 
+       Inequality[0, LessEqual, \[Theta]6, Less, Pi/6]}}, 0]]; 
+Clear[qRs]
+qRs[\[Theta]6:Except[_String], \[Theta]1_, fReqq_, n_] := qRsFun[\[Theta]6, \[Theta]1, fReqq, n]; 
+qRs[\[Theta]:Except[_String], fReqq_, n_] := qRsFun[Mod[\[Theta], Pi], Mod[\[Theta], Pi/6], fReqq, n]; 
+qRs[\[Theta]:Except[_String], n_] := qRsFun[Mod[\[Theta], Pi], Mod[\[Theta], Pi/6], fRe, n]; 
+qRs[\[Theta]:Except[_String]] := qRsFun[Mod[\[Theta], Pi], Mod[\[Theta], Pi/6], fRe, 8]; 
+Format[qRs, TraditionalForm]=Style["qRs",FontWeight->"Bold"];
+
+
+ShowFun[qRs[\[Theta]6,\[Theta]1,"fRe",n]]
+
+
+(* ::Subsubsection:: *)
+(*Scale*)
+
+
+scale["qRs","fRs"][\[Theta]:Except[_String],n_:8]:={1,2^(n-2),2^(n-2)};
+Format[scale["qRs","fRs"], TraditionalForm]= Superscript[Style["qS",Bold],"-1"];
+scale["fRs","qRs"][\[Theta]:Except[_String],n_:8]:={1,2^(2-n),2^(2-n)};
+Format[scale["fRs","qRs"], TraditionalForm]=Style["qS",Bold];
+
+
+Style[TraditionalForm[Row[{qRs["\[Theta]"]," = ",fSs["\[Theta]"]," \[CircleTimes] ",qR["\[Theta]"]}]],Larger]
+Style[TraditionalForm[Row[{fRs["\[Theta]"]," = ",scale["fRs","qRs"]["\[Theta]",n]," \[CircleTimes] ",qRs["\[Theta]"]}]],Larger]
+Style[TraditionalForm[Row[{nLCaCb["\[Theta]"]," = ",scale["nLCaCb","LCaCb"]["\[Theta]"]," \[CircleTimes] ",scale["LCaCb","rR"]["\[Theta]"]," \[CircleTimes] ",scale["rR","fRs"]["\[Theta]"]," \[CircleTimes] ",scale["fRs","qRs"]["\[Theta]",n]," \[CircleTimes] ",qRs["\[Theta]"]}]],Larger]
+
+
+
+
+(* ::Subsection::Closed:: *)
+(*dqRs*)
+
+
+(* ::Subsubsection:: *)
+(*Matrix*)
+
+
+\[Delta]qRsFun=Function[{\[Theta]6, \[Theta]1, f, n},Evaluate[ApplyToPiecewise[Assuming[Element[n,Integers]&&n>3,Simplify[#]]&,
+  PiecewiseExpand[ApplyToPiecewise[Times[scale["qR","fR"][\[Theta],n],#]&, fRs[\[Theta]6,\[Theta]1,f]]- qRs[\[Theta]6,\[Theta]1,f,n]]]]];
+Clear[\[Delta]qRs]
+\[Delta]qRs[\[Theta]6:Except[_String],\[Theta]1_,fReqq_,n_]:=\[Delta]qRsFun[\[Theta]6,\[Theta]1,fReqq,n];
+\[Delta]qRs[\[Theta]:Except[_String],fReqq_,n_]:=\[Delta]qRsFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fReqq,n];
+\[Delta]qRs[\[Theta]:Except[_String],n_]:=\[Delta]qRsFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fRe,n];
+\[Delta]qRs[\[Theta]:Except[_String]]:=\[Delta]qRsFun[Mod[\[Theta],\[Pi]],Mod[\[Theta],\[Pi]/6],fRe,8];
+Format[\[Delta]qRs, TraditionalForm]=Style["\[Delta]qRs",Bold];
+
+
+
+ShowFun[\[Delta]qRs[\[Theta]6,\[Theta]1,"fRe",n]]
+
+
+(* ::Subsection:: *)
+(*Combined Scales*)
+
+
+(* ::Subsubsection:: *)
+(*S : nLCaCb  \[LongLeftArrow] fRs*)
+
+
+scale["nLCaCb","fRs"][\[Theta]:Except[_String]]:= {1/3,1/2,1/2};
+Format[scale["nLCaCb","fRs"], TraditionalForm]=Style["S",Bold];
+scale["fRs","nLCaCb"][\[Theta]:Except[_String]]:= {3,2,2};
+Format[scale["fRs","nLCaCb"], TraditionalForm]=Superscript[Style["S",Bold],"-1"];
+
+
+Style[TraditionalForm[Row[{nLCaCb["\[Theta]"]," = ",scale["nLCaCb","fRs"]["\[Theta]"]," \[CircleTimes] ",fRs["\[Theta]"]}]],Larger]
+
+
+(* ::Subsubsection:: *)
+(*Subscript[\!\(\**)
+(*StyleBox["S",*)
+(*StripOnInput->False,*)
+(*FontWeight->Bold]\), q]: nLCaCb  \[LongLeftArrow] qRs*)
+
+
+scale["nLCaCb","qRs"][\[Theta]:Except[_String],n_: 8]:= {1/3,2^(1-n),2^(1-n)};
+Format[scale["nLCaCb","qRs"], TraditionalForm]=Subscript[Style["S",Bold],"q"];
+scale["qRs","nLCaCb"][\[Theta]:Except[_String],n_: 8]:= {3,2^(3-n),2^(3-n)};
+Format[scale["fRs","nLCaCb"], TraditionalForm]=Superscript[Subscript[Style["S",Bold],"q"],"-1"];
+
+
+Style[TraditionalForm[Row[{nLCaCb["\[Theta]"]," = ",scale["nLCaCb","qRs"]["\[Theta]"]," \[CircleTimes] ",qRs["\[Theta]"]}]],Larger]
+
+
+(* ::Subsubsection:: *)
+(*Subscript[\!\(\**)
+(*StyleBox["S",*)
+(*StripOnInput->False,*)
+(*FontWeight->Bold]\), r] : nLCaCb  \[LongLeftArrow] rR*)
+
+
+scale["nLCaCb","rR"][\[Theta]:Except[_String]]:= {1/3,1/2 Sec[\[Pi]/6-Mod[-(\[Pi]/6)+\[Theta],\[Pi]/3]],1/2 Sec[\[Pi]/6-Mod[\[Theta],\[Pi]/3]]}
+Format[scale["nLCaCb","rR"], TraditionalForm]=Subscript[Style["S",Bold],"r"];
+
+
+Style[TraditionalForm[Row[{nLCaCb["\[Theta]"]," = ",scale["nLCaCb","rR"]["\[Theta]"]," \[CircleTimes] ",rR["\[Theta]"]}]],Larger]
+
+
+(* ::Subsubsection:: *)
+(*Subscript[\!\(\**)
+(*StyleBox["S",*)
+(*StripOnInput->False,*)
+(*FontWeight->Bold]\), r\[LeftArrow]q] : rR  \[LongLeftArrow] qR*)
+
+
+scale["rR", "qR"][\[Theta]:Except[_String], n_: 8] := Piecewise[{
+   {{1, -(2^(2 - n)*Sin[Pi/6 + \[Theta]]), -(2^(2 - n)*Cos[Pi/6 + \[Theta]])}, Inequality[0,    LessEqual, Mod[\[Theta], Pi/2], Less, Pi/6]},
+   {{1,   2^(2 - n)*Cos[\[Theta]],         -(2^(2 - n)*Sin[\[Theta]])},       Inequality[Pi/6, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/3]},
+   {{1, -(2^(2 - n)*Sin[Pi/6 - \[Theta]]),   2^(2 - n)*Cos[Pi/6 - \[Theta]]},  Inequality[Pi/3, LessEqual, Mod[\[Theta], Pi/2], Less, Pi/2]}}, Null]
+Format[scale["rR", "qR"], TraditionalForm]=Subscript[Style["S",Bold],"r\[LeftArrow]q"];
+
+scale["qR","rR"][\[Theta]:Except[_String],n_:8]:=Piecewise[{
+{{1,-(2^(-2+n)*Csc[Pi/6+\[Theta]]),-(2^(-2+n)*Sec[Pi/6+\[Theta]])},Inequality[0,   LessEqual,Mod[\[Theta],Pi/2],Less,Pi/6]},
+{{1,  2^(-2+n)*Sec[\[Theta]],      -(2^(-2+n)*Csc[\[Theta]])     },Inequality[Pi/6,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/3]},
+{{1,-(2^(-2+n)*Csc[Pi/6-\[Theta]]),  2^(-2+n)*Sec[Pi/6-\[Theta]] },Inequality[Pi/3,LessEqual,Mod[\[Theta],Pi/2],Less,Pi/2]}},Null]
+Format[scale["qR","rR"], TraditionalForm]=Superscript[Subscript[Style["S",Bold],"r\[LeftArrow]q"],"-1"];
+
+
+Style[TraditionalForm[Row[{rR["\[Theta]"]," = ",scale["rR", "qR"]["\[Theta]"]," \[CircleTimes] ",qR["\[Theta]"]}]],Larger]
+
+
+
+
+ShowFun[scale["LCaCb","rR"][\[Theta]]]
+ShowFun[scale["nLCaCb","rR"][\[Theta]]]
+
+ShowFun[scale["rR","fR"][\[Theta]]]
+
+ShowFun[scale["rR", "qR"][\[Theta]]]
+ShowFun[scale["qR","rR"][\[Theta]]]
+
+ShowFun[scale["qR","fR"][\[Theta]]]
+ShowFun[scale["fR","qR"][\[Theta]]]
 
 
 (* ::Section:: *)
@@ -260,7 +663,7 @@ RGBAxisRanges = {{0,1},{0,1},{0,1}};
 
 
 RGBCube["RGB"]=cubeCorners[RGBAxisRanges];
-RGBCube["LCaCb"]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[RotationMatrixLCaCb[\[Theta]].RGBCube["RGB"]]]]]];
+RGBCube["LCaCb"]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[LCaCb[\[Theta]].RGBCube["RGB"]]]]]];
 
 
 Clear[RGBCube3D];
@@ -297,7 +700,7 @@ rgbCenter=Part[map,All,r+1,g+1,b+1];
 
 Clear[RGBCubeInYabFiniteBalls];
 RGBCubeInYabFiniteBalls[\[Theta]_,cut_:3,n_:8,opacity_:{1,0.03}]:=Module[{cube,color,rgbCenter,radius,T},
-T=RotationMatrixLCaCb[\[Theta]];
+T=LCaCb[\[Theta]];
 cube=Flatten[Table[
 color=RGBColor[(r)/n,(g)/n,(b)/n];
 rgbCenter = T . List[(r)/n,(g)/n,(b)/n];
@@ -318,7 +721,7 @@ LCaCbAxisLengths = Function[{\[Theta]},Evaluate[Flatten[LCaCbAxisRanges[\[Theta]
 
 
 LCaCbCube["LCaCb"][\[Theta]_]:=cubeCorners[LCaCbAxisRanges[\[Theta]]];
-LCaCbCube["RGB"]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[iRotationMatrixLCaCb[\[Theta]].LCaCbCube["LCaCb"][\[Theta]]]]]]];
+LCaCbCube["RGB"]=Function[{\[Theta]},Evaluate[TrigFactor[FullSimplify[TrigToExp[iLCaCb[\[Theta]].LCaCbCube["LCaCb"][\[Theta]]]]]]];
 
 
 (* ::Subsubsection:: *)
@@ -384,7 +787,7 @@ Table[{Glow[LCaCbColor[col[[i]],\[Theta]]],Black,Cylinder[{c1[[i]],c2[[i]]},0.1]
 LCaCbCube3D[\[Theta]_]:=Module[{RGBinLCaCbcorners,RGBCubeCorners,LCaCbCubeCorners,LCaCbinRGBCubeCorners,faces,ranges},
 RGBinLCaCbcorners = Transpose[RGBCube["LCaCb"][\[Theta]]];
 RGBCubeCorners = Transpose[cubeCorners[{{0,1},{0,1},{0,1}}]];LCaCbCubeCorners =Transpose[cubeCorners[ LCaCbAxisRanges[\[Theta]]]];
-LCaCbinRGBCubeCorners =Transpose[cubeCorners[ Map[{Min[#],Max[#]}&,iRotationMatrixLCaCb[\[Theta]]. cubeCorners[ LCaCbAxisRanges[\[Theta]]]]]];
+LCaCbinRGBCubeCorners =Transpose[cubeCorners[ Map[{Min[#],Max[#]}&,iLCaCb[\[Theta]]. cubeCorners[ LCaCbAxisRanges[\[Theta]]]]]];
 faces = {{1,2,3,4},{5,6,7,8},{1,2,7,6},{2,3,8,7},{3,4,5,8},{1,4,5,6}};
 ranges = LCaCbAxisRanges[\[Theta]];
 {Polygon[LCaCbCubeCorners[[faces[[1]]]], VertexColors->MapThread[LCaCbColor[{##},\[Theta]]&,Transpose[RGBCubeCorners[[faces[[1]]]]]]], 
@@ -400,8 +803,8 @@ RGBinLCaCbCube3D[\[Theta]_]:=Module[{RGBinLCaCbcorners,RGBCubeCorners,LCaCbCubeC
 RGBinLCaCbcorners = Transpose[RGBCube["LCaCb"][\[Theta]]];
 RGBCubeCorners    = Transpose[cubeCorners[{{0,1},{0,1},{0,1}}]];
 LCaCbCubeCorners  = Transpose[cubeCorners[ LCaCbAxisRanges[\[Theta]]]];
-LCaCbinRGBCubeCorners = Transpose[cubeCorners[ Map[{Min[#],Max[#]}&,iRotationMatrixLCaCb[\[Theta]]. cubeCorners[ LCaCbAxisRanges[\[Theta]]]]]];
-(*LCaCbinRGBCubeCorners = Transpose[cubeCorners[ iRotationMatrixLCaCb[\[Theta]]. cubeCorners[ LCaCbAxisRanges[\[Theta]]]]];*)
+LCaCbinRGBCubeCorners = Transpose[cubeCorners[ Map[{Min[#],Max[#]}&,iLCaCb[\[Theta]]. cubeCorners[ LCaCbAxisRanges[\[Theta]]]]]];
+(*LCaCbinRGBCubeCorners = Transpose[cubeCorners[ iLCaCb[\[Theta]]. cubeCorners[ LCaCbAxisRanges[\[Theta]]]]];*)
 faces = {{1,2,3,4},{5,6,7,8},{1,2,7,6},{2,3,8,7},{3,4,5,8},{1,4,5,6}};
 ranges = LCaCbAxisRanges[\[Theta]];
 {Polygon[RGBinLCaCbcorners[[faces[[1]]]],VertexColors->MapThread[RGBColor,Transpose[RGBCubeCorners[[faces[[1]]]]]]], 
@@ -450,7 +853,7 @@ LCaCbPolygon[\[Theta]_]:=Transpose[{Take[RGBCube["LCaCb"][\[Theta] ][[2]],{2,7}]
 nLCaCbScale = Function[{\[Theta]},Evaluate[Simplify[1/LCaCbAxisLengths[\[Theta]]]]];
 
 
-nLCaCb= Function[{\[Theta]},Evaluate[TrigReduce[nLCaCbScale[\[Theta]]  RotationMatrixLCaCb[\[Theta]]]]];
+nLCaCb= Function[{\[Theta]},Evaluate[TrigReduce[nLCaCbScale[\[Theta]]  LCaCb[\[Theta]]]]];
 
 
 inLCaCb= Function[{\[Theta]},Evaluate[TrigFactor[TrigReduce[FullSimplify[TrigExpand[Inverse[nLCaCb[\[Theta]]]]]]]]];
