@@ -1890,22 +1890,24 @@ These then give a combined value for $\alpha = \alpha_1 \alpha_2$ and $\beta = \
 \subsubsection{The complete algorithm}
 
 
-The programmer specifies a requested value of $\theta$ , values for the means $\uMean{ ab}$ and standard deviations $\uSTD{ ab}$ for each of the three axis in the rotated color space with a unit range and the data type ranges $\srcRange$ and $\dstRange$. The algorithm then proceeds as follows:
+The programmer specifies a requested value of $\theta$ , values for the means $\uMean{{ab}}$ and standard deviations $\uSTD{ {ab}}$ for each of the three axis in the rotated color space with a unit range and the data type ranges $\srcRange$ and $\dstRange$. The algorithm then proceeds as follows:
 
 \algosection{Find the working type and range.} 
 Using the distribution constants \ref{eq:DistributionConstants} , the gradient at the mean in the unit range \ref{eq:gradient} and the natural rotated axis lengths \ref{eq:L}
-\begin{tabular}{|c|c|c|c|}
-\hline  \LaTeX & Mathematica & MatLab & C++ \\ 
-\hline  &  &  &  \\ 
-\hline  &  &  &  \\ 
-\hline  &  &  &  \\ 
-\hline  &  &  &  \\ 
-\hline  &  &  &  \\ 
-\hline  &  &  &  \\ 
-\hline  &  &  &  \\ 
-\hline  &  &  &  \\ 
-\hline 
-\end{tabular} 
+
+%\begin{tabular}{|c|c|c|c|}
+%\hline  \LaTeX & Mathematica & MatLab & C++ \\ 
+%\hline  &  &  &  \\ 
+%\hline  &  &  &  \\ 
+%\hline  &  &  &  \\ 
+%\hline  &  &  &  \\ 
+%\hline  &  &  &  \\ 
+%\hline  &  &  &  \\ 
+%\hline  &  &  &  \\ 
+%\hline  &  &  &  \\ 
+%\hline 
+%\end{tabular} 
+
 \begin{gather*}
  \begin{aligned}
   \delta  &= \frac{ \sqrt{2} }{ \sigma \sqrt{\pi }  \left(\Sigma^+-\Sigma^-\right)} & 
@@ -1981,7 +1983,6 @@ The extended region in which all the information is kept is found by numerically
 the C++ code finds the points using the following algorithm
 
 \begin{algorithm}[H]
- \caption{Finding the extended region in which all the information is kept in C++}
 \begin{algorithmic}
  \Require{$\Keep _2$ the starting point for the linear walk } 
  \linebreak \phantom{Require} $\tau_{p}$ the acceptable divergence from linearity 
@@ -1994,6 +1995,7 @@ the C++ code finds the points using the following algorithm
  \State $\eKeep_1 \gets \Keep _1 - (\eKeep_2 - \Keep _2)$ \Comment{Exploiting a symetry dis(x)}
  \State \textbf{Return} {$\eKeep_1$ ,$\eKeep_2$ }
  \end{algorithmic}
+  \caption{Finding the extended region in which all the information is kept in C++}
 \end{algorithm}
 
 The unit range boundaries $\ekeep$ are found using  $\ekeep =  \frac{\eKeep - \tMin}{\tRange}$.
@@ -2154,8 +2156,7 @@ The region $\iota$ for a given value of $i$ is found and the appropriate values 
 %}\right\}
 %\end{gather*}
 
- \begin{algorithm}[h]\label{algo:thetaX}
-  \caption{A function which returns the angular position of compromise between the perturbations to the channels.}
+ \begin{algorithm}[h]
  \begin{algorithmic}
       \Function { $\overset{\times}{\phi}$}{$ i, \alpha, \beta, n $} \Comment{$i$ integer index of the intercept }
        \State $\meanIndx \gets  2^{n-3}$  ; \quad  $\iota(i,n)  \gets  \left\lfloor 7\ \meanIndx-\sqrt{i^2 - 2 i \meanIndx + 49\ \meanIndx^2 }\right\rfloor $  \Comment{$n$ the source bit depth}
@@ -2182,13 +2183,14 @@ The region $\iota$ for a given value of $i$ is found and the appropriate values 
       \State \textbf{Return} {$\thetaX{i}$}\Comment{$\thetaX{i} $ \{angle,  maximum perturbation\} }
 \EndFunction
  \end{algorithmic}
+    \caption{A function which returns the angular position of compromise between the perturbations to the channels.}
+    \label{algo:thetaX}
 \end{algorithm}
 %the angular position of the intercept and the maximum perturbation at that value
 
 To find the angular value closest to $\theta$ which produces a perturbation less than the tolerance $\tau$ the algorithm \ref{algo:newTheta} finds the closest value which satisfies the tolerance in the positive and negative directions and returns the nearest one to the requested value of $\theta$. The algorithm \ref{algo:newTheta} is guaranteed to find a value which satisfies the tolerance in each direction within a $\frac{\pi}{6}$ region because the perturbation is zero at the ends of the $\frac{\pi}{6}$ region.
  
-\begin{algorithm}[H]\label{algo:newTheta}
-  \caption{Suggest a new value for $\theta$}
+\begin{algorithm}[H]
  \begin{algorithmic}
   \Require{ $\alpha$, $\beta$ the relative importance of the channels}
   \State \phantom{Require}  { $\theta$ the requested angle; \quad \quad $\tau$ the tolerance}
@@ -2215,6 +2217,8 @@ To find the angular value closest to $\theta$ which produces a perturbation less
   \EndIf
  \State \textbf{Return} {$\left\{ \vartheta, h\right\} $ }
   \end{algorithmic}
+    \caption{Suggest a new value for $\theta$}
+    \label{algo:newTheta}
  \end{algorithm}
  
 
@@ -2263,7 +2267,7 @@ Expanding the definition of the quantized matrix $\qR[\theta, n]$ \ref{eq:quanti
 
 \begin{gather*}
 \begin{aligned}
-\aR &= \fSs \otimes \qR   &   \elemU  &= 2^{n-2 } &
+\qRs &= \fSs \otimes \qR   &   \elemU  &= 2^{n-2 } &
 \mTheta{6} &= \theta  \bmod \pi  & \mTheta{1} &= \theta  \bmod \frac{ \pi }{6}\\
 \end{aligned} \\
 \begin{aligned}
@@ -2331,12 +2335,12 @@ Expanding the definition of the quantized matrix $\qR[\theta, n]$ \ref{eq:quanti
 \end{cases} 
 \end{aligned} \\
 \end{gather*}
-This $\aR[\theta, n]$ matrix is used to perform the rotation of the pixel values. Taking the inner product of $\aR$ with the pixel values produces 
-a rotated set of pixel values $\vec{a} = \aR \cdot \vec{rgb}$ with elements $ \vec{a}_1 \in \{0 \cdots 2^{n+2} \}$,  $ \vec{a}_2 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$ and $ \vec{a}_3 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$. 
+This $\qRs[\theta, n]$ matrix is used to perform the rotation of the pixel values. Taking the inner product of $\qRs$ with the pixel values produces 
+a rotated set of pixel values $\vec{a} = \qRs \cdot \vec{rgb}$ with elements $ \vec{a}_1 \in \{0 \cdots 2^{n+2} \}$,  $ \vec{a}_2 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$ and $ \vec{a}_3 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$. 
 \begin{align*}
-\aMin     &= \left( \begin{smallmatrix}  0           \\  -2^{2n-1}  \\ -2^{2n-1} \\ \end{smallmatrix} \right) & 
-\aMax    &= \left( \begin{smallmatrix}  2^{n+2} \\    2^{2n-1}  \\   2^{2n-1} \\ \end{smallmatrix} \right) & 
-\aRange &= \left( \begin{smallmatrix}  2^{n+2} \\    2^{2n}      \\   2^{2n}     \\ \end{smallmatrix} \right) 
+\qRsMin     &= \left( \begin{smallmatrix}  0           \\  -2^{2n-1}  \\ -2^{2n-1} \\ \end{smallmatrix} \right) & 
+\qRsMax    &= \left( \begin{smallmatrix}  2^{n+2} \\    2^{2n-1}  \\   2^{2n-1} \\ \end{smallmatrix} \right) & 
+\qRsRange &= \left( \begin{smallmatrix}  2^{n+2} \\    2^{2n}      \\   2^{2n}     \\ \end{smallmatrix} \right) 
 \end{align*}
 \algosection{Design the distribution function.} 
 First the overall scaling for the quantised rotation matrix is found by combining the normalised scaling $\Scale[\theta, n]$ \ref{eq:scaleDef} with the desired scaling defined in equation \ref{eq:CombinedRotationRange}
@@ -2351,7 +2355,7 @@ First the overall scaling for the quantised rotation matrix is found by combinin
 \end{pmatrix}    \\
 \end{equation*}
 
-Next we decide which of the distribution methods should be used. This is done by assessing the size of each of the regions relative to a tolerance. The algorithm avoids unnecessary operations by finding the region directly with the unscaled result of the inner product between the matrix $\aR$ and the pixel value.
+Next we decide which of the distribution methods should be used. This is done by assessing the size of each of the regions relative to a tolerance. The algorithm avoids unnecessary operations by finding the region directly with the unscaled result of the inner product between the matrix $\qRs$ and the pixel value.
 %\begin{align*}
 %\mathbf{Q}_{discard}     &\gets \tau_{discard}     \le    1-\discard_2 + \discard_1 \\
 %\mathbf{Q}_{distribute} &\gets \tau_{distribute}  \le    \discard_2 - \ekeep_2 + \ekeep_1 - \discard_1 \\
@@ -2359,10 +2363,10 @@ Next we decide which of the distribution methods should be used. This is done by
 %\end{align*}
 %If $\mathbf{Q}_{discard} = \text{True} $ then we find the boundaries in the $0 \cdots 2^{2n}$ range and add the discard function to the distribution function.
 %\begin{align*}
-%\Discard_1^{q} &= \aRange \discard_1 +\aMin&
-%\eKeep_1^{q} &= \aRange \ekeep_1 +\aMin \\
-%\Discard_2^{q} &= \aRange \discard_2 + \aMin&
-%\eKeep_2^{q} &= \aRange \ekeep_2 + \aMin&
+%\Discard_1^{q} &= \qRsRange \discard_1 +\qRsMin&
+%\eKeep_1^{q} &= \qRsRange \ekeep_1 +\qRsMin \\
+%\Discard_2^{q} &= \qRsRange \discard_2 + \qRsMin&
+%\eKeep_2^{q} &= \qRsRange \ekeep_2 + \qRsMin&
 %\end{align*}
 %
 % \begin{algorithm}[H]
@@ -2371,10 +2375,10 @@ Next we decide which of the distribution methods should be used. This is done by
 %       \Require{$t$ the channel value  \quad
 %        $n$ the source bit depth }
 %       \KwResult{$d$ the redistributed channel value}
-%       $\Discard_1^{q} \gets \aRange \discard_1 + \aMin $; \quad 
-%       $\Discard_2^{q} \gets \aRange \discard_2 + \aMin $ \;
-%       $\eKeep_1^{q}    \gets \aRange \ekeep_1   + \aMin $; \quad 
-%       $\eKeep_2^{q}    \gets \aRange \ekeep_2   + \aMin $ \;
+%       $\Discard_1^{q} \gets \qRsRange \discard_1 + \qRsMin $; \quad 
+%       $\Discard_2^{q} \gets \qRsRange \discard_2 + \qRsMin $ \;
+%       $\eKeep_1^{q}    \gets \qRsRange \ekeep_1   + \qRsMin $; \quad 
+%       $\eKeep_2^{q}    \gets \qRsRange \ekeep_2   + \qRsMin $ \;
 %       \SetAlgoLined
 %       \uIf{$t < \Discard_1^{q}$}{
 %       \textbf{Return} {$\dstMin$ }
@@ -2403,7 +2407,6 @@ Next we decide which of the distribution methods should be used. This is done by
 %\end{algorithm}
 
  \begin{algorithm}[H]
-  \caption{An algorithm which returns a channel appropriate distribution function}
   \begin{algorithmic}
        \Require{$\{\discard, \Discard, \ekeep,\eKeep\}$ the boundaries of the regions.}
        \State \phantom{Require} $0<\tau<1$ the tolerances for counting a region as significant.
@@ -2412,10 +2415,10 @@ Next we decide which of the distribution methods should be used. This is done by
        $\mathbf{Q}_{discard} $    &  $\gets \tau_{discard}     \le    1-\discard_2 + \discard_1$ & \quad\quad&
               $\mathbf{Q}_{keep} $        & $\gets \tau_{keep}         \le     \ekeep_2 - \ekeep_1$\\
        $\mathbf{Q}_{distribute}$ & \multicolumn{4}{l}{$\gets \tau_{distribute}  \le    \discard_2 - \ekeep_2 + \ekeep_1 - \discard_1$} \\
-       $\Discard_1^{q}$ &$\gets \aRange \; \discard_1 + \aMin$; & \quad\quad &
-       $\Discard_2^{q}$ &$\gets \aRange \; \discard_2 + \aMin$ \\
-       $\eKeep_1^{q}$    &$\gets \aRange \; \ekeep_1   + \aMin$; & \quad\quad &
-       $\eKeep_2^{q}$    &$\gets \aRange \; \ekeep_2   + \aMin$ 
+       $\Discard_1^{q}$ &$\gets \qRsRange \; \discard_1 + \qRsMin$; & \quad\quad &
+       $\Discard_2^{q}$ &$\gets \qRsRange \; \discard_2 + \qRsMin$ \\
+       $\eKeep_1^{q}$    &$\gets \qRsRange \; \ekeep_1   + \qRsMin$; & \quad\quad &
+       $\eKeep_2^{q}$    &$\gets \qRsRange \; \ekeep_2   + \qRsMin$ 
        \end{tabular} \;
           \If{$\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \mathbf{Q}_{distribute} $}\Comment{Piecewise Erf Distribution}
          \State $
@@ -2436,6 +2439,7 @@ Next we decide which of the distribution methods should be used. This is done by
           \ElsIf{$\mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Linear Distribution}
           \algstore{bkbreak}
 \end{algorithmic}
+  \caption{An algorithm which returns a channel appropriate distribution function}
 \end{algorithm}
 \addtocounter{algorithm}{-1}
 \begin{algorithm}[h]

@@ -60,12 +60,12 @@
   }
 } 
 
-% The matrix which is used in the algorithm \aR=\fSs \otimes \qR 
-\newcommand\aR[1][]{
+% The matrix which is used in the algorithm \qRs=\fSs \otimes \qR 
+\newcommand\qRs[1][]{
   \ifstrempty{#1}{
-    \mathbf{aR}
+    \mathbf{qRs}
   }{
-    \mathbf{aR}\left( #1 \right)
+    \mathbf{qRs}\left( #1 \right)
   }
 } 
 
@@ -278,9 +278,9 @@
 \newcommand{\tMax}{\text{tMax}}            % Rotated values integer range maximum
 \newcommand{\tMin}{\text{tMin}}            % Rotated values integer range mimimum
 \newcommand{\tRange}{\text{tRange}}        % Rotated values after integer rotation range 
-\newcommand{\aMax}{\text{aMax}}            % Rotated values after integer rotation integer range maximum
-\newcommand{\aMin}{\text{aMin}}            % Rotated values after integer rotation integer range mimimum
-\newcommand{\aRange}{\text{aRange}}        % Rotated values integer range
+\newcommand{\qRsMax}{\text{qRsMax}}            % Rotated values after integer rotation integer range maximum
+\newcommand{\qRsMin}{\text{qRsMin}}            % Rotated values after integer rotation integer range mimimum
+\newcommand{\qRsRange}{\text{qRsRange}}        % Rotated values integer range
 \newcommand{\discreteT}{\widetilde{\uT}}   % Rotated values found using the discretized transformation matrix
 \newcommand{\dT}{\discreteT}               % Rotated values found using the discretized transformation matrix
 \newcommand{\delT}{\delta\uT}              % Error in the Rotated values found using the discretized transformation matrix
