@@ -398,6 +398,8 @@ Format[qR, TraditionalForm]=Style["qR",FontWeight->"Bold"];
 ShowFun[qR[\[Theta]6,\[Theta]1,"fRe",n]]
 
 
+
+
 (* ::Subsubsection:: *)
 (*Scale*)
 
@@ -570,10 +572,7 @@ Style[TraditionalForm[Row[{nLCaCb["\[Theta]"]," = ",scale["nLCaCb","fRs"]["\[The
 
 
 (* ::Subsubsection:: *)
-(*Subscript[\!\(\**)
-(*StyleBox["S",*)
-(*StripOnInput->False,*)
-(*FontWeight->Bold]\), q]: nLCaCb  \[LongLeftArrow] qRs*)
+(*Sq: nLCaCb  \[LongLeftArrow] qRs*)
 
 
 scale["nLCaCb","qRs"][\[Theta]:Except[_String],n_: 8]:= {1/3,2^(1-n),2^(1-n)};
@@ -586,10 +585,7 @@ Style[TraditionalForm[Row[{nLCaCb["\[Theta]"]," = ",scale["nLCaCb","qRs"]["\[The
 
 
 (* ::Subsubsection:: *)
-(*Subscript[\!\(\**)
-(*StyleBox["S",*)
-(*StripOnInput->False,*)
-(*FontWeight->Bold]\), r] : nLCaCb  \[LongLeftArrow] rR*)
+(*Sr : nLCaCb  \[LongLeftArrow] rR*)
 
 
 scale["nLCaCb","rR"][\[Theta]:Except[_String]]:= {1/3,1/2 Sec[\[Pi]/6-Mod[-(\[Pi]/6)+\[Theta],\[Pi]/3]],1/2 Sec[\[Pi]/6-Mod[\[Theta],\[Pi]/3]]}
@@ -600,10 +596,7 @@ Style[TraditionalForm[Row[{nLCaCb["\[Theta]"]," = ",scale["nLCaCb","rR"]["\[Thet
 
 
 (* ::Subsubsection:: *)
-(*Subscript[\!\(\**)
-(*StyleBox["S",*)
-(*StripOnInput->False,*)
-(*FontWeight->Bold]\), r\[LeftArrow]q] : rR  \[LongLeftArrow] qR*)
+(*Srq: rR  \[LongLeftArrow] qR*)
 
 
 scale["rR", "qR"][\[Theta]:Except[_String], n_: 8] := Piecewise[{
@@ -620,8 +613,6 @@ Format[scale["qR","rR"], TraditionalForm]=Superscript[Subscript[Style["S",Bold],
 
 
 Style[TraditionalForm[Row[{rR["\[Theta]"]," = ",scale["rR", "qR"]["\[Theta]"]," \[CircleTimes] ",qR["\[Theta]"]}]],Larger]
-
-
 
 
 ShowFun[scale["LCaCb","rR"][\[Theta]]]
