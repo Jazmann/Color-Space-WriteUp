@@ -400,6 +400,8 @@ ShowFun[qR[\[Theta]6,\[Theta]1,"fRe",n]]
 
 
 
+
+
 (* ::Subsubsection:: *)
 (*Scale*)
 
@@ -743,8 +745,12 @@ Hue[h,s,y]
 ];
 
 
-LCaCbColor[yab_]:=Module[{y,a,b,h,s,angle},
+LCaCbColor[yab:{_,_,_}]:=Module[{y,a,b,h,s,angle},
   LCaCbColorFast[     yab[[1]],yab[[2]],yab[[3]]]
+]
+LCaCbColor[yab:{_,_,_,_}]:=Module[{y,a,b,h,s,angle},
+  h=LCaCbColorFastList[     yab[[1]],yab[[2]],yab[[3]]];
+Hue[Sequence@@h,yab[[4]] ]
 ]
 LCaCbColor[yab_,\[Theta]_]:=Module[{y,a,b,h,s,angle},
 If[TrueQ[LCaCbColorTheta==\[Theta]],
