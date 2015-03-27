@@ -18,7 +18,21 @@ The goal of this is to get a value of $\sigma$, two standard deviations (a vecto
 \section{Algorithm for Generating the Model}\label{sec:AlgorithmForGeneratingModel}
 Here we present the algorithm which is used to generate the chromatic model. It's assumed we have RGB image sets for the target with simple, monochromatic backgrounds.
 
-\animategraphics[loop,autoplay,controls]{12}{Chapter3/Figs/Animation/frame}{00}{24}
+\animategraphics[loop,autoplay,controls]{12}{Chapter3/Figs/Animation/frame}{0001}{0025}
+
+%\includemedia[
+%  label=cube_test,
+%  width=0.7\linewidth,height=0.7\linewidth,
+%  addresource=Chapter3/Figs/Animation/RGB_FSkin_Hand_Bin.swf, %two video files
+%  transparent,
+%  activate=pageopen,
+%  flashvars={
+%    source=Chapter3/Figs/Animation/RGB_FSkin_Hand_Bin.swf
+%   &loop=true
+%   &scaleMode=letterbox
+%  }
+%]{}{Chapter3/Figs/Animation/RGB_FSkin_Hand_Bin.swf}
+
 
 \subsection{RGB Bin allocation}\label{sec:RGBBinAllocation}
 All the information which is present in the 8-bit unsigned images is in an RGB space. The first problem is that we have a large image set with large images. We're not interested in what these images are pictures of; we're only interested in the individual pixel values themselves. So, we produce a 3D histogram with one bin for each RGB combination. This gives us a histogram with 256x256x256 bins. This is a very large data set; perhaps unnecessarily so. But it's easier to work with than a set of images, and is guaranteed to contain all the relevant information for the statistics. 
