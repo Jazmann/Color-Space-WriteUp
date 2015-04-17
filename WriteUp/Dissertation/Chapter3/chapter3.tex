@@ -70,44 +70,57 @@ Here we present the algorithm which is used to generate the chromatic model. It'
 %]{}{Chapter3/Figs/Animation/RGB_FSkin_Hand_Bin.swf}
 
 
-\subsection{RGB Bin allocation}\label{sec:RGBBinAllocation}
-All the information which is present in the 8-bit unsigned images is in an RGB space. The first problem is that we have a large image set with large images. We're not interested in what these images are pictures of; we're only interested in the individual pixel values themselves. So, we produce a 3D histogram with one bin for each RGB combination. This gives us a histogram with 256x256x256 bins. This is a very large data set; perhaps unnecessarily so. But it's easier to work with than a set of images, and is guaranteed to contain all the relevant information for the statistics. 
+\subsection{RGB Bin Allocation}\label{sec:RGBBinAllocation}
+All the information which is present in the 8-bit unsigned images is in an RGB space. The first problem is that we have a large image set with large images. We're not interested in what these images are pictures of; we're only interested in the individual pixel values themselves. So, we produce a 3D histogram with one bin for each RGB combination. This gives us a histogram with 256x256x256 bins. This is a very large data set; perhaps unnecessarily so. But it's easier to work with than a set of images, and is guaranteed to contain all the relevant information for the statistics.
+
+<put bin figure here>
 
 The algorithm is written in MATLAB, and it very simply loads up each image in the set and runs through each pixel, incrementing the corresponding bin. As it's going, it keeps a count of the number of bin allocations, so we have a total pixel count. After it's run through all the images, it find the largest bin and keeps a record of the largest bin count, so we can have a normalized bin when requested.
 
 
 \subsection{Skinning the Bins}\label{sec:SkinningTheBins}
-Next, the bins which are at the extreme edges (i.e. the ones which correspond to the outer faces of the RGB cube) are set equal to 0 with a specified depth. For example: if a depth of 3 is requested, bins of positions 0, 1 and 2, and 253, 254 and 255 are set to 0 in all three dimensions, and the total pixel count is adjusted to compensate for the nulled bin counts. This is done to address problems of white-out and black-out as described below.
+Next, the bins which are at the extreme edges (i.e. the ones which correspond to the outer faces of the RGB cube) are set equal to 0 with a specified depth. For example: if a depth of 3 is requested, bins of positions 0, 1 and 2, and 253, 254 and 255 are set to 0 in all three dimensions, and the total pixel count is adjusted to compensate for the nulled bin counts. This is done to address problems of white-out and black-out as described in \ref{sec:TopAndTail}.
 
-<Put white-out and black-out stuff in here.>
-Naively collapsing the bins along the luminosity axis artificially skews the chromatic distribution along the axis which passed through the luminosity axis; this is easily explained due to white-out and black-out. As luminosity increases or decreases, it will eventually hit the edge of the cube. Having reached its numerical limit, the luminosity slides toward the corner of the cube, resulting in a white or black value.
-
-To accommodate this, we collapse the bins excluding the bins which are clearly suffering from white-out and black-out. This could be done mathematically by taking the bin of the distribution which is furthest from the luminosity axis, and then finding the intersection with the RGB cube when this chromatic value is at its limits, just before it reaches the edge of the cube where it suffers from white-out or black-out. But it's a simple matter to look at the three projections of the 3D LCaCb bins and manually determine the limits for the valid region.
+<Skinning bins figure here>
 
 It should be noted that the reason the RGB cube is skinned before rotation because it's not as easy to do in the rotated color space.
 
 
 \subsection{Rotating the Bins}\label{sec:RotatingTheBins}
-Because each of the bins corresponds to just one RGB value, we can find the equivalent bin in the LCaCb space simply by rotating the bin index. This is done using the un-normalized rotation described in Chapter 2, thereby assuring a 1-to-1 correspondence of the bins. With this done, we now have a set of bins in the LCaCb color space equivalent to that which would be found if we had applied the transform to each of the images and then collected the statistics from the transformed images.
+Because each of the bins corresponds to just one RGB value, we can find the equivalent bin in the LCaCb space simply by rotating the bin index. This is done using the normalized rotation as described in Chapter 2, as we desire the mean $\mu$ and standard deviation $\sigma$ to be specified in the $0:1$ range, which is easier to find where all the axes are of the same length. With this done, we now have a set of bins in the LCaCb color space equivalent to that which would be found if we had applied the transform to each of the images and then collected the statistics from the transformed images.
+
+<Rotated bins figure here>
 
 
 \subsection{Top and Tail}\label{sec:TopAndTail}
 Although we've "skinned" the bins, the white and black tips of the cube suffer from white-out and black-out more than any other regions, and there's a tendency for pixel values to converge under the white point and the black point without necessarily hitting the side of the cube first. This can be seen in <insert reference to banana picture>. There's also quite a lot of white and quite a lot of black in pretty much any image. Since we're just interested in the chromatic information, we nullify bin values above a certain threshold and below a certain threshold.
 
+Naively collapsing the bins along the luminosity axis artificially skews the chromatic distribution along the axis which passed through the luminosity axis; this is easily explained due to white-out and black-out. As luminosity increases or decreases, it will eventually hit the edge of the cube. Having reached its numerical limit, the luminosity slides toward the corner of the cube, resulting in a white or black value.
 
-\subsection{Collapse the Bins}\label{sec:CollapsingTheBins}
+To accommodate this, we collapse the bins excluding the bins which are clearly suffering from white-out and black-out. This could be done mathematically by taking the bin of the distribution which is furthest from the luminosity axis, and then finding the intersection with the RGB cube when this chromatic value is at its limits, just before it reaches the edge of the cube where it suffers from white-out or black-out. But it's a simple matter to look at the three projections of the 3D LCaCb bins and manually determine the limits for the valid region.
+
+
+\subsection{Collapsing the Bins}\label{sec:CollapsingTheBins}
 Because we're modelling the chromatic space and not the luminosity, we now collapse the 3D histogram by summing the bin values along the luminosity axis. So, we now have a 2D histogram in CaCb chromatic space.
 
+<figure of 3D histogram 'cause it's quite a nice thing>
 
-\subsection{De-Speckle the Bin Values}\label{sec:DeSpeckle}
-The obvious idea is to find all the non-zero bins and fit an interpolating function between them. This will effectively remove the empty bin artifacts within the densely-packed region which is the distribution we're interested in. However, the empty bins outside the main distribution are not artifacts and are genuinely empty bins, so removing all the empty bins and then fitting the function joins together any outlying points or secondary distributions corresponding to regions such as the background. We therefore desire a method which will allow us to keep all the non-empty bins and the empty bins outside the main distribution, i.e. all the genuinely empty bins. To achieve this, we designed a Matlab routine which essentially paints a region around each non-zero point, marking it as part of the main distribution. It then takes all the unmarked regions and includes all the empty bins in those regions. So, the set of points which is all the non-empty bins and all the empty bins in the unmarked regions satisfies the requirement, and a simple interpolating function can easily be fitted to those points.
+
+\subsection{De-Speckling the Bin Values}\label{sec:DeSpeckle}
+The raw camera output has, by this stage, undergone two rounds of processing --- first in the device, before the AP layer, creating an 8-bit RGB image; and then in the rotation to the LCaCb space. These processes are, unfortunately, not 1-to-1. This results in some bins being artificially overpopulated and other bins becoming artificially empty. The effect of the LCaCb rotation can be controlled by extending the axis lengths; this process can be make for at worst 1-to-1 correspondence. However, this necessarily introduces a greater number of inaccessible bins. In terms of collecting the statistics, these effects are not problematic aside from the fact that it introduces empty bins inside the main region of interest, which is problematic for the algorithm further down the line. Graphically, this problem looks like speckling. This speckling is also apparent in the RGB bins, and it is assumed this is a result of the pre-processing of the image by the device before the AP layer. It is noteworthy that --- although the camera claims to capture full 3-channel, 8-bit RGB information --- this is not quite true. 
+
+In attempting to solve this problem, the obvious idea is to find all the non-zero bins and fit an interpolating function between them. This will effectively remove the empty bin artifacts within the densely-packed region which is the distribution we're interested in. However, the empty bins outside the main distribution are not artifacts and are genuinely empty bins, so removing all the empty bins and then fitting the function joins together any outlying points or secondary distributions corresponding to regions such as the background. We therefore desire a method which will allow us to keep all the non-empty bins and the empty bins outside the main distribution, i.e. all the genuinely empty bins. To achieve this, we designed a Matlab routine which essentially paints a region around each non-zero point, marking it as part of the main distribution. It then takes all the unmarked regions and includes all the empty bins in those regions. So, the set of points which is all the non-empty bins and all the empty bins in the unmarked regions satisfies the requirement, and a simple interpolating function can easily be fitted to those points.
+
+<nice little despeckling figure!>
 
 
 \subsection{Blob Detection}\label{sec:BlobDetection}
-Using Mathematica's blob detection algorithm, we can find the patches of chromatic information, which gives us starting values for the standard deviation. We expect there to be two distinct blobs still present: one corresponding to the target, and one to the background --- the background essentially being monochromatic. Steps 1 to 6 have also been followed for background images. 
+Using MATLAB's blob detection algorithm, we can find the patches of chromatic information, which gives us starting values for the standard deviation. We expect there to be two distinct blobs still present: one corresponding to the target, and one to the background --- the background essentially being monochromatic. Steps 1 to 6 have also been followed for background images. 
 
 <Insert background removal section here.>
 Having removed the empty bin artifacts and compensated for white-out/black-out effects, the final step is to remove the bin counts of the bins which are associated with the background, thereby leaving a distribution which corresponds to chromatic skin values and which is artifact- and systematic-error-free. With the chromatic bins processed as they have been so far, it is clear that there is a distinct distribution for the skin and a distinct distribution for the background. However, a distribution for the background was produced earlier, compensating for the iPhone's pre-AP-layer processing. Background removal is automated using a Matlab function which will negate the bins from one sample set using the distribution found for a second sample set.
+
+<blob detection figs!>
 
 
 This allows us to identify which blobs apply to the background, and sweep it clean.
