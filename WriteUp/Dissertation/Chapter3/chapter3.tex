@@ -11,12 +11,8 @@
 <Intro here>
 
 \section{Chromatic Target Model}
-Describe the object as a series--as a blob it's essentially one color. so we're not looking for things that have a lot of chromatic variation, what we're looking for is essentially things of one color, but has variation around its average color, which can be described as a product of two 1D Gaussians--let's just say as a 2D Gaussian distribution in the chromatic space. We're doing, like, chromatic statistics here; we're starting from some knowledge and that knowledge comes from the paper, so we reference the papers which have done chromatic skin statistics and they've done a variety of different approaches, but found it's describes well as a 2D Gaussian, so we expect this will be true for us as well. The difference with our approach is that we have fine control over the color spae, and so we are going to orient the color space so that the 2D Gaussian can be written as the product of two 1D Gaussians, i.e. the major and minor axes of the 1D Gaussians line up with the chromatic axes of our color space.
 
-The goal of this is to get a value of $\sigma$, two standard deviations (a vector), the position for the mean $\mu$, and an angle $\theta$, the angle of the major axis of the 2D Gaussian found in the $\theta = 0$ color space. This then allows us to use the methods presented in chapter 2 to design a bespoke color space which will preserve all the chromatic information about the target model.
-
-
-What we are looking for is essentially things of one color, but with variation around its average color, which can be described as a 2D Gaussian distribution in the chromatic space. Chromatic skin statistics have been collected by several authors <ref papers here> using a variety of different approaches, but most have found that the statistics are well-described by 2D Gaussians. The goal of this chapter is to find a value of $\sigma$ (two standard deviations); $\mu$, the position for the mean; and $\theta\prime$, the angle of the major axis of the 2D Gaussian found in the $\theta = 0$ color space. This will allow us to use the methods presented in chapter 2 to design a bespoke color space which will preserve all the chromatic information about the target model.
+What we are looking for is essentially things of one color, but with variation around its average color. Chromatic skin statistics have been collected by several authors <ref papers here> using a variety of different approaches, but most have found that the statistics are well-described by 2D Gaussians. The goal of this chapter is to find a value of $\sigma$ (two standard deviations); $\mu$, the position for the mean; and $\theta^\prime$, the angle of the major axis of the 2D Gaussian found in the LCaCb $\theta = 0$ color space. This will allow us to use the methods presented in chapter 2 to design a bespoke color space which will preserve all the chromatic information about the target model.
 
 \section{iPhone Camera Characteristics} \label{sec:iPhoneCameraCharacteristics}
 
@@ -58,7 +54,7 @@ In a real world context, it is relatively safe to presume that the scene will be
 \section{Algorithm for Generating the Model}\label{sec:AlgorithmForGeneratingModel}
 Here we present the algorithm which is used to generate the chromatic model. It's assumed we have RGB image sets for the target with simple, monochromatic backgrounds.
 
-\animategraphics[loop,autoplay,controls]{12}{Chapter3/Figs/Animation/frame}{0001}{0025}
+%\animategraphics[loop,autoplay,controls]{12}{Chapter3/Figs/Animation/frame}{0001}{0025}
 
 %\includemedia[
 %  label=cube_test,
