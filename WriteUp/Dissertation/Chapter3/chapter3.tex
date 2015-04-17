@@ -15,10 +15,64 @@ Describe the object as a series--as a blob it's essentially one color. so we're 
 
 The goal of this is to get a value of $\sigma$, two standard deviations (a vector), the position for the mean $\mu$, and an angle $\theta$, the angle of the major axis of the 2D Gaussian found in the $\theta = 0$ color space. This then allows us to use the methods presented in chapter 2 to design a bespoke color space which will preserve all the chromatic information about the target model.
 
+
+What we are looking for is essentially things of one color, but with variation around its average color, which can be described as a 2D Gaussian distribution in the chromatic space. Chromatic skin statistics have been collected by several authors <ref papers here> using a variety of different approaches, but most have found that the statistics are well-described by 2D Gaussians. The goal of this chapter is to find a value of $\sigma$ (two standard deviations); $\mu$, the position for the mean; and $\theta\prime$, the angle of the major axis of the 2D Gaussian found in the $\theta = 0$ color space. This will allow us to use the methods presented in chapter 2 to design a bespoke color space which will preserve all the chromatic information about the target model.
+
+\section{iPhone Camera Characteristics} \label{sec:iPhoneCameraCharacteristics}
+
+Unlike more general cameras, the iPhone's camera performs certain pre-processing tasks on the raw image before it reaches the AP layer. Typically, cameras have a specific white point value, which is the value corresponding to white. It isn't necessarily the corner of the RGB cube; finding this value is part of the camera calibration. It also determines the orientation of the luminosity axis, which passes through zero to the white point. This is why all pre-defined color space functions have an implicit white point correction. However, the iPhone's white point is always set to the corner of the RGB cube before the image reaches the AP layer. So, when developing an algorithm for the iPhone, white point correction is not necessary, while on other devices the algorithm may need to be adapted accordingly.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.80\textwidth]{Chapter3/Figs/lxy_general_white_point.eps}
+    \caption{The white point for the general skin sample set described in Section~\ref{sec:SkinStatistics}.}  \label{fig:WhitePoint}
+\end{figure}
+
+While gathering skin statistics for the purposes of this project, the original approach involved taking photos of individual skin --- each with distinct color characteristics --- taken under different lighting conditions with a constant background using the iPhone camera. The background was included in order to obtain data on the edges of the skin. The background would be photographed, then again with each individual's hand over the same background. Afterward, the statistics would be collected and the background removed by negating the background statistics.
+
+Surprisingly, this approached failed to work; the background reappeared (Figure~\ref{fig:BGFailure}).
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/xy_bg_failed.eps}
+    \caption{Initial attempt at removing background; unsuccessful.} \label{fig:BGFailure}
+\end{figure}
+
+The background statistics changed with the skin present in the photo. This is because the iPhone adjusts to images with very strong color characteristics. This is an undocumented feature of the iPhone processing. The only way to compensate for this unwelcome pre-processing is to photograph the background with a strongly contrasting object present, but one which is easily cropped out of the image before the background stats are collected. After collecting the statistics again, the result was much improved (Figure~\ref{fig:BGSuccess}).
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/bg_cap.eps}
+    \caption{The red marker cap contrasts with the green background.}  \label{fig:BGCap}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/xy_bg_success.eps}
+    \caption{Successful background removal.}  \label{fig:BGSuccess}
+\end{figure}
+
+In a real world context, it is relatively safe to presume that the scene will be chromatically complex enough that the color correction won't be detrimental to detection, and perhaps even beneficial under unusual lighting conditions. But for gathering statistics, it proved to be a massive pain.
+
+
 \section{Algorithm for Generating the Model}\label{sec:AlgorithmForGeneratingModel}
 Here we present the algorithm which is used to generate the chromatic model. It's assumed we have RGB image sets for the target with simple, monochromatic backgrounds.
 
-\animategraphics[loop,autoplay,controls]{12}{Chapter3/Figs/Animation/frame}{00}{24}
+\animategraphics[loop,autoplay,controls]{12}{Chapter3/Figs/Animation/frame}{0001}{0025}
+
+%\includemedia[
+%  label=cube_test,
+%  width=0.7\linewidth,height=0.7\linewidth,
+%  addresource=Chapter3/Figs/Animation/RGB_FSkin_Hand_Bin.swf, %two video files
+%  transparent,
+%  activate=pageopen,
+%  flashvars={
+%    source=Chapter3/Figs/Animation/RGB_FSkin_Hand_Bin.swf
+%   &loop=true
+%   &scaleMode=letterbox
+%  }
+%]{}{Chapter3/Figs/Animation/RGB_FSkin_Hand_Bin.swf}
+
 
 \subsection{RGB Bin allocation}\label{sec:RGBBinAllocation}
 All the information which is present in the 8-bit unsigned images is in an RGB space. The first problem is that we have a large image set with large images. We're not interested in what these images are pictures of; we're only interested in the individual pixel values themselves. So, we produce a 3D histogram with one bin for each RGB combination. This gives us a histogram with 256x256x256 bins. This is a very large data set; perhaps unnecessarily so. But it's easier to work with than a set of images, and is guaranteed to contain all the relevant information for the statistics. 
@@ -96,42 +150,6 @@ Aside from differing lighting, this is consistent with the notion that skin has 
 Given that we are free to choose the orientation of the color space about the luminosity axis, the Matlab code allows us to find an orientation $\theta$ of the color space about the luminosity axis in which the distribution can be expressed as a product of 1-dimensional Gaussians along the axes. The final resulting distribution is presented in Figure~\ref{fig:DistributionAndGaussianFit}.
 
 For numerical reasons, the value for $\theta$ was found iteratively by performing the color space transformation and the statistical fit until the value for $\theta$ converged. (See Figure~\ref{fig:ConvergenceTheta}.)
-
-\section{iPhone Camera Characteristics} \label{sec:iPhoneCameraCharacteristics}
-
-Unlike more general cameras, the iPhone's camera performs certain pre-processing tasks on the raw image before it reaches the AP layer. Typically, cameras have a specific white point value, which is the value corresponding to white. It isn't necessarily the corner of the RGB cube; finding this value is part of the camera calibration. It also determines the orientation of the luminosity axis, which passes through zero to the white point. This is why all pre-defined color space functions have an implicit white point correction. However, the iPhone's white point is always set to the corner of the RGB cube before the image reaches the AP layer. So, when developing an algorithm for the iPhone, white point correction is not necessary, while on other devices the algorithm may need to be adapted accordingly.
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.80\textwidth]{Chapter3/Figs/lxy_general_white_point.eps}
-    \caption{The white point for the general skin sample set described in Section~\ref{sec:SkinStatistics}.}  \label{fig:WhitePoint}
-\end{figure}
-
-While gathering skin statistics for the purposes of this project, the original approach involved taking photos of individual skin --- each with distinct color characteristics --- taken under different lighting conditions with a constant background using the iPhone camera. The background was included in order to obtain data on the edges of the skin. The background would be photographed, then again with each individual's hand over the same background. Afterward, the statistics would be collected and the background removed by negating the background statistics.
-
-Surprisingly, this approached failed to work; the background reappeared (Figure~\ref{fig:BGFailure}).
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/xy_bg_failed.eps}
-    \caption{Initial attempt at removing background; unsuccessful.} \label{fig:BGFailure}
-\end{figure}
-
-The background statistics changed with the skin present in the photo. This is because the iPhone adjusts to images with very strong color characteristics. This is an undocumented feature of the iPhone processing. The only way to compensate for this unwelcome pre-processing is to photograph the background with a strongly contrasting object present, but one which is easily cropped out of the image before the background stats are collected. After collecting the statistics again, the result was much improved (Figure~\ref{fig:BGSuccess}).
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/bg_cap.eps}
-    \caption{The red marker cap contrasts with the green background.}  \label{fig:BGCap}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/xy_bg_success.eps}
-    \caption{Successful background removal.}  \label{fig:BGSuccess}
-\end{figure}
-
-In a real world context, it is relatively safe to presume that the scene will be chromatically complex enough that the color correction won't be detrimental to detection, and perhaps even beneficial under unusual lighting conditions. But for gathering statistics, it proved to be a massive pain.
 
 
 \section{Implementation of Skin Color Space Statistics in Matlab}\label{sec:SkinColorSpaceStatsMatlab}
