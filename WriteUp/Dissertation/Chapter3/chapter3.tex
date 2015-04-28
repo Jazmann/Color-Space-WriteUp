@@ -7,13 +7,13 @@
     \graphicspath{{Chapter3/Figs/Vector/}{Chapter3/Figs/}}
 \fi
 
-Collapse_the_Bins.jpg
-Fill_the_Bins.jpg
-Rotate_the_Bins.jpg	
-Top_and_Tail_the_Bins.jpg
-Despeckle_the_Bins.jpg
-Find_the_Blobs.jpg
-Skin_the_Bins.jpg
+%Collapse_the_Bins.jpg
+%Fill_the_Bins.jpg
+%Rotate_the_Bins.jpg	
+%Top_and_Tail_the_Bins.jpg
+%Despeckle_the_Bins.jpg
+%Find_the_Blobs.jpg
+%Skin_the_Bins.jpg
 
 
 <Intro here>
@@ -84,19 +84,61 @@ Here we present the algorithm which is used to generate the chromatic model. It'
 
 \def\individual{FJN}
 
+
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Fill_the_Bins.jpg}
-    \caption{Filling the RGB Bins}  \label{fig:FillTheBins}
-\end{figure}
+        \caption{Filling the RGB Bins}  \label{fig:FillTheBins}
+    \end{figure}
 
-%Chapter3/Figs/FJN/Fill_the_Bins.jpg
-%Chapter3/Figs/FJN/Skin_the_Bins.jpg
-%Chapter3/Figs/FJN/Rotate_the_Bins.jpg	
-%Chapter3/Figs/FJN/Top_and_Tail_the_Bins.jpg
-%Chapter3/Figs/FJN/Collapse_the_Bins.jpg
-%Chapter3/Figs/FJN/Despeckle_the_Bins.jpg
-%Chapter3/Figs/FJN/Find_the_Blobs.jpg
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Skin_the_Bins.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Skin_the_Bins}
+    \end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Rotate_the_Bins.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Rotate_the_Bins}
+    \end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Top_and_Tail_the_Bins.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Top_and_Tail_the_Bins}
+    \end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Collapse_the_Bins.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Collapse_the_Bins}
+    \end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Despeckle_the_Bins.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Despeckle_the_Bins}
+    \end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Find_the_Blobs.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Find_the_Blobs}
+    \end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Fit_the_Gaussian0.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Fit_the_Gaussian0}
+    \end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Fit_the_Gaussian1.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Fit_the_Gaussian1}
+    \end{figure}
 
 
 All the information which is present in the 8-bit unsigned images is in an RGB space. The first problem is that we have a large image set with large images. We're not interested in what these images are pictures of; we're only interested in the individual pixel values themselves. So, we produce a 3D histogram with one bin for each RGB combination. This gives us a histogram with 256x256x256 bins. This is a very large data set, perhaps unnecessarily so, but it's easier to work with than a set of images and is guaranteed to contain all the relevant information for the statistics.
