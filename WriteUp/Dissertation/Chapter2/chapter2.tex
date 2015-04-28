@@ -1446,7 +1446,7 @@ The Gaussian distribution and the cumulative distribution are shown in Figure~\r
 \begin{figure}[h!]
   \caption{Error function.}  \label{fig:ErrorFunctionGraph}
   \centering
-    \includegraphics[width=\textwidth]{Chapter2/Figs/errorFunction.eps}
+    \includegraphics[width=\textwidth]{Chapter2/Figs/errorFunction.jpg}
 \end{figure}
 
 First, we determine the maximum value taken in the domain. This is simply found by evaluating the function at $\xMax$. It should be noted that --- if the Gaussian distribution is well contained in the source domain --- the maximum value should be equal to the amplitude. For the sake of simplicity, we'll ignore the amplitude of the fitted Gaussian found previously as it is not relevant to the design of the re-distribution function. So, to fix the range of the distribution function, we first scale to the range $0:1$ by simply dividing through by the maximum value, and then re-scale to the destination range $\yRange = \yMax - \yMin$ and shift by $\yMin$.
