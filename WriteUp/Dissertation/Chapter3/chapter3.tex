@@ -7,14 +7,6 @@
     \graphicspath{{Chapter3/Figs/Vector/}{Chapter3/Figs/}}
 \fi
 
-%Collapse_the_Bins.jpg
-%Fill_the_Bins.jpg
-%Rotate_the_Bins.jpg	
-%Top_and_Tail_the_Bins.jpg
-%Despeckle_the_Bins.jpg
-%Find_the_Blobs.jpg
-%Skin_the_Bins.jpg
-
 
 <Intro here>
 
@@ -28,17 +20,17 @@ Unlike more general cameras, the iPhone's camera performs certain pre-processing
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.80\textwidth]{Chapter3/Figs/lxy_general_white_point.jpg}
+    \includegraphics[width=0.95\textwidth]{Chapter3/Figs/lxy_general_white_point.jpg}
     \caption{The white point for the general skin sample set described in Section~\ref{sec:SkinStatistics}.}  \label{fig:WhitePoint}
 \end{figure}
 
-While gathering skin statistics for the purposes of this project, the original approach involved taking photos of individual skin --- each with distinct color characteristics --- taken under different lighting conditions with a constant background using the iPhone camera. The background was included in order to obtain data on the edges of the skin. The background would be photographed, then again with each individual's hand over the same background. Afterward, the statistics would be collected and the background removed by negating the background statistics.
+While gathering skin statistics for the purposes of this project, the original approach involved taking photos of individual skin --- each with distinct color characteristics --- taken under different lighting conditions with a constant background using the iPhone camera. The background was included in order to obtain data on the edges of the skin. The background would be photographed, then again with each individual's hand over the same background. Afterwards, the statistics would be collected and the background removed by negating the background statistics.
 
 Surprisingly, this approached failed to work; the background reappeared (Figure~\ref{fig:BGFailure}).
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/xy_bg_failed.jpg}
+    \includegraphics[width=0.95\textwidth]{Chapter3/Figs/CaCb_bg_failed.jpg}
     \caption{Initial attempt at removing background; unsuccessful.} \label{fig:BGFailure}
 \end{figure}
 
@@ -46,13 +38,7 @@ The background statistics changed with the skin present in the photo. This is be
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/bg_cap.jpg}
-    \caption{The red marker cap contrasts with the green background.}  \label{fig:BGCap}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/xy_bg_success.jpg}
+    \includegraphics[width=0.80\textwidth]{Chapter3/Figs/CaCb_bg_success.jpg}
     \caption{Successful background removal.}  \label{fig:BGSuccess}
 \end{figure}
 
@@ -81,63 +67,16 @@ Here we present the algorithm which is used to generate the chromatic model. It'
 \subsection{RGB Bin Allocation}\label{sec:RGBBinAllocation}
 
 
-
+% Choose an individual for the plots
 \def\individual{FJN}
+%\def\individual{FSkin}
+%\def\individual{JSkin}
+%\def\individual{NSkin}
 
-
-\begin{figure}[h!]
+\begin{figure}[h]
   \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Fill_the_Bins.jpg}
+    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Fill_the_Bins.jpg}
         \caption{Filling the RGB Bins}  \label{fig:FillTheBins}
-    \end{figure}
-
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Skin_the_Bins.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Skin_the_Bins}
-    \end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Rotate_the_Bins.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Rotate_the_Bins}
-    \end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Top_and_Tail_the_Bins.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Top_and_Tail_the_Bins}
-    \end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Collapse_the_Bins.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Collapse_the_Bins}
-    \end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Despeckle_the_Bins.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Despeckle_the_Bins}
-    \end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Find_the_Blobs.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Find_the_Blobs}
-    \end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Fit_the_Gaussian0.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Fit_the_Gaussian0}
-    \end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.60\textwidth]{Chapter3/Figs/\individual/Fit_the_Gaussian1.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Fit_the_Gaussian1}
     \end{figure}
 
 
@@ -151,7 +90,13 @@ The algorithm is written in MATLAB, and it very simply loads up each image in th
 \subsection{Skinning the Bins}\label{sec:SkinningTheBins}
 Next, the bins which are at the extreme edges (i.e. the ones which correspond to the outer faces of the RGB cube) are set equal to 0 with a specified depth. For example: if a depth of 3 is requested, bins of positions 0, 1 and 2, and 253, 254 and 255 are set to 0 in all three dimensions, and the total pixel count is adjusted to compensate for the nulled bin counts. This is done to address problems of white-out and black-out as described in \ref{sec:TopAndTail}.
 
-<Skinning bins figure here>
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Skin_the_Bins.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Skin_the_Bins}
+    \end{figure}
+
 
 It should be noted that the reason the RGB cube is skinned before rotation is because it's not as easy to do in the rotated color space.
 
@@ -159,10 +104,24 @@ It should be noted that the reason the RGB cube is skinned before rotation is be
 \subsection{Rotating the Bins}\label{sec:RotatingTheBins}
 Because each of the bins corresponds to just one RGB value, we can find the equivalent bin in the LCaCb space simply by rotating the bin index. This is done using the normalized rotation as described in Chapter 2, as we desire the mean $\mu$ and standard deviation $\sigma$ to be specified in the $0:1$ range, which is easier to find where all the axes are of the same length. With this done, we now have a set of bins in the LCaCb color space equivalent to that which would be found if we had applied the transform to each of the images and then collected the statistics from the transformed images.
 
-<Rotated bins figure here>
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Rotate_the_Bins.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Rotate_the_Bins}
+    \end{figure}
+
+
 
 
 \subsection{Top and Tail}\label{sec:TopAndTail}
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Top_and_Tail_the_Bins.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Top_and_Tail_the_Bins}
+    \end{figure}
+
 
 Naively collapsing the bins along the luminosity axis artificially skews the chromatic distribution along the axis which passed through the luminosity axis; this is easily explained due to white-out and black-out. As luminosity increases or decreases, it will eventually hit the edge of the cube. Having reached its numerical limit, the luminosity slides toward the corner of the cube, resulting in a white or black value.
 
@@ -174,7 +133,13 @@ To accommodate this, we collapse the bins excluding the bins which are clearly s
 \subsection{Collapsing the Bins}\label{sec:CollapsingTheBins}
 Because we're modelling the chromatic space and not the luminosity, we now collapse the 3D histogram by summing the bin values along the luminosity axis. So, we now have a 2D histogram in CaCb chromatic space.
 
-<figure of 3D histogram 'cause it's quite a nice thing>
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Collapse_the_Bins.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Collapse_the_Bins}
+    \end{figure}
+
 
 
 \subsection{De-Speckling the Bin Values}\label{sec:DeSpeckle}
@@ -182,7 +147,13 @@ The raw camera output has, by this stage, undergone two rounds of processing ---
 
 In attempting to solve this problem, the obvious idea is to find all the non-zero bins and fit an interpolating function between them. This will effectively remove the empty bin artefacts within the densely-packed region which is the distribution we're interested in. However, the empty bins outside the main distribution are not artefacts and are genuinely empty bins, so removing all the empty bins and then fitting the function joins together any outlying points or secondary distributions corresponding to regions such as the background. We therefore desire a method which will allow us to keep all the non-empty bins and the empty bins outside the main distribution, i.e. all the genuinely empty bins. To achieve this, we designed a Matlab routine which essentially paints a region around each non-zero point, marking it as part of the main distribution. It then takes all the unmarked regions and includes all the empty bins in those regions. So, the set of points which is all the non-empty bins and all the empty bins in the unmarked regions satisfies the requirement, and a simple interpolating function can easily be fitted to those points.
 
-<nice little despeckling figure!>
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Despeckle_the_Bins.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Despeckle_the_Bins}
+    \end{figure}
+
 
 
 \subsection{Blob Detection}\label{sec:BlobDetection}
@@ -191,7 +162,12 @@ Using MATLAB's blob detection algorithm, we can find the patches of chromatic in
 <Insert background removal section here.>
 Having removed the empty bin artefacts and compensated for white-out/black-out effects, the final step is to remove the bin counts of the bins which are associated with the background, thereby leaving a distribution which corresponds to chromatic skin values and which is artefact and systematic-error-free. With the chromatic bins processed as they have been so far, it is clear that there is a distinct distribution for the skin and a distinct distribution for the background. However, a distribution for the background was produced earlier, compensating for the iPhone's pre-AP-layer processing. Background removal is automated using a Matlab function which will negate the bins from one sample set using the distribution found for a second sample set.
 
-<blob detection figs!>
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Find_the_Blobs.jpg}
+        \caption{Filling the RGB Bins}  \label{fig:Find_the_Blobs}
+    \end{figure}
 
 
 This allows us to identify which blobs apply to the background, and sweep it clean.
@@ -208,7 +184,18 @@ We now have a histogram which has bin values relevant to the target and no other
     \caption{Distribution and Gaussian fit to the chromatic pixel values in the new color space.}  \label{fig:DistributionAndGaussianFit}
 \end{figure}
 
-<new Mathematica figure here>
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Fit_the_Gaussian0.jpg}
+        \caption{The Gaussian fit to the blob}  \label{fig:Fit_the_Gaussian0}
+    \end{figure}
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Fit_the_Gaussian1.jpg}
+        \caption{The Gaussian fit to the blob}  \label{fig:Fit_the_Gaussian1}
+    \end{figure}
 
 \section{Sample Sets}\label{sec:SampleSets}
 There are three individual sets with different skin tones.
