@@ -16,17 +16,11 @@ Essentially we are looking for monochromatic objects with a small variation arou
 
 \section{iPhone Camera Characteristics} \label{sec:iPhoneCameraCharacteristics}
 
-Unlike more general cameras, the iPhone's camera performs certain pre-processing tasks on the raw image before it reaches the AP layer. Typically, cameras have a specific white point value, which is the value corresponding to white. It isn't necessarily the corner of the RGB cube; finding this value is part of the camera calibration. It also determines the orientation of the luminosity axis, which passes through zero to the white point. This is why all pre-defined color space functions have an implicit white point correction. However, the iPhone's white point is always set to the corner of the RGB cube before the image reaches the AP layer. So, when developing an algorithm for the iPhone, white point correction is not necessary, while on other devices the algorithm may need to be adapted accordingly.
+The iPhone's camera pre-processes the raw image before it reaches the AP layer which causes difficulties in collecting reliable statistics. Typically, cameras have a specific white point value, which is the RGB value corresponding to white which isn't necessarily the corner of the RGB cube; finding this value is part of the camera calibration. It also determines the orientation of the luminosity axis, which passes through zero to the white point. This is why all pre-defined color space functions have an implicit white point correction. However, the iPhone's white point is always set to the corner of the RGB cube before the image reaches the AP layer. So, when developing an algorithm for the iPhone, white point correction is not necessary, while on other devices the algorithm may need to be adapted accordingly.
 
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.95\textwidth]{Chapter3/Figs/lxy_general_white_point.jpg}
-    \caption{The white point for the general skin sample set described in Section~\ref{sec:SkinStatistics}.}  \label{fig:WhitePoint}
-\end{figure}
+A second undocumented pre-processing stage became apparent while gathering skin statistics. The original approach taken used a set of photos of an individual's skin  under different lighting conditions against a constant monochromatic background captured with the iPhone camera. The background was included in order to obtain data on the edges of the skin. A background set of photos captured under the same conditions but without the presence of a hand would then be used to produce a statistical model which would be used to negate bin counts from the individual's skin set which corresponded to background values.
 
-While gathering skin statistics for the purposes of this project, the original approach involved taking photos of individual skin --- each with distinct color characteristics --- taken under different lighting conditions with a constant background using the iPhone camera. The background was included in order to obtain data on the edges of the skin. The background would be photographed, then again with each individual's hand over the same background. Afterwards, the statistics would be collected and the background removed by negating the background statistics.
-
-Surprisingly, this approached failed to work; the background reappeared (Figure~\ref{fig:BGFailure}).
+Surprisingly, this approached failed to work; the background was not represented well by the collected background statistics (Figure~\ref{fig:BGFailure}).
 
 \begin{figure}[h!]
   \centering
@@ -34,7 +28,7 @@ Surprisingly, this approached failed to work; the background reappeared (Figure~
     \caption{Initial attempt at removing background; unsuccessful.} \label{fig:BGFailure}
 \end{figure}
 
-The background statistics changed with the skin present in the photo. This is because the iPhone adjusts to images with very strong color characteristics. This is an undocumented feature of the iPhone processing. The only way to compensate for this unwelcome pre-processing is to photograph the background with a strongly contrasting object present, but one which is easily cropped out of the image before the background stats are collected. After collecting the statistics again, the result was much improved (Figure~\ref{fig:BGSuccess}).
+The background statistics changed with the skin present in the photo. This is because the iPhone adjusts to images with very strong color characteristics. This color correction is an undocumented feature of the iPhone processing. The only way to compensate for this unwelcome pre-processing is to photograph the background with a strongly contrasting object present, but one which is easily cropped out of the image before the background statistics are collected. After collecting the statistics again, the result was much improved (Figure~\ref{fig:BGSuccess}).
 
 \begin{figure}[h!]
   \centering
@@ -44,11 +38,19 @@ The background statistics changed with the skin present in the photo. This is be
 
 In a real world context, it is relatively safe to presume that the scene will be chromatically complex enough that the color correction won't be detrimental to detection, and perhaps even beneficial under unusual lighting conditions. But for gathering statistics, it proved to be a massive pain.
 
+\subsection{Whiteout and Blackout}\label{sec:WhiteoutAndBlackout}
+A monochromatic object with average RGB color $\mathbf{\mu}=\left\{\mu_R, \mu_G, \mu_B \right\}$ under different lighting conditions produce an in-camera value of $\left\{\mu_R +\lambda, \mu_G  +\lambda, \mu_B +\lambda \right\}$. Each channel has a numerical limit which means that when that limit is reached further change in luminosity $\lambda$ will result in a change in chromatic value. At high luminosities the colors converge on white becoming washed out. This is referred to as whiteout. Similarly at low luminosities the colors converge on black which is referred to as blackout.
+
+It is reasonable to assume that pixel values which contain fully saturated channel elements are unreliable as they may be the result of whiteout or blackout. Unfortunately the iPhone also performs a auto brightness and contrast adjustment moving pixel values away from the sides of the RGB cube. The result of this processing is that the values with a luminosity above $\lambda_w$ and below $\lambda_b$ are unreliable.
 
 \section{Algorithm for Generating the Model}\label{sec:AlgorithmForGeneratingModel}
 Here we present the algorithm which is used to generate the chromatic model. It's assumed we have RGB image sets for the target with simple, monochromatic backgrounds.
 
-%\animategraphics[loop,autoplay,controls]{12}{Chapter3/Figs/Animation/frame}{0001}{0025}
+%\animategraphics[loop,autoplay,controls]{12}{Chapter3/Figs/FSkin/RGB_FSkin_Bin_Animation/frame}{0001}{0025}
+%\animategraphics[loop,autoplay,controls]{12}{Chapter3/Figs/FSkin/RGB_FSkin_Bin_Skinned_Animation/frame}{0001}{0025}
+%\animategraphics[loop,autoplay,controls]{12}{Chapter3/Figs/FSkin/RGB_FSkin_Bin_Skinned_Rot_Animation/frame}{0001}{0025}
+%\animategraphics[loop,autoplay,controls]{12}{Chapter3/Figs/FSkin/RGB_FSkin_Bin_Skinned_Rot_TopTail_Animation/frame}{0001}{0025}
+
 
 %\includemedia[
 %  label=cube_test,
@@ -68,134 +70,131 @@ Here we present the algorithm which is used to generate the chromatic model. It'
 
 
 % Choose an individual for the plots
-\def\individual{FJN}
-%\def\individual{FSkin}
+%\def\individual{FJN}
+\def\individual{FSkin}
 %\def\individual{JSkin}
 %\def\individual{NSkin}
 
-\begin{figure}[h]
-  \centering
-    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Fill_the_Bins.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:FillTheBins}
-    \end{figure}
 
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.9\textwidth]{Chapter3/Figs/\individual/Fill_the_Bins.jpg}
+        \caption{\textbf{The 3D RGB histogram}. Distinct distributions can be seen for the Skin and the background. Here the bin color corresponds to the color which that bin represents and the opacity indicates the frequency of that bin value. }  \label{fig:Fill_the_Bins}
+    \end{figure}
 
 All the information which is present in the 8-bit unsigned images is in an RGB space. The first problem is that we have a large image set with large images. We're not interested in what these images are pictures of; we're only interested in the individual pixel values themselves. So, we produce a 3D histogram with one bin for each RGB combination. This gives us a histogram with 256x256x256 bins. This is a very large data set, perhaps unnecessarily so, but it's easier to work with than a set of images and is guaranteed to contain all the relevant information for the statistics.
 
-<put bin figure here>
 
 The algorithm is written in MATLAB, and it very simply loads up each image in the set and runs through each pixel, incrementing the corresponding bin. As it's going, it keeps a count of the number of bin allocations, so we have a total pixel count. After it's run through all the images, it find the largest bin and keeps a record of the largest bin count, so we can have a normalized bin when requested.
 
 
 \subsection{Skinning the Bins}\label{sec:SkinningTheBins}
-Next, the bins which are at the extreme edges (i.e. the ones which correspond to the outer faces of the RGB cube) are set equal to 0 with a specified depth. For example: if a depth of 3 is requested, bins of positions 0, 1 and 2, and 253, 254 and 255 are set to 0 in all three dimensions, and the total pixel count is adjusted to compensate for the nulled bin counts. This is done to address problems of white-out and black-out as described in \ref{sec:TopAndTail}.
 
-
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
     \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Skin_the_Bins.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Skin_the_Bins}
+        \caption{\textbf{The 3D RGB histogram after 'skinning'}. Distinct distributions can be seen for the Skin and the background. Here the bin color corresponds to the color which that bin represents and the opacity indicates the frequency of that bin value. Bin counts outside the black lines are set to zero. }  \label{fig:Skin_the_Bins}
     \end{figure}
+
+Next, the bins which are at the extreme edges (i.e. the ones which correspond to the outer faces of the RGB cube) are set equal to 0 with a specified depth. For example: if a depth of 3 is requested, bins of positions 0, 1 and 2, and 253, 254 and 255 are set to 0 in all three dimensions, and the total pixel count is adjusted to compensate for the nulled bin counts. This is done to address problems of white-out and black-out as described in \ref{sec:WhiteoutAndBlackout}.
+
 
 
 It should be noted that the reason the RGB cube is skinned before rotation is because it's not as easy to do in the rotated color space.
 
 
 \subsection{Rotating the Bins}\label{sec:RotatingTheBins}
-Because each of the bins corresponds to just one RGB value, we can find the equivalent bin in the LCaCb space simply by rotating the bin index. This is done using the normalized rotation as described in Chapter 2, as we desire the mean $\mu$ and standard deviation $\sigma$ to be specified in the $0:1$ range, which is easier to find where all the axes are of the same length. With this done, we now have a set of bins in the LCaCb color space equivalent to that which would be found if we had applied the transform to each of the images and then collected the statistics from the transformed images.
 
-
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
     \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Rotate_the_Bins.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Rotate_the_Bins}
-    \end{figure}
+        \caption{\textbf{The 3D RGB histogram after rotation}. The skin and background distributions can be seen for the Skin and the background. Here the bin color corresponds to the color which that bin represents and the opacity indicates the frequency of that bin value. Bin counts outside the black lines are set to zero. }   \label{fig:Rotate_the_Bins}
+\end{figure}
+
+Because each of the bins corresponds to just one RGB value, we can find the equivalent bin in the LCaCb space simply by rotating the bin index. This is done using the normalized rotation as described in Chapter 2. The normalised rotation is used as we desire the mean $\mu$ and standard deviation $\sigma$ to be specified in the $0:1$ range, which is easier to find where all the axes are of the same length. With this done, we now have a set of bins in the LCaCb color space equivalent to that which would be found if we had applied the transform to each of the images and then collected the statistics from the transformed images.
+
 
 
 
 
 \subsection{Top and Tail}\label{sec:TopAndTail}
 
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
-    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Top_and_Tail_the_Bins.jpg}
+    \includegraphics[width=0.9\textwidth]{Chapter3/Figs/\individual/Top_and_Tail_the_Bins.jpg}
         \caption{Filling the RGB Bins}  \label{fig:Top_and_Tail_the_Bins}
     \end{figure}
 
 
-Naively collapsing the bins along the luminosity axis artificially skews the chromatic distribution along the axis which passed through the luminosity axis; this is easily explained due to white-out and black-out. As luminosity increases or decreases, it will eventually hit the edge of the cube. Having reached its numerical limit, the luminosity slides toward the corner of the cube, resulting in a white or black value.
+Naively collapsing the bins along the luminosity axis artificially skews the chromatic distribution along the axis which passed through the luminosity axis; this is easily explained due to white-out and black-out \ref{sec:WhiteoutAndBlackout}. 
+Although we've "skinned" the bins, the white and black tips of the cube suffer from white-out and black-out more than any other regions, and there's a tendency for pixel values to converge under the white point and the black point without necessarily hitting the side of the cube first due to the iPhone contrast and brightness adjustment. This can be seen in  \ref{fig:Top_and_Tail_the_Bins}. 
 
-Although we've "skinned" the bins, the white and black tips of the cube suffer from white-out and black-out more than any other regions, and there's a tendency for pixel values to converge under the white point and the black point without necessarily hitting the side of the cube first. This can be seen in <insert reference to banana picture>. There's also quite a lot of white and quite a lot of black in pretty much any image. Since we're just interested in the chromatic information, we nullify bin values above and below a certain threshold.
-
-To accommodate this, we collapse the bins excluding the bins which are clearly suffering from white-out and black-out. This could be done mathematically by taking the bin of the distribution which is furthest from the luminosity axis, and then finding the intersection with the RGB cube when this chromatic value is at its limits, just before it reaches the edge of the cube where it suffers from white-out or black-out. But it's a simple matter to look at the three projections of the 3D LCaCb bins and manually determine the limits for the valid region.
+We collapse the bins excluding the bins which are clearly suffering from white-out and black-out. This could be done mathematically by taking the bin of the distribution which is furthest from the luminosity axis, and then finding the intersection with the RGB cube when this chromatic value is at its limits, just before it reaches the edge of the cube where it suffers from white-out or black-out. But it's a simple matter to look at the three projections of the 3D LCaCb bins and manually determine the limits for the valid region.
 
 
 \subsection{Collapsing the Bins}\label{sec:CollapsingTheBins}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{Chapter3/Figs/\individual/Collapse_the_Bins.jpg}
+        \caption{\textbf{The 2D histogram after summing along the luminosity axis}. The color corresponds to the chromatic value of the bin at average luminosity. The opacity corresponds to the frequency of the chromatic value. }  \label{fig:Collapse_the_Bins}
+    \end{figure}
+    
 Because we're modelling the chromatic space and not the luminosity, we now collapse the 3D histogram by summing the bin values along the luminosity axis. So, we now have a 2D histogram in CaCb chromatic space.
 
 
-\begin{figure}[h]
-  \centering
-    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Collapse_the_Bins.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Collapse_the_Bins}
-    \end{figure}
 
 
 
 \subsection{De-Speckling the Bin Values}\label{sec:DeSpeckle}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Despeckle_the_Bins.jpg}
+        \caption{\textbf{The De-speckled Bins}. The action of the de-speckling algorithm can be seen in the right-hand close-up panels}  \label{fig:Despeckle_the_Bins}
+    \end{figure}
+    
 The raw camera output has, by this stage, undergone two rounds of processing --- first in the device, before the AP layer, creating an 8-bit RGB image; and then in the rotation to the LCaCb space. These processes are, unfortunately, not 1-to-1. This results in some bins being artificially overpopulated and other bins becoming artificially empty. The effect of the LCaCb rotation can be controlled by extending the axis lengths; this process can make for at worst 1-to-1 correspondence. However, this necessarily introduces a greater number of inaccessible bins. In terms of collecting the statistics, these effects are not problematic aside from the fact that it introduces empty bins inside the main region of interest, which causes difficulties for the algorithm further down the line. Graphically, this problem looks like speckling. This speckling is also apparent in the RGB bins, and it is assumed this is a result of the pre-processing of the image by the device before the AP layer. It is noteworthy that although the camera claims to capture full 3-channel, 8-bit RGB information this is not quite true. 
 
 In attempting to solve this problem, the obvious idea is to find all the non-zero bins and fit an interpolating function between them. This will effectively remove the empty bin artefacts within the densely-packed region which is the distribution we're interested in. However, the empty bins outside the main distribution are not artefacts and are genuinely empty bins, so removing all the empty bins and then fitting the function joins together any outlying points or secondary distributions corresponding to regions such as the background. We therefore desire a method which will allow us to keep all the non-empty bins and the empty bins outside the main distribution, i.e. all the genuinely empty bins. To achieve this, we designed a Matlab routine which essentially paints a region around each non-zero point, marking it as part of the main distribution. It then takes all the unmarked regions and includes all the empty bins in those regions. So, the set of points which is all the non-empty bins and all the empty bins in the unmarked regions satisfies the requirement, and a simple interpolating function can easily be fitted to those points.
 
 
-\begin{figure}[h]
-  \centering
-    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Despeckle_the_Bins.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Despeckle_the_Bins}
-    \end{figure}
 
 
 
 \subsection{Blob Detection}\label{sec:BlobDetection}
-Using MATLAB's blob detection algorithm, we can find the patches of chromatic information, which gives us starting values for the standard deviation. We expect there to be two distinct blobs still present: one corresponding to the target, and one to the background --- the background essentially being monochromatic. Steps 1 to 6 have also been followed for background images. 
-
-<Insert background removal section here.>
-Having removed the empty bin artefacts and compensated for white-out/black-out effects, the final step is to remove the bin counts of the bins which are associated with the background, thereby leaving a distribution which corresponds to chromatic skin values and which is artefact and systematic-error-free. With the chromatic bins processed as they have been so far, it is clear that there is a distinct distribution for the skin and a distinct distribution for the background. However, a distribution for the background was produced earlier, compensating for the iPhone's pre-AP-layer processing. Background removal is automated using a Matlab function which will negate the bins from one sample set using the distribution found for a second sample set.
-
-
-\begin{figure}[h]
-  \centering
-    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Find_the_Blobs.jpg}
-        \caption{Filling the RGB Bins}  \label{fig:Find_the_Blobs}
-    \end{figure}
-
-
-This allows us to identify which blobs apply to the background, and sweep it clean.
-
-
-\subsection{The Gaussian Fit}\label{sec:TheGaussianFit}
-We now have a histogram which has bin values relevant to the target and no others. We now fit a 2D Gaussian to a normalized histogram values, initializing the routine with the values for the mean $\mu$ and the rough elliptical axis lengths for the standard deviation $\sigma$ provided by the blob detection.
-
-<Insert bit where we copy over the angle here.>  
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=\textwidth]{Chapter3/Figs/crosshairFigureFinal.jpg}
-    \caption{Distribution and Gaussian fit to the chromatic pixel values in the new color space.}  \label{fig:DistributionAndGaussianFit}
-\end{figure}
+    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Find_the_Blobs.jpg}
+        \caption{\textbf{The Blob Detection.} The detected blobs can be seen in the right-hand panel with the ellipse fit overlayed. The split does not depend on the ellipse but on the extreme edges of the blob.} \label{fig:Find_the_Blobs}
+    \end{figure}
+    
+Having removed the empty bin artefacts and compensated for white-out/black-out effects, the final step is to remove the bin counts of the bins which are associated with the background, thereby leaving a distribution which corresponds to chromatic skin values and which is artefact and systematic-error-free. With the chromatic bins processed as they have been so far, it is clear that there is a distinct distribution for the skin and a distinct distribution for the background. However, a distribution for the background was produced earlier, compensating for the iPhone's pre-AP-layer processing. 
 
+Using MATLAB's blob detection algorithm, we can find the distinct patches of chromatic information. We expect there to be two distinct blobs: one corresponding to the target skin values, and one to the monochromatic background. The distribution is divided into two, one for each of the detected blobs \ref{fig:Find_the_Blobs}. The blob detection algorithm also returns the center $\widetilde{\mu}$, eccentricity $\widetilde{\theta}$ and major and minor axis $\widetilde{\sigma}$ for an ellipse which most closely fits the blob shape. The distribution which contains the blob center closest to a reference skin value is chosen to be the skin distribution and the ellipse values are passed to the next step where the Gaussian fit is obtained. Only the bin values between the extreme edges of the blob are passed on to the next stage.
 
-\begin{figure}[h]
+\subsection{The Gaussian Fit}\label{sec:TheGaussianFit}
+
+\begin{figure}[h!]
   \centering
     \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Fit_the_Gaussian0.jpg}
         \caption{The Gaussian fit to the blob}  \label{fig:Fit_the_Gaussian0}
     \end{figure}
 
-\begin{figure}[h]
-  \centering
-    \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Fit_the_Gaussian1.jpg}
-        \caption{The Gaussian fit to the blob}  \label{fig:Fit_the_Gaussian1}
-    \end{figure}
+
+We now have a histogram which has bin values relevant to the target and no others. We now fit a 2D Gaussian to a normalized histogram values, initializing the routine with the values, the blob center $\widetilde{\mu}$ for the mean $\mu$ and the  elliptical axis lengths $\widetilde{\sigma}$ for the standard deviation $\sigma$  and the eccentricity $\widetilde{\theta}$  for the orientation $\theta$, provided by the blob detection.
+
+A least squares fit of the 2D Histogram with a 2D gaussian function \ref{eq:2DGaussian}  is found using MatLab's lsqcurvefit.
+\newcommand{\CaMu}{ \overline{\mathbf{Ca}} }
+\newcommand{\CbMu}{\overline{\mathbf{Cb}}  }
+\begin{gather}\label{eq:2DGaussian}
+\textbf{Let} \quad \CaMu = \text{Ca}-\mu_1 \quad \text{and} \quad \CbMu = \text{Cb}-\mu_2 \\
+\exp \left(
+-\frac{\left( - \CaMu \; \sine{     \theta } + \CbMu \; \cosine{ \theta } \right){}^2}{2 \sigma_2^2} - 
+\frac{\left(      \CaMu \; \cosine{ \theta } + \CbMu \; \sine{      \theta} \right){}^2}{2 \sigma_1^2} \right)
+\end{gather}
+
 
 \section{Sample Sets}\label{sec:SampleSets}
 There are three individual sets with different skin tones.
