@@ -41,6 +41,12 @@ In a real world context, it is relatively safe to presume that the scene will be
 \subsection{Whiteout and Blackout}\label{sec:WhiteoutAndBlackout}
 A monochromatic object with average RGB color $\mathbf{\mu}=\left\{\mu_R, \mu_G, \mu_B \right\}$ under different lighting conditions produce an in-camera value of $\left\{\mu_R +\lambda, \mu_G  +\lambda, \mu_B +\lambda \right\}$. Each channel has a numerical limit which means that when that limit is reached further change in luminosity $\lambda$ will result in a change in chromatic value. At high luminosities the colors converge on white becoming washed out. This is referred to as whiteout. Similarly at low luminosities the colors converge on black which is referred to as blackout.
 
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.80\textwidth]{Chapter3/Figs/WOBOFig.jpg}
+    \caption{Successful background removal.}  \label{fig:BGSuccess}
+\end{figure}
+
 It is reasonable to assume that pixel values which contain fully saturated channel elements are unreliable as they may be the result of whiteout or blackout. Unfortunately the iPhone also performs a auto brightness and contrast adjustment moving pixel values away from the sides of the RGB cube. The result of this processing is that the values with a luminosity above $\lambda_w$ and below $\lambda_b$ are unreliable.
 
 \section{Algorithm for Generating the Model}\label{sec:AlgorithmForGeneratingModel}
@@ -195,8 +201,23 @@ A least squares fit of the 2D Histogram with a 2D gaussian function \ref{eq:2DGa
 \frac{\left(      \CaMu \; \cosine{ \theta } + \CbMu \; \sine{      \theta} \right){}^2}{2 \sigma_1^2} \right)
 \end{gather}
 
+\section{All Together}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{Chapter3/Figs/All_Together_2D.jpg}
+    \caption{The four sets and the combined set of individuals.}  \label{fig:InitBins}
+\end{figure}
+
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{Chapter3/Figs/All_Together_3D.jpg}
+    \caption{The four sets and the combined set of individuals.}  \label{fig:InitBins}
+\end{figure}
 
 \section{Sample Sets}\label{sec:SampleSets}
+
 There are three individual sets with different skin tones.
 
 

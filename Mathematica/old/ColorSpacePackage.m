@@ -20,6 +20,7 @@ RotationMatrixXYZ[\[Alpha]:Except[_String],\[Beta]:Except[_String],\[Gamma]:Exce
 Format[RotationMatrixXYZ, TraditionalForm]=TraditionalForm["\!\(\*SubscriptBox[\(R\), \(XYZ\)]\)"];
 
 
+Clear[YAB,iYAB,\[Theta]]
 YAB =Function[{\[Theta]},Evaluate[TrigFactor[RotationMatrixX[\[Theta]].RotationMatrixZ[ArcTan[1/Sqrt[2]]].RotationMatrixY[-Pi/4]]]];
 iYAB=Function[{\[Theta]},Evaluate[TrigFactor[RotationMatrixY[Pi/4].RotationMatrixZ[-ArcTan[1/Sqrt[2]]].RotationMatrixX[-\[Theta]]]]];
 
