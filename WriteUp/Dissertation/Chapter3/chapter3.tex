@@ -15,6 +15,12 @@ There are two aspects of the camera which affect the collection of the color sta
 \subsection{The White Point}
 The iPhone's camera pre-processes the raw image before it reaches the AP layer which causes difficulties in collecting reliable statistics. Typically, cameras have a specific white point value, which is the RGB value corresponding to white which isn't necessarily the corner of the RGB cube; finding this value is part of the camera calibration. It also determines the orientation of the luminosity axis, which passes through zero to the white point. This is why pre-defined color space functions have an implicit white point correction. 
 
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.80\textwidth]{Chapter3/Figs/WhitepointTheory&Practice.jpg}
+    \caption{The Bins for 6 randomly colored blobs varying only in luminocity with lines indicating the source image colors.}  \label{fig:WhitePoint}
+\end{figure}
+
 The whitepoint for the iPhone camera was found by taking a random set of 6 colors $X=\left\{ \left\{X^1_R +\lambda, X^1_G  +\lambda, X^1_B +\lambda \right\}, \cdots \right\} $. and varying the luminosity between  $ \lambda(X)_B < \lambda  < \lambda(X)_W$. This produces a set of 6 colors which vary only in luminocity and which do not suffer from whiteout or blackout. Panels of these 6 colors with randomly selected luminocity for each were presented to the camera. This produced a set of images and the statistics were collected for this set. Theoretically we expect there to be 6 distinct parallel lines which are also parallel to the line from black to the white point of the camera. If the whitepoint of the camera is not $\left\{ 255,255,255\right\}$ then this test should allow the determination of the real white point. 
 
 The iPhone's white point is always set to the corner of the RGB cube before the image reaches the AP layer. So, when developing an algorithm for the iPhone, white point correction is not necessary, while on other devices the algorithm may need to be adapted accordingly.
