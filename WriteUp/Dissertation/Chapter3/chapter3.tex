@@ -254,7 +254,7 @@ In an attempt to identify a larger range of values for the skin space, a large n
 
 The image set consists of approximately 200 skin samples  each showing only one individuals skin. The result can be seen in figures \ref{fig:AllTogether2D} and \ref{fig:AllTogether3D} as the GeneralSkin set. The distribution stands apart from the others and surprisingly has a smaller standard deviation. This is probably due to camera differences and the sampling techniques used in the Humane project which focus on finding an average color rather than the channel values in camera. The orientation and position of the distribution is more consistent with the theoretical values for the skin pigments than those for the individual sets. This is likely due to the fact that the theoretical values were calculated for a different camera CCD, the iPhone CCD characteristics not being available. For this reason the general distribution is excluded from further consideration aside from the recognition that different cameras will require bespoke statistics to be gathered. 
 
-In contrast to the GeneralSkin set the individual sets are close together with similar standard deviations however the angle varies significantly. The angle needs to be fixed so that the statistics can be gathered in the rotated color-space. The angles are summarised in the table below :
+In contrast to the GeneralSkin set the individual sets are close together with similar standard deviations however the angle varies significantly. The angle needs to be fixed so that the statistics can be gathered in the rotated color space. The angles are summarised in the table below:
 
 \begin{tabular}{|c|c|c|c|}
 \hline   Set                                                             & Decimal   & Approx                       & Relative \\ 
@@ -296,7 +296,7 @@ With the perturbations to each channel scaled by their relative importance fig \
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1.0 \textwidth]{Chapter3/Figs/Distribution_Results.jpg} 
-    \caption{ The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color-space  }  \label{fig:DistributionResults}
+    \caption{ The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color space  }  \label{fig:DistributionResults}
 \end{figure}
 
 As a final step the MATLAB statistics gathering routine was run again using the combined F,J\&N RGB bins as a starting point and then rotating to the LCa'Cb' color space with the new value for $\theta$. This was done partly to check that the code works as expected and to see how well the product of Gaussians function fits the distribution. The only difference to the MATLAB code was that for this run the Gaussian fit was found using  \ref{eq:2DGaussianProd} which is the product of two 1D Gaussians with a fixed amplitude of 1. The result can be seen in figure:\ref{fig:FittheGaussianFinal} . 
@@ -310,7 +310,7 @@ As a final step the MATLAB statistics gathering routine was run again using the 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1.0 \textwidth]{Chapter3/Figs/Distribution_Results_Final.jpg} 
-    \caption{ \textbf{The Tight MATLAB fit in LCa'Cb'.}.The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color-space }  \label{fig:DistributionResultsFinal}
+    \caption{ \textbf{The Tight MATLAB fit in LCa'Cb'.}.The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color space }  \label{fig:DistributionResultsFinal}
 \end{figure}
 
 It can be seen that the least square fit is a good predictor for the distribution but the aim of the color space is to capture all skin relevant chromatic information. For this reason,  as well as the desire to be inclusive of skin-tones outside of the sample set of three individuals, a region larger than the $2\sigma$ ellipse region \ref{fig:DistributionResultsFinal} which is kept by the tight MATLAB fit may be desirable to be included. The $3\sigma$ ellipse region would include everything in the combined individual F,J\&N histogram. A $5\sigma$ ellipse region would  likely account for a wide variety of skin tones. 
@@ -318,18 +318,18 @@ It can be seen that the least square fit is a good predictor for the distributio
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1.0 \textwidth]{Chapter3/Figs/Distribution_Results_Final_Extended.jpg} 
-    \caption{ \textbf{The $5\sigma$ ellipse region extended MATLAB fit in LCa'Cb'.} The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color-space }  \label{fig:DistributionResultsFinalExtended}
+    \caption{ \textbf{The $5\sigma$ ellipse region extended MATLAB fit in LCa'Cb'.} The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color space }  \label{fig:DistributionResultsFinalExtended}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.95 \textwidth]{Chapter3/Figs/Distribution_Results_Final_Extended_3D.jpg} 
-    \caption{ The tight and extended fits in the LCa'Cb'. colorspace }  \label{fig:DistributionResultsFinalExtended3D}
+    \caption{ The tight and extended fits in the LCa'Cb'. color space }  \label{fig:DistributionResultsFinalExtended3D}
 \end{figure}
 
 Extending the distribution may also affect the accuracy required in the rotation as mentioned previously. Extending out to a $5\sigma$ ellipse region does indeed affect the tolerance \ref{fig:DistributionResultsFinalExtended} but the chosen angle perturbation $\pm0.144$still satisfies the tolerance $\tau = 0.3094$ thus $0.1441 < 0.3094$. It is also notable that the tight MATLAB distribution requires a  partition in the chromatic axis whilst the extended distribution requires a small amount of redistribution. The tight MATLAB distribution and the extended distribution can be seen in figure \ref{fig:DistributionResultsFinalExtended3D}.
 
 \subsection{Conclusion}
 
-We found stuff out and it seems to work.
+Our goal was to find appropriate values for the 2D chromatic Gaussians in order to facilitate the image processing, and to create a color space that preserves all of the chromatic skin information. So to demonsrate how works, we quickly demonstrate the skin prob map. 
 
