@@ -5,7 +5,7 @@ SetAttributes[ShowFun,HoldAllComplete];
 ShowFun[f_[args__]]:=Row[{TraditionalForm[f[Sequence@@Map[ToString,{args}]]]," = ",TraditionalForm[f[args]]}]
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Rotation Matrices*)
 
 
@@ -585,8 +585,8 @@ ShowFun[\[Delta]qS[\[Theta]1]]
 TraditionalForm[Row[{\[Delta]qS["\!\(\*SubscriptBox[\(\[Theta]\), \(1\)]\)"]," = ",PiecewiseExpand[Assuming[Element[\[Theta]1,Reals]&&\[Theta]1<Pi&&\[Theta]1>=0,FullSimplify[ShowFun[\[Delta]qS[\[Theta]1]]]]]}]]
 
 
-(* ::Subsection:: *)
-(*dqAS*)
+(* ::Subsection::Closed:: *)
+(*dqEO*)
 
 
 (* ::Subsubsection:: *)
@@ -597,6 +597,10 @@ TraditionalForm[Row[{\[Delta]qS["\!\(\*SubscriptBox[\(\[Theta]\), \(1\)]\)"]," =
 Clear[\[Delta]qEO]
 \[Delta]qEO[vec_,\[Theta]:Except[_String]]:=\[Delta]qEOFun[vec, Mod[\[Theta],\[Pi]/3]];
 Format[\[Delta]qEO, TraditionalForm]=Style[
+
+
+
+
 
 
 \!\(\*OverscriptBox[\("\<\[Delta]qEO\>"\), \(^\)]\),Bold];
@@ -841,8 +845,8 @@ SetUpLCaCbColor[name_:"LCaCbColorFast",\[Theta]_,colorSpace_:"Hue"] :=Module[{fu
 fun=Function[{yy,aa,bb,\[Alpha]\[Alpha]},Evaluate[LCaCbColorFast[colorSpace][\[Theta],yy,aa,bb,\[Alpha]\[Alpha]]]];
 LCaCbColor[List[elem__]]:=LCaCbColor[elem];
 ToExpression[name<>"[List[elem__]] := "<>name<>"[elem]"];
-ToExpression[name<>"[y_,a_,b_,\[Alpha]_] := Quiet["<>ToString[fun[y,a,b,\[Alpha]],InputForm]<>"/.Indeterminate->0,{ArcTan::indet}]"];
-ToExpression[name<>"[y_,a_,b_] := Quiet[("<>ToString[fun[y,a,b,Null],InputForm]<>")/.{Indeterminate->0, Null\[Rule]Sequence[]},{ArcTan::indet}]"];
+ToExpression[name<>"[yyy_,aaa_,bbb_,\[Alpha]\[Alpha]\[Alpha]\[Alpha]_] := Quiet["<>ToString[fun[yyy,aaa,bbb,\[Alpha]\[Alpha]\[Alpha]\[Alpha]],InputForm]<>"/.Indeterminate->0,{ArcTan::indet}]"];
+ToExpression[name<>"[yyy_,aaa_,bbb_] := Quiet[("<>ToString[fun[yyy,aaa,bbb,Null],InputForm]<>")/.{Indeterminate->0, Null\[Rule]Sequence[]},{ArcTan::indet}]"];
 ]
 
 
@@ -964,7 +968,7 @@ nLCaCbCube["RGB"]=Function[{\[Theta]},Evaluate[FullSimplify[inLCaCb[\[Theta]].nL
 nLCaCbPolygon= Function[{\[Theta]},Evaluate[Transpose[{Take[RGBCube[nLCaCb][\[Theta] ][[2]],{2,7}],Take[RGBCube[nLCaCb][\[Theta] ][[3]],{2,7}]}]]];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*General Utility *)
 
 
@@ -1696,7 +1700,7 @@ convRound[{{x_,y_},{indxA_,indxB_},{occA_,occB_}}]:={{x,If[y< 0.5,y,y-1]},{indxA
 (*Normal Distribution Function*)
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Distro Parameters*)
 
 
@@ -1740,77 +1744,6 @@ scaleFromUnit[{pnt_},{{min_,max_}}]:={scaleFromUnit[pnt,{min,max}]}
 
 gradientFromUnit[pnt:Except[_List],{{minX:Except[_List],maxX:Except[_List]},{minY:Except[_List],maxY:Except[_List]}}]:=pnt (maxY-minY)/(maxX-minX)
  gradientToUnit[pnt:Except[_List],{{minX:Except[_List],maxX:Except[_List]},{minY:Except[_List],maxY:Except[_List]}}]:=pnt (maxX-minX)/(maxY-minY)
-
-
-Clear[setDistroValues]
-Options[setDistroValues]={Unit->True,G->True};
-setDistroValues[ \[Sigma]g_,\[Mu]c_,{{sMin_,sMax_},{dMin_,dMax_}},OptionsPattern[]]:= Module[{\[Mu],c,\[Sigma],s,\[Gamma],g},
-If[OptionValue[Unit],
-\[Mu]=\[Mu]c ;c = pointFromUnit[\[Mu]c ,{sMin,sMax}];
-If[OptionValue[G],
-\[Gamma]=\[Sigma]g; \[Sigma] = uG[\[Gamma]]; s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s]; ,
-\[Sigma] =\[Sigma]g;\[Gamma] = uG[\[Sigma] ];s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s];
-],
-\[Mu]=pointToUnit[\[Mu]c ,{sMin,sMax}] ;c = \[Mu]c;
-If[OptionValue[G],
-g=\[Sigma]g;  s = uG[g];\[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];,
-s =\[Sigma]g; g = uG[s]; \[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];
-];
-];
-{{\[Mu],c},{\[Sigma],s},{\[Gamma],g}}
-]
-setDistroValues[ {{\[Mu]i_,ci_},{\[Sigma]i_,si_},{\[Gamma]i_,gi_}},{{sMin_,sMax_},{dMin_,dMax_}},OptionsPattern[]]:= Module[{\[Mu],c,\[Sigma],s,\[Gamma],g},
-If[OptionValue[Unit],
-\[Mu]=\[Mu]i ;c = pointFromUnit[\[Mu]i ,{sMin,sMax}];
-If[OptionValue[G],
-\[Gamma]=\[Gamma]i; \[Sigma] = uG[\[Gamma]]; s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s]; ,
-\[Sigma] =\[Sigma]i;\[Gamma] = uG[\[Sigma] ];s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s];
-],
-\[Mu]=pointToUnit[ci ,{sMin,sMax}] ;c = ci;
-If[OptionValue[G],
-g=gi;  s = uG[g];\[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];,
-s =si; g = uG[s]; \[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];
-];
-];
-{{\[Mu],c},{\[Sigma],s},{\[Gamma],g}}
-]
-
-
-Clear[setDistroParams]
-setDistroParams[ {{\[Mu]_,c_},{\[Sigma]_,s_},{\[Gamma]_,g_}},{{sMin_,sMax_},{dMin_,dMax_}}]:= Module[{sRange,dRange,s\[CapitalDelta],d\[CapitalDelta],\[Kappa],\[Delta],m,\[Omega],\[CapitalOmega],\[Lambda],L},
-{sRange,dRange} = {sMax-sMin, dMax-dMin};
-\[Kappa] = sRange/dRange;
-\[Delta]=(2  \[Gamma])/(Sqrt[\[Pi]]  (Erf[\[Gamma] \[Mu]]+Erf[\[Gamma](1- \[Mu])]));
-m = gradientFromUnit[\[Delta], {{sMin, sMax},{dMin, dMax}}];
-{s\[CapitalDelta],d\[CapitalDelta]}={1/sRange,1/dRange};
-\[Lambda]={\[Mu]-1/\[Gamma] InverseErf[(1-d\[CapitalDelta]) Erf[\[Gamma] \[Mu]]-d\[CapitalDelta] Erf[\[Gamma](1-\[Mu])]],\[Mu]+1/\[Gamma] InverseErf[- d\[CapitalDelta] Erf[\[Gamma] \[Mu]]+(1-d\[CapitalDelta]) Erf[\[Gamma](1-\[Mu])]]};
-L=pointFromUnit[\[Lambda],{{sMin,sMax},{sMin,sMax}}];
-If[TrueQ[\[Delta] < \[Kappa]],
-\[Omega]={};\[CapitalOmega] ={},
-\[Omega] ={\[Mu]-1/\[Gamma] Sqrt[Log[\[Delta]/\[Kappa]]],\[Mu]+1/\[Gamma] Sqrt[Log[\[Delta]/\[Kappa]]]};
-\[CapitalOmega] =pointFromUnit[\[Omega],{{sMin,sMax},{sMin,sMax}}]
-];
-{{sRange,dRange,\[Kappa]},{\[Delta],m},{\[Lambda],L},{\[Omega],\[CapitalOmega]}}
-]
-
-
-Clear[sMin,sMax,dMin,dMax]
-setDistroValues[ g,c,{{sMin,sMax},{dMin,dMax}},Unit->False,G->True]
-
-
-{{(c-sMin)/(sMax-sMin),c},{uG[g]/(sMax-sMin),uG[g]},{uG[uG[g]/(sMax-sMin)],g}}
-
-
-(* ::Text:: *)
-(*Set Sensible min and Max ranges for the parameters.*)
-
-
-sMin=0;sMax=255;
-dMin=0;dMax=255;
-ssMin=1/2; ssMax=3/2 255 ;
-{{\[Mu]Min,cMin},{\[Sigma]Min,ssMin},{\[Gamma]Max,gMax}}=N[setDistroValues[{{0,sMin},{\[Sigma]Min,ssMin},{\[Gamma]Max,1}},{{sMin,sMax},{dMin,dMax}},Unit->False,G->False]];
-{{\[Mu]Max,cMax},{\[Sigma]Max,ssMax},{\[Gamma]Min,gMin}}=N[setDistroValues[{{1,sMax},{\[Sigma]Max,ssMax},{\[Gamma]Max,gMax}},{{sMin,sMax},{dMin,dMax}},Unit->False,G->False]];
-
 
 
 show["c"]=False;show["g"]=False; show["dRange"]=True;
@@ -1888,29 +1821,147 @@ Plot[PDF[NormalDistribution[c,s],t],{t,sMin,sMax},PlotRange->{{sMin,sMax},All},I
 
 
 
-Clear[s]
-
-
-Map[Row[{ToString[#]<>" = ",numberForm[#,4]}]&,{{\[Mu],c},{\[Sigma],s},{\[Gamma],g}},{2}]
-
-
-{{Row[{"\[Mu] = ",numberForm[\[Mu],4]}],Row[{"c = ",numberForm[c,4]}]},{Row[{"\[Sigma] = ",numberForm[\[Sigma],4]}],Row[{"s = ",numberForm[s,4]}]},{Row[{"\[Gamma] = ",numberForm[\[Gamma],4]}],Row[{"g = ",numberForm[g,4]}]}}
-
-
-{{Row[{"\[Mu] = ",numberForm[\[Mu],4]}],Row[{"c = ",numberForm[c,4]}]},{Row[{"\[Sigma] = ",numberForm[\[Sigma],4]}],Row[{"s = ",numberForm[s,4]}]},{Row[{"\[Gamma] = ",numberForm[\[Gamma],4]}],Row[{"g = ",numberForm[g,4]}]}}
-
-
-{{Row[{"\[Mu] = ",numberForm[\[Mu],4]}],Row[{"c = ",numberForm[c,4]}]},{Row[{"\[Sigma] = ",numberForm[\[Sigma],4]}],Row[{"s = ",numberForm[s,4]}]},{Row[{"\[Gamma] = ",numberForm[\[Gamma],4]}],Row[{"g = ",numberForm[g,4]}]}}
-
-
-{{Row[{"\[Mu] = ",numberForm[\[Mu],4]}],Row[{"c = ",numberForm[c,4]}]},{Row[{"\[Sigma] = ",numberForm[\[Sigma],4]}],Row[{"s = ",numberForm[s,4]}]},{Row[{"\[Gamma] = ",numberForm[\[Gamma],4]}],Row[{"g = ",numberForm[g,4]}]}}
-
-
-{{Row[{"\[Mu] = ",numberForm[\[Mu],4]}],Row[{"c = ",numberForm[c,4]}]},{Row[{"\[Sigma] = ",numberForm[\[Sigma],4]}],Row[{"s = ",numberForm[s,4]}]},{Row[{"\[Gamma] = ",numberForm[\[Gamma],4]}],Row[{"g = ",numberForm[g,4]}]}}
-
-
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Distro Plots*)
+
+
+(*Clear[setDistroValues]
+Options[setDistroValues]={Unit->True,G->True};
+setDistroValues[ \[Sigma]g_,\[Mu]c_,{{sMin_,sMax_},{dMin_,dMax_}},OptionsPattern[]]:= Module[{\[Mu],c,\[Sigma],s,\[Gamma],g},
+If[OptionValue[Unit],
+\[Mu]=\[Mu]c ;c = pointFromUnit[\[Mu]c ,{sMin,sMax}];
+If[OptionValue[G],
+\[Gamma]=\[Sigma]g; \[Sigma] = uG[\[Gamma]]; s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s]; ,
+\[Sigma] =\[Sigma]g;\[Gamma] = uG[\[Sigma] ];s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s];
+],
+\[Mu]=pointToUnit[\[Mu]c ,{sMin,sMax}] ;c = \[Mu]c;
+If[OptionValue[G],
+g=\[Sigma]g;  s = uG[g];\[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];,
+s =\[Sigma]g; g = uG[s]; \[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];
+];
+];
+{{\[Mu],c},{\[Sigma],s},{\[Gamma],g}}
+]
+setDistroValues[ {{\[Mu]i_,ci_},{\[Sigma]i_,si_},{\[Gamma]i_,gi_}},{{sMin_,sMax_},{dMin_,dMax_}},OptionsPattern[]]:= Module[{\[Mu],c,\[Sigma],s,\[Gamma],g},
+If[OptionValue[Unit],
+\[Mu]=\[Mu]i ;c = pointFromUnit[\[Mu]i ,{sMin,sMax}];
+If[OptionValue[G],
+\[Gamma]=\[Gamma]i; \[Sigma] = uG[\[Gamma]]; s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s]; ,
+\[Sigma] =\[Sigma]i;\[Gamma] = uG[\[Sigma] ];s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s];
+],
+\[Mu]=pointToUnit[ci ,{sMin,sMax}] ;c = ci;
+If[OptionValue[G],
+g=gi;  s = uG[g];\[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];,
+s =si; g = uG[s]; \[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];
+];
+];
+{{\[Mu],c},{\[Sigma],s},{\[Gamma],g}}
+]*)
+
+
+Clear[DistroValues]
+Options[DistroValues]={Unit->True,G->True};
+DistroValues[ \[Sigma]g_,\[Mu]c_,{{sMin_,sMax_},{dMin_,dMax_}},OptionsPattern[]]:= Module[{\[Mu],c,\[Sigma],s,\[Gamma],g},
+If[OptionValue[Unit],
+\[Mu] = \[Mu]c; c = pointFromUnit[\[Mu]c ,{sMin,sMax}];
+If[OptionValue[G],
+\[Gamma] = \[Sigma]g; \[Sigma] = uG[\[Gamma]]; s = scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s]; ,
+\[Sigma] = \[Sigma]g; \[Gamma] = uG[\[Sigma]]; s = scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s];
+],
+\[Mu]=pointToUnit[\[Mu]c ,{sMin,sMax}] ;c = \[Mu]c;
+If[OptionValue[G],
+g = \[Sigma]g; s = uG[g]; \[Sigma] = scaleToUnit[s,{sMin,sMax}]; \[Gamma] = uG[\[Sigma] ];,
+s = \[Sigma]g; g = uG[s]; \[Sigma] = scaleToUnit[s,{sMin,sMax}]; \[Gamma] = uG[\[Sigma] ];
+];
+];
+{"\[Mu]" -> \[Mu] ,"c" -> c,"\[Sigma]" -> \[Sigma],"s" -> s,"\[Gamma]" -> \[Gamma],"g" -> g,"sMin"->sMin,"sMax"->sMax,"dMin"->dMin,"dMax"->dMax,"sRange"->(sMax-sMin),"dRange"->(dMax-dMin)}
+]
+DistroValues[ {{\[Mu]i_,ci_},{\[Sigma]i_,si_},{\[Gamma]i_,gi_}},{{sMin_,sMax_},{dMin_,dMax_}},OptionsPattern[]]:= Module[{\[Mu],c,\[Sigma],s,\[Gamma],g},
+If[OptionValue[Unit],
+\[Mu] = \[Mu]i; c = pointFromUnit[\[Mu]i ,{sMin,sMax}];
+If[OptionValue[G],
+\[Gamma] =\[Gamma]i; \[Sigma] = uG[\[Gamma]]; s = scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s]; ,
+\[Sigma] =\[Sigma]i; \[Gamma] = uG[\[Sigma]]; s = scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s];
+],
+\[Mu]=pointToUnit[ci ,{sMin,sMax}] ;c = ci;
+If[OptionValue[G],
+g = gi; s = uG[g]; \[Sigma] = scaleToUnit[s,{sMin,sMax}]; \[Gamma] = uG[\[Sigma] ];,
+s = si; g = uG[s]; \[Sigma] = scaleToUnit[s,{sMin,sMax}]; \[Gamma] = uG[\[Sigma] ];
+];
+];
+{"\[Mu]" -> \[Mu] ,"c" -> c,"\[Sigma]" -> \[Sigma],"s" -> s,"\[Gamma]" -> \[Gamma],"g" -> g,
+"sMin"->sMin, "sMax"->sMax, "dMin"->dMin, "dMax"->dMax, "sRange"->(sMax-sMin), "dRange"->(dMax-dMin)}
+]
+
+
+Clear[setDistroValues]
+Unit::usage = "Option for setDistroValues. If the input values are in the unit space. True/False";
+G::usage = "If the standard deviation information is given as a standard deviation or the reciprical G representation. True/False";
+Options[setDistroValues]={Unit->True,G->True};
+setDistroValues[ \[Sigma]g_,\[Mu]c_,{{sMin_,sMax_},{dMin_,dMax_}},opts:OptionsPattern[]]:= Module[{\[Mu],c,\[Sigma],s,\[Gamma],g},
+{{"\[Mu]","c"},{"\[Sigma]","s"},{"\[Gamma]","g"}}/.DistroValues[ \[Sigma]g, \[Mu]c, {{sMin,sMax},{dMin,dMax}},opts]
+]
+setDistroValues[ {{\[Mu]i_,ci_},{\[Sigma]i_,si_},{\[Gamma]i_,gi_}},{{sMin_,sMax_},{dMin_,dMax_}},opts:OptionsPattern[]]:= Module[{\[Mu],c,\[Sigma],s,\[Gamma],g},
+{{"\[Mu]","c"},{"\[Sigma]","s"},{"\[Gamma]","g"}}/.DistroValues[ {{\[Mu]i,ci},{\[Sigma]i,si},{\[Gamma]i,gi}},{{sMin,sMax},{dMin,dMax}},opts]
+]
+
+
+(* ::Text:: *)
+(*Set Sensible min and Max ranges for the parameters.*)
+
+
+sMin=0;sMax=255;
+dMin=0;dMax=255;
+ssMin=1/2; ssMax=3/2 255 ;
+{{\[Mu]Min,cMin},{\[Sigma]Min,ssMin},{\[Gamma]Max,gMax}}=N[setDistroValues[{{0,sMin},{\[Sigma]Min,ssMin},{\[Gamma]Max,1}},{{sMin,sMax},{dMin,dMax}},Unit->False,G->False]];
+{{\[Mu]Max,cMax},{\[Sigma]Max,ssMax},{\[Gamma]Min,gMin}}=N[setDistroValues[{{1,sMax},{\[Sigma]Max,ssMax},{\[Gamma]Max,gMax}},{{sMin,sMax},{dMin,dMax}},Unit->False,G->False]];
+
+
+
+Clear[DistroParams]
+DistroParams[ {{\[Mu]_,c_},{\[Sigma]_,s_},{\[Gamma]_,g_}},{{sMin_,sMax_},{dMin_,dMax_}}]:= Module[{sRange,dRange,s\[CapitalDelta],d\[CapitalDelta],K,\[Delta],m,\[Omega],\[CapitalOmega],\[Lambda],\[CapitalLambda]},
+{sRange,dRange} = {sMax-sMin, dMax-dMin};
+K = sRange/dRange;
+\[Delta]=(2  \[Gamma])/(Sqrt[\[Pi]]  (Erf[\[Gamma] \[Mu]]+Erf[\[Gamma](1- \[Mu])]));
+m = gradientFromUnit[\[Delta], {{sMin, sMax},{dMin, dMax}}];
+{s\[CapitalDelta],d\[CapitalDelta]}={1/sRange,1/dRange};
+\[Lambda]={\[Mu]-1/\[Gamma] InverseErf[(1-d\[CapitalDelta]) Erf[\[Gamma] \[Mu]]-d\[CapitalDelta] Erf[\[Gamma](1-\[Mu])]],\[Mu]+1/\[Gamma] InverseErf[- d\[CapitalDelta] Erf[\[Gamma] \[Mu]]+(1-d\[CapitalDelta]) Erf[\[Gamma](1-\[Mu])]]};
+\[CapitalLambda]=pointFromUnit[\[Lambda],{{sMin,sMax},{sMin,sMax}}];
+If[TrueQ[\[Delta] < K],
+\[Omega]={};\[CapitalOmega] ={},
+\[Omega] ={\[Mu]-1/\[Gamma] Sqrt[Log[\[Delta]/K]],\[Mu]+1/\[Gamma] Sqrt[Log[\[Delta]/K]]};
+\[CapitalOmega] =pointFromUnit[\[Omega],{{sMin,sMax},{sMin,sMax}}]
+];
+{"sRange"->sRange,"dRange"->dRange,"K"->K,"\[Delta]"->\[Delta],"m"->m,"\[Omega]"->\[Omega],"\[CapitalOmega]"->\[CapitalOmega],"\[Lambda]"->\[Lambda],"\[CapitalLambda]"->\[CapitalLambda]}
+]
+
+
+Clear[setDistroParams]
+setDistroParams[ {{\[Mu]_,c_},{\[Sigma]_,s_},{\[Gamma]_,g_}},{{sMin_,sMax_},{dMin_,dMax_}}]:= Module[{sRange,dRange,s\[CapitalDelta],d\[CapitalDelta],K,\[Delta],m,\[Omega],\[CapitalOmega],\[Lambda],\[CapitalLambda]},
+{{"sRange","dRange","K"},{"\[Delta]","m"},{"\[Lambda]","\[CapitalLambda]"},{"\[Omega]","\[CapitalOmega]"}}/.DistroParams[ {{\[Mu],c},{\[Sigma],s},{\[Gamma],g}},{{sMin,sMax},{dMin,dMax}}]
+]
+
+
+Clear[DistroAll]
+DistroAll[ \[Sigma]s\[Gamma]g_,\[Mu]c_,{{sMin_,sMax_},{dMin_,dMax_}},opts:OptionsPattern[]]:= Module[{x,\[Mu],c,\[Sigma],s,\[Gamma],g,sRange,dRange,K,\[Delta],m,\[Lambda],\[CapitalLambda],\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,linear,shift,dis,disFunc,linearExtensionFunc},
+{{\[Mu],c},{\[Sigma],s},{\[Gamma],g}}= {{"\[Mu]","c"},{"\[Sigma]","s"},{"\[Gamma]","g"}}/.DistroValues[ \[Sigma]s\[Gamma]g, \[Mu]c, {{sMin,sMax},{dMin,dMax}},opts];
+{{sRange,dRange,K},{\[Delta],m},{\[Lambda],\[CapitalLambda]},{\[Omega],\[CapitalOmega]}}={{"sRange","dRange","K"},{"\[Delta]","m"},{"\[Lambda]","\[CapitalLambda]"},{"\[Omega]","\[CapitalOmega]"}}/.DistroParams[ {{\[Mu],c},{\[Sigma],s},{\[Gamma],g}},{{sMin,sMax},{dMin,dMax}}];
+
+disFunc=Function[{x},Evaluate[dMin-dRange (Erf[g (c-sMin)]+Erf[g (x-c)])/(Erf[g (c-sMax)]+Erf[g (sMin-c)])],Listable];
+linearExtensionFunc=Function[{x},Evaluate[Simplify[x +Floor[disFunc[\[CapitalOmega][[2]]]]- \[CapitalOmega][[2]]-1]]];
+
+If[\[Delta]/K > 1,
+\[CapitalOmega]p={0,0};
+\[CapitalOmega]p[[2]]=Round[x/.NSolve[linearExtensionFunc[x]==disFunc[x]&&x>= \[CapitalOmega][[2]],x,Reals,WorkingPrecision->1]][[1]];
+\[CapitalOmega]p[[1]]=Round[\[CapitalOmega][[1]]]-(\[CapitalOmega]p[[2]]-Round[\[CapitalOmega][[2]]]);
+If[Not[\[CapitalOmega]p[[2]]< \[CapitalLambda][[2]]-1], \[CapitalOmega]p[[2]]= \[CapitalLambda][[2]]];
+If[Not[\[CapitalOmega]p[[1]]> \[CapitalLambda][[1]]+1], \[CapitalOmega]p[[1]]= \[CapitalLambda][[1]]];
+\[Omega]p=pointToUnit[\[CapitalOmega]p,{{sMin,sMax},{sMin,sMax}}];
+];
+{"\[Mu]" -> \[Mu] , "c" -> c, "\[Sigma]" -> \[Sigma], "s" -> s, "\[Gamma]" -> \[Gamma], "g" -> g,
+"sMin"->sMin, "sMax"->sMax, "dMin"->dMin, "dMax"->dMax, "sRange"->sRange, "dRange"->dRange,
+"K"->K, "\[Delta]"->\[Delta], "m"->m, "\[Omega]"->\[Omega], "\[CapitalOmega]"->\[CapitalOmega], "\[Omega]p"->\[Omega]p, "\[CapitalOmega]p"->\[CapitalOmega]p, "\[Lambda]"->\[Lambda], "\[CapitalLambda]"->\[CapitalLambda],"dis"->disFunc}
+]
 
 
 Clear[setUpErf,unitGrad]
@@ -2046,11 +2097,8 @@ Show[plt,Graphics[{Opacity[0.15],testBg}],plt]
 ]
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Distributions with Rotations Parameters*)
-
-
-figPath = $HomeDirectory <> "/Developer/projects/Color-Space-WriteUp/WriteUp/Dissertation/Chapter3/Figs/";
 
 
 Format[\[Lambda]RGB2, TraditionalForm]= Subsuperscript[Style["\[Lambda]",Bold],"2","RGB"];
@@ -2064,32 +2112,162 @@ Map[Max,\[Lambda]CubeRGB]
 ];
 
 
+
+{"\[Mu]" -> \[Mu] , "c" -> c, "\[Sigma]" -> \[Sigma], "s" -> s, "\[Gamma]" -> \[Gamma], "g" -> g,
+"sMin"->sMin, "sMax"->sMax, "dMin"->dMin, "dMax"->dMax, "sRange"->sRange, "dRange"->dRange,
+"K"->K, "\[Delta]"->\[Delta], "m"->m, "\[Omega]"->\[Omega], "\[CapitalOmega]"->\[CapitalOmega], "\[Omega]p"->\[Omega]p, "\[CapitalOmega]p"->\[CapitalOmega]p, "\[Lambda]"->\[Lambda], "\[CapitalLambda]"->\[CapitalLambda],"dis"->disFunc}/.{Rule[var_,sym_]:> sym}
+
+
+{\[Mu],c,\[Sigma],s,\[Gamma],g,0,255,0,255,sRange,dRange,K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],disFunc}=
+{"\[Mu]","c","\[Sigma]","s","\[Gamma]","g","sMin","sMax","dMin","dMax","sRange","dRange","K","\[Delta]","m","\[Omega]","\[CapitalOmega]","\[Omega]p","\[CapitalOmega]p","\[Lambda]","\[CapitalLambda]","dis"}/.DistroAll[\[Sigma]s\[Gamma]g,\[Mu]c,{{sMin,sMax},{dMin,dMax}},opts];
+
+
+
+(* ::Text:: *)
+(*Put the distrobution*)
+
+
+Global`\[Delta]qS[LCaCb\[Theta]]
+
+
 Clear[colorSpaceParams]
 colorSpaceParams::usage = 
   "Input 3 distributions from setUpErf and a color space angle to get:\n
  {\"\[Delta]qS\",\"L\",\"sRange\",\"dRange\",\"K\",\"\[Delta]\",\"\[Lambda]\",\"\[Omega]\",\"\[Omega]p\",\"\[Kappa]\",\"tRange\",\"\[Lambda]RGB2\",\"mp\",\"\[Alpha]\[Beta]\",\"\[Alpha]\",\"\[Beta]\",\"\[Tau]\",\"axisColors\"}";
-colorSpaceParams[dist_,\[Theta]in_]:=Module[{varRules,LCaCbColor},
-varRules = {"\[Theta]"->\[Theta]in};
-AppendTo[varRules,"\[Delta]qS"->(\[Delta]qS[\[Theta]in])];
-AppendTo[varRules,"L"->(scale["LCaCb","nLCaCb"][\[Theta]in])];
-AppendTo[varRules,"sRange"->Table[dist[[i]]["param"][[1,1]],{i,1,3}]];
-AppendTo[varRules,"dRange"->Table[dist[[i]]["param"][[1,2]],{i,1,3}]];
-AppendTo[varRules,"K"->Table[dist[[i]]["param"][[1,3]],{i,1,3}]];
-AppendTo[varRules,"\[Delta]"->Table[dist[[i]]["param"][[2,1]],{i,1,3}]];
-AppendTo[varRules,"\[Lambda]"->Table[dist[[i]]["param"][[3,1]],{i,1,3}]];
-AppendTo[varRules,"\[Omega]"->Table[dist[[i]]["param"][[4,1]],{i,1,3}]];
-AppendTo[varRules,"\[Omega]p"->Table[dist[[i]]["param"][[5,1]],{i,1,3}]];
-AppendTo[varRules,"\[Kappa]"->MapThread[Max,{(1/("\[Delta]"/.varRules)),("K"/.varRules)/("L"/.varRules)}]];
-AppendTo[varRules,"tRange"->MapThread[Min,{(("K"/.varRules) ("\[Delta]"/.varRules)),("L"/.varRules)}]];
-AppendTo[varRules,"\[Lambda]RGB2"->\[Lambda]RGB2[\[Theta]in,"\[Lambda]"/.varRules]];
-AppendTo[varRules,"mp"->Map[Max,Transpose[Transpose["\[Delta]qS"/.varRules] \[Lambda]RGB2[\[Theta]in,"\[Lambda]"/.varRules]]]];
-AppendTo[varRules,"\[Alpha]\[Beta]"->\[Delta]qEO[2 ("tRange"/.varRules) ("mp"/.varRules), \[Theta]in]];
-AppendTo[varRules,"\[Alpha]"->("\[Alpha]\[Beta]"/.varRules)[[2]]];
-AppendTo[varRules,"\[Beta]"->("\[Alpha]\[Beta]"/.varRules)[[3]]];
-AppendTo[varRules,"\[Tau]"->Block[{accuracy},accuracy=0.01;Rationalize[accuracy Ceiling[1/(accuracy Max["\[Alpha]\[Beta]"/.varRules])],accuracy]]];
-SetUpLCaCbColor[SymbolName[LCaCbColor],\[Theta]in,"Hue"];
-AppendTo[varRules,"LCaCbColor"->LCaCbColor];
-varRules
+colorSpaceParams[\[Sigma]s\[Gamma]g_,\[Mu]c_,\[Theta]in_,n_,{{sMin_,sMax_},{dMin_,dMax_}},opts:OptionsPattern[]]:=Module[{varRules,
+\[Theta],\[Delta]qSval,L,sRange,dRange,K,\[Delta],m,\[Lambda],\[CapitalLambda],\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]t,\[CapitalOmega]pt,\[CapitalLambda]q,\[CapitalOmega]pq,Qdisc,Qdist,Qkeep,
+S,disFun,disFunc,dstMax,\[Mu],c,\[Sigma],s,\[Gamma],g,distro,qRval,fSsVal},
+(* Put the distribution parameters together into vectors *)
+distro=Table[DistroAll[\[Sigma]s\[Gamma]g[[i]],\[Mu]c[[i]],{{sMin[[i]],sMax[[i]]},{dMin[[i]],dMax[[i]]}},opts] ,{i,1,3}];
+{\[Mu],c,\[Sigma],s,\[Gamma],g}=Transpose[{"\[Mu]","c","\[Sigma]","s","\[Gamma]","g"}/.distro];
+{sRange,dRange}=Transpose[{"sRange","dRange"}/.distro];
+{K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],disFunc}=Transpose[{"K","\[Delta]","m","\[Omega]","\[CapitalOmega]","\[Omega]p","\[CapitalOmega]p","\[Lambda]","\[CapitalLambda]","dis"}/.distro];
+
+\[Delta]qSval=Global`\[Delta]qS[\[Theta]in];
+L=scale["LCaCb","nLCaCb"][\[Theta]in];
+\[Kappa]=MapThread[Max,{(1/\[Delta]),K/L}];
+tRange=MapThread[Min,{(K \[Delta]),L}];
+\[Lambda]RGB2val=Global`\[Lambda]RGB2[\[Theta]in,\[Lambda]];
+mp=Map[Max,Transpose[Transpose[\[Delta]qSval] \[Lambda]RGB2val]];
+\[Alpha]\[Beta]=\[Delta]qEO[2 (tRange) (mp), \[Theta]in];
+\[Alpha] = \[Alpha]\[Beta][[2]]; \[Beta] = \[Alpha]\[Beta][[3]];
+\[Tau]=Block[{accuracy},accuracy=0.01;Rationalize[accuracy Ceiling[1/(accuracy Max[\[Alpha]\[Beta]])],accuracy]];
+SetUpLCaCbColor[SymbolName[LCaCbColor],-\[Theta]in,"Hue"];
+
+qRsMin={0,- 2^(n-2) (2^n-1),- 2^(n-2) (2^n-1)};
+qRsMax={0, 2^(n-2) (2^n-1),2^(n-2) (2^n-1)};
+qRsRange={3 2^n,2 2^(n-2) (2^n-1),2 2^(n-2) (2^n-1)};
+\[CapitalLambda]t  = Round[(dRange tRange) \[Lambda]];
+\[CapitalOmega]pt = Round[(dRange tRange) \[Omega]p];
+\[CapitalLambda]q  = Round[(qRsRange) \[Lambda]];
+\[CapitalOmega]pq = Round[qRsRange \[Omega]p];
+
+Qdisc = Map[(2^3/2^n<#)&,({1,1,1}-\[Lambda][[All,2]]+\[Lambda][[All,1]])];
+Qdist = Map[(2^3/2^n<#)&,(\[Lambda][[All,2]]-\[Omega]p[[All,2]]+\[Omega]p[[All,1]]-\[Lambda][[All,1]])];
+Qkeep = Map[(1/2^n<#)&,(\[Omega]p[[All,2]]-\[Omega]p[[All,1]])];
+S = MapThread[Min,{\[Delta] K,N[L]}] {1/3,2^(1-n),2^(1-n)};
+
+disFun = Table[
+func = Function[{x}, Evaluate[dis[x, qRsRange[[i]] \[Sigma][[i]], qRsRange[[i]] \[Mu][[i]], 0, qRsRange[[i]], dMin[[i]], dMax[[i]]] ]]; 
+Function[{x}, Evaluate[
+If[Qkeep[[i]] && Qdisc[[i]] && Qdist[[i]], 
+  Piecewise[{
+   {dMin[[i]],                                                                              x <= \[CapitalLambda]q[[i,1]]}, 
+   {func[x],                                                            \[CapitalLambda]q[[i,1]] <  x <  \[CapitalOmega]pq[[i,1]]}, 
+   {S[[i]]*x - S[[i]]*\[CapitalOmega]pq[[i,1]] + func[\[CapitalOmega]pq[[i,1]]],                               \[CapitalOmega]pq[[i,1]] <= x <= \[CapitalOmega]pq[[i,2]]}, 
+   {func[x] + S[[i]]*\[CapitalOmega]pq[[i,2]] - S[[i]]*\[CapitalOmega]pq[[i,1]] - func[\[CapitalOmega]pq[[i,2]]] + func[\[CapitalOmega]pq[[i,1]]], \[CapitalOmega]pq[[i,2]] <  x < \[CapitalLambda]q[[i,2]]}, 
+   {func[\[CapitalLambda]q[[i,2]]] + S[[i]]*\[CapitalOmega]pq[[i,2]] - S[[i]]*\[CapitalOmega]pq[[i,1]] - func[\[CapitalOmega]pq[[i,2]]] + func[\[CapitalOmega]pq[[i,1]]],  \[CapitalLambda]q[[i,2]] <= x}}], 
+If[Qkeep[[i]] && Qdisc[[i]] &&  !Qdist[[i]], 
+Piecewise[{
+{dMin[[i]], x <= \[CapitalLambda]q[[i,1]]}, 
+{S[[i]]*(x - \[CapitalLambda]q[[i,1]]) + dMin[[i]], \[CapitalLambda]q[[i,1]] < x < \[CapitalLambda]q[[i,2]]}, 
+{S[[i]]*(\[CapitalLambda]q[[i,2]] - \[CapitalLambda]q[[i,1]]) + dMin[[i]], \[CapitalLambda]q[[i,2]] <= x}}], 
+If[Qkeep[[i]] &&  !Qdisc[[i]] &&  !Qdist[[i]], 
+S[[i]]*x + dMin[[i]], 
+If[ !Qkeep[[i]] && Qdisc[[i]] && Qdist[[i]], Piecewise[{
+{dMin[[i]], x <= \[CapitalLambda]q[[i,1]]}, 
+{func[S[[i]]*x], \[CapitalLambda]q[[i,1]] < x < \[CapitalLambda]q[[i,2]]}, {dMax[[i]], \[CapitalLambda]q[[i,2]] <= x}}], 
+If[ Qkeep[[i]] && !Qdisc[[i]] && Qdist[[i]], 
+  Piecewise[{
+   {func[S[[i]]*x],                                                                         x <  \[CapitalOmega]pq[[i,1]]}, 
+   {S[[i]]*x - \[CapitalOmega]p[[i,1]] + func[\[CapitalOmega]p[[i,1]]],                                    \[CapitalOmega]pq[[i,1]] <= x <= \[CapitalOmega]pq[[i,2]]}, 
+   {func[S[[i]]*x] + \[CapitalOmega]p[[i,2]] - \[CapitalOmega]p[[i,1]] - func[\[CapitalOmega]p[[i,2]]] + func[\[CapitalOmega]p[[i,1]]], \[CapitalOmega]pq[[i,2]] <  x }
+  }], 
+If[ !Qkeep[[i]] && Qdisc[[i]] &&  !Qdist[[i]], Piecewise[{
+{dMin[[i]], x <= (1/2)*(\[CapitalLambda]q[[i,1]] + \[CapitalLambda]q[[i,1]])}, 
+{dMin[[i]] + 1, (1/2)*(\[CapitalLambda]q[[i,1]] + \[CapitalLambda]q[[i,1]]) < x}}], 
+If[ !Qkeep[[i]] &&  !Qdisc[[i]] &&  !Qdist[[i]], 
+              Message[error]]]]]]]]]], {i, 1, 3}];
+
+dstMax = Table[Round[disFun[[i]][qRsRange[[i]]]],{i,1,3}];
+
+qRval = Global`qR[\[Theta]in];
+
+fSsVal = Global`fSs[\[Theta]in];
+
+{"\[Mu]" -> \[Mu] , "c" -> c, "\[Sigma]" -> \[Sigma], "s" -> s, "\[Gamma]" -> \[Gamma], "g" -> g,
+"sMin"->sMin, "sMax"->sMax, "dMin"->dMin, "dMax"->dMax, "sRange"->sRange, "dRange"->dRange,
+"K"->K, "\[Delta]"->\[Delta], "m"->m, "\[Omega]"->\[Omega], "\[CapitalOmega]"->\[CapitalOmega], "\[Omega]p"->\[Omega]p, "\[CapitalOmega]p"->\[CapitalOmega]p, "\[Lambda]"->\[Lambda], "\[CapitalLambda]"->\[CapitalLambda],"dis"->disFunc,
+"\[Theta]"->\[Theta]in,"\[Delta]qS"->\[Delta]qSval,"L"->(L),"\[Kappa]"->\[Kappa],"tRange"->tRange,"\[Lambda]RGB2"->\[Lambda]RGB2val,"mp"->mp,"\[Alpha]\[Beta]"->\[Alpha]\[Beta],"\[Alpha]"->\[Alpha],"\[Beta]"->\[Beta],"\[Tau]"->\[Tau],"LCaCbColor"->LCaCbColor,
+"qRsMin"->qRsMin, "qRsMax"->qRsMax, "qRsRange"->qRsRange, "\[CapitalLambda]t"->\[CapitalLambda]t,"\[CapitalOmega]pt"->\[CapitalOmega]pt,"\[CapitalLambda]q"->\[CapitalLambda]q,"\[CapitalOmega]pq"->\[CapitalOmega]pq,"Qdisc"->Qdisc,"Qdist"->Qdist,"Qkeep"->Qkeep,"S"->S,
+"disFun"->disFun,"dstMax"->dstMax,"qR"->qRval,"fSs"->fSsVal}
+]
+
+setColorSpaceParams[\[Sigma]s\[Gamma]g_,\[Mu]c_,\[Theta]in_,n_,sdMinMax:{{_,_},{_,_}},opts:OptionsPattern[]]:=Module[{rules},
+Clear[sMin,sMax,dMin,dMax,sRange,dRange,
+K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],dis,\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
+LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,
+Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal] ;
+
+rules=colorSpaceParams[\[Sigma]s\[Gamma]g,\[Mu]c,\[Theta]in,n,sdMinMax,opts];
+
+{\[Mu],c,\[Sigma],s,\[Gamma],g,sMin,sMax,dMin,dMax,sRange,dRange,
+K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],disFunc,\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
+LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,
+Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal}=
+{"\[Mu]","c","\[Sigma]","s","\[Gamma]","g","sMin","sMax","dMin","dMax","sRange","dRange",
+"K","\[Delta]","m","\[Omega]","\[CapitalOmega]","\[Omega]p","\[CapitalOmega]p","\[Lambda]","\[CapitalLambda]","dis",
+"\[Theta]","\[Delta]qS","L","\[Kappa]","tRange","\[Lambda]RGB2","mp","\[Alpha]\[Beta]","\[Alpha]","\[Beta]","\[Tau]",
+"LCaCbColor","qRsMin","qRsMax","qRsRange","\[CapitalLambda]q","\[CapitalOmega]pq",
+"Qdisc","Qdist","Qkeep","S","disFun","dstMax","qR","fSs"}/.rules
+]
+
+
+Clear[\[Mu],c,\[Sigma],s,\[Gamma],g,sMin,sMax,dMin,dMax,sRange,dRange,K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
+ LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal]
+
+
+Clear[processImage];
+processImage[imgData_, qFuns_:{},dFuns_:{}, \[Sigma]s\[Gamma]g_, \[Mu]c_, \[Theta]in_, n_, sdMinMax:{{_,_},{_,_}}, opts:OptionsPattern[]]:=Module[ {rules},
+rules=colorSpaceParams[\[Sigma]s\[Gamma]g,\[Mu]c,\[Theta]in,n,sdMinMax,opts];
+processImage[imgData, qFuns,dFuns, rules, opts]
+]
+
+processImage[imgData_, qFuns_:{},dFuns_:{}, rules_List, opts:OptionsPattern[]]:=Module[
+{sMin,sMax,dMin,dMax,sRange,dRange,
+K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],dis,\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
+LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal,pxl,qPxl,dqPxl},
+{\[Mu],c,\[Sigma],s,\[Gamma],g,sMin,sMax,dMin,dMax,sRange,dRange,
+K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],dis,\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
+LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,
+Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal}=
+{"\[Mu]","c","\[Sigma]","s","\[Gamma]","g","sMin","sMax","dMin","dMax","sRange","dRange",
+"K","\[Delta]","m","\[Omega]","\[CapitalOmega]","\[Omega]p","\[CapitalOmega]p","\[Lambda]","\[CapitalLambda]","dis",
+"\[Theta]","\[Delta]qS","L","\[Kappa]","tRange","\[Lambda]RGB2","mp","\[Alpha]\[Beta]","\[Alpha]","\[Beta]","\[Tau]",
+"LCaCbColor","qRsMin","qRsMax","qRsRange","\[CapitalLambda]q","\[CapitalOmega]pq",
+"Qdisc","Qdist","Qkeep","S","disFun","dstMax","qR","fSs"}/.rules;
+Table[
+pxl=imgData[[i,j]];
+qPxl=fSsVal (qRval.pxl) -qRsMin;
+dqPxl=Table[N[Round[disFun[[i]] [qPxl[[i]]]]/dstMax[[i]]],{i,1,3}];
+Do[
+AppendTo[dqPxl, qFuns[[i]][qPxl]];
+,{i,1,Length[qFuns]}];
+Do[
+AppendTo[dqPxl, dFuns[[i]][dqPxl]];
+,{i,1,Length[dFuns]}];
+dqPxl
+,{i,1,(Dimensions[imgData])[[1]]},{j,1,(Dimensions[imgData])[[2]]}]
 ]
 
 
@@ -2167,6 +2345,10 @@ notes}
 ]
 
 
+
+
+
+
 (* ::Subsection:: *)
 (*Distributions with Rotations Output Tables*)
 
@@ -2180,35 +2362,6 @@ If[mm[[1]]<0,pnt-mm[[1]],If[mm[[2]]>1,pnt-(mm[[2]]-1)]]
 \[Lambda]CubeRGB=Transpose[Table[correctToRGBCube[\[Lambda]CubeRGB[[All,i]]],{i,1,Length[\[Lambda]CubeRGB[[1]]]}]];
 Map[Max,\[Lambda]CubeRGB]
 ];
-
-
-Clear[colorSpaceParams]
-colorSpaceParams::usage = 
-  "Input 3 distributions from setUpErf and a color space angle to get:\n
- {\"\[Delta]qS\",\"L\",\"sRange\",\"dRange\",\"K\",\"\[Delta]\",\"\[Lambda]\",\"\[Omega]\",\"\[Omega]p\",\"\[Kappa]\",\"tRange\",\"\[Lambda]RGB2\",\"mp\",\"\[Alpha]\[Beta]\",\"\[Alpha]\",\"\[Beta]\",\"\[Tau]\",\"axisColors\"}";
-colorSpaceParams[dist_,\[Theta]in_]:=Module[{varRules,LCaCbColor},
-varRules = {"\[Theta]"->\[Theta]in};
-AppendTo[varRules,"\[Delta]qS"->(\[Delta]qS[\[Theta]in])];
-AppendTo[varRules,"L"->(scale["LCaCb","nLCaCb"][\[Theta]in])];
-AppendTo[varRules,"sRange"->Table[dist[[i]]["param"][[1,1]],{i,1,3}]];
-AppendTo[varRules,"dRange"->Table[dist[[i]]["param"][[1,2]],{i,1,3}]];
-AppendTo[varRules,"K"->Table[dist[[i]]["param"][[1,3]],{i,1,3}]];
-AppendTo[varRules,"\[Delta]"->Table[dist[[i]]["param"][[2,1]],{i,1,3}]];
-AppendTo[varRules,"\[Lambda]"->Table[dist[[i]]["param"][[3,1]],{i,1,3}]];
-AppendTo[varRules,"\[Omega]"->Table[dist[[i]]["param"][[4,1]],{i,1,3}]];
-AppendTo[varRules,"\[Omega]p"->Table[dist[[i]]["param"][[5,1]],{i,1,3}]];
-AppendTo[varRules,"\[Kappa]"->MapThread[Max,{(1/("\[Delta]"/.varRules)),("K"/.varRules)/("L"/.varRules)}]];
-AppendTo[varRules,"tRange"->MapThread[Min,{(("K"/.varRules) ("\[Delta]"/.varRules)),("L"/.varRules)}]];
-AppendTo[varRules,"\[Lambda]RGB2"->\[Lambda]RGB2[\[Theta]in,"\[Lambda]"/.varRules]];
-AppendTo[varRules,"mp"->Map[Max,Transpose[Transpose["\[Delta]qS"/.varRules] \[Lambda]RGB2[\[Theta]in,"\[Lambda]"/.varRules]]]];
-AppendTo[varRules,"\[Alpha]\[Beta]"->\[Delta]qEO[2 ("tRange"/.varRules) ("mp"/.varRules), \[Theta]in]];
-AppendTo[varRules,"\[Alpha]"->("\[Alpha]\[Beta]"/.varRules)[[2]]];
-AppendTo[varRules,"\[Beta]"->("\[Alpha]\[Beta]"/.varRules)[[3]]];
-AppendTo[varRules,"\[Tau]"->Block[{accuracy},accuracy=0.01;Rationalize[accuracy Ceiling[1/(accuracy Max["\[Alpha]\[Beta]"/.varRules])],accuracy]]];
-SetUpLCaCbColor[SymbolName[LCaCbColor],\[Theta]in,"Hue"];
-AppendTo[varRules,"LCaCbColor"->LCaCbColor];
-varRules
-]
 
 
 ClearAll[paramTable]
@@ -2642,7 +2795,7 @@ Grid[{{Show[{plt,Graphics[maxBs],Graphics[{Opacity[0.5],iotaBg}],plt,Graphics[{O
 (*Bin Visualisations.*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*The Cube objects method for 3D bin plots.*)
 
 
@@ -3005,30 +3158,33 @@ BringToFront[list_,n_]:=Module[{tail,head},head=Take[list,n];tail=Drop[list,n];{
 Options[chromaticPlane]={Frame->True,Title->True};
 Clear[chromophoresLCaCb];
 chromaticPlane[theta_,chromophoresRGB_:{{245,56,21},{251,51,8},{231,123,48},{239,119,31}},OptionsPattern[]]:=Module[
-{minA,maxA,minB,maxB,chromoYAB,avgY,pts,r,shift,align,nLCaCbChromophores,nLCaCbChromophoresPlane,title},
+{minA,maxA,minB,maxB,chromoYAB,avgY,r,shift,align,nLCaCbChromophores,nLCaCbChromophoresPlane,title},
 {{minA,maxA},{minB,maxB}}={{-0.5,0.5},{-0.5,0.5}};
 chromoYAB=(Transpose[N[nLCaCb[theta].Transpose[chromophoresRGB/255]]]) ;
 avgY= Plus@@chromoYAB[[All,1]]/4;
 pts= 255 Map[(#+{0.5,0.5})&,chromoYAB[[All,2;;3]]];
 r=255 0.02;
 shift= {r+255 0.01,0};
-align={Left,Center};
+align=Function[{a,b},If[Abs[a-b] < 2 r,If[a<b,{Left,Top},{Left,Bottom}],{Left,Center}]];
 If[OptionValue[Title],title=Text[Style["Rotated ColorSpace with :\n\[Theta] = "<>ToString[theta]<>"\n L = "<>ToString[avgY],Medium],{minA+r,255 -r},{Left,Top}],title=Sequence[]];
 If[OptionValue[Frame],
 Graphics[{
 Raster[Table[Table[inLCaCb[theta].{avgY,a,b},{a,minA,maxA,N[1/256]}],{b,minB,maxB,N[1/256]}],{{0,0},{255,255}}], title,
-Circle[pts[[1]],r],Text[Style["Hb",Medium],pts[[1]]+shift,align],
-Circle[pts[[2]],r],Text[Style["HbO2",Medium],pts[[2]]+shift,align],
-Circle[pts[[3]],r],Text[Style["Eumelanin",Medium],pts[[3]]+shift,align],
-Circle[pts[[4]],r],Text[Style["Pheomelanin",Medium],pts[[4]]+shift,align]},ImageSize->500,Frame->True, FrameTicks->{{BinaryTicks[0,256,3],BinaryTicks[0,256,3]},{BinaryTicks[0,256,3],BinaryTicks[0,256,3]}}]
+Circle[pts[[1]],r],Text[Style["Hb",  Medium],pts[[1]]+shift,align[pts[[1,2]],pts[[2,2]]] ],
+Circle[pts[[2]],r],Text[Style["HbO2",Medium],pts[[2]]+shift,align[pts[[2,2]],pts[[1,2]]] ],
+Circle[pts[[3]],r],Text[Style["Eumelanin",  Medium],pts[[3]]+shift,align[pts[[3,2]],pts[[4,2]]] ],
+Circle[pts[[4]],r],Text[Style["Pheomelanin",Medium],pts[[4]]+shift,align[pts[[4,2]],pts[[3,2]]] ]},ImageSize->500,Frame->True, FrameTicks->{{BinaryTicks[0,256,3],BinaryTicks[0,256,3]},{BinaryTicks[0,256,3],BinaryTicks[0,256,3]}}]
 ,Graphics[{
 Raster[Table[Table[inLCaCb[theta].{avgY,a,b},{a,minA,maxA,N[1/256]}],{b,minB,maxB,N[1/256]}],{{0,0},{255,255}}], title,
-Circle[pts[[1]],r],Text[Style["Hb",Medium],pts[[1]]+shift,align],
-Circle[pts[[2]],r],Text[Style["HbO2",Medium],pts[[2]]+shift,align],
-Circle[pts[[3]],r],Text[Style["Eumelanin",Medium],pts[[3]]+shift,align],
-Circle[pts[[4]],r],Text[Style["Pheomelanin",Medium],pts[[4]]+shift,align]},ImageSize->500]
+Circle[pts[[1]],r],Text[Style["Hb",  Medium],pts[[1]]+shift,align[pts[[1,2]],pts[[2,2]]]],
+Circle[pts[[2]],r],Text[Style["HbO2",Medium],pts[[2]]+shift,align[pts[[2,2]],pts[[1,2]]]],
+Circle[pts[[3]],r],Text[Style["Eumelanin",  Medium],pts[[3]]+shift,align[pts[[3,2]],pts[[4,2]]]],
+Circle[pts[[4]],r],Text[Style["Pheomelanin",Medium],pts[[4]]+shift,align[pts[[4,2]],pts[[3,2]]]]},ImageSize->500]
 ]
 ];
 
 
-chromaticPlane[0,{{245,56,21},{251,51,8},{231,123,48},{239,119,31}},Frame->False]
+Abs[pts[[1,2]]-pts[[2,2]]] < r
+
+
+chromaticPlane[0.9,{{245,56,21},{251,51,8},{231,123,48},{239,119,31}},Frame->False]

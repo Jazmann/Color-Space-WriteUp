@@ -318,7 +318,7 @@ It can be seen that the least square fit is a good predictor for the distributio
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1.0 \textwidth]{Chapter3/Figs/Distribution_Results_Final_Extended.jpg} 
-    \caption{ \textbf{The $5\sigma$ ellipse region extended MATLAB fit in LCa'Cb'.} The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color space }  \label{fig:DistributionResultsFinalExtended}
+    \caption{ \textbf{The extended $5\sigma$ ellipse region MATLAB fit in LCa'Cb'.} The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color-space }  \label{fig:DistributionResultsFinalExtended}
 \end{figure}
 
 \begin{figure}[h!]
@@ -327,9 +327,23 @@ It can be seen that the least square fit is a good predictor for the distributio
     \caption{ The tight and extended fits in the LCa'Cb'. color space }  \label{fig:DistributionResultsFinalExtended3D}
 \end{figure}
 
-Extending the distribution may also affect the accuracy required in the rotation as mentioned previously. Extending out to a $5\sigma$ ellipse region does indeed affect the tolerance \ref{fig:DistributionResultsFinalExtended} but the chosen angle perturbation $\pm0.144$still satisfies the tolerance $\tau = 0.3094$ thus $0.1441 < 0.3094$. It is also notable that the tight MATLAB distribution requires a  partition in the chromatic axis whilst the extended distribution requires a small amount of redistribution. The tight MATLAB distribution and the extended distribution can be seen in figure \ref{fig:DistributionResultsFinalExtended3D}.
+Extending the distribution may also affect the accuracy required in the rotation as mentioned previously. Extending out to a $5\sigma$ ellipse region does indeed affect the tolerance \ref{fig:DistributionResultsFinalExtended} but the chosen angle perturbation $\pm0.144$ still satisfies the tolerance $\tau = 0.3094$ as $0.1441 < 0.3094$. It is also notable that the tight MATLAB distribution requires a  partition in the chromatic axis whilst the extended distribution requires a small amount of redistribution. The tight MATLAB distribution and the extended distribution can be seen in figure \ref{fig:DistributionResultsFinalExtended3D}.
 
 \subsection{Conclusion}
 
 Our goal was to find appropriate values for the 2D chromatic Gaussians in order to facilitate the image processing, and to create a color space that preserves all of the chromatic skin information. So to demonsrate how works, we quickly demonstrate the skin prob map. 
+The 
 
+
+put the distribution parameters together into vectors
+
+After Redistribution we have two new spaces in which to express the stats parameters. The 0-dstMax range and the new 0-1 range where 0 and 1 correspond to different positions in the original unit space because of the contraction of the information. The mean values are at the half way point in both $c_d=dstMax/2$ and $\mu_d = \frac{1}{2}$.  The standard deviations are scaled to fit the region which is 'kept' $\sigma_d=\frac{\sigma}{\lambda_2-\lambda_1}$. The probability of a pixel in the redistributed colorspace can then be found using 
+\begin{equation}
+P(L,Ca,Cb) = Exp(- \frac{Ca-\mu_d^{Ca} }{2 \sigma_d^{Ca}} - \frac{Cb-\mu_d^{Cb} }{2 \sigma_d^{Cb}})
+\end{equation}
+the result can be seen in figure \ref{fig:TransformImage}.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95 \textwidth]{Chapter3/Figs/TransformImages.jpg} 
+    \caption{ Images of hands from the three individual sets processed with the opacity given by the probability that the pixelvalue is skin using the simply product of Gaussians method given above.}  \label{fig:TransformImages}
+\end{figure}
