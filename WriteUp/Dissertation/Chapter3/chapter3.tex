@@ -331,13 +331,9 @@ Extending the distribution may also affect the accuracy required in the rotation
 
 \subsection{Conclusion}
 
-Our goal was to find appropriate values for the 2D chromatic Gaussians in order to facilitate the image processing, and to create a color space that preserves all of the chromatic skin information. So to demonsrate how works, we quickly demonstrate the skin prob map. 
-The 
+Our goal was to find appropriate values for the 2D chromatic Gaussians in order to facilitate the image processing, and to create a color space that preserves all of the chromatic skin information. To show that we have achieved this, we will quickly demonstrate the skin probability map:
 
-
-put the distribution parameters together into vectors
-
-After Redistribution we have two new spaces in which to express the stats parameters. The 0-dstMax range and the new 0-1 range where 0 and 1 correspond to different positions in the original unit space because of the contraction of the information. The mean values are at the half way point in both $c_d=dstMax/2$ and $\mu_d = \frac{1}{2}$.  The standard deviations are scaled to fit the region which is 'kept' $\sigma_d=\frac{\sigma}{\lambda_2-\lambda_1}$. The probability of a pixel in the redistributed colorspace can then be found using 
+After redistribution we have two new spaces in which to express the stats parameters: the 0-dstMax range and the new 0-1 range, where 0 and 1 correspond to different positions in the original unit space because of the compression of the information. The mean values are at the halfway point in both $c_d=dstMax/2$ and $\mu_d = \frac{1}{2}$.  The standard deviations are scaled to fit the region which is 'kept' $\sigma_d=\frac{\sigma}{\lambda_2-\lambda_1}$. The probability of a pixel in the redistributed color space can then be found using 
 \begin{equation}
 P(L,Ca,Cb) = Exp(- \frac{Ca-\mu_d^{Ca} }{2 \sigma_d^{Ca}} - \frac{Cb-\mu_d^{Cb} }{2 \sigma_d^{Cb}})
 \end{equation}
@@ -345,5 +341,9 @@ the result can be seen in figure \ref{fig:TransformImage}.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.95 \textwidth]{Chapter3/Figs/TransformImages.jpg} 
-    \caption{ Images of hands from the three individual sets processed with the opacity given by the probability that the pixelvalue is skin using the simply product of Gaussians method given above.}  \label{fig:TransformImages}
+    \caption{ Images of hands from the three individual sets processed with the opacity given by the probability that the pixel value is skin using the simply product of Gaussians method given above.}  \label{fig:TransformImages}
 \end{figure}
+
+The probability in these images is indicated by the opacity, but as you can see from the above images, all of the skin detail is preserved, therefore all the skin information is preserved. In a normal color space, the preservation of skin information is computationally intensive, but in the case of our bespoke color space, it is simply the product of two 2D Gaussians, therefore finding the skin probability is a very simple function. Thus, we have not only preserved the skin information, we have produced a simplified version of a complicated computer vision task. 
+
+It should be noted that the strict $1\sigma$ result misses some of the skin; this was expected as some histogram values lie outside the Gaussian fit, so loosening the criteria is necessary to capture all of the skin information. A $2\sigma$ or $3\sigma$ criteria should be sufficient to capture all of the skin information. Additionally, the simple implementation here does not account for unreliable white-out and black-out values, or use nearest pixel values, but this is not the final step of the algorithm. For this, we need a classifier, which will be explored in the following chapter.
