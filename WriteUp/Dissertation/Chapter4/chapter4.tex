@@ -1,4 +1,4 @@
-\chapter{Pattern Recognition}
+\chapter{Pattern Recognition and Implementation}
 
 % **************************** Define Graphics Path **************************
 
@@ -8,6 +8,57 @@
 \else
     \graphicspath{{Chapter4/Figs/Vector/}{Chapter4/Figs/}}
 \fi
+\subsection{The Whiteout Blackout Algorithm.}
+We need to find the point at which a chromatic value will begin to suffer from white-out and black-out. This is done by taking the corresponding RGB value for the chromatic point and illuminating and deluminating the point by shifting the channel values by the same amount and noting when each channel value becomes fully saturated or desaturated. This is done in the unit space so the results can be scaled to any working range. the algorithm for finding the theoretical values is gven in algorithm \ref{algo:TheWhiteoutBlackoutAlgorithm}. 
+
+\begin{algorithm}[H]
+ \begin{algorithmic}
+  \Require{ $Ca$, $Cb$ The chromatic values}
+  \State \phantom{Require}  { $iLCaCb$ the transform to LCaCb from RGB; }
+  \State \phantom{Require}  {  $LCaCb$ the transform to RGB from LCaCb}
+ \Ensure{  The luminosity at which black out $L_{BO}$  and white out $L_{WO}$ occur.}
+ \State \phantom{Ensu} { \begin{tabular}{l}
+ $Ca_{min}  \le Ca \le Ca_{max}$   \\ 
+ $Cb_{min}  \le Cb \le Cb_{max}$  
+ \end{tabular}  \parbox{0.65 \textwidth}{The chromatic range which could be suffering from white-out or black-out}}
+ 
+   \State  $pnt^{RGB} \gets iLCaCb(0.5, Ca,Cb)$ \Comment{Put the point in RGB space }
+   \State  $O \gets Order(pnt^{RGB}, \#1> \#2)$ \Comment{The order of the RGB channels from largest to smallest}
+   \State  $\Delta WO_1 \gets 1 - pnt^{RGB}_{O(1)} $ \Comment{Iluminate to make the largest channel value saturated}
+   \State  $pnt^{(RGB, WO, 1)}_{O(1)} \gets 1 $ \Comment{The point where a channel is saturated }
+   \State  $pnt^{(RGB, WO, 1)}_{O(2)} \gets  pnt^{RGB} _{O(2)} + \Delta WO_1 $ 
+   \State  $pnt^{(RGB, WO, 1)}_{O(3)} \gets  pnt^{RGB} _{O(3)} + \Delta WO_1 $ 
+      \State  $\Delta WO_2 \gets 1 - pnt^{RGB}_{O(2)} $\Comment{Iluminate to make the second largest channel value saturated}
+      \State  $pnt^{(RGB, WO, 2)}_{O(1)} \gets 1 $ \Comment{The point where two channels are saturated }
+      \State  $pnt^{(RGB, WO, 2)}_{O(2)} \gets 1 $ 
+      \State  $pnt^{(RGB, WO, 2)}_{O(3)} \gets  pnt^{RGB} _{O(3)} + \Delta WO_2 $ 
+     
+     
+        \State  $\Delta BO_1 \gets  pnt^{RGB}_{O(3)} $ \Comment{Deluminate by the smallest channel value}
+        \State  $pnt^{(RGB, BO, 1)}_{O(1)} \gets  pnt^{RGB} _{O(1)} - \Delta BO_1  $ \Comment{The point where a channel is desaturated }
+        \State  $pnt^{(RGB, BO, 1)}_{O(2)} \gets  pnt^{RGB} _{O(2)} - \Delta BO_1 $ 
+        \State  $pnt^{(RGB, BO, 1)}_{O(3)} \gets  0 $ 
+           \State  $\Delta BO_2 \gets pnt^{RGB}_{O(2)} $ \Comment{Deluminate by the second smallest channel value}
+           \State  $pnt^{(RGB, BO, 2)}_{O(1)} \gets pnt^{RGB} _{O(1)} - \Delta BO_2 $ \Comment{The point where two channels are desaturated }
+           \State  $pnt^{(RGB, BO, 2)}_{O(2)} \gets 0 $ 
+           \State  $pnt^{(RGB, BO, 2)}_{O(3)} \gets 0 $ 
+     
+       \State  $pnt^{(WO, i)}\gets LCaCb(pnt^{(WO, i)}) $ \Comment{The white-out points in LCaCb color space}
+       \State  $pnt^{(BO, i)}\gets LCaCb(pnt^{(BO, i)}) $ \Comment{The black-out points in LCaCb color space}
+       
+       \State  $L_{WO} \gets pnt^{(WO, 1)}_1$ 
+       \State  $L_{BO} \gets pnt^{(BO, 1)}_1$ 
+       \State  $Ca_{min}  \gets Min(pnt^{(WO, 1)}_2, pnt^{(WO, 2)}_2, pnt^{(BO, 1)}_2, pnt^{(BO, 2)}_2 )$ 
+       \State  $Ca_{max} \gets Max(pnt^{(WO, 1)}_2, pnt^{(WO, 2)}_2, pnt^{(BO, 1)}_2, pnt^{(BO, 2)}_2 )$ 
+       \State  $Cb_{min}  \gets Min(pnt^{(WO, 1)}_3, pnt^{(WO, 2)}_3, pnt^{(BO, 1)}_3, pnt^{(BO, 2)}_3 )$ 
+       \State  $Cb_{max} \gets Max(pnt^{(WO, 1)}_3, pnt^{(WO, 2)}_3, pnt^{(BO, 1)}_3, pnt^{(BO, 2)}_3 )$ 
+     
+ \State \textbf{Return} {$L_{WO} , L_{BO} , Ca_{min}, Ca_{max} , Cb_{min}, Cb_{max}$ }
+ 
+  \end{algorithmic}
+    \caption{The Whiteout Blackout Algorithm}
+    \label{algo:TheWhiteoutBlackoutAlgorithm}
+ \end{algorithm}
 
 \section{Improved Contour Detection}\label{sec:ImprovedContourDetection}
 
