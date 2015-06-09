@@ -8,6 +8,26 @@
 \else
     \graphicspath{{Chapter4/Figs/Vector/}{Chapter4/Figs/}}
 \fi
+
+
+\section{Implementing the Color Space}\label{sec:ImplementingTheColorSpace}
+
+In the previous two chapters, we have been approaching the color space design problem mathematically. Here, we will outline the practical implementation of the color space algorithm on the mobile device.
+
+The first and most pressing consideration is limited processing power; while our mathematical approach to the algorithm design is significantly faster and more efficient than the more typical applications with commonly-used color spaces --- as will be discussed later in this chapter --- minimizing the number of clock cycles spent on continuous processes is necessary in order to ensure efficient operation. In the case of redistribution, the integer matrix transform is performed first, which puts the pixel values in the quantized working type qRange described in Chapter 2, then pixel classification is performed before any of the chromatic information is redistributed, as follows:
+
+<pixel classification table here>
+
+The pixel classification is performed before the redistribution because it excludes processing pixels which are of no interest based on both chromatic channels, whereas for redistribution one channel may clearly lie outside of the discard region $\lambda$ while the other could be kept or redistributed. With the pixel classifier, if one channel lies outside the discard region, the other is also of no interest since the pixel value is outside of the partitioning region, thereby avoiding unnecessary processing time spent on redistribution. The classification is straightforward within the limits on the channel values, so it isn't sophisticated like an elliptical partitioning or a probabilistic Gaussian-based thresholding; it is simply a quick way of excluding the majority of the pixel values which aren't of interest.
+
+Once the pixels have been classified, the redistribution is performed --- which requires further processing --- or we assign a pixel value from a small set of possibilities and skip onto the next pixel values. The redistribution function is applied to the working type tRange, while the comparison and classification is done in qRange. This is because the information in tRange is compressed to avoid wasting space, and as a consequence of this it does not occupy the full data type. qRange, on the other hand, being the natural range multiplied by the quantization matrix qR, does occupy the full data type. Since the operation is simply a comparison between numbers, it is of no advantage to compress the information so tightly. Additionally, since qRange is a signed range, one could look at the bit indicating the sign and immediately tell whether or not a given value will be discarded. Once scaled to tRange, the redistribution function is applied --- which has a source range of tRange and a range dRange of the destination type --- as outlined in <insert section in Chapter 2 here>.
+
+It should be noted that the region between the extended keep region and $\lambda$ is not especially large; for even a $5\sigma$ result, it's only tens of values wide, let alone hundreds. As such, we use a lookup table for the redistribution in our actual implementation, thus further reducing the processing overhead. It should also be noted that C++ has a lookup table threshold set to approximately 64, which makes up a quarter of a region in our case. If the redistribution region is larger than that, the error function approximation from Chapter 2 is implemented. This is mainly for future-proofing the implementation, however; given the limited size of the region, we fully expect to use a lookup table for all practical cases.
+
+As another future concession, the facility to add pixel-based functions to the color space transform, such as the skin probability function mentioned at the end of the previous chapter, is allowed. The color space transform is a threaded process, so there is no way of knowing that the last pixel value that was processed by any given thread was an adjacent pixels, as the parallelization is handled by OpenCV's universal threading library implementations. Pixel-based functions, however, are per-pixel processes, and they come out as separate resulting channels, so they can be added to the color space transform without causing any conflicts.
+
+
+
 \subsection{The Whiteout Blackout Algorithm.}
 We need to find the point at which a chromatic value will begin to suffer from white-out and black-out. This is done by taking the corresponding RGB value for the chromatic point and illuminating and deluminating the point by shifting the channel values by the same amount and noting when each channel value becomes fully saturated or desaturated. This is done in the unit space so the results can be scaled to any working range. the algorithm for finding the theoretical values is gven in algorithm \ref{algo:TheWhiteoutBlackoutAlgorithm}. 
 
@@ -76,26 +96,120 @@ We need to find the point at which a chromatic value will begin to suffer from w
  slack(Cb_{min}) \le Cb \le  slack(Cb_{max})
   \end{multline}
   
+  \subsection{The Region Classification and Partitioning function}
+  It is desirable to classify a pixel value after rotation but before redistribution using channel limits by how well the value fits the target and by how reliable the value is given lighting conditions. This can be done to a degree but it is necessary to assume reasonably uniform lighting conditions. The pixel values are classified by chromatic value as either inside the target region or outside in both axis dividing the chromatic plane into nine regions fig \ref{fig:PartitioningRegions}. A rudimentary partitioning is performed by assigning 8 constants to the values outside the region around the mean. The luminosity is always evaluated because all that is required is a scaling from qRange to the destination range dRange. 
+  
+  \begin{figure}[h!]
+    \centering
+      \includegraphics[width=0.80\textwidth]{Chapter4/Figs/PartitioningRegion.jpg}
+      \caption{The Regions in the chromatic space. ~ Indicates values which will undergo redistribution.}  \label{fig:PartitioningRegions}
+  \end{figure}
+  
+  \subsection{Floating the Mean}
+  Different lighting conditions can affect the detected pixel color. Not accounting for strongly colored light the affect of different lighting conditions is to increase or decrease the saturation of the color. The distribution is relatively unaffected in orientation or variance meaning that lighting conditions can be accounted for by adjusting the mean. 
+  \newcommand{\newMean}{\widetilde{\mu}}
+  The algorithm adjusts to ambient lighting by first taking a reference image centered on a patch of skin and finding the mean in the LCaCb colorspace. This new mean $\newMean$ is then used in the current instance of the algorithm. It is adventitious to keep the mean adjustable in the routine so this is implemented by introducing  an adjustment parameter $\delta\mu$ to the routine where $\newMean = \mu + \delta\mu$. The algorithm assumes that the adjustment is small enough that the distribution function retains the same shape aside from a translation along the axis. This allows the distribution parameters to be adjusted by simply shifting them by $\delta\mu$. 
+  
+  \begin{equation}
+  \begin{aligned}
+   \widetilde{\lambda}_1 & = \lambda_1 + \delta\mu &  \widetilde{\lambda}_2 & = \lambda_2 + \delta\mu \\
+   \widetilde{\omega}_1 & = \omega_1 + \delta\mu &  \widetilde{\omega}_2 & = \omega_2 + \delta\mu 
+  \end{aligned} \quad \text{Where} \quad \lambda_1 < \delta\mu < 1 - \lambda_2
+  \end{equation}
+  
+  \subsection{The Colorspace Algorithm as Implemented}
+  Here we present the colorspace algorithm in a way which most closely resembles the C++ code. The construction of the colorspace object is described at the end of chapter 2 here the operation of the algorithm is described.
+  
+  First we determine the form of the distribution function for a working type tRange with The source range $srcRange=2^n$  and destination range $dstRange=2^m$ expressed in terms of their bit depths.
+  
+  \begin{gather*}
+   \begin{aligned}
+    \delta  &= \frac{ \sqrt{2} }{ \sigma \sqrt{\pi }  \left(\Sigma^+-\Sigma^-\right)} & 
+   K & =  2^{m-n}  & 
+   \Sigma^- &= \text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right) &
+   \Sigma^+ &= \text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right) 
+    \end{aligned} 
+  \end{gather*}
+  The length of the axis $\tRange$ after rescaling is given by \ref{eq:CombinedRotationRange}, and the axis limits are easily found along with 
+  the compression ratio $\kappa$ (\ref{eq:newCompressionRatio}).
+  \begin{gather*}
+  \begin{aligned}
+   \tRange(\theta,\mu,\sigma)   & =  \mathbf{l} \; 2^n \quad&\quad
+  \mathbf{l}  & = \min\left\{ 2^{m-n}\delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\} 
+   \end{aligned} \\
+   \begin{aligned}
+    \tMin(\theta,\mu,\sigma)   & =
+   \begin{pmatrix}
+      0 \\
+    -\mathbf{l}_2 \; 2^{n-1}  \\  
+    -\mathbf{l}_3 \; 2^{n-1} \\  
+   \end{pmatrix} \quad & \quad
+    \tMax(\theta,\mu,\sigma)   & =
+   \begin{pmatrix}
+    \mathbf{l}_1 \; 2^n  \\
+    \mathbf{l}_2 \; 2^{n-1}  \\  
+    \mathbf{l}_3 \; 2^{n-1} \\  
+   \end{pmatrix} 
+   \end{aligned}
+  \end{gather*}
+  
+  
+  \begin{equation*}
+  \Scale =
+   \mathbf{l} \otimes
+  \begin{pmatrix}
+    \frac{1}{3} \\
+   2^{1-n } \\
+   2^{1-n }  \\
+  \end{pmatrix}    \\
+  \end{equation*}
+  
+  
+  Substituting into the distribution function gives us
+  \begin{equation}
+  -\frac{2^n \left(\text{erf}\left(\frac{2 \mu +1}{2 \sqrt{2} \sigma }\right)
+  +\text{erf}\left( \frac{2^{\frac{1}{2}-2 n} \left( x-\mu  2^{2n-1}\right)}{\sigma }\right)\right)}
+  {\text{erf}\left(\frac{2 \mu -1}{2 \sqrt{2} \sigma }\right)-\text{erf}\left(\frac{2 \mu +1}{2 \sqrt{2} \sigma }\right)}
+  \end{equation}
+  
+  \begin{equation}
+\textbf{dis}(x) =  -\frac{2^n \left(\text{erf}\left(\frac{2 \mu +1}{2 \sqrt{2} \sigma }\right)+\text{erf}\left(\frac{2^{1-2 n} x-\mu }{\sqrt{2} \sigma }\right)\right)}{\text{erf}\left(\frac{2 \mu -1}{2 \sqrt{2} \sigma }\right)-\text{erf}\left(\frac{2 \mu +1}{2 \sqrt{2} \sigma }\right)} \quad \textbf{where} \quad
+\begin{array}{rl}
+qMin < & x  < qMax \\
+0 < &\mu <1\\
+0 < &\sigma <1
+\end{array}
+  \end{equation}
+  
+  This form takes the result of the rotation directly however we wish to add the flexability to adjust the mean and to use a lookup table for the values. It is desirable to keep the lookup table as short as possible. The maximum compression of the information without loosing relevant information is given by compressing to tRange. The number of values in the lookup table can be reduced by scaling $x$ by a range qtRange which is chosen to balance lookup table size and computational scaling efficiency.  Noting that $\mathbf{l} <2$, qRange is chosen to be equal to tRange as if $\mathbf{l} =2$ which means that qtRange is a power of two allowing the scaling to be performed by bit shifting the value of $x_{qt} = x \ll n-2$ . Adjusting the mean changes the bounds on the region to be redistributed such that the form of the function does not change. For this reason we also define $x$ relative to the bounds which allows the same lookup table to be used regardless of any adjustment to the mean.
+  
+    \begin{equation}
+  \textbf{dis}(x) =  \begin{cases}
+    \textbf{disLU}((x-\Lambda_{1}) qtRange)  & \Lambda_{1} < x < \Omega_{pq1} \\
+  \textbf{disLU}((x-\Omega_{pq2}) qtRange)  & \Omega_{pq2} < x < \Lambda_{q2} \\
+  \textbf{dis}(x)  & \text{Otherwise}
+    \end{cases} \quad \text{where} \quad 
+    qtRange = \left(\begin{smallmatrix}
+    \cdots \\ 2^{2-n}\\2^{2-n}
+    \end{smallmatrix}\right)
+    \end{equation}
+  
+  Aside from these refinements the algorithm presented in Chapter 2 is used to perform the rotation and redistribution as described. The algorithm proceeds as follows.
+  
+  \begin{itemize}
+  \item Interactively find an adjustment to the mean  $\delta\mu$. .
+  \item Set the new distribution parameters
+  \item Rotate the pixel value with the $\qR$ matrix. $ pxl_{q} = \qR \cdot pxl_{RGB}$ then $ \frac{- qRange}{2} < pxl_{q} < \frac{ qRange}{2}$
+  \item Partition the rotated values to avoid unnecessary processing of irrelevant information.
+  \item Apply any user supplied per-pixel functions to the rotated value and add as extra channels.
+  \item Redistribute the rotated values into the destination type.
+  \item Apply and user supplied per-pixel functions to the redistributed values.
+  \end{itemize}
 
-\section{Implementing the Color Space}\label{sec:ImplementingTheColorSpace}
+\section{Pattern Recognition routines}
+In this section pattern recognition routines which use the new color space are presented and discussed.
 
-In the previous two chapters, we have been approaching the color space design problem mathematically. Here, we will outline the practical implementation of the color space algorithm on the mobile device.
-
-The first and most pressing consideration is limited processing power; while our mathematical approach to the algorithm design is significantly faster and more efficient than the more typical applications with commonly-used color spaces --- as will be discussed later in this chapter --- minimizing the number of clock cycles spent on continuous processes is necessary in order to ensure efficient operation. In the case of redistribution, the integer matrix transform is performed first, which puts the pixel values in the quantized working type qRange described in Chapter 2, then pixel classification is performed before any of the chromatic information is redistributed, as follows:
-
-<pixel classification table here>
-
-The pixel classification is performed before the redistribution because it excludes processing pixels which are of no interest based on both chromatic channels, whereas for redistribution one channel may clearly lie outside of the discard region $\lambda$ while the other could be kept or redistributed. With the pixel classifier, if one channel lies outside the discard region, the other is also of no interest since the pixel value is outside of the partitioning region, thereby avoiding unnecessary processing time spent on redistribution. The classification is straightforward within the limits on the channel values, so it isn't sophisticated like an elliptical partitioning or a probabilistic Gaussian-based thresholding; it is simply a quick way of excluding the majority of the pixel values which aren't of interest.
-
-Once the pixels have been classified, the redistribution is performed --- which requires further processing --- or we assign a pixel value from a small set of possibilities and skip onto the next pixel values. The redistribution function is applied to the working type tRange, while the comparison and classification is done in qRange. This is because the information in tRange is compressed to avoid wasting space, and as a consequence of this it does not occupy the full data type. qRange, on the other hand, being the natural range multiplied by the quantization matrix qR, does occupy the full data type. Since the operation is simply a comparison between numbers, it is of no advantage to compress the information so tightly. Additionally, since qRange is a signed range, one could look at the bit indicating the sign and immediately tell whether or not a given value will be discarded. Once scaled to tRange, the redistribution function is applied --- which has a source range of tRange and a range dRange of the destination type --- as outlined in <insert section in Chapter 2 here>.
-
-It should be noted that the region between the extended keep region and $\lambda$ is not especially large; for even a $5\sigma$ result, it's only tens of values wide, let alone hundreds. As such, we use a lookup table for the redistribution in our actual implementation, thus further reducing the processing overhead. It should also be noted that C++ has a lookup table threshold set to approximately 64, which makes up a quarter of a region in our case. If the redistribution region is larger than that, the error function approximation from Chapter 2 is implemented. This is mainly for future-proofing the implementation, however; given the limited size of the region, we fully expect to use a lookup table for all practical cases.
-
-As another future concession, the facility to add pixel-based functions to the color space transform, such as the skin probability function mentioned at the end of the previous chapter, is allowed. The color space transform is a threaded process, so there is no way of knowing that the last pixel value that was processed by any given thread was an adjacent pixels, as the parallelization is handled by OpenCV's universal threading library implementations. Pixel-based functions, however, are per-pixel processes, and they come out as separate resulting channels, so they can be added to the color space transform without causing any conflicts.
-
-
-
-\section{Improved Contour Detection}\label{sec:ImprovedContourDetection}
+\subsection{Improved Contour Detection}\label{sec:ImprovedContourDetection}
 
 OpenCV's findContours method takes a binary image and finds the contours in that binary image. However, the problem with this method is that we're thresholding on chromatic values, i.e. using color information to break up the color information into blobs off of which we're finding the contours. This doesn't take into account the white-out and black-out, which was noted previously. It's straightforward to define regions in the image which are succeptible to white-out and black-out using the luminosity channel. This is done by taking a high and low threshold off the luminosity channel, thereby producing a binary image, which is 1 in the valid region, and 0 otherwise.
 
