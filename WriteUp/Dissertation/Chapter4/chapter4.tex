@@ -102,7 +102,7 @@ We need to find the point at which a chromatic value will begin to suffer from w
   \begin{figure}[h!]
     \centering
       \includegraphics[width=0.80\textwidth]{Chapter4/Figs/PartitioningRegion.jpg}
-      \caption{The Regions in the chromatic space. ~ Indicates values which will undergo redistribution.}  \label{fig:PartitioningRegions}
+      \caption{The Regions in the chromatic space. ~ Indicates values which will undergo redistribution. Regions outside the target area are allocated extreme values at the edge of the color space}  \label{fig:PartitioningRegions}
   \end{figure}
   
   \subsection{Floating the Mean}
@@ -165,12 +165,7 @@ We need to find the point at which a chromatic value will begin to suffer from w
   \end{equation*}
   
   
-  Substituting into the distribution function gives us
-  \begin{equation}
-  -\frac{2^n \left(\text{erf}\left(\frac{2 \mu +1}{2 \sqrt{2} \sigma }\right)
-  +\text{erf}\left( \frac{2^{\frac{1}{2}-2 n} \left( x-\mu  2^{2n-1}\right)}{\sigma }\right)\right)}
-  {\text{erf}\left(\frac{2 \mu -1}{2 \sqrt{2} \sigma }\right)-\text{erf}\left(\frac{2 \mu +1}{2 \sqrt{2} \sigma }\right)}
-  \end{equation}
+  Substituting into the distribution function \ref{eq:disFunction} gives us
   
   \begin{equation}
 \textbf{dis}(x) =  -\frac{2^n \left(\text{erf}\left(\frac{2 \mu +1}{2 \sqrt{2} \sigma }\right)+\text{erf}\left(\frac{2^{1-2 n} x-\mu }{\sqrt{2} \sigma }\right)\right)}{\text{erf}\left(\frac{2 \mu -1}{2 \sqrt{2} \sigma }\right)-\text{erf}\left(\frac{2 \mu +1}{2 \sqrt{2} \sigma }\right)} \quad \textbf{where} \quad
