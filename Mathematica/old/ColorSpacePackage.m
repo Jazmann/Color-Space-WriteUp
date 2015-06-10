@@ -604,6 +604,8 @@ Format[\[Delta]qEO, TraditionalForm]=Style[
 
 
 
+
+
 \!\(\*OverscriptBox[\("\<\[Delta]qEO\>"\), \(^\)]\),Bold];
 
 
@@ -969,7 +971,7 @@ nLCaCbCube["RGB"]=Function[{\[Theta]},Evaluate[FullSimplify[inLCaCb[\[Theta]].nL
 nLCaCbPolygon= Function[{\[Theta]},Evaluate[Transpose[{Take[RGBCube[nLCaCb][\[Theta] ][[2]],{2,7}],Take[RGBCube[nLCaCb][\[Theta] ][[3]],{2,7}]}]]];
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*General Utility *)
 
 
@@ -2259,6 +2261,47 @@ AppendTo[dqPxl, dFuns[[i]][dqPxl]];
 {qPxl,dqPxl}
 ,{i,1,(Dimensions[imgData])[[1]]},{j,1,(Dimensions[imgData])[[2]]}];
 {img[[All,All,1]],img[[All,All,2]]}
+]
+
+
+Clear[processImage];
+Options[processImage]={Unit->True};
+processImage[imgData_, qFuns_:{},uFuns_:{}, \[Sigma]s\[Gamma]g_, \[Mu]c_, \[Theta]in_, n_, sdMinMax:{{_,_},{_,_}}, opts:OptionsPattern[]]:=Module[ {rules},
+rules=colorSpaceParams[\[Sigma]s\[Gamma]g,\[Mu]c,\[Theta]in,n,sdMinMax,opts];
+processImage[imgData, qFuns,uFuns, rules, opts]
+]
+
+processImage[imgData_, qFuns_:{},uFuns_:{}, rules_List, OptionsPattern[]]:=Module[
+{sMin,sMax,dMin,dMax,sRange,dRange,
+K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],dis,\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
+LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal,pxl,qPxl,uPxl,img},
+{\[Mu],c,\[Sigma],s,\[Gamma],g,sMin,sMax,dMin,dMax,sRange,dRange,
+K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],dis,\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
+LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,
+Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal}=
+{"\[Mu]","c","\[Sigma]","s","\[Gamma]","g","sMin","sMax","dMin","dMax","sRange","dRange",
+"K","\[Delta]","m","\[Omega]","\[CapitalOmega]","\[Omega]p","\[CapitalOmega]p","\[Lambda]","\[CapitalLambda]","dis",
+"\[Theta]","\[Delta]qS","L","\[Kappa]","tRange","\[Lambda]RGB2","mp","\[Alpha]\[Beta]","\[Alpha]","\[Beta]","\[Tau]",
+"LCaCbColor","qRsMin","qRsMax","qRsRange","\[CapitalLambda]q","\[CapitalOmega]pq",
+"Qdisc","Qdist","Qkeep","S","disFun","dstMax","qR","fSs"}/.rules;
+img=Table[
+pxl=imgData[[i,j]];
+qPxl=(fSsVal (qRval.pxl) -qRsMin);
+uPxl=qPxl/qRsRange;
+Do[
+qPxl=Flatten[Append[qPxl, qFuns[[i,1]][Sequence@@(qPxl[[(qFuns[[i,2]])]])]
+]];
+,{i,1,Length[qFuns]}];
+Do[
+uPxl=Flatten[Append[uPxl, uFuns[[i,1]][Sequence@@(uPxl[[uFuns[[i,2]]]])]]];
+,{i,1,Length[uFuns]}];
+{Flatten[qPxl],Flatten[uPxl]}
+,{i,1,(Dimensions[imgData])[[1]]},{j,1,(Dimensions[imgData])[[2]]}];
+If[OptionValue[Unit],
+img[[All,All,2]],
+img[[All,All,1]],
+{img[[All,All,1]],img[[All,All,2]]}
+]
 ]
 
 
