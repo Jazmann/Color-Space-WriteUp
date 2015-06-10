@@ -18,10 +18,10 @@ The iPhone's camera pre-processes the raw image before it reaches the AP layer w
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.98\textwidth]{Chapter3/Figs/Theory_And_Practice.jpg}
-    \caption{The Bins for 6 randomly colored blobs varying only in luminocity with lines indicating the source image colors.}  \label{fig:WhitePoint}
+    \caption{The Bins for 6 randomly colored blobs varying only in luminosity with lines indicating the source image colors.}  \label{fig:WhitePoint}
 \end{figure}
 
-The whitepoint for the iPhone camera was found by taking a random set of 6 colors $X=\left\{ \left\{X^1_R +\lambda, X^1_G  +\lambda, X^1_B +\lambda \right\}, \cdots \right\} $. and varying the luminosity between  $ \lambda(X)_B < \lambda  < \lambda(X)_W$. This produces a set of 6 colors which vary only in luminocity and which do not suffer from whiteout or blackout. Panels of these 6 colors with randomly selected luminocity for each were presented to the camera. This produced a set of images and the statistics were collected for this set. Theoretically we expect there to be 6 distinct parallel lines which are also parallel to the line from black to the white point of the camera. If the whitepoint of the camera is not $\left\{ 255,255,255\right\}$ then this test should allow the determination of the real white point. 
+The white point for the iPhone camera was found by taking a random set of 6 colors $X=\left\{ \left\{X^1_R +\lambda, X^1_G  +\lambda, X^1_B +\lambda \right\}, \cdots \right\} $. and varying the luminosity between  $ \lambda(X)_B < \lambda  < \lambda(X)_W$. This produces a set of 6 colors which vary only in luminosity and which do not suffer from white-out or black-out. Panels of these 6 colors with randomly selected luminosity for each were presented to the camera. This produced a set of images and the statistics were collected for this set. Theoretically we expect there to be 6 distinct parallel lines which are also parallel to the line from black to the white point of the camera. If the white point of the camera is not $\left\{ 255,255,255\right\}$ then this test should allow the determination of the real white point. 
 
 The iPhone's white point is always set to the corner of the RGB cube before the image reaches the AP layer. So, when developing an algorithm for the iPhone, white point correction is not necessary, while on other devices the algorithm may need to be adapted accordingly.
 \subsection{Color Correction Preprocessing}
@@ -45,8 +45,8 @@ The background statistics changed with the skin present in the photo. This is be
 
 In a real world context, it is relatively safe to presume that the scene will be chromatically complex enough that the color correction won't be detrimental to detection, and perhaps even beneficial under unusual lighting conditions. But for gathering statistics, it proved to be a massive pain.
 
-\subsection{Whiteout and Blackout}\label{sec:WhiteoutAndBlackout}
-A monochromatic object with average RGB color $\mathbf{\mu}=\left\{\mu_R, \mu_G, \mu_B \right\}$ under different lighting conditions produce an in-camera value of $\left\{\mu_R +\lambda, \mu_G  +\lambda, \mu_B +\lambda \right\}$. Each channel has a numerical limit which means that when that limit is reached further change in luminosity $\lambda$ will result in a change in chromatic value. At high luminosities the colors converge on white becoming washed out. This is referred to as whiteout. Similarly at low luminosities the colors converge on black which is referred to as blackout.
+\subsection{White-out and Black-out}\label{sec:WhiteoutAndBlackout}
+A monochromatic object with average RGB color $\mathbf{\mu}=\left\{\mu_R, \mu_G, \mu_B \right\}$ under different lighting conditions produce an in-camera value of $\left\{\mu_R +\lambda, \mu_G  +\lambda, \mu_B +\lambda \right\}$. Each channel has a numerical limit which means that when that limit is reached further change in luminosity $\lambda$ will result in a change in chromatic value. At high luminosities the colors converge on white becoming washed out. This is referred to as white-out. Similarly at low luminosities the colors converge on black which is referred to as black-out.
 
 \begin{figure}[h!]
   \centering
@@ -54,7 +54,7 @@ A monochromatic object with average RGB color $\mathbf{\mu}=\left\{\mu_R, \mu_G,
     \caption{Successful background removal.}  \label{fig:BGSuccess}
 \end{figure}
 
-It is reasonable to assume that pixel values which contain fully saturated channel elements are unreliable as they may be the result of whiteout or blackout. Unfortunately the iPhone also performs a auto brightness and contrast adjustment moving pixel values away from the sides of the RGB cube. The result of this processing is that the values with a luminosity above $\lambda_w$ and below $\lambda_b$ are unreliable.
+It is reasonable to assume that pixel values which contain fully saturated channel elements are unreliable as they may be the result of white-out or black-out. Unfortunately the iPhone also performs a auto brightness and contrast adjustment moving pixel values away from the sides of the RGB cube. The result of this processing is that the values with a luminosity above $\lambda_w$ and below $\lambda_b$ are unreliable.
 
 \section{Algorithm for Generating the Model}\label{sec:AlgorithmForGeneratingModel}
 Here we present the algorithm which is used to generate the chromatic model. It's assumed we have RGB image sets for the target with simple, monochromatic backgrounds.
@@ -318,7 +318,7 @@ It can be seen that the least square fit is a good predictor for the distributio
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1.0 \textwidth]{Chapter3/Figs/Distribution_Results_Final_Extended.jpg} 
-    \caption{ \textbf{The extended $5\sigma$ ellipse region MATLAB fit in LCa'Cb'.} The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color-space }  \label{fig:DistributionResultsFinalExtended}
+    \caption{ \textbf{The extended $5\sigma$ ellipse region MATLAB fit in LCa'Cb'.} The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color space. }  \label{fig:DistributionResultsFinalExtended}
 \end{figure}
 
 \begin{figure}[h!]

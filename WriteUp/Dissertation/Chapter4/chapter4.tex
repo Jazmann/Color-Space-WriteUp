@@ -28,8 +28,8 @@ As another future concession, the facility to add pixel-based functions to the c
 
 
 
-\subsection{The Whiteout Blackout Algorithm.}
-We need to find the point at which a chromatic value will begin to suffer from white-out and black-out. This is done by taking the corresponding RGB value for the chromatic point and illuminating and deluminating the point by shifting the channel values by the same amount and noting when each channel value becomes fully saturated or desaturated. This is done in the unit space so the results can be scaled to any working range. the algorithm for finding the theoretical values is gven in algorithm \ref{algo:TheWhiteoutBlackoutAlgorithm}. 
+\subsection{The White-Out Black-Out Algorithm}
+We need to find the point at which a chromatic value begins to suffer from white-out and black-out. This is done by taking the corresponding RGB value for the chromatic point and illuminating and deluminating the point by shifting the channel values by the same amount, noting when each channel value becomes fully saturated or desaturated. This is done in the unit space so the results can be scaled to any working range. The algorithm for finding the theoretical values is given in algorithm \ref{algo:TheWhiteoutBlackoutAlgorithm}. 
 
 \begin{algorithm}[H]
  \begin{algorithmic}
@@ -76,11 +76,11 @@ We need to find the point at which a chromatic value will begin to suffer from w
   \State \textbf{Return} {$L_{WO} , L_{BO} , Ca_{min}, Ca_{max} , Cb_{min}, Cb_{max}$ }
  
   \end{algorithmic}
-    \caption{The Whiteout Blackout Algorithm}
+    \caption{The White-Out Black-Out Algorithm}
     \label{algo:TheWhiteoutBlackoutAlgorithm}
  \end{algorithm}
  
- The theoretical values are adjusted by 10\% to account for the auto brightness and contrast performed by the phone as described in Chapter 3 Section \ref{sec:WhiteoutAndBlackout}. We only wish to adjust the bounds away from the luminocity axis. One of the chromatic bounds will be the luminocity axis $Ca=\frac{1}{2}$ or  $Cb=\frac{1}{2}$ because this is the white or black point. Whether the bound is the upper or lower limit depends on the starting point so we define a function which performs the adjustment appropriately.
+ The theoretical values are adjusted by 10\% to account for the auto brightness and contrast adjustment performed by the phone as described in Chapter 3, Section \ref{sec:WhiteoutAndBlackout}. We only wish to adjust the bounds away from the luminosity axis. One of the chromatic bounds will be the luminosity axis $Ca=\frac{1}{2}$ or  $Cb=\frac{1}{2}$, as this is the white or black point. Whether the bound is the upper or lower limit depends on the starting point, so we define a function which performs the adjustment appropriately.
  
  \begin{equation}
  slack(x) = \begin{cases}
@@ -96,7 +96,7 @@ We need to find the point at which a chromatic value will begin to suffer from w
  slack(Cb_{min}) \le Cb \le  slack(Cb_{max})
   \end{multline}
   
-  \subsection{The Region Classification and Partitioning function}
+  \subsection{The Region Classification and Partitioning Function}
   It is desirable to classify a pixel value after rotation but before redistribution using channel limits by how well the value fits the target and by how reliable the value is given lighting conditions. This can be done to a degree but it is necessary to assume reasonably uniform lighting conditions. The pixel values are classified by chromatic value as either inside the target region or outside in both axis dividing the chromatic plane into nine regions fig \ref{fig:PartitioningRegions}. A rudimentary partitioning is performed by assigning 8 constants to the values outside the region around the mean. The luminosity is always evaluated because all that is required is a scaling from qRange to the destination range dRange. 
   
   \begin{figure}[h!]
@@ -108,7 +108,7 @@ We need to find the point at which a chromatic value will begin to suffer from w
   \subsection{Floating the Mean}
   Different lighting conditions can affect the detected pixel color. Not accounting for strongly colored light the affect of different lighting conditions is to increase or decrease the saturation of the color. The distribution is relatively unaffected in orientation or variance meaning that lighting conditions can be accounted for by adjusting the mean. 
   \newcommand{\newMean}{\widetilde{\mu}}
-  The algorithm adjusts to ambient lighting by first taking a reference image centered on a patch of skin and finding the mean in the LCaCb colorspace. This new mean $\newMean$ is then used in the current instance of the algorithm. It is adventitious to keep the mean adjustable in the routine so this is implemented by introducing  an adjustment parameter $\delta\mu$ to the routine where $\newMean = \mu + \delta\mu$. The algorithm assumes that the adjustment is small enough that the distribution function retains the same shape aside from a translation along the axis. This allows the distribution parameters to be adjusted by simply shifting them by $\delta\mu$. 
+  The algorithm adjusts to ambient lighting by first taking a reference image centered on a patch of skin and finding the mean in the LCaCb color space. This new mean $\newMean$ is then used in the current instance of the algorithm. It is adventitious to keep the mean adjustable in the routine so this is implemented by introducing  an adjustment parameter $\delta\mu$ to the routine where $\newMean = \mu + \delta\mu$. The algorithm assumes that the adjustment is small enough that the distribution function retains the same shape aside from a translation along the axis. This allows the distribution parameters to be adjusted by simply shifting them by $\delta\mu$. 
   
   \begin{equation}
   \begin{aligned}
@@ -117,8 +117,8 @@ We need to find the point at which a chromatic value will begin to suffer from w
   \end{aligned} \quad \text{Where} \quad \lambda_1 < \delta\mu < 1 - \lambda_2
   \end{equation}
   
-  \subsection{The Colorspace Algorithm as Implemented}
-  Here we present the colorspace algorithm in a way which most closely resembles the C++ code. The construction of the colorspace object is described at the end of chapter 2 here the operation of the algorithm is described.
+  \subsection{The Color Space Algorithm as Implemented}
+  Here we present the color space algorithm in a way which most closely resembles the C++ code. The construction of the color space object is described at the end of chapter 2 here the operation of the algorithm is described.
   
   First we determine the form of the distribution function for a working type tRange with The source range $srcRange=2^n$  and destination range $dstRange=2^m$ expressed in terms of their bit depths.
   
