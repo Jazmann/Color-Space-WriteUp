@@ -97,7 +97,7 @@ We need to find the point at which a chromatic value begins to suffer from white
   \end{multline}
   
   \subsection{The Region Classification and Partitioning Function}
-  It is desirable to classify a pixel value after rotation but before redistribution using channel limits by how well the value fits the target and by how reliable the value is given lighting conditions. This can be done to a degree but it is necessary to assume reasonably uniform lighting conditions. The pixel values are classified by chromatic value as either inside the target region or outside in both axis dividing the chromatic plane into nine regions fig \ref{fig:PartitioningRegions}. A rudimentary partitioning is performed by assigning 8 constants to the values outside the region around the mean. The luminosity is always evaluated because all that is required is a scaling from qRsRange to the destination range dRange. 
+  It is desirable to classify a pixel value after rotation but before redistribution, using channel limits by how well the value fits the target and by how reliable the value is given lighting conditions. This can be done to a degree, but it is necessary to assume reasonably uniform lighting conditions. The pixel values are classified by chromatic value as either inside the target region or outside in both axes, dividing the chromatic plane into nine regions, as illustrated in Fig \ref{fig:PartitioningRegions}. A rudimentary partitioning is performed by assigning 8 constants to the values outside the region around the mean. The luminosity is always evaluated, because all that is required is a scaling from qRsRange to the destination range dRange. 
   
   \begin{figure}[h!]
     \centering
@@ -106,9 +106,9 @@ We need to find the point at which a chromatic value begins to suffer from white
   \end{figure}
   
   \subsection{Floating the Mean}
-  Different lighting conditions can affect the detected pixel color. Not accounting for strongly colored light the affect of different lighting conditions is to increase or decrease the saturation of the color. The distribution is relatively unaffected in orientation or variance meaning that lighting conditions can be accounted for by adjusting the mean. 
+  Different lighting conditions can affect the detected pixel color. Not accounting for strongly-colored light, the affect of different lighting conditions is to increase or decrease the saturation of the color. The distribution is relatively unaffected in orientation or variance, meaning that lighting conditions can be accounted for by adjusting the mean. 
   \newcommand{\newMean}{\widetilde{\mu}}
-  The algorithm adjusts to ambient lighting by first taking a reference image centered on a patch of skin and finding the mean in the LCaCb color space. This new mean $\newMean$ is then used in the current instance of the algorithm. It is adventitious to keep the mean adjustable in the routine so this is implemented by introducing  an adjustment parameter $\delta\mu$ to the routine where $\newMean = \mu + \delta\mu$. The algorithm assumes that the adjustment is small enough that the distribution function retains the same shape aside from a translation along the axis. This allows the distribution parameters to be adjusted by simply shifting them by $\delta\mu$. 
+  The algorithm adjusts to ambient lighting by first taking a reference image centered on a patch of skin and finding the mean in the LCaCb color space. This new mean $\newMean$ is then used in the current instance of the algorithm. It is adventitious to keep the mean adjustable in the routine, so this is implemented by introducing an adjustment parameter $\delta\mu$ to the routine, where $\newMean = \mu + \delta\mu$. The algorithm assumes that the adjustment is small enough that the distribution function retains the same shape, aside from a translation along the axis. This allows the distribution parameters to be adjusted by simply shifting them by $\delta\mu$. 
   
   \begin{equation}
   \begin{aligned}
@@ -118,9 +118,9 @@ We need to find the point at which a chromatic value begins to suffer from white
   \end{equation}
   
   \subsection{The Color Space Algorithm as Implemented}
-  Here we present the color space algorithm in a way which most closely resembles the C++ code. The construction of the color space object is described at the end of chapter 2 here the operation of the algorithm is described.
+  Here we present the color space algorithm in a way which most closely resembles the C++ code. The construction of the color space object is described at the end of chapter 2; here, the operation of the algorithm is described.
   
-  First we determine the form of the distribution function for a working type tRange with The source range $srcRange=2^n$  and destination range $dstRange=2^m$ expressed in terms of their bit depths.
+  First, we determine the form of the distribution function for a working type tRange with the source range $srcRange=2^n$  and destination range $dstRange=2^m$, expressed in terms of their bit depths.
   
   \begin{gather*}
   \begin{aligned}
@@ -162,7 +162,7 @@ qMin < & x  < qMax \\
 \end{array}
   \end{equation}
   
-  This form takes the result of the rotation directly however we wish to add the flexibility to adjust the mean and to use a lookup table for the values. It is desirable to keep the lookup table as short as possible. The maximum compression of the information without loosing relevant information is given by compressing to tRange. The number of values in the lookup table can be reduced by scaling $x$ by a range qtRange which is chosen to balance lookup table size and computational scaling efficiency.  Noting that $\mathbf{l} <2$, qRsRange can be chosen to be equal to tRange as if $\mathbf{l} =2$ which means that qtRange is a power of two allowing the scaling to be performed by bit shifting the value of $x_{qt} = x \ll n-2$ . However, in the region where the function is applied the information is preserved at best 2 to 1 so the information density can be reduced by half $x_{qt} = x \ll n-1$ . Adjusting the mean changes the bounds on the region to be redistributed such that the form of the function does not change. For this reason we also define $x$ relative to the bounds which allows the same lookup table to be used regardless of any adjustment to the mean.
+  This form takes the result of the rotation directly, however we wish to add the flexibility to adjust the mean and use a lookup table for the values. It is desirable to keep the lookup table as short as possible. The maximum compression of the information without losing relevant information is given by compressing to tRange. The number of values in the lookup table can be reduced by scaling $x$ by a range qtRange, which is chosen to balance lookup table size and computational scaling efficiency.  Noting that $\mathbf{l} <2$, qRsRange can be chosen to be equal to tRange as if $\mathbf{l} =2$, which means that qtRange is a power of two, allowing the scaling to be performed by bit shifting the value of $x_{qt} = x \ll n-2$. However, in the region where the function is applied, the information is preserved at best 2-to-1, so the information density can be reduced by half $x_{qt} = x \ll n-1$. Adjusting the mean changes the bounds on the region to be redistributed such that the form of the function does not change. For this reason, we also define $x$ relative to the bounds, which allows the same lookup table to be used regardless of any adjustment to the mean.
   
     \begin{equation}
   \textbf{dis}(x) =  \begin{cases}
@@ -175,7 +175,7 @@ qMin < & x  < qMax \\
     \end{smallmatrix}\right)
     \end{equation}
   
-  Aside from these refinements the algorithm presented in Chapter 2 is used to perform the rotation and redistribution as described. The algorithm proceeds as follows.
+  Aside from these refinements, the algorithm presented in Chapter 2 is used to perform the rotation and redistribution as described. The algorithm proceeds as follows:
   
   \begin{itemize}
   \item Interactively find an adjustment to the mean  $\delta\mu$. .
@@ -187,8 +187,8 @@ qMin < & x  < qMax \\
   \item Apply and user supplied per-pixel functions to the redistributed values.
   \end{itemize}
 
-\section{Pattern Recognition routines}
-In this section pattern recognition routines which use the new color space are presented and discussed.
+\section{Pattern Recognition Routines}
+In this section, pattern recognition routines which use the new color space are presented and discussed.
 
 \subsection{Improved Contour Detection}\label{sec:ImprovedContourDetection}
 
