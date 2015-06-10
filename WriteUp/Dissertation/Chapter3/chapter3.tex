@@ -35,12 +35,12 @@ Surprisingly, this approached failed to work; the background was not represented
     \caption{Initial attempt at removing background; unsuccessful.} \label{fig:BGFailure}
 \end{figure}
 
-The background statistics changed with the skin present in the photo. This is because the iPhone adjusts to images with very strong color characteristics. This color correction is an undocumented feature of the iPhone processing. The only way to compensate for this unwelcome pre-processing is to photograph the background with a strongly contrasting object present, but one which is easily cropped out of the image before the background statistics are collected. After collecting the statistics again, the result was much improved (Figure~\ref{fig:BGSuccess}).
+The background statistics changed with the skin present in the photo. This is because the iPhone adjusts to images with very strong color characteristics. This color correction is an undocumented feature of the iPhone processing. The only way to compensate for this unwelcome pre-processing is to photograph the background with a strongly contrasting object present, but one which is easily cropped out of the image before the background statistics are collected. After collecting the statistics again, the result was much improved (Figure~\ref{fig:BGSuccess1}).
 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.80\textwidth]{Chapter3/Figs/CaCb_bg_success.jpg}
-    \caption{Successful background removal.}  \label{fig:BGSuccess}
+    \caption{Successful background removal.}  \label{fig:BGSuccess1}
 \end{figure}
 
 In a real world context, it is relatively safe to presume that the scene will be chromatically complex enough that the color correction won't be detrimental to detection, and perhaps even beneficial under unusual lighting conditions. But for gathering statistics, it proved to be a massive pain.
@@ -48,10 +48,10 @@ In a real world context, it is relatively safe to presume that the scene will be
 \subsection{White-out and Black-out}\label{sec:WhiteoutAndBlackout}
 A monochromatic object with average RGB color $\mathbf{\mu}=\left\{\mu_R, \mu_G, \mu_B \right\}$ under different lighting conditions produce an in-camera value of $\left\{\mu_R +\lambda, \mu_G  +\lambda, \mu_B +\lambda \right\}$. Each channel has a numerical limit which means that when that limit is reached further change in luminosity $\lambda$ will result in a change in chromatic value. At high luminosities the colors converge on white becoming washed out. This is referred to as white-out. Similarly at low luminosities the colors converge on black which is referred to as black-out.
 
-\begin{figure}[h!]
+\begin{figure}[h!] %hi-res
   \centering
     \includegraphics[width=0.80\textwidth]{Chapter3/Figs/WOBOFig.jpg}
-    \caption{Successful background removal.}  \label{fig:BGSuccess}
+    \caption{White-out and Black-out.}  \label{fig:WoBo1}
 \end{figure}
 
 It is reasonable to assume that pixel values which contain fully saturated channel elements are unreliable as they may be the result of white-out or black-out. Unfortunately the iPhone also performs a auto brightness and contrast adjustment moving pixel values away from the sides of the RGB cube. The result of this processing is that the values with a luminosity above $\lambda_w$ and below $\lambda_b$ are unreliable.
@@ -103,7 +103,7 @@ The algorithm is written in MATLAB, and it very simply loads up each image in th
 
 \subsection{Skinning the Bins}\label{sec:SkinningTheBins}
 
-\begin{figure}[h!]
+\begin{figure}[h!] %hi-res
   \centering
     \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Skin_the_Bins.jpg}
         \caption{\textbf{The 3D RGB histogram after 'skinning'}. Distinct distributions can be seen for the Skin and the background. Here the bin color corresponds to the color which that bin represents and the opacity indicates the frequency of that bin value. Bin counts outside the black lines are set to zero. }  \label{fig:Skin_the_Bins}
@@ -118,7 +118,7 @@ It should be noted that the reason the RGB cube is skinned before rotation is be
 
 \subsection{Rotating the Bins}\label{sec:RotatingTheBins}
 
-\begin{figure}[h!]
+\begin{figure}[h!] %hi-res
   \centering
     \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Rotate_the_Bins.jpg}
         \caption{\textbf{The 3D RGB histogram after rotation}. The skin and background distributions can be seen for the Skin and the background. Here the bin color corresponds to the color which that bin represents and the opacity indicates the frequency of that bin value. Bin counts outside the black lines are set to zero. }   \label{fig:Rotate_the_Bins}
@@ -132,7 +132,7 @@ Because each of the bins corresponds to just one RGB value, we can find the equi
 
 \subsection{Top and Tail}\label{sec:TopAndTail}
 
-\begin{figure}[h!]
+\begin{figure}[h!] %hi-res
   \centering
     \includegraphics[width=0.9\textwidth]{Chapter3/Figs/\individual/Top_and_Tail_the_Bins.jpg}
         \caption{Filling the RGB Bins}  \label{fig:Top_and_Tail_the_Bins}
@@ -189,7 +189,7 @@ Using MATLAB's blob detection algorithm, we can find the distinct patches of chr
 
 \subsection{The Gaussian Fit}\label{sec:TheGaussianFit}
 
-\begin{figure}[h!]
+\begin{figure}[h!] %hi-res
   \centering
     \includegraphics[width=1.0\textwidth]{Chapter3/Figs/\individual/Fit_the_Gaussian0.jpg}
         \caption{The Gaussian fit to the blob}  \label{fig:Fit_the_Gaussian0}
