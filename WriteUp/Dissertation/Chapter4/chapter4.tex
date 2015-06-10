@@ -90,7 +90,7 @@ We need to find the point at which a chromatic value will begin to suffer from w
  \end{cases} \quad \text{where} \quad a = 0.1
    \end{equation}
  We can now write the condition for whether a value could have suffered from white-out or black-out. 
-  \begin{multline}
+  \begin{multline}\label{eq:InWoBoRegion}
  (( 0 \le L \le  slack(L_{BO}) ) \vee ( slack(L_{WO}) \le L \le 1) ) \wedge  \\
  slack(Ca_{min}) \le Ca \le  slack(Ca_{max}) \wedge  \\
  slack(Cb_{min}) \le Cb \le  slack(Cb_{max})
@@ -123,18 +123,9 @@ We need to find the point at which a chromatic value will begin to suffer from w
   First we determine the form of the distribution function for a working type tRange with The source range $srcRange=2^n$  and destination range $dstRange=2^m$ expressed in terms of their bit depths.
   
   \begin{gather*}
-   \begin{aligned}
-    \delta  &= \frac{ \sqrt{2} }{ \sigma \sqrt{\pi }  \left(\Sigma^+-\Sigma^-\right)} & 
-   K & =  2^{m-n}  & 
-   \Sigma^- &= \text{erf}\left(\frac{\mu -1}{\sqrt{2} \sigma }\right) &
-   \Sigma^+ &= \text{erf}\left(\frac{\mu }{\sqrt{2} \sigma }\right) 
-    \end{aligned} 
-  \end{gather*}
-  The length of the axis $\tRange$ after rescaling is given by \ref{eq:CombinedRotationRange}, and the axis limits are easily found along with 
-  the compression ratio $\kappa$ (\ref{eq:newCompressionRatio}).
-  \begin{gather*}
   \begin{aligned}
-   \tRange(\theta,\mu,\sigma)   & =  \mathbf{l} \; 2^n \quad&\quad
+  K & =  2^{m-n}  \quad & \quad  
+  \tRange(\theta,\mu,\sigma)   & =  \mathbf{l} \; 2^n \quad & \quad
   \mathbf{l}  & = \min\left\{ 2^{m-n}\delta(\mu,\sigma) \right. ,  \left. \mathbf{L}(\theta) \right\} 
    \end{aligned} \\
    \begin{aligned}
@@ -149,21 +140,16 @@ We need to find the point at which a chromatic value will begin to suffer from w
     \mathbf{l}_1 \; 2^n  \\
     \mathbf{l}_2 \; 2^{n-1}  \\  
     \mathbf{l}_3 \; 2^{n-1} \\  
-   \end{pmatrix} 
+   \end{pmatrix} \quad & \quad
+     \Scale &=
+      \mathbf{l} \otimes
+     \begin{pmatrix}
+       \frac{1}{3} \\
+      2^{1-n } \\
+      2^{1-n }  \\
+     \end{pmatrix}    \\
    \end{aligned}
   \end{gather*}
-  
-  
-  \begin{equation*}
-  \Scale =
-   \mathbf{l} \otimes
-  \begin{pmatrix}
-    \frac{1}{3} \\
-   2^{1-n } \\
-   2^{1-n }  \\
-  \end{pmatrix}    \\
-  \end{equation*}
-  
   
   Substituting into the distribution function \ref{eq:disFunction} gives us
   
@@ -176,7 +162,7 @@ qMin < & x  < qMax \\
 \end{array}
   \end{equation}
   
-  This form takes the result of the rotation directly however we wish to add the flexability to adjust the mean and to use a lookup table for the values. It is desirable to keep the lookup table as short as possible. The maximum compression of the information without loosing relevant information is given by compressing to tRange. The number of values in the lookup table can be reduced by scaling $x$ by a range qtRange which is chosen to balance lookup table size and computational scaling efficiency.  Noting that $\mathbf{l} <2$, qRange is chosen to be equal to tRange as if $\mathbf{l} =2$ which means that qtRange is a power of two allowing the scaling to be performed by bit shifting the value of $x_{qt} = x \ll n-2$ . Adjusting the mean changes the bounds on the region to be redistributed such that the form of the function does not change. For this reason we also define $x$ relative to the bounds which allows the same lookup table to be used regardless of any adjustment to the mean.
+  This form takes the result of the rotation directly however we wish to add the flexibility to adjust the mean and to use a lookup table for the values. It is desirable to keep the lookup table as short as possible. The maximum compression of the information without loosing relevant information is given by compressing to tRange. The number of values in the lookup table can be reduced by scaling $x$ by a range qtRange which is chosen to balance lookup table size and computational scaling efficiency.  Noting that $\mathbf{l} <2$, qRange can be chosen to be equal to tRange as if $\mathbf{l} =2$ which means that qtRange is a power of two allowing the scaling to be performed by bit shifting the value of $x_{qt} = x \ll n-2$ . However, in the region where the function is applied the information is preserved at best 2 to 1 so the information density can be reduced by half $x_{qt} = x \ll n-1$ . Adjusting the mean changes the bounds on the region to be redistributed such that the form of the function does not change. For this reason we also define $x$ relative to the bounds which allows the same lookup table to be used regardless of any adjustment to the mean.
   
     \begin{equation}
   \textbf{dis}(x) =  \begin{cases}
@@ -185,7 +171,7 @@ qMin < & x  < qMax \\
   \textbf{dis}(x)  & \text{Otherwise}
     \end{cases} \quad \text{where} \quad 
     qtRange = \left(\begin{smallmatrix}
-    \cdots \\ 2^{2-n}\\2^{2-n}
+    \cdots \\ 2^{1-n}\\2^{1-n}
     \end{smallmatrix}\right)
     \end{equation}
   
@@ -206,22 +192,29 @@ In this section pattern recognition routines which use the new color space are p
 
 \subsection{Improved Contour Detection}\label{sec:ImprovedContourDetection}
 
-OpenCV's findContours method takes a binary image and finds the contours in that binary image. However, the problem with this method is that we're thresholding on chromatic values, i.e. using color information to break up the color information into blobs off of which we're finding the contours. This doesn't take into account the white-out and black-out, which was noted previously. It's straightforward to define regions in the image which are succeptible to white-out and black-out using the luminosity channel. This is done by taking a high and low threshold off the luminosity channel, thereby producing a binary image, which is 1 in the valid region, and 0 otherwise.
+\newcommand{\WoBoBool}{\underset{\scalebox{0.5}{WoBo}}{\mathbb{L}}}
+\newcommand{\ColorSquareBool}{\underset{ \scalebox{0.5}[0.5]{square} }{ \mathbb{C} } }
+\newcommand{\ColorEllipseBool}{\underset{ \scalebox{0.5}[0.5]{ellipse} }{ \mathbb{C} } }
 
-We take that, and we add it to our thresholded chromatic channel, which produces a 2-bit image. For this purpose, a 2-bit data type was added to OpenCV. The question then is how to use it. Essentially, we have four different states: values which are neither the right color nor in the right region; values which are possibly the right color, but because they're outside the valid region, they've potentially suffered from white-out and black-out and as such they are not reliable indicators for either the start of an edge or the end of an edge; values which are in the right region, but the wrong color, and we are certain that they are not skin; and finally, values which are in the valid region and are of the right color.
-
-The Canny edge detector method is perfect for implementing a decision by setting a high threshold --- our strong criteria --- in the right region in the right color, and a low threshold so that it will continue following an edge across values which are in the invalid region. Whichever value we set the low threshold to depends on the state of the image; we use a lower value if there is ambiguity and a higher value if the result is fairly accurate:
+OpenCV's findContours method takes a binary image and finds the contours in that binary image. However, the problem with this method is that we're thresholding on chromatic values, i.e. using color information to break up the image into blobs in which we're finding the contours. This doesn't take into account the white-out and black-out, which was noted previously. This is done by applying equation \ref{eq:InWoBoRegion} and setting a boolean flag $\WoBoBool$ accordingly. The square partitioning performed earlier in the algorithm also sets a boolean flag $\ColorSquareBool$ to 1 if the pixel is within the target range and to 0 otherwise. These can be combined to produce a 2-bit image which indicates both if the pixel value is in the target chromatic range and the reliability of the classification.
+% 
 
 \begin{center}
-\begin{tabular}{|c|c|c|c||c|c|}
+\begin{tabular}{|c|c|c|c|c|}
 \hline
-\multicolumn{2}{|c|}{Image} & Color & Region & \multicolumn{2}{|c|}{Bit}\\\hline
-0 & 0 & 0 & 1 & Color & XAND(Color, Region)\\\hline
-0 & 1 & 0 & 0 & Color & XAND(Color, Region)\\\hline
-1 & 0 & 1 & 0 & Color & XAND(Color, Region)\\\hline
-1 & 1 & 1 & 1 & Color & XAND(Color, Region)\\\hline
+Correct                               & Unreliable      & \multicolumn{2}{|c|}{Image Bit} & \multicolumn{1}{|c|}{\multirow{2}{*}{Comment}}  \\ \cline{1-4}
+Color $\ColorSquareBool$ & $\WoBoBool$ & $\ColorSquareBool$ & XOR($\ColorSquareBool$, $\WoBoBool$) & \\\hline
+0 & 0 & 0 & 0 &  Definitely not the target \\\hline % & Wrong Color &    Reliable Luminosity 
+0 & 1 & 0 & 1  & Possibly the target but shifted. \\\hline % & Wrong Color & Unreliable Luminosity
+1 & 1 & 1 & 0  & \begin{tabular}{l} Probably the target but possibly \\ shifted into the target region \end{tabular} \\\hline % &   Right Color &    Reliable Luminosity
+1 & 0 & 1 & 1  & Definitely the target \\\hline % &   Right Color & Unreliable Luminosity
 \end{tabular}
 \end{center}
+
+
+This produces a 2-bit image. For this purpose, a 2-bit data type was added to OpenCV. The question then is how to use it. Essentially, we have four different states: values which are neither the right color nor in the right region; values which are possibly the right color, but because they're outside the valid region, they've potentially suffered from white-out and black-out and as such they are not reliable indicators for either the start of an edge or the end of an edge; values which are in the right region, but the wrong color, and we are certain that they are not skin; and finally, values which are in the valid region and are of the right color.
+
+The Canny edge detector method is perfect for implementing a decision by setting a high threshold --- our strong criteria --- in the right region in the right color, and a low threshold so that it will continue following an edge across values which are in the invalid region. Whichever value we set the low threshold to depends on the state of the image; we use a lower value if there is ambiguity and a higher value if the result is fairly accurate:
 
 \begin{figure}[h!]
   \centering
