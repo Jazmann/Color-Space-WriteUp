@@ -117,11 +117,13 @@ We need to find the point at which a chromatic value begins to suffer from white
   
   \subsection{Loosened Deviation}\label{sec:LoosenedDeviation}
   
-  \begin{figure}[h!]
+ \afterpage{ \begin{figure}[h!]
     \centering
       \includegraphics[width=0.85\textwidth,height = \textheight]{Chapter4/Figs/RelaxingSigma.jpg}
       \caption{A selection of images classified using the trinary method outlined in section <so-and-so>, with various values of $\sigma$. It can be seen that $1\sigma$ correctly classifies the majority of pixels, however it classifies some on-digit pixels as "probably not skin", and even "not skin". $3\sigma$, meanwhile, includes large portions of shadow as "probably skin". A compromise of $2\sigma$-$2.5\sigma$ is therefore suggested.} \label{fig:RelaxedSigma}
   \end{figure}
+  \clearpage
+  }
   
   The standard deviation found in Chap 3 is a very tight fit to the chromatic values taken under controlled lighting conditions. For our practical implementation, this tight fit needs to be relaxed. This is done empirically by trying out multipliers of the standard deviation $\sigma$ on the image sets. What is desired is a multiplier which relaxes the redistribution such that all the pixel values on a given digit are classified as skin, and all the background is classified as not skin. This is done empirically using the trinary classification presented below (in section <so-and-so>), which accounts for white-out and black-out and classifies the pixel value as "definitely skin", "probably skin", "probably not skin", and "not skin".
   
