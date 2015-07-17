@@ -115,6 +115,13 @@ We need to find the point at which a chromatic value begins to suffer from white
   \end{aligned} \quad \text{Where} \quad \lambda_1 < \delta\mu < 1 - \lambda_2
   \end{equation}
   
+  \subsection{Loosened Deviation}\label{sec:LoosenedDeviation}
+  
+  The standard deviation found in Chap 3 is a very tight fit to the chromatic values taken under controlled lighting conditions. For our practical implementation, this tight fit needs to be relaxed. This is done empirically by trying out multipliers of the standard deviation $\sigma$ on the image sets. What is desired is a multiplier which relaxes the redistribution such that all the pixel values on a given digit are classified as skin, and all the background is classified as not skin. This is done empirically using the trinary classification presented below (in section <so-and-so>), which accounts for white-out and black-out and classifies the pixel value as "definitely skin", "probably skin", "maybe skin", and "not skin".
+  
+  Using a value of 2.3 times the original $\sigma$ correctly classifies the pixel values; this was found by observing tables of images similar to those in Figure \ref{fig:2BitImage}. 
+  
+  
   \subsection{The Color Space Algorithm as Implemented}
   Here we present the color space algorithm in a way which most closely resembles the C++ code. The construction of the color space object is described at the end of chapter 2; here, the operation of the algorithm is described.
   
