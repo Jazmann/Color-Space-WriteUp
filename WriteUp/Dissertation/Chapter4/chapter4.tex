@@ -26,7 +26,7 @@ As another future concession, the facility to add pixel-based functions to the c
 
 
 
-\subsection{The White-Out Black-Out Algorithm}
+\subsection{The White-Out Black-Out Algorithm}\label{sec:WhiteOutBlackOutAlgorithm}
 We need to find the point at which a chromatic value begins to suffer from white-out and black-out. This is done by taking the corresponding RGB value for the chromatic point and illuminating and deluminating the point by shifting the channel values by the same amount, noting when each channel value becomes fully saturated or desaturated. This is done in the unit space so the results can be scaled to any working range. The algorithm for finding the theoretical values is given in algorithm \ref{algo:TheWhiteoutBlackoutAlgorithm}. 
 
 \begin{algorithm}[H]
@@ -94,7 +94,7 @@ We need to find the point at which a chromatic value begins to suffer from white
  slack(Cb_{min}) \le Cb \le  slack(Cb_{max})
   \end{multline}
   
-  \subsection{The Region Classification and Partitioning Function}
+  \subsection{The Region Classification and Partitioning Function}\label{sec:TheRegionClassificationAndPartitioningFunction}
   It is desirable to classify a pixel value after rotation but before redistribution, using channel limits by how well the value fits the target and by how reliable the value is given lighting conditions. This can be done to a degree, but it is necessary to assume reasonably uniform lighting conditions. The pixel values are classified by chromatic value as either inside the target region or outside in both axes, dividing the chromatic plane into nine regions, as illustrated in Fig \ref{fig:PartitioningRegions}. A rudimentary partitioning is performed by assigning 8 constants to the values outside the region around the mean. The luminosity is always evaluated, because all that is required is a scaling from qRsRange to the destination range dRange. 
   
   \begin{figure}[h!]
@@ -105,7 +105,7 @@ We need to find the point at which a chromatic value begins to suffer from white
   
   
   
-  \subsection{Floating the Mean}
+  \subsection{Floating the Mean}\label{sec:FloatingTheMean}
   Different lighting conditions can affect the detected pixel color. Not accounting for strongly-colored light, the affect of different lighting conditions is to increase or decrease the saturation of the color. The distribution is relatively unaffected in orientation or variance, meaning that lighting conditions can be accounted for by adjusting the mean. 
   \newcommand{\newMean}{\widetilde{\mu}}
   The algorithm adjusts to ambient lighting by first taking a reference image centered on a patch of skin and finding the mean in the LCaCb color space. This new mean $\newMean$ is then used in the current instance of the algorithm. It is adventitious to keep the mean adjustable in the routine, so this is implemented by introducing an adjustment parameter $\delta\mu$ to the routine, where $\newMean = \mu + \delta\mu$. The algorithm assumes that the adjustment is small enough that the distribution function retains the same shape aside from a translation along the axis. This allows the distribution parameters to be adjusted by simply shifting them by $\delta\mu$. 
@@ -132,7 +132,7 @@ We need to find the point at which a chromatic value begins to suffer from white
   Using a value of 2.3 times the original $\sigma$ correctly classifies the pixel values; this was found by observing tables of images similar to those in Figure \ref{fig:2BitImage}. 
   
   
-  \subsection{The Color Space Algorithm as Implemented}
+  \subsection{The Color Space Algorithm as Implemented}\label{sec:ColorSpaceAlgorithmAsImplemented}
   Here we present the color space algorithm in a way which most closely resembles the C++ code. The construction of the color space object is described at the end of chapter 2; here, the operation of the algorithm is described.
   
   First, we determine the form of the distribution function for a working type tRange with the source range $srcRange=2^n$  and destination range $dstRange=2^m$ expressed in terms of their bit depths.
@@ -202,7 +202,7 @@ qMin < & x  < qMax \\
   \item Apply and user supplied per-pixel functions to the redistributed values.
   \end{itemize}
 
-\section{Pattern Recognition Routines}
+\section{Pattern Recognition Routines}\label{sec:PatternRecognitionRoutines}
 In this section, pattern recognition routines which use the new color space are presented and discussed.
 
 \subsection{Trinary Pixel Classification}\label{sec:TrinaryPixelClassification}
@@ -241,7 +241,7 @@ The Canny edge detector method is perfect for implementing a decision by setting
 The Hurdle method is a algorithm for finding a path inside an object using the trinary classified image. The Hurdle method follows straight line paths in the object. As written, it is flexible enough to follow any straight line, however the current implementation takes a direction vector and evaluates at multiples of that direction vector. This means that non-horizontal and non-vertical lines are not guaranteed to be continuous. This is because the pixel values are not found using Bresenham's line algorithm. The algorithm has two thresholds --- a high and a low threshold. Whilst the pixel values remain in the high threshold, the path end point variable is updated; when the pixel values are in the lower threshold, the algorithm continues along the path, but without updating the path end point. This allows the path to pass through artifacts (i.e. pixel values which are inside the object but which have been misclassified), but does not allow the path to extend outside of the object into regions which are, for instance, in the shadow of the object.
  
 \subsection{The 'Filament Fill' Method}\label{sec:FilamentFill}
-The Filament Fill method takes a path --- given as a sequence of points --- within an object and finds the edges of the object using the Hurdle method running away from the path within the object. Depending on the orientation of the object, the path's extent in the horizontal direction is divided equally into points, and these points are used to start the Hurdle method in the vertical directions.
+The Filament Fill method takes a path --- given as a sequence of points --- within an object and finds the edges of the object using the Hurdle method running away from the path within the object. Assuming a horizontally-oriented object, the path's extent in the horizontal direction is divided equally into points, and these points are used to start the Hurdle method in the vertical directions, and vice versa for vertical-oriented objects.
 
 <Figure illustrating Filament Fill>
 
@@ -256,20 +256,21 @@ A digit has two joints and three segments: the distal, the middle, and the proxi
 
 Given the width of the middle segment, we can then have an initial guess that the length of the distal segment is 1.5 times the initial width, the middle is 2.25 times that, and the proximal is 3.75 times that. Additionally, the center of the nail feature is not in the center of the distal segment, but a half unit (in our model unit) away from the tip. The model can be laid out in units relative to the middle section.
 \subsection{The Finger Shape Detection Algorithm}\label{sec:FingerShapeDetectionAlgorithm}
+
 \subsubsection{Scale Space}\label{sec:ScaleSpace}
-\subsubsection{Finding the frame orientation}
-\subsubsection{Finding the end of the finger shape}
-\subsubsection{Filament fill the finger}
-\subsubsection{Exclude Secondary Frame Edge Points and Fingertip Points }
+\subsubsection{Finding the Frame Orientation}\label{sec:FindingTheFrameOrientation}
+\subsubsection{Finding the End of the Finger Shape}\label{sec:FindingTheEndOfTheFingerShape}
+\subsubsection{Filament Fill the Finger}\label{FilamentFillTheFinger}
+\subsubsection{Exclude Secondary Frame Edge Points and Fingertip Points }\label{sec:ExcludeSecondaryFrameEdgePointsAndFingertipPoints}
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ExcludedEdgePointsAndMidlineFit.jpg}
     \caption{Exclude Secondary Frame Edge Points and Fingertip Points.}\label{fig:ExcludedEdgePointsAndMidlineFit}
 \end{figure}
 
-\subsubsection{Kink Fit to the Finger}
+\subsubsection{Kink Fit to the Finger}\label{sec:KinkFitToTheFinger}
 
-\subsubsection{Parallel Lines Fit}
+\subsubsection{Parallel Lines Fit}\label{sec:ParallelLinesFit}
 
 \begin{figure}[h!]
   \centering
