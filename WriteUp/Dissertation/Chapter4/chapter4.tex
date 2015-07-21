@@ -273,7 +273,12 @@ Taking the longest Hurdle path on the frame edge found above, we take the middle
 
 It finds a Hurdle path in the primary direction, i.e. perpendicularly away from the frame edge. At the end of the Hurdle path, it finds the Hurdle paths in the two perpendicular directions to its primary direction, i.e. parallel to the frame edge. It then finds the midpoint between the ends of the Hurdle path, and then uses that to start a new Hurdle path in its primary direction. The algorithm continues in this way until the end of the finger is found.
 
-<Insert diagram for Run-Reach here>
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/FindingTheTip.jpg}
+    \caption{Finding the End of the Finger Shape}\label{fig:FindingTheTip}
+\end{figure}
+
 
 
 \subsubsection{Filament Fill the Finger}\label{FilamentFillTheFinger}
