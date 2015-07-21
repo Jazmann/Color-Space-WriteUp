@@ -277,16 +277,29 @@ It finds a Hurdle path in the primary direction, i.e. perpendicularly away from 
 
 
 \subsubsection{Filament Fill the Finger}\label{FilamentFillTheFinger}
+The center points found by the Run-Reach method above form a path on the finger. This is the path given to the Filament Fill method described previously. We now have a set of edge points on the digit. These edge points also have a top and bottom correspondence which, although they're not perpendicularly-opposite points on the finger, they do allow for a midpoint on the digit to be found. 
+
 \subsubsection{Exclude Secondary Frame Edge Points and Fingertip Points }\label{sec:ExcludeSecondaryFrameEdgePointsAndFingertipPoints}
+We need to exclude from the calculation of the midpoints on the digit values which are near the tip, and values which touch a second frame edge. This is because values toward the tip --- given that the finger is not necessarily perfectly horizontally-aligned --- give unreliable midpoint values because the Run-Reach path corresponds to shorter and shorter chords on a circle. Values which touch a second edge are, more likely than not, do not correspond to the edge of the digit, but are simply where the digit exits the frame. (For example, JSkin Middle in Figure \ref{fig:ExcludedEdgePointsAndMidlineFit}.)
+
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ExcludedEdgePointsAndMidlineFit.jpg}
     \caption{Exclude Secondary Frame Edge Points and Fingertip Points.}\label{fig:ExcludedEdgePointsAndMidlineFit}
 \end{figure}
 
+To estimate which pairs of edge points corresponds to points on the tip, the algorithm finds the length of the Hurdle path for all corresponding bottom-edge to top-edge points. These values are then sorted into ascending order, and the lowest quarter and highest quarter are discarded, and the mean is taken of the remaining values. This ensures that the average is not affected by extreme values. This method is called the "Mean Median." Values which deviate significantly from this average are regarded to be outliers, or values on the tip. The tolerance is determined by the algorithm by looking at the difference at the low and high ends of the $50\%$ range.
+
 \subsubsection{Kink Fit to the Finger}\label{sec:KinkFitToTheFinger}
+We now have a set of reliable points at the midpoint of the finger. Because the finger is articulated, it is reasonable to assume that it may well be bent. Because we're interested in the action of the finger being pressed on a surface, the finger is expected to be articulated at the distal-middle joint, but is otherwise straight. We wish to fit a function which consists of two straight-line segments to the set of reliable middle points. To this end, the "Kink Fit" algorithm was developed. Unfortunately, currently the only piecewise linear fitting function is the proprietary MARS algorithm, which --- aside from being commercial --- is overkill for this particular problem, which has a small number of points which are well-aligned. 
+
+The Kink Fit algorithm relies on the fact that we know that the points are in order; it chooses a point and divides the set in two, and then performs a standard, least squares linear fit to the two sets. It then finds the residuals, and then finds the average of the square of the residuals and adds those averages together. This is then considered the score for dividing the set of points at that position. The algorithm finds the point which minimizes the score using a bisecting algorithm; if a linear fit to the data has a low score, then the Kink Fit algorithm is considered unnecessary and the digit is assumed to be in a relaxed, straight, neutral pose. The score of the straight line fit is taken to be the score of the extreme ends of the division, and the algorithm also sets a minimum number of points to be included in a set, as this avoids the problem of dividing into sets which contain only one point.
+
 
 \subsubsection{Parallel Lines Fit}\label{sec:ParallelLinesFit}
+Our model of a finger assumes that the edges are parallel to each other. Since we have a line which runs through the center of the finger, we can now calculate the distance of the edge points to that line. These distances can be classified as good edge points if they're parallel to the central line. Whether they are parallel is determined by finding the Mean Median distance from the central line to the edge points using a $50\%$ interval in the distal portion, because it is expected that up to half the points may be in the distal segment, maybe on the tip, and a $75\%$ confidence interval in the middle segment, because we expect fewer than $\frac{1}{4}$ of the edge points to be anomalies. The points are then classified as good if they are of Mean Median distance from the central line. It should be noted that we consider both the top and bottom edges when calculating the Mean Median distance. This technique successfully removes anomalies which are not parallel to the central line.
+
+There is one final step: the points which are classified as good edge points are used to find a linear fit which is parallel to the central line. Finally, the width of the distal and the middle segments is calculated by finding the distance between these parallel lines. This can be seen in Figure \ref{fig:ParallelFit}.
 
 \begin{figure}[h!]
   \centering
