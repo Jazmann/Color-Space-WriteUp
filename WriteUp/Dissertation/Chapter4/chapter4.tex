@@ -263,8 +263,19 @@ Given the width of the middle segment, we can then have an initial guess that th
 \subsection{The Finger Shape Detection Algorithm}\label{sec:FingerShapeDetectionAlgorithm}
 
 \subsubsection{Scale Space}\label{sec:ScaleSpace}
+The images captured with the iPhone camera are extremely large, and so for the development of the algorithm, we define three scale spaces: one is the original image; two is an image size which represents the tip of the finger regardless of the distance of the camera from the finger, i.e. a scale relative to the width of the finger in the frame of the camera; three is a small image size for tracking the finger where it's freely roaming in the camera's view. We want these images to be formed without the need for resampling. For that reason, we restrict the choice of image sizes to those which are integer factors of the image dimensions. This is done by finding the integer factors of the original image dimensions and then selecting from those factors to scale the image. It should be noted that, to simplify point correspondences, the integer scaling from the small to medium scales is also kept.
+
 \subsubsection{Finding the Frame Orientation}\label{sec:FindingTheFrameOrientation}
+It is assumed we will not be using severed fingers, and so we know that the finger must exit the camera frame; the first step of the algorithm is then to detect which of the four edges the finger is entering from. This is done simply by finding the longest on-object path running along the frame sides. So, the algorithm stars by looking down the pixels on a frame side; when it locates a high-trinary value, it uses the Hurdle method to find the longest path in that direction starting from that point. It continues around all four sides; the longest path found by the Hurdle algorithm is assumed to correspond to the finger entering the frame. From this, we set a frame orientation, which is the angle necessary to rotate the image such that the finger will be entering the frame from the left, and we set a direction vector pointing inwards from the frame edge found.
+
 \subsubsection{Finding the End of the Finger Shape}\label{sec:FindingTheEndOfTheFingerShape}
+Taking the longest Hurdle path on the frame edge found above, we take the middle point on that path and start a "Run-Reach" algorithm in the direction found previously from that point. The Run-Reach algorithm proceeds as follows:
+
+It finds a Hurdle path in the primary direction, i.e. perpendicularly away from the frame edge. At the end of the Hurdle path, it finds the Hurdle paths in the two perpendicular directions to its primary direction, i.e. parallel to the frame edge. It then finds the midpoint between the ends of the Hurdle path, and then uses that to start a new Hurdle path in its primary direction. The algorithm continues in this way until the end of the finger is found.
+
+<Insert diagram for Run-Reach here>
+
+
 \subsubsection{Filament Fill the Finger}\label{FilamentFillTheFinger}
 \subsubsection{Exclude Secondary Frame Edge Points and Fingertip Points }\label{sec:ExcludeSecondaryFrameEdgePointsAndFingertipPoints}
 \begin{figure}[h!]
