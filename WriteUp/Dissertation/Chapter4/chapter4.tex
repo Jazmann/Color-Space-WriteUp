@@ -235,22 +235,44 @@ The Canny edge detector method is perfect for implementing a decision by setting
     \caption{The Pixel Classification.}\label{fig:2BitImage}
 \end{figure}
 
+\subsection{The 'Hurdle' method}
+ 
+\subsection{The 'Filament Fill' method}
+
 \section{Fingertip Model}\label{sec:FingertipModel}
 
 We need an appropriate finger model so we can accurately align points on the fingertip between successive images in the video stream. We need to do this because otherwise, any difference between the frames will be overwhelmed by physical movement of the digit rather than movement of the blood inside the digit. For this reason, we target the most stable portion of the finger: the nail.
 
-A digit has two joints and three segments: the distal, the middle, and the proximal. Each segment is roughly approximated by a rectangle, and the length of each section approximately following a 2-3-5 ratio, with lengths counting from distal to proximal, and where 1 is the width of the middle segment. Each digit also has a roughly circular feature in the nail close to the tip of the distal segment. Our finger model then comprises of the lengths and widths of each segment, the positions of the joints (i.e. the knuckles) between each segment, the position of the tip, and a position in the model marking the point at which the digit goes out of frame. 
+A digit has two joints and three segments: the distal, the middle, and the proximal. Each segment is roughly approximated by a rectangle, and the length of each section approximately following a 2-3-5 ratio, with lengths counting from distal to proximal, and where 1 is the $\frac{3}{4}$ width of the middle segment. Each digit also has a roughly circular feature in the nail close to the tip of the distal segment. Our finger model then comprises of the lengths and widths of each segment, the positions of the joints (i.e. the knuckles) between each segment, the position of the tip, and a position in the model marking the point at which the digit goes out of frame. 
 
 <Now, draw the thing, and show the initial guesses, and where the center is, etc.> 
 
-Given the width of the middle segment, we can then have an initial guess that the length of the distal segment is two times the initial width, the middle is three times that, and the proximal is five times that. Additionally, the center of the nail feature is in the center of the distal segment, but a half unit (in our model unit) away from the tip. The model can be laid out in units relative to the middle section.
+Given the width of the middle segment, we can then have an initial guess that the length of the distal segment is 1.5 times the initial width, the middle is 2.25 times that, and the proximal is 3.75 times that. Additionally, the center of the nail feature is not in the center of the distal segment, but a half unit (in our model unit) away from the tip. The model can be laid out in units relative to the middle section.
+\subsection{The Finger Shape Detection Algorithm}
+\subsubsection{Scale Space}
+\subsubsection{Finding the frame orientation}
+\subsubsection{Finding the end of the finger shape}
+\subsubsection{Filament fill the finger}
+\subsubsection{Exclude Secondary Frame Edge Points and Fingertip Points }
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ExcludedEdgePointsAndMidlineFit.jpg}
+    \caption{Exclude Secondary Frame Edge Points and Fingertip Points.}\label{fig:ExcludedEdgePointsAndMidlineFit}
+\end{figure}
+
+\subsubsection{Kink Fit to the Finger}
+
+\subsubsection{Parallel Lines Fit}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ParallelFit.jpg}
+    \caption{Parallel Lines Fit.}\label{fig:ParallelFit}
+\end{figure}
 
 
-We have quite accurate tracking of the tip, so it's quite simple to place a point fairly centrally on a nail with no other information other than the position of the tip. We apply the Canny edge detector and find the edges which are radially located around that point. The radial edges are detected, which are used to align between frames. Essentially, they can be broken into four lines; two down the side being relatively straight. But it depends on the individual, and the digit. However, we know we're looking for something with a certain curvature, as well as the rough positions of the lines along the edges.
 
-For each of those four lines, we have an orientation and a curvature, as well as the distance between the opposing lines. So, using that descriptor, we have the next frame, and in the new frame, we apply the Canny edge detector and detect four lines with similar characteristics. Given those edges, we can produce our best estimate, minimizing the difference between this frame and the previous one, in terms of their orientation and position. Based on this, we can work out a shift if there's been a change in position or orientation of the fingertip.
-
-Because we're going from one frame to another in a video stream, the descriptor is sufficient to overlay the frames accurately to within a few pixel widths. Brute force feature matching can be used as a further refinement if necessary. For the purposes of detecting a finger press, however, this was not found to be necessary.
+\
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 
