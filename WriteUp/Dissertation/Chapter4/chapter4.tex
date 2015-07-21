@@ -243,7 +243,12 @@ The Hurdle method is a algorithm for finding a path inside an object using the t
 \subsection{The 'Filament Fill' Method}\label{sec:FilamentFill}
 The Filament Fill method takes a path --- given as a sequence of points --- within an object and finds the edges of the object using the Hurdle method running away from the path within the object. Assuming a horizontally-oriented object, the path's extent in the horizontal direction is divided equally into points, and these points are used to start the Hurdle method in the vertical directions, and vice versa for vertical-oriented objects.
 
-<Figure illustrating Filament Fill>
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/FillamentFill.jpg}
+    \caption{The 'Filament Fill' Method.}\label{fig:FillamentFill}
+\end{figure}
 
 
 \section{Fingertip Model}\label{sec:FingertipModel}
