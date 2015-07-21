@@ -237,9 +237,14 @@ The Canny edge detector method is perfect for implementing a decision by setting
     \caption{The Pixel Classification.}\label{fig:2BitImage}
 \end{figure}
 
-\subsection{The 'Hurdle' method}
+\subsection{The 'Hurdle' Method}\label{sec:HurdleMethod}
+The Hurdle method is a algorithm for finding a path inside an object using the trinary classified image. The Hurdle method follows straight line paths in the object. As written, it is flexible enough to follow any straight line, however the current implementation takes a direction vector and evaluates at multiples of that direction vector. This means that non-horizontal and non-vertical lines are not guaranteed to be continuous. This is because the pixel values are not found using Bresenham's line algorithm. The algorithm has two thresholds --- a high and a low threshold. Whilst the pixel values remain in the high threshold, the path end point variable is updated; when the pixel values are in the lower threshold, the algorithm continues along the path, but without updating the path end point. This allows the path to pass through artifacts (i.e. pixel values which are inside the object but which have been misclassified), but does not allow the path to extend outside of the object into regions which are, for instance, in the shadow of the object.
  
-\subsection{The 'Filament Fill' method}
+\subsection{The 'Filament Fill' Method}\label{sec:FilamentFill}
+The Filament Fill method takes a path --- given as a sequence of points --- within an object and finds the edges of the object using the Hurdle method running away from the path within the object. Depending on the orientation of the object, the path's extent in the horizontal direction is divided equally into points, and these points are used to start the Hurdle method in the vertical directions.
+
+<Figure illustrating Filament Fill>
+
 
 \section{Fingertip Model}\label{sec:FingertipModel}
 
@@ -250,8 +255,8 @@ A digit has two joints and three segments: the distal, the middle, and the proxi
 <Now, draw the thing, and show the initial guesses, and where the center is, etc.> 
 
 Given the width of the middle segment, we can then have an initial guess that the length of the distal segment is 1.5 times the initial width, the middle is 2.25 times that, and the proximal is 3.75 times that. Additionally, the center of the nail feature is not in the center of the distal segment, but a half unit (in our model unit) away from the tip. The model can be laid out in units relative to the middle section.
-\subsection{The Finger Shape Detection Algorithm}
-\subsubsection{Scale Space}
+\subsection{The Finger Shape Detection Algorithm}\label{sec:FingerShapeDetectionAlgorithm}
+\subsubsection{Scale Space}\label{sec:ScaleSpace}
 \subsubsection{Finding the frame orientation}
 \subsubsection{Finding the end of the finger shape}
 \subsubsection{Filament fill the finger}
