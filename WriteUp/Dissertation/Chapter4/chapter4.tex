@@ -324,10 +324,15 @@ There is one final step: the points which are classified as good edge points are
     \caption{Parallel Lines Fit.}\label{fig:ParallelFit}
 \end{figure}
 
+\subsubsection{Elliptical Fit to the Tip}\label{sec:EllipticalFitToTheTip}
+We wish to fit an ellipse to the points found at the tip of the finger. We've chosen an ellipse because we are assuming that the tip is symmetrical about the midline fit, and that the extreme edges are parallel to the midline. Using an elliptical fit, then, will exclude points which do not agree with these assumptions, thereby eliminating anomalies.
 
-\cite{Fitzgibbon1995}
-\cite{Fitzgibbon1995}
-\cite{Fitzgibbon1999}
+Fitting an ellipse to a set of points is surprisingly difficult. The reason for this is as follows:
+
+To follow the standard linear algebra approach to least squares fitting, we need to decide upon a functional form for the fit, and thereby a basis set. For an ellipse, this basis set is <insert basis set here>, which is a set of six free coefficients. However, to specify an ellipse, all that is needed is five numbers; the major and minor axes lengths, the position, and the orientation. The explanation of this is that the basis set includes hyperbolic functions as well as elliptical functions as possible fits. Due to this extra complexity, several different methods have been proposed by different authors, but we will be focusing on two methods: one proposed by (\cite{Taubin1991}), and the other by (\cite{Fitzgibbon1999}).
+
+For the fingertip problem, there is also the added difficulty that the points that are confined to one side of the ellipse. 
+
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 
