@@ -329,12 +329,39 @@ We wish to fit an ellipse to the points found at the tip of the finger. We've ch
 
 Fitting an ellipse to a set of points is surprisingly difficult. The reason for this is as follows:
 
-To follow the standard linear algebra approach to least squares fitting, we need to decide upon a functional form for the fit, and thereby a basis set. For an ellipse, this basis set is <insert basis set here>, which is a set of six free coefficients. However, to specify an ellipse, all that is needed is five numbers; the major and minor axes lengths, the position, and the orientation. The explanation of this is that the basis set includes hyperbolic functions as well as elliptical functions as possible fits. Due to this extra complexity, several different methods have been proposed by different authors, but we will be focusing on two methods: one proposed by (\cite{Fitzgibbon1995}), and the other by (\cite{Fitzgibbon1999}}).
+To follow the standard linear algebra approach to least squares fitting, we need to decide upon a functional form for the fit, and thereby a basis set. For an ellipse, this basis set is <insert basis set here>, which is a set of six free coefficients. However, to specify an ellipse, all that is needed is five numbers; the major and minor axes lengths, the position, and the orientation. The explanation of this is that the basis set includes hyperbolic functions as well as elliptical functions as possible fits. Due to this extra complexity, several different methods have been proposed by different authors, but we will be focusing on two methods: one proposed by (\cite{Taubin1991}), and the other by (\cite{Fitzgibbon1999}).
 
 
 
 For the fingertip problem, there is also the added difficulty that the points that are confined to one side of the ellipse. 
 
+The method 
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/EllipticalFitTest_44.jpg}
+    \caption{Parallel Lines Fit.}\label{fig:ParallelFit}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/EllipticalFitTest_Hyperbolic.jpg}
+    \caption{Parallel Lines Fit.}\label{fig:ParallelFit}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/EllipticalFitTest_Hyperbolic_2.jpg}
+    \caption{Parallel Lines Fit.}\label{fig:ParallelFit}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/EllipticalFitTest_Taubin.jpg}
+    \caption{Parallel Lines Fit.}\label{fig:ParallelFit}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/EllipticalFitTest_Taubin_2.jpg}
+    \caption{Parallel Lines Fit.}\label{fig:ParallelFit}
+\end{figure}
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 
