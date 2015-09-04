@@ -1,0 +1,1 @@
+bibtool -s -d ARKeyboard.bib ColorSpace.bib Misc.bib references.bib manual.bib > all.bib
