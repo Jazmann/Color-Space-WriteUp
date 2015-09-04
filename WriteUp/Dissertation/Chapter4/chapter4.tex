@@ -329,26 +329,24 @@ We wish to fit an ellipse to the points found at the tip of the finger. We've ch
 
 Fitting an ellipse to a set of points is surprisingly difficult. The reason for this is as follows:
 
-To follow the standard linear algebra approach to least squares fitting, we need to decide upon a functional form for the fit, and thereby a basis set. For an ellipse, this basis set is $\chi= \left(x^2, x y, y^2, x, y, 1\right)$, which is a set of six free coefficients $ A^T=\left\{A_{\text{xx}},A_{\text{xy}},A_{\text{yy}},A_x,A_y,A_0\right\}$. However, to specify an ellipse, all that is needed is five numbers; the major and minor axes lengths $(a,b)$, the position $(x_0,y_0)$, and the orientation $\theta$. This is because the basis set includes parabolic and hyperbolic functions as well as elliptical functions as possible fits. An additional difficulty arises when we try to construct a cost function for an ellipse. Ideally we wish to minimise the perpendicular distances of the points from the ellipse but the calculation of the distance of a point from an ellipse is not straightforward requiring the roots of a fourth degree polynomial to be found. Due to these complexities, several different methods have been proposed by different authors, but we will be focusing on two methods: The Approximate Mean Square (AMS)  proposed by (\cite{Taubin1991}), and the Direct least square (Direct) method by (\cite{Fitzgibbon1999}).
+To follow the standard linear algebra approach to least squares fitting, we need to decide upon a functional form for the fit, and thereby a basis set. For an ellipse, this basis set is $\chi= \left(x^2, x y, y^2, x, y, 1\right)$, which is a set of six free coefficients $ A^T=\left\{A_{\text{xx}},A_{\text{xy}},A_{\text{yy}},A_x,A_y,A_0\right\}$. However, to specify an ellipse, all that is needed is five numbers; the major and minor axes lengths $(a,b)$, the position $(x_0,y_0)$, and the orientation $\theta$. This is because the basis set includes parabolic and hyperbolic functions as well as elliptical functions as possible fits. An additional difficulty arises when we try to construct a cost function for an ellipse. Ideally, we wish to minimize the perpendicular distances of the points from the ellipse, but the calculation of the distance of a point from an ellipse is not straightforward, requiring the roots of a fourth degree polynomial to be found. Due to these complexities, several different methods have been proposed by different authors, but we will be focusing on two methods: The Approximate Mean Square (AMS)  proposed by (\cite{Taubin1991}), and the Direct least square (Direct) method by (\cite{Fitzgibbon1999}).
 
 
 
 For the fingertip problem, there is also the added difficulty that the points that are confined to one side of the ellipse. 
 
-The AMS method optimises 
-
-The AMS method,  minimizes the cost function
+The AMS method minimizes the cost function
 \begin{equation}
 \epsilon ^2=\frac{ A^T D^T D A }{ A^T (D_x^T D_x +  D_y^T D_y) A^T }
 \end{equation}
-where the matrices $Dx$ and $Dy$ are the partial derivatives of the design matrix $D$ with respect to x and y. The matrices are formed row by row applying the following to each of the points in the set.
+where the matrices $Dx$ and $Dy$ are the partial derivatives of the design matrix $D$ with respect to x and y. The matrices are formed row by row applying the following to each of the points in the set:
 \begin{align}
 D_x(i,:)&=\left\{x_i^2, x_i y_i, y_i^2, x_i, y_i, 1\right\} &
 D_x(i,:)&=\left\{2 x_i,y_i,0,1,0,0\right\} &
 D_y(i,:)&=\left\{0,x_i,2 y_i,0,1,0\right\}
 \end{align}
 
-The minimum cost is found by solving the generalised eigenvalue problem with the constraint that $ A^T D_x^T D_x A +  A^T D_y^T D_y A = I$
+The minimum cost is found by solving the generalized eigenvalue problem with the constraint that $ A^T D_x^T D_x A +  A^T D_y^T D_y A = I$
 
 \begin{equation}
  D^T D A = \lambda  \left( D_x^T D_x +  D_y^T D_y\right) A 
