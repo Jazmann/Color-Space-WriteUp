@@ -391,6 +391,9 @@ These methods were implemented in Mathematica for evaluation and in the OpenCV C
 The largest computational effort in both methods is the determination of the $D^T D$ matrix, once found however both methods can be used at relatively little extra computational cost. All Ellipses between the two can be considered as valid fits also. This suggests a method which allows for extra information to be used to refine the fit. In the case of the finger model this is the orientation, distal width and position from the parallel line fit. The ellipse between the two fits which 
 most closely matches the extra information is chosen as the best fit. 
 
+\subsubsection{Trapezian Fit}\label{sec:TrapezianFit}
+
+
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 
 So far, we have said little about how we actually intend to detect a digit being pressed on a surface. Although a significant amount of discussion has been presented to do with the optimization --- at least in terms of the data types and the underlying maths --- mostly to do with the color space transform. We have said even less about the size of the images captured or the framerate at which the processing is required. These are important considerations for designing practical code, especially for application in a mobile device.
