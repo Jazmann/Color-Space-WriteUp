@@ -321,7 +321,7 @@ There is one final step: the points which are classified as good edge points are
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ParallelFit.jpg}
-    \caption{Parallel Lines Fit.}\label{fig:ParallelFit}
+    \caption{Initial shape-fitting stage, with the Kink Fit, midline, and Parallel Edge fit, with AMS and Direct elliptical fits to the tip.}\label{fig:ParallelFit}
 \end{figure}
 
 \subsubsection{Elliptical Fit to the Tip}\label{sec:EllipticalFitToTheTip}
@@ -399,6 +399,9 @@ These methods were implemented in Mathematica for evaluation and in the OpenCV C
 
 The largest computational effort in both methods is the determination of the $D^T D$ matrix, once found however both methods can be used at relatively little extra computational cost. All Ellipses between the two can be considered as valid fits also. This suggests a method which allows for extra information to be used to refine the fit. In the case of the finger model this is the orientation, distal width and position from the parallel line fit. The ellipse between the two fits which 
 most closely matches the extra information is chosen as the best fit. 
+
+\subsubsection{Trapezian Fit}\label{sec:TrapezianFit}
+
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 
