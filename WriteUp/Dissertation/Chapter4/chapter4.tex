@@ -308,12 +308,30 @@ The minimum cost is found by solving the generalized eigenvalue problem.
 
 The system produces only one positive eigenvalue $ \lambda$ which is chosen as the solution with its eigenvector $\mathbf{u}$. These are used to find the coefficients
 
+\begin{figure}[p]
+\centering
+\subfloat[Comparison of the AMS and Direct ellipse fit methods for a complete ellipse][AMS and Direct methods both perform well with a set of points evenly distributed arround the ellipse. ]{
+\includegraphics[width=0.98\textwidth]{Chapter4/Figs/EllipticalFitTestFull.jpg}
+\label{fig:EllipseFitTestFull}}
+\qquad
+\subfloat[The AMS method sometimes produces a hyperbolic fit.][The AMS method sometimes produces a hyperbolic fit whilst the direct method always produces an ellipse]{
+\includegraphics[width=0.47\textwidth]{Chapter4/Figs/EllipticalFitTest_Hyperbolic.jpg}
+\label{fig:EllipseFitTestHalfHyperbolic}}
+\quad
+\subfloat[Comparison of the AMS and Direct ellipse fit methods for a half ellipse.][The AMS method better fits the extreme edge points in the data set resulting in the AMS method producing larger ellipses than the Direct method. The true ellipse is most often between the  two.]{
+\includegraphics[width=0.47\textwidth]{Chapter4/Figs/EllipticalFitTest_DTA.jpg}
+\label{fig:EllipseFitTestHalf}}
+\caption{Comparison of the AMS and Direct ellipse fit methods.}
+\label{fig:EllipseFitTest}
+\end{figure}
+
 \begin{equation*}
  A = \sqrt{\frac{1}{\mathbf{u}^T C \mathbf{u}}}  \mathbf{u}
 \end{equation*}
 The scaling factor guarantees that  $A^T C A =1$.
 
-These methods were implemented in Mathematica for evaluation and in the OpenCV C++ code. Testing routines generated sample data with variable ellipse occlusion and noise around a randomly generated ellipse. The methods both produced good fits to complete ellipses and incomplete ellipses. The AMS method was slightly better at fitting the extreme ends of the ellipse generally producing a larger ellipse than the Direct method. Both methods accurately obtained the position and orientation. The AMS method occasionally produced a hyperbolic fit for very flat ellipses. 
+These methods were implemented in Mathematica for evaluation and in the OpenCV C++ code. Testing routines generated sample data with variable ellipse occlusion and noise around a randomly generated ellipse. The methods both produced good fits to complete ellipses and incomplete ellipses. The AMS method was slightly better at fitting the extreme ends of the ellipse generally producing a larger ellipse than the Direct method. Both methods accurately obtained the position and orientation. The AMS method occasionally produced a hyperbolic fit for very flat ellipses.
+
 
 The largest computational effort in both methods is the determination of the $D^T D$ matrix, once found however both methods can be used at relatively little extra computational cost. All Ellipses between the two can be considered as valid fits also. This suggests a method which allows for extra information to be used to refine the fit. In the case of the finger model this is the orientation, distal width and position from the parallel line fit. The ellipse between the two fits which most closely matches the extra information is chosen as the best fit.
 
@@ -393,22 +411,7 @@ There is one final step: the points which are classified as good edge points are
 
 \subsubsection{Elliptical Fit to the Tip}\label{sec:EllipticalFitToTheTip}
 
-\begin{figure}[p]
-\centering
-\subfloat[Comparison of the AMS and Direct ellipse fit methods for a complete ellipse][AMS and Direct methods both perform well with a set of points evenly distributed arround the ellipse. ]{
-\includegraphics[width=0.98\textwidth]{Chapter4/Figs/EllipticalFitTestFull.jpg}
-\label{fig:EllipseFitTestFull}}
-\qquad
-\subfloat[The AMS method sometimes produces a hyperbolic fit.][The AMS method sometimes produces a hyperbolic fit whilst the direct method always produces an ellipse]{
-\includegraphics[width=0.47\textwidth]{Chapter4/Figs/EllipticalFitTest_Hyperbolic.jpg}
-\label{fig:EllipseFitTestHalfHyperbolic}}
-\quad
-\subfloat[Comparison of the AMS and Direct ellipse fit methods for a half ellipse.][The AMS method better fits the extreme edge points in the data set resulting in the AMS method producing larger ellipses than the Direct method. The true ellipse is most often between the  two.]{
-\includegraphics[width=0.47\textwidth]{Chapter4/Figs/EllipticalFitTest_DTA.jpg}
-\label{fig:EllipseFitTestHalf}}
-\caption{Comparison of the AMS and Direct ellipse fit methods.}
-\label{fig:EllipseFitTest}
-\end{figure}
+
 
 
 We wish to fit an ellipse to the points found at the tip of the finger. We've chosen an ellipse because we are assuming that the tip is symmetrical about the midline fit, and that the extreme edges are parallel to the midline. Using an elliptical fit, then, will exclude points which do not agree with these assumptions, thereby eliminating anomalies.
