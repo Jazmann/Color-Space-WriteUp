@@ -409,7 +409,7 @@ There is one final step: the points which are classified as good edge points are
     \caption{Initial shape-fitting stage, with the Kink Fit, midline, and Parallel Edge fit, with AMS and Direct elliptical fits to the tip.}\label{fig:ParallelFit}
 \end{figure}
 
-\subsubsection{Set the scale space.}\label{sec:EllipticalFitToTheTip}
+\subsubsection{Set the Scale Space}\label{sec:SetTheScaleSpace}
 We wish to set the mid-scale such that the number of pixels across the distal segment is close to a chosen target value. As mentioned in the scale space subsection \ref{sec:ScaleSpace} we are restricting the choice of scales to integer factors of the original and integer multiples of the small scale. For the iPhone images the factors are:
 \begin{align}
 scale &= 2^{-i} 3^{-j} 17^{-k}  & i &\in \{0,1,2,3,4\} 
@@ -417,7 +417,7 @@ scale &= 2^{-i} 3^{-j} 17^{-k}  & i &\in \{0,1,2,3,4\}
 & k &\in \{0, 1\}
 \end{align}
 
-The small scale space is made using the largest number of small factors as possible to achieve the desired image size. This gives the greatest flexability in scaling the mid-size.
+The small scale space is made using the largest number of small factors as possible to achieve the desired image size. This gives the greatest flexibility in scaling the mid-size.
 \begin{table}
 \begin{tabular}{|cc|cc|c|c|c|c|c|l|}
 \cline{5-10}
