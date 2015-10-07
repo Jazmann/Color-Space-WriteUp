@@ -35,7 +35,7 @@ Surprisingly, this approached failed to work; the background was not represented
     \caption{Initial attempt at removing background; unsuccessful.} \label{fig:BGFailure}
 \end{figure}
 
-The background statistics changed with the skin present in the photo. This is because the iPhone adjusts to images with very strong color characteristics. This color correction is an undocumented feature of the iPhone processing. The only way to compensate for this unwelcome pre-processing is to photograph the background with a strongly contrasting object present, but one which is easily cropped out of the image before the background statistics are collected. After collecting the statistics again, the result was much improved (Figure~\ref{fig:BGSuccess1}).
+The background statistics changed with the skin present in the photo. This is because the iPhone adjusts to images with very strong color characteristics. This color correction is an undocumented feature of the iPhone processing. The only way to compensate for this unwelcome pre-processing is to photograph the background with a strongly contrasting object present, but one which is easily cropped out of the image before the background statistics are collected. After collecting the statistics again, the result was much improved (figure~\ref{fig:BGSuccess1}).
 
 \begin{figure}[h!]
   \centering
@@ -45,7 +45,7 @@ The background statistics changed with the skin present in the photo. This is be
 
 In a real world context, it is relatively safe to presume that the scene will be chromatically complex enough that the color correction won't be detrimental to detection, and perhaps even beneficial under unusual lighting conditions. But for gathering statistics, it proved to be a massive pain.
 
-\subsection{White-out and Black-out}\label{sec:WhiteoutAndBlackout}
+\subsection{White-Out and Black-Out}\label{sec:WhiteoutAndBlackout}
 A monochromatic object with average RGB color $\mathbf{\mu}=\left\{\mu_R, \mu_G, \mu_B \right\}$ under different lighting conditions produce an in-camera value of $\left\{\mu_R +\lambda, \mu_G  +\lambda, \mu_B +\lambda \right\}$. Each channel has a numerical limit which means that when that limit is reached further change in luminosity $\lambda$ will result in a change in chromatic value. At high luminosities the colors converge on white becoming washed out. This is referred to as white-out. Similarly at low luminosities the colors converge on black which is referred to as black-out.
 
 \begin{figure}[h!] %hi-res
@@ -139,8 +139,8 @@ Because each of the bins corresponds to just one RGB value, we can find the equi
     \end{figure}
 
 
-Naively collapsing the bins along the luminosity axis artificially skews the chromatic distribution along the axis which passed through the luminosity axis; this is easily explained due to white-out and black-out \ref{sec:WhiteoutAndBlackout}. 
-Although we've "skinned" the bins, the white and black tips of the cube suffer from white-out and black-out more than any other regions, and there's a tendency for pixel values to converge under the white point and the black point without necessarily hitting the side of the cube first due to the iPhone contrast and brightness adjustment. This can be seen in  \ref{fig:Top_and_Tail_the_Bins}. 
+Naively collapsing the bins along the luminosity axis artificially skews the chromatic distribution along the axis which passed through the luminosity axis; this is easily explained due to white-out and black-out (\ref{sec:WhiteoutAndBlackout}). 
+Although we've "skinned" the bins, the white and black tips of the cube suffer from white-out and black-out more than any other regions, and there's a tendency for pixel values to converge under the white point and the black point without necessarily hitting the side of the cube first due to the iPhone contrast and brightness adjustment. This can be seen in figure   \ref{fig:Top_and_Tail_the_Bins}. 
 
 We collapse the bins excluding the bins which are clearly suffering from white-out and black-out. This could be done mathematically by taking the bin of the distribution which is furthest from the luminosity axis, and then finding the intersection with the RGB cube when this chromatic value is at its limits, just before it reaches the edge of the cube where it suffers from white-out or black-out. But it's a simple matter to look at the three projections of the 3D LCaCb bins and manually determine the limits for the valid region.
 
@@ -167,7 +167,7 @@ Because we're modelling the chromatic space and not the luminosity, we now colla
         \caption{\textbf{The De-speckled Bins}. The action of the de-speckling algorithm can be seen in the right-hand close-up panels}  \label{fig:Despeckle_the_Bins}
     \end{figure}
     
-The raw camera output has, by this stage, undergone two rounds of processing --- first in the device, before the AP layer, creating an 8-bit RGB image; and then in the rotation to the LCaCb space. These processes are, unfortunately, not 1-to-1. This results in some bins being artificially overpopulated and other bins becoming artificially empty. The effect of the LCaCb rotation can be controlled by extending the axis lengths; this process can make for at worst 1-to-1 correspondence. However, this necessarily introduces a greater number of inaccessible bins. In terms of collecting the statistics, these effects are not problematic aside from the fact that it introduces empty bins inside the main region of interest, which causes difficulties for the algorithm further down the line. Graphically, this problem looks like speckling. This speckling is also apparent in the RGB bins, and it is assumed this is a result of the pre-processing of the image by the device before the AP layer. It is noteworthy that although the camera claims to capture full 3-channel, 8-bit RGB information this is not quite true. 
+The raw camera output has, by this stage, undergone two rounds of processing --- first in the device, before the AP layer, creating an 8-bit RGB image; and then in the rotation to the LCaCb space. These processes are, unfortunately, not 1-to-1. This results in some bins being artificially overpopulated and other bins becoming artificially empty. The effect of the LCaCb rotation can be controlled by extending the axis lengths; this process can make for at worst 1-to-1 correspondence. However, this necessarily introduces a greater number of inaccessible bins. In terms of collecting the statistics, these effects are not problematic aside from the fact that it introduces empty bins inside the main region of interest, which causes difficulties for the algorithm further down the line. Graphically, this problem looks like speckling. This speckling is also apparent in the RGB bins, and it is assumed this is a result of the pre-processing of the image by the device before the AP layer. It is noteworthy that although the camera claims to capture full 3-channel, 8-bit RGB information, this is not quite true. 
 
 In attempting to solve this problem, the obvious idea is to find all the non-zero bins and fit an interpolating function between them. This will effectively remove the empty bin artefacts within the densely-packed region which is the distribution we're interested in. However, the empty bins outside the main distribution are not artefacts and are genuinely empty bins, so removing all the empty bins and then fitting the function joins together any outlying points or secondary distributions corresponding to regions such as the background. We therefore desire a method which will allow us to keep all the non-empty bins and the empty bins outside the main distribution, i.e. all the genuinely empty bins. To achieve this, we designed a Matlab routine which essentially paints a region around each non-zero point, marking it as part of the main distribution. It then takes all the unmarked regions and includes all the empty bins in those regions. So, the set of points which is all the non-empty bins and all the empty bins in the unmarked regions satisfies the requirement, and a simple interpolating function can easily be fitted to those points.
 
@@ -185,7 +185,7 @@ In attempting to solve this problem, the obvious idea is to find all the non-zer
     
 Having removed the empty bin artefacts and compensated for white-out/black-out effects, the final step is to remove the bin counts of the bins which are associated with the background, thereby leaving a distribution which corresponds to chromatic skin values and which is artefact and systematic-error-free. With the chromatic bins processed as they have been so far, it is clear that there is a distinct distribution for the skin and a distinct distribution for the background. However, a distribution for the background was produced earlier, compensating for the iPhone's pre-AP-layer processing. 
 
-Using MATLAB's blob detection algorithm, we can find the distinct patches of chromatic information. We expect there to be two distinct blobs: one corresponding to the target skin values, and one to the monochromatic background. The distribution is divided into two, one for each of the detected blobs \ref{fig:Find_the_Blobs}. The blob detection algorithm also returns the center $\widetilde{\mu}$, eccentricity $\widetilde{\theta}$ and major and minor axis $\widetilde{\sigma}$ for an ellipse which most closely fits the blob shape. The distribution which contains the blob center closest to a reference skin value is chosen to be the skin distribution and the ellipse values are passed to the next step where the Gaussian fit is obtained. Only the bin values between the extreme edges of the blob are passed on to the next stage.
+Using MATLAB's blob detection algorithm, we can find the distinct patches of chromatic information. We expect there to be two distinct blobs: one corresponding to the target skin values, and one to the monochromatic background. The distribution is divided into two, one for each of the detected blobs (figure \ref{fig:Find_the_Blobs}). The blob detection algorithm also returns the center $\widetilde{\mu}$, eccentricity $\widetilde{\theta}$ and major and minor axis $\widetilde{\sigma}$ for an ellipse which most closely fits the blob shape. The distribution which contains the blob center closest to a reference skin value is chosen to be the skin distribution and the ellipse values are passed to the next step where the Gaussian fit is obtained. Only the bin values between the extreme edges of the blob are passed on to the next stage.
 
 \subsection{The Gaussian Fit}\label{sec:TheGaussianFit}
 
@@ -198,7 +198,7 @@ Using MATLAB's blob detection algorithm, we can find the distinct patches of chr
 
 We now have a histogram which has bin values relevant to the target and no others. We now fit a 2D Gaussian to a normalized histogram values, initializing the routine with the values, the blob center $\widetilde{\mu}$ for the mean $\mu$ and the  elliptical axis lengths $\widetilde{\sigma}$ for the standard deviation $\sigma$  and the eccentricity $\widetilde{\theta}$  for the orientation $\theta$, provided by the blob detection.
 
-A least squares fit of the 2D Histogram with a 2D gaussian function \ref{eq:2DGaussian}  is found using MatLab's lsqcurvefit.
+A least squares fit of the 2D Histogram with a 2D gaussian function (eq. \ref{eq:2DGaussian})  is found using MatLab's lsqcurvefit.
 \newcommand{\CaMu}{ \overline{\mathbf{Ca}} }
 \newcommand{\CbMu}{\overline{\mathbf{Cb}}  }
 \begin{gather}\label{eq:2DGaussian}
@@ -250,7 +250,7 @@ Sample image sets were collected using the iPhone for three individuals with var
 The MATLAB bin class was written so that the combined statistics for the three individuals could be found by adding the RGB bins together, and then following the same steps 1-8 as described previously. All three distributions along with the combined distribution can be seen in figures \ref{fig:AllTogether2D} and \ref{fig:AllTogether3D}.
 
 
-In an attempt to identify a larger range of values for the skin space, a large number of skin samples were taken from photographs from the Humane project by Angelica Dass, an ongoing "chromatic inventory" art project which aims to compile every possible human skin color, categorized by the PANTONE guide color classification system~\cite{Dass2012}. The skin colors catalogued thus far are independent of race or ethnicity, so the samples are representative of human skin tones in general.
+In an attempt to identify a larger range of values for the skin space, a large number of skin samples were taken from photographs from the Humane project by Angelica Dass, an ongoing "chromatic inventory" art project which aims to compile every possible human skin color, categorized by the PANTONE guide color classification system~(\cite{Dass2012}). The skin colors catalogued thus far are independent of race or ethnicity, so the samples are representative of human skin tones in general.
 
 The image set consists of approximately 200 skin samples  each showing only one individuals skin. The result can be seen in figures \ref{fig:AllTogether2D} and \ref{fig:AllTogether3D} as the GeneralSkin set. The distribution stands apart from the others and surprisingly has a smaller standard deviation. This is probably due to camera differences and the sampling techniques used in the Humane project which focus on finding an average color rather than the channel values in camera. The orientation and position of the distribution is more consistent with the theoretical values for the skin pigments than those for the individual sets. This is likely due to the fact that the theoretical values were calculated for a different camera CCD, the iPhone CCD characteristics not being available. For this reason the general distribution is excluded from further consideration aside from the recognition that different cameras will require bespoke statistics to be gathered. 
 
@@ -282,7 +282,7 @@ $\left(\begin{array}{c} 84 \\ 117 \end{array} \right) < \mu'  < \left(\begin{arr
 \end{figure}
 
 We now follow the procedure outlined in chapter 2 and obtain an angle informed by computational considerations.  
-With the perturbations to each channel scaled by their relative importance fig \ref{fig:PerturbationNearThetaAB} there are three angles which satisfy the criteria.
+With the perturbations to each channel scaled by their relative importance (fig \ref{fig:PerturbationNearThetaAB}) there are three angles which satisfy the criteria.
  The algorithm returns the closest angle to the requested angle which is $\overset{x}{\phi } (48)$ however the perturbation is close to the tolerance of 1 which suggests that if the distribution parameters were adjusted to fit a particular individual then the perturbation may slip above the tolerance. 
  The channel scaling $\left\{ \alpha, \beta\right\} $ are also fairly close in value so the unscaled perturbations can be used with a tolerance $\tau = \text{Max}\left(\alpha, \beta\right)$ figure \ref{fig:PerturbationNearThetaT}. 
  Accounting for both low perturbation and future adaptability a final angle $\theta = \overset{x}{\phi }(46) = 0.9025768293268257$ was chosen.
@@ -299,7 +299,7 @@ With the perturbations to each channel scaled by their relative importance fig \
     \caption{ The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color space  }  \label{fig:DistributionResults}
 \end{figure}
 
-As a final step the MATLAB statistics gathering routine was run again using the combined F,J\&N RGB bins as a starting point and then rotating to the LCa'Cb' color space with the new value for $\theta$. This was done partly to check that the code works as expected and to see how well the product of Gaussians function fits the distribution. The only difference to the MATLAB code was that for this run the Gaussian fit was found using  \ref{eq:2DGaussianProd} which is the product of two 1D Gaussians with a fixed amplitude of 1. The result can be seen in figure:\ref{fig:FittheGaussianFinal} . 
+As a final step, the MATLAB statistics gathering routine was run again using the combined F,J\&N RGB bins as a starting point and then rotating to the LCa'Cb' color space with the new value for $\theta$. This was done partly to check that the code works as expected and to see how well the product of Gaussians function fits the distribution. The only difference to the MATLAB code was that for this run the Gaussian fit was found using eq. \ref{eq:2DGaussianProd} which is the product of two 1D Gaussians with a fixed amplitude of 1. The result can be seen in figure \ref{fig:FittheGaussianFinal}. 
 
 \begin{equation}\label{eq:2DGaussianProd}
 \exp \left( -\frac{{\CaMu}^2}{2 \sigma_1^2} -  \frac{ { \CbMu }^2}{2 \sigma_2^2} \right) \quad \textbf{where} \quad \CaMu = \text{Ca}-\mu_1 \quad \text{and} \quad \CbMu = \text{Cb}-\mu_2 
@@ -310,10 +310,10 @@ As a final step the MATLAB statistics gathering routine was run again using the 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1.0 \textwidth]{Chapter3/Figs/Distribution_Results_Final.jpg} 
-    \caption{ \textbf{The Tight MATLAB fit in LCa'Cb'.}.The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color space }  \label{fig:DistributionResultsFinal}
+    \caption{ \textbf{The Tight MATLAB fit in LCa'Cb'.} The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color space.}  \label{fig:DistributionResultsFinal}
 \end{figure}
 
-It can be seen that the least square fit is a good predictor for the distribution but the aim of the color space is to capture all skin relevant chromatic information. For this reason,  as well as the desire to be inclusive of skin-tones outside of the sample set of three individuals, a region larger than the $2\sigma$ ellipse region \ref{fig:DistributionResultsFinal} which is kept by the tight MATLAB fit may be desirable to be included. The $3\sigma$ ellipse region would include everything in the combined individual F,J\&N histogram. A $5\sigma$ ellipse region would  likely account for a wide variety of skin tones. 
+It can be seen that the least square fit is a good predictor for the distribution but the aim of the color space is to capture all skin relevant chromatic information. For this reason,  as well as the desire to be inclusive of skin tones outside of the sample set of three individuals, a region larger than the $2\sigma$ ellipse region (fig \ref{fig:DistributionResultsFinal}) which is kept by the tight MATLAB fit may be desirable to be included. The $3\sigma$ ellipse region would include everything in the combined individual F,J\&N histogram. A $5\sigma$ ellipse region would  likely account for a wide variety of skin tones. 
 
 \begin{figure}[h!]
   \centering
@@ -324,10 +324,10 @@ It can be seen that the least square fit is a good predictor for the distributio
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.95 \textwidth]{Chapter3/Figs/Distribution_Results_Final_Extended_3D.jpg} 
-    \caption{ The tight and extended fits in the LCa'Cb'. color space }  \label{fig:DistributionResultsFinalExtended3D}
+    \caption{ The tight and extended fits in the LCa'Cb' color space.}  \label{fig:DistributionResultsFinalExtended3D}
 \end{figure}
 
-Extending the distribution may also affect the accuracy required in the rotation as mentioned previously. Extending out to a $5\sigma$ ellipse region does indeed affect the tolerance \ref{fig:DistributionResultsFinalExtended} but the chosen angle perturbation $\pm0.144$ still satisfies the tolerance $\tau = 0.3094$ as $0.1441 < 0.3094$. It is also notable that the tight MATLAB distribution requires a  partition in the chromatic axis whilst the extended distribution requires a small amount of redistribution. The tight MATLAB distribution and the extended distribution can be seen in figure \ref{fig:DistributionResultsFinalExtended3D}.
+Extending the distribution may also affect the accuracy required in the rotation as mentioned previously. Extending out to a $5\sigma$ ellipse region does indeed affect the tolerance (fig \ref{fig:DistributionResultsFinalExtended}), but the chosen angle perturbation $\pm0.144$ still satisfies the tolerance $\tau = 0.3094$ as $0.1441 < 0.3094$. It's also notable that the tight MATLAB distribution requires a  partition in the chromatic axis whilst the extended distribution requires a small amount of redistribution. The tight MATLAB distribution and the extended distribution can be seen in fig \ref{fig:DistributionResultsFinalExtended3D}.
 
 \subsection{Conclusion}
 
@@ -337,7 +337,7 @@ After redistribution we have two new spaces in which to express the stats parame
 \begin{equation}
 P(L,Ca,Cb) = Exp(- \frac{Ca-\mu_d^{Ca} }{2 \sigma_d^{Ca}} - \frac{Cb-\mu_d^{Cb} }{2 \sigma_d^{Cb}})
 \end{equation}
-the result can be seen in figure \ref{fig:TransformImage}.
+the result can be seen in figure \ref{fig:TransformImages}.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.95 \textwidth]{Chapter3/Figs/TransformImages.jpg} 
