@@ -377,7 +377,7 @@ It finds a Hurdle path in the primary direction, i.e. perpendicularly away from 
 
 
 
-\subsubsection{Filament Fill the Finger}\label{FilamentFillTheFinger}
+\subsubsection{Filament Fill the Finger}\label{sec:FilamentFillTheFinger}
 The center points found by the Run-Reach method above form a path on the finger. This is the path given to the Filament Fill method described previously. We now have a set of edge points on the digit. These edge points also have a top and bottom correspondence which, although they're not perpendicularly-opposite points on the finger, they do allow for a midpoint on the digit to be found. This can be seen in Figure~\ref{fig:FillamentFill}.
 
 \subsubsection{Exclude Secondary Frame Edge Points and Fingertip Points }\label{sec:ExcludeSecondaryFrameEdgePointsAndFingertipPoints}
@@ -418,8 +418,7 @@ scale &= 2^{-i} 3^{-j} 17^{-k}  & i &\in \{0,1,2,3,4\}
 \end{align}
 
 The small scale space is made using the largest number of small factors as possible to achieve the desired image size. This gives the greatest flexibility in scaling the mid-size.
-\begin{table}
-\caption{Hi! I'm table. Let's be friends --- I have Jaffa Cakes!}
+\begin{table}[h]
 \centering
 \begin{tabular}{|cc|cc|c|c|c|c|c|l|}
 \cline{5-10}
@@ -449,6 +448,7 @@ k & $k_{scale}$ &j & $j_{scale}$ & $1$ & $\frac{1}{2}$ & $\frac{1}{4}$ & $\frac{
   64  & 32  & 16  & 8  & 4  & h \\
 \hline 
 \end{tabular}
+\caption{The image pixel dimensions for all possible integer factor scalings.}
 \end{table}
 
 So for a chosen small scale $S_s = 2^{-3} 3^{-1}$, a distal width in the small scale $w$ and a minimum distal width in the medium scale $w_m$. 
@@ -458,7 +458,12 @@ Finding  $i_m$ and $j_m$ which minimise $i_m + \frac{\log(3)}{\log(2)} j_m$  and
 
 We wish to fit an ellipse to the points found at the tip of the finger. We've chosen an ellipse because we are assuming that the tip is symmetrical about the mid-line fit, and that the extreme edges are parallel to the mid-line. Using an elliptical fit outlined in section \ref{sec:EllipticalFitMethod}, then, will exclude points which do not agree with these assumptions, thereby eliminating anomalies.
 
-However, it should be noted that the points provided by the parallel lines fit are not good enough to determine which parts on the curved tip of the finger, which we're approximating as roughly elliptical, due to the tapering of the distal segment of the finger towards the tip, as well as the alignment of the digit in the frame.
+However, it should be noted that the points provided by the parallel lines fit (Fig \ref{fig:ParallelFit}) are not good enough to determine which parts on the curved tip of the finger, which we're approximating as roughly elliptical, due to the tapering of the distal segment of the finger towards the tip, as well as the alignment of the digit in the frame.
+
+\subsubsection{Modeling the Fingertip}\label{sec:ModellingTheFingertip}
+Having determined a measure of the width of the distal portion of the fingertip allows for a more robust model of the fingertip to be determined. This is because the measurement of the distal width is far more reliable than the distal length which has so far been determined, as the distal length has been found by evaluating where the "kink" of the midline points lies. For example, if the distal joint is unflexed, the knuckle portion will be overlooked entirely, as seen in Figure \ref{fig:ParallelFit}. It turns out that the anatomical ratios (Section \ref{sec:FingertipModel}) are a far more reliable method of determining the distal length.
+
+From the kink fit, we have a midline, which is specified by three points. We now determine two points on this line, which are $\frac{1}{2}$ the distal width and $1\frac{1}{2}$ the distal width from the tip. So the midline point that lies between the two points can now be taken to correspond to the straight-edged section of the distal portion of the finger. These points are passed to the Trapezian Fit method (\ref{sec:TrapezianFit}), and the points which lie between the tip and the point half the distal width from the tip are passed to the Elliptical Fit (\ref{sec:EllipticalFitMethod}). The ellipse is adjusted to correspond with the two near vertices of the Trapezian; the result can be seen in Figure <put figure here>.
 
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
