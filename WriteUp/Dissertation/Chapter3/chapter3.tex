@@ -12,7 +12,7 @@ We are trying to describe essentially monochromatic objects with a small variati
 \section{iPhone Camera Characteristics} \label{sec:iPhoneCameraCharacteristics}
 There are two aspects of the camera which affect the collection of the color statistics, the CCD sensitivity as detailed in Chapter 1 and the processing of the detected raw channel values before the AP layer. Unfortunately neither the details of the CCD nor the action of the preprocessing are publicly documented. The relevant effects are discovered and described in this section 
 
-\subsection{The White Point}
+\subsection{The White Point}\label{sec:WhitePoint}
 The iPhone's camera pre-processes the raw image before it reaches the AP layer which causes difficulties in collecting reliable statistics. Typically, cameras have a specific white point value, which is the RGB value corresponding to white which isn't necessarily the corner of the RGB cube; finding this value is part of the camera calibration. It also determines the orientation of the luminosity axis, which passes through zero to the white point. This is why pre-defined color space functions have an implicit white point correction. 
 
 \begin{figure}[h!]
