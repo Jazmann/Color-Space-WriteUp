@@ -479,6 +479,38 @@ From the kink fit, we have a midline, which is specified by three points. We now
 \item \textbf{Finalizing the Model} --- The coordinates for the ellipse and the trapezian are adjusted so that the origin is at the center of the ellipse, and the ellipse has zero rotation. The reason for this is that it makes calculating the distance from the edges of the ellipse easier. So, now when we apply the model to the image, all that's required is a position --- which is the position of the center of the ellipse --- and an orientation about that position. 
 \end{itemize}
 
+\begin{figure}[h!]
+  \centering
+  \noindent
+    \subfloat{\includegraphics[width=0.48\textwidth]{Chapter4/Figs/Model_FindingD1AndD2.jpg}}
+    \begin{minipage}{0.48\textwidth}
+         Caption 1
+    \end{minipage}\\
+    \begin{minipage}{0.48\textwidth}
+         Caption 2
+    \end{minipage}
+    \subfloat{\includegraphics[width=0.48\textwidth]{Chapter4/Figs/Model_Midline.jpg}}\\
+    \subfloat{\includegraphics[width=0.48\textwidth]{Chapter4/Figs/Model_NeutralCoords.jpg}}
+    \begin{minipage}{0.48\textwidth}
+         Caption 3
+    \end{minipage}\\
+    \phantomcaption
+\end{figure}
+
+\begin{figure}
+\ContinuedFloat
+\centering
+    \begin{minipage}{0.48\textwidth}
+         Caption 4
+    \end{minipage}
+    \subfloat{\includegraphics[width=0.48\textwidth]{Chapter4/Figs/Model_ShapeFitting.jpg}}\\
+    \subfloat{\includegraphics[width=0.99\textwidth]{Chapter4/Figs/Model_Finalizing.jpg}}\\
+    \begin{minipage}{0.48\textwidth}
+         Caption 5
+    \end{minipage}
+    \caption{Buncha figures --- goes well with milk.}\label{fig:ModelingFingertip}
+\end{figure}
+
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 
