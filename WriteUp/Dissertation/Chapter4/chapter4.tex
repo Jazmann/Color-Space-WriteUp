@@ -463,36 +463,22 @@ However, it should be noted that the points provided by the parallel lines fit (
 \subsubsection{Modeling the Fingertip}\label{sec:ModellingTheFingertip}
 Having determined a measure of the width of the distal portion of the fingertip allows for a more robust model of the fingertip to be determined. This is because the measurement of the distal width is far more reliable than the distal length which has so far been determined, as the distal length has been found by evaluating where the "kink" of the midline points lies. For example, if the distal joint is unflexed, the knuckle portion will be overlooked entirely, as seen in Figure \ref{fig:ParallelFit}. It turns out that the anatomical ratios (Section \ref{sec:FingertipModel}) are a far more reliable method of determining the distal length.
 
-From the kink fit, we have a midline, which is specified by three points. We now determine two points on this line, which are $\frac{1}{2}$ the distal width ($d1$) and $1\frac{1}{2}$ the distal width from the tip ($d2$). So the midline point that lies between the two points can now be taken to correspond to the straight-edged section of the distal portion of the finger. These points are passed to the Trapezian Fit method (\ref{sec:TrapezianFit}), and the points which lie between the tip and the point half the distal width from the tip are passed to the Elliptical Fit (\ref{sec:EllipticalFitMethod}). The ellipse is adjusted to correspond with the two near vertices of the Trapezian; the result can be seen in Figure <put figure here>.
-
-\begin{itemize}
-\item \textbf{Determining $d1$ and $d2$} --- we have a line which is given as two points; one somewhere on the digit, and the other at the tip. If the finger were straight in the frame, then $d1$ and $d2$ are easily found by finding the points on that line. However, the fact that the digit can be presented at an angle means that the edge points vertically above and below the point on the midline may include part of the curved tip. This has the effect of making these midpoints diverge from the midline of the digit. This can be corrected by adjusting with half the gradient of the midline to the ratios. \begin{equation}distance \:on \:line = (\frac{1}{2} + \frac{1}{2}\delta\:mid)w\end{equation}.
-
-\item \textbf{A New Midline Fit} --- we take the set of midline points, extract the subset which lies between $d1$ and $d2$, and then apply a straight line fit to these points.
-
-\item \textbf{Determine an Origin and Orientation} --- the origin is the fit evaluated at the x component of $d2$, and we determine an orientation $\theta$, which is $\arctan$ the gradient of the linear model.
-
-\item \textbf{Determine the Neutral Coordinates} --- We move all the points --- the top and bottom edges, and the midline points --- and we translate to the new origin. Then, we rotate by $-\theta$. This we call the "neutral co-ordinates", as the tip is aligned with its midaxis lying on the x axis. These points are separated at one distal width from the tip; a Trapezian fit is applied to one set of points, and an Elliptical fit is applied to the other. As a refinement to this, although the linear fit is applied as in the Trapezian section, the algorithm then looks at the points beyond and before the one distal width region; if they're consistent with the fit, then they are considered still part of the straight edge. The Elliptical fit is applied as discussed previously. 
-
-\item \textbf{Fitting the Shapes} --- The comparison between the methods is done by looking at the distance from the front two points on the trapezian to the edge of the ellipse, and the best of these is chosen. Unfortunately, this is often not sufficient to make the ellipse join with the trapezian exactly because further on in the algorithm, these shapes will be used to perform a mask; we want to avoid introducing artifacts which could be interpreted as features. So, we wish to remove these discontinuous intersections between the ellipse and the trapezian. In order to do this, we choose three points on the Elliptical fit and the two front points of the trapezian, thereby making a set of five points, and we pass these through the direct Elliptical fit algorithm. It should be noted that five points is what is required to completely define an ellipse; there is one on the ellipse which will pass through five points.
-
-\item \textbf{Finalizing the Model} --- The coordinates for the ellipse and the trapezian are adjusted so that the origin is at the center of the ellipse, and the ellipse has zero rotation. The reason for this is that it makes calculating the distance from the edges of the ellipse easier. So, now when we apply the model to the image, all that's required is a position --- which is the position of the center of the ellipse --- and an orientation about that position. 
-\end{itemize}
+From the kink fit, we have a midline, which is specified by three points. We now determine two points on this line, which are $\frac{1}{2}$ the distal width ($d1$) and $1\frac{1}{2}$ the distal width from the tip ($d2$). So the midline point that lies between the two points can now be taken to correspond to the straight-edged section of the distal portion of the finger. These points are passed to the Trapezian Fit method (\ref{sec:TrapezianFit}), and the points which lie between the tip and the point half the distal width from the tip are passed to the Elliptical Fit (\ref{sec:EllipticalFitMethod}). The ellipse is adjusted to correspond with the two near vertices of the Trapezian; the result can be seen in Figure \ref{fig:ModelingFingertip}.
 
 \begin{figure}[h!]
   \centering
   \noindent
     \subfloat{\includegraphics[width=0.48\textwidth]{Chapter4/Figs/Model_FindingD1AndD2.jpg}}
-    \begin{minipage}{0.48\textwidth}
-         Caption 1
+    \begin{minipage}[b]{0.48\textwidth}
+         \textbf{a) Determining $d1$ and $d2$} --- we have a line which is given as two points; one somewhere on the digit, and the other at the tip. If the finger were straight in the frame, then $d1$ and $d2$ are easily found by finding the points on that line. However, the fact that the digit can be presented at an angle means that the edge points vertically above and below the point on the midline may include part of the curved tip. This has the effect of making these midpoints diverge from the midline of the digit. This can be corrected by adjusting with half the gradient of the midline to the ratios. \begin{equation}distance \:on \:line = (\frac{1}{2} + \frac{1}{2}\delta\:mid)w\end{equation}.
     \end{minipage}\\
-    \begin{minipage}{0.48\textwidth}
-         Caption 2
+    \begin{minipage}[b]{0.48\textwidth}
+         \textbf{b) A New Midline Fit} --- we take the set of midline points, extract the subset which lies between $d1$ and $d2$, and then apply a straight line fit to these points. The origin is the fit evaluated at the x component of $d2$, and we determine an orientation $\theta$, which is $\arctan$ the gradient of the linear model.
     \end{minipage}
     \subfloat{\includegraphics[width=0.48\textwidth]{Chapter4/Figs/Model_Midline.jpg}}\\
     \subfloat{\includegraphics[width=0.48\textwidth]{Chapter4/Figs/Model_NeutralCoords.jpg}}
-    \begin{minipage}{0.48\textwidth}
-         Caption 3
+    \begin{minipage}[b]{0.48\textwidth}
+         \textbf{c) Determine the Neutral Coordinates} --- We move all the points --- the top and bottom edges, and the midline points --- and we translate to the new origin. Then, we rotate by $-\theta$. This we call the "neutral co-ordinates", as the tip is aligned with its midaxis lying on the x axis. These points are separated at one distal width from the tip; a Trapezian fit is applied to one set of points, and an Elliptical fit is applied to the other. As a refinement to this, although the linear fit is applied as in the Trapezian section, the algorithm then looks at the points beyond and before the one distal width region; if they're consistent with the fit, then they are considered still part of the straight edge. The Elliptical fit is applied as discussed previously.
     \end{minipage}\\
     \phantomcaption
 \end{figure}
@@ -500,15 +486,15 @@ From the kink fit, we have a midline, which is specified by three points. We now
 \begin{figure}
 \ContinuedFloat
 \centering
-    \begin{minipage}{0.48\textwidth}
-         Caption 4
+    \begin{minipage}[b]{0.48\textwidth}
+         \textbf{d) Fitting the Shapes} --- The comparison between the methods is done by looking at the distance from the front two points on the trapezian to the edge of the ellipse, and the best of these is chosen. Unfortunately, this is often not sufficient to make the ellipse join with the trapezian exactly because further on in the algorithm, these shapes will be used to perform a mask; we want to avoid introducing artifacts which could be interpreted as features. So, we wish to remove these discontinuous intersections between the ellipse and the trapezian. In order to do this, we choose three points on the Elliptical fit and the two front points of the trapezian, thereby making a set of five points, and we pass these through the direct Elliptical fit algorithm. It should be noted that five points is what is required to completely define an ellipse; there is one on the ellipse which will pass through five points.
     \end{minipage}
     \subfloat{\includegraphics[width=0.48\textwidth]{Chapter4/Figs/Model_ShapeFitting.jpg}}\\
     \subfloat{\includegraphics[width=0.99\textwidth]{Chapter4/Figs/Model_Finalizing.jpg}}\\
-    \begin{minipage}{0.48\textwidth}
-         Caption 5
+    \begin{minipage}{0.95\textwidth}
+         \textbf{e) Finalizing the Model} --- The coordinates for the ellipse and the trapezian are adjusted so that the origin is at the center of the ellipse, and the ellipse has zero rotation. The reason for this is that it makes calculating the distance from the edges of the ellipse easier. So, now when we apply the model to the image, all that's required is a position --- which is the position of the center of the ellipse --- and an orientation about that position. 
     \end{minipage}
-    \caption{Buncha figures --- goes well with milk.}\label{fig:ModelingFingertip}
+    \caption{The Fingertip Model Algorithm.}\label{fig:ModelingFingertip}
 \end{figure}
 
 
