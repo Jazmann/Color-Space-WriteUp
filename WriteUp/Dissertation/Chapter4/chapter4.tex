@@ -487,7 +487,7 @@ From the kink fit, we have a midline, which is specified by three points. We now
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[h!]
 \ContinuedFloat
 \centering
 \begin{minipage}[t]{1\textwidth}
@@ -506,6 +506,18 @@ From the kink fit, we have a midline, which is specified by three points. We now
     \caption{The Fingertip Model Algorithm.}\label{fig:ModelingFingertip}
 \end{figure}
 
+To illustrate the model, we can overlay the model on its source image in the original orientation and position. This shows that the application of the model actually only requires a position and orientation, because we assume that the camera is positioned such that the digit presents at the same scale when in contact with a surface throughout the frame; we're not accounting for perspective effects in this simple application.
+
+The model can be seen overlayed on the selection of digits for three individuals in Figure \ref{fig:FingertipModelResult}.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ParallelFit.jpg}
+    \caption{End result!}\label{fig:FingertipModelResult}
+\end{figure}
+
+\subsection{Dynamic Tracking}
+Words!
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 
