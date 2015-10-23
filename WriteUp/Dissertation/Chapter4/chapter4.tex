@@ -473,10 +473,10 @@ From the kink fit, we have a midline, which is specified by three points. We now
     \parbox[b][0.5\textwidth][s]{0.55\textwidth}{
    \textbf{a) Determining $d_1$ \& $d_2$.}  We have a midline which is given as two points $M_2$ \& $M_3$; one somewhere on the digit ($M_2$), and the other at the tip ($M_3$). If the finger were straight in the frame, then $d_1=\tilde{d_1}$ and $d_2=\tilde{d_2}$ could easily be found by finding the points on that line. However, the fact that the digit can be presented at an angle means that the edge points vertically above and below the point on the midline may include part of the curved tip. This has the effect of making these midpoints diverge from the midline of the digit. This can be corrected by adjusting with half the gradient of the midline $\delta\:mid$ to the ratios. \begin{equation*}distance \:on \:line = (\frac{1}{2} + \frac{1}{2}\delta\:mid)w\end{equation*} \vfill
     } \\ 
-    \parbox[b][0.4\textwidth][s]{0.45\textwidth}{
+    \parbox[b][0.5\textwidth][s]{0.45\textwidth}{
              \textbf{b) A New Midline Fit} --- We take the set of midline points, extract the subset which lies between $d_1$ and $d_2$, and then apply a straight line fit to these points. The origin is the fit evaluated at the $x$ component of $d_2$, and we determine an orientation $\theta$, which is $\arctan$ the gradient of the linear model. \vfill
         } &
-        \includegraphics[width=0.55\textwidth, height=0.4\textwidth]{Chapter4/Figs/Model_Midline_JSkin_Little.jpg} 
+        \includegraphics[width=0.55\textwidth, height=0.5\textwidth]{Chapter4/Figs/Model_Midline_JSkin_Little.jpg} 
     \\ 
    \includegraphics[width=0.45\textwidth, height=0.5\textwidth]{Chapter4/Figs/Model_NeutralCoords_JSkin_Little.jpg} &
     \parbox[b][0.5\textwidth][s]{0.55\textwidth}{
@@ -497,7 +497,7 @@ From the kink fit, we have a midline, which is specified by three points. We now
   \end{center}
   \phantomcaption
 \end{wrapfigure}
-         \textbf{d) Fitting the Shapes} --- The comparison between the methods is done by looking at the distance from the front two points on the trapezian to the edge of the ellipse, and the best of these is chosen. Unfortunately, this is often not sufficient to make the ellipse join with the trapezian exactly because further on in the algorithm, these shapes will be used to perform a mask; we want to avoid introducing artifacts which could be interpreted as features. So, we wish to remove these discontinuous intersections between the ellipse and the trapezian. In order to do this, we choose three points on the Elliptical fit and the two front points of the trapezian, thereby making a set of five points, and we pass these through the direct Elliptical fit algorithm. It should be noted that five points is what is required to completely define an ellipse; there is only one ellipse which will pass through five points.
+         \textbf{d) Fitting the Shapes} --- The comparison between the elliptical fit methods is done by looking at the distance from the front two points on the trapezium to the edge of the ellipse, and the best of these is chosen. Unfortunately, this is often not sufficient to make the ellipse join with the trapezium exactly because further on in the algorithm, these shapes will be used to perform a mask; we want to avoid introducing artefacts which could be interpreted as features. So, we wish to remove these discontinuous intersections between the ellipse and the trapezium. In order to do this, we choose three points on the Elliptical fit and the two front points of the trapezium, thereby making a set of five points, and we pass these through the direct Elliptical fit algorithm. It should be noted that five points is what is required to completely define an ellipse; there is only one ellipse which will pass through five points.
     \end{minipage}
     \subfloat{\includegraphics[width=0.99\textwidth]{Chapter4/Figs/Model_Finalizing_JSkin_Little.jpg}}\\
     \begin{minipage}{0.95\textwidth}
