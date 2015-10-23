@@ -478,7 +478,7 @@ From the kink fit, we have a midline, which is specified by three points. We now
         } &
         \includegraphics[width=0.55\textwidth, height=0.5\textwidth]{Chapter4/Figs/Model_Midline_JSkin_Little.jpg} 
     \\ 
-   \includegraphics[width=0.45\textwidth, height=0.5\textwidth]{Chapter4/Figs/Model_NeutralCoords_JSkin_Little.jpg} &
+   \includegraphics[width=0.45\textwidth, height=0.5\textwidth]{Chapter4/Figs/Model_NeutralCoords_FSkin_Ring.jpg} &
     \parbox[b][0.5\textwidth][s]{0.55\textwidth}{
          \textbf{c) Determine the Neutral Coordinates} --- We move all the points --- the top and bottom edges, and the midline points --- and we translate to the new origin. Then, we rotate by $-\theta$. This we call the "neutral co-ordinates", as the tip is aligned with its midaxis lying on the $x$ axis. These points are separated at one distal width from the tip; a Trapezian fit is applied to one set of points, and an Elliptical fit is applied to the other. As a refinement to this, although the linear fit is applied as in the Trapezian section, the algorithm then looks at the points beyond and before the one distal width region; if they're consistent with the fit, then they are considered still part of the straight edge. The Elliptical fit is applied as discussed previously. \vfill
     }
@@ -493,13 +493,13 @@ From the kink fit, we have a midline, which is specified by three points. We now
 \begin{minipage}[t]{1\textwidth}
 \begin{wrapfigure}{l}{0.5\textwidth}
   \begin{center}
-    \includegraphics[width=0.48\textwidth]{Chapter4/Figs/Model_ShapeFitting_JSkin_Little.jpg}
+    \includegraphics[width=0.48\textwidth]{Chapter4/Figs/Model_ShapeFitting_FSkin_Little.jpg}
   \end{center}
   \phantomcaption
 \end{wrapfigure}
          \textbf{d) Fitting the Shapes} --- The comparison between the elliptical fit methods is done by looking at the distance from the front two points on the trapezium to the edge of the ellipse, and the best of these is chosen. Unfortunately, this is often not sufficient to make the ellipse join with the trapezium exactly because further on in the algorithm, these shapes will be used to perform a mask; we want to avoid introducing artefacts which could be interpreted as features. So, we wish to remove these discontinuous intersections between the ellipse and the trapezium. In order to do this, we choose three points on the Elliptical fit and the two front points of the trapezium, thereby making a set of five points, and we pass these through the direct Elliptical fit algorithm. It should be noted that five points is what is required to completely define an ellipse; there is only one ellipse which will pass through five points.
     \end{minipage}
-    \subfloat{\includegraphics[width=0.99\textwidth]{Chapter4/Figs/Model_Finalizing_JSkin_Little.jpg}}\\
+    \subfloat{\includegraphics[width=0.99\textwidth]{Chapter4/Figs/Model_Finalizing_FSkin_Index.jpg}}\\
     \begin{minipage}{0.95\textwidth}
          \textbf{e) Finalizing the Model} --- The coordinates for the ellipse and the trapezian are adjusted so that the origin is at the center of the ellipse, and the ellipse has zero rotation. The reason for this is that it makes calculating the distance from the edges of the ellipse easier. So, now when we apply the model to the image, all that's required is a position --- which is the position of the center of the ellipse --- and an orientation about that position. 
     \end{minipage}
