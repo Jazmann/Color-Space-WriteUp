@@ -461,10 +461,7 @@ We wish to fit an ellipse to the points found at the tip of the finger. We've ch
 However, it should be noted that the points provided by the parallel lines fit (Fig \ref{fig:ParallelFit}) are not good enough to determine which parts on the curved tip of the finger, which we're approximating as roughly elliptical, due to the tapering of the distal segment of the finger towards the tip, as well as the alignment of the digit in the frame.
 
 \subsubsection{Modeling the Fingertip}\label{sec:ModellingTheFingertip}
-Having determined a measure of the width of the distal portion of the fingertip allows for a more robust model of the fingertip to be determined. This is because the measurement of the distal width is far more reliable than the distal length which has so far been determined, as the distal length has been found by evaluating where the "kink" of the midline points lies. For example, if the distal joint is unflexed, the knuckle portion will be overlooked entirely, as seen in Figure \ref{fig:ParallelFit}. It turns out that the anatomical ratios (Section \ref{sec:FingertipModel}) are a far more reliable method of determining the distal length.
-
-From the kink fit, we have a midline, which is specified by three points. We now determine two points on this line, which are $\frac{1}{2}$ the distal width ($d_1$) and $1\frac{1}{2}$ the distal width from the tip ($d_2$). So the midline point that lies between the two points can now be taken to correspond to the straight-edged section of the distal portion of the finger. These points are passed to the Trapezian Fit method (\ref{sec:TrapezianFit}), and the points which lie between the tip and the point half the distal width from the tip are passed to the Elliptical Fit (\ref{sec:EllipticalFitMethod}). The ellipse is adjusted to correspond with the two near vertices of the Trapezian; the result can be seen in Figure \ref{fig:ModelingFingertip}.
-\begin{figure}[h!]
+\begin{figure}[p!]
   \centering
   \noindent
   
@@ -487,7 +484,7 @@ From the kink fit, we have a midline, which is specified by three points. We now
 \end{figure}
 
 
-\begin{figure}[h!]
+\begin{figure}[p!]
 \ContinuedFloat
 \centering
 \begin{minipage}[t]{1\textwidth}
@@ -506,6 +503,10 @@ From the kink fit, we have a midline, which is specified by three points. We now
     \caption{The Fingertip Model Algorithm.}\label{fig:ModelingFingertip}
 \end{figure}
 
+Having determined a measure of the width of the distal portion of the fingertip allows for a more robust model of the fingertip to be determined. This is because the measurement of the distal width is far more reliable than the distal length which has so far been determined, as the distal length has been found by evaluating where the "kink" of the midline points lies. For example, if the distal joint is unflexed, the knuckle portion will be overlooked entirely, as seen in Figure \ref{fig:ParallelFit}. It turns out that the anatomical ratios (Section \ref{sec:FingertipModel}) are a far more reliable method of determining the distal length.
+
+From the kink fit, we have a midline, which is specified by three points. We now determine two points on this line, which are $\frac{1}{2}$ the distal width ($d_1$) and $1\frac{1}{2}$ the distal width from the tip ($d_2$). So the midline point that lies between the two points can now be taken to correspond to the straight-edged section of the distal portion of the finger. These points are passed to the Trapezian Fit method (\ref{sec:TrapezianFit}), and the points which lie between the tip and the point half the distal width from the tip are passed to the Elliptical Fit (\ref{sec:EllipticalFitMethod}). The ellipse is adjusted to correspond with the two near vertices of the Trapezian; the result can be seen in Figure \ref{fig:ModelingFingertip}.
+
 To illustrate the model, we can overlay the model on its source image in the original orientation and position. This shows that the application of the model actually only requires a position and orientation, because we assume that the camera is positioned such that the digit presents at the same scale when in contact with a surface throughout the frame; we're not accounting for perspective effects in this simple application.
 
 The model can be seen overlayed on the selection of digits for three individuals in Figure \ref{fig:FingertipModelResult}.
@@ -516,6 +517,7 @@ The model can be seen overlayed on the selection of digits for three individuals
     \caption{End result!}\label{fig:FingertipModelResult}
 \end{figure}
 
+\clearpage
 \subsection{Dynamic Tracking}
 Words!
 
