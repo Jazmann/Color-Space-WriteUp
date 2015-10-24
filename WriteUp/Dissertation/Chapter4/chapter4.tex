@@ -514,12 +514,20 @@ The model can be seen overlayed on the selection of digits for three individuals
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Model_Overlayed.jpg}
-    \caption{End result!}\label{fig:FingertipModelResult}
+    \caption{The models overlayed on the source images.}\label{fig:FingertipModelResult}
 \end{figure}
 
 \clearpage
-\subsection{Dynamic Tracking}
-Words!
+\subsection{Dynamic Tracking}\label{sec:DynamicTracking}
+The main purpose of the dynamic tracking algorithm is to categorize the motion of the digit in the frame as "rapid motion," "smooth motion," and "in contact with a surface."
+
+\begin{itemize}
+\item \textbf{Rapid motion} --- When the digit is being moved into the frame, or is moving rapidly across the frame, or when the camera is being put into position, it is pointless to attempt to detect a fingertip as this information will quickly become irrelevant. Standard motion detection library routines can be used here on the unaltered video feed. When these algorithms detect motion above a certain threshold, the algorithm does nothing and waits for the motion detected to fall below this threshold.
+\item \textbf{Smooth motion} --- Smooth motion is when the digit is being moved in a controlled manner within the frame. When the digit is moving in such a way, it is reasonable to assume that a finger press is imminent. The algorithm takes a frame in the small scale space and processes it into a pixel-categorized image as in section \ref{sec:TrinaryPixelClassification}. The frame orientation and digit tip selection are found as in sections \ref{sec:FindingTheFrameOrientation} and \ref{sec:FindingTheEndOfTheFingerShape}, and then a Filament fill of only the tip is performed similar to sections \ref{sec:FilamentFill} and \ref{sec:FilamentFillTheFinger}, but now with the Filament fill path being shortened to the length of the distal section in the model. The position and orientation for the model are obtained using the Force Analogue Shape Detection algorithm outlined below, in section \ref{sec:ForceAnalogue}. The algorithm continues tracking until the change in the position of the tip between successive frames falls below a threshold, at which point the algorithm decides that the digit is likely in contact with a surface, and control passes to the "in contact with a surface" part of the algorithm.
+\item \textbf{In contact with a surface (ICWAS)} --- When the tip of the digit is relatively immobile, the digit is likely in contact with a surface; we now want to observe the blood flow. The frame is now captured in the medium space, and is cropped to the edges of the model in its current position and orientation. The cropped image is put into the skin color space, and a gradient filter is applied to the grayscale channel. If this is the first iteration, this gradient-filtered image is stored; if it is a subsequent iteration, this gradient filter is compared with the first and an alignment transform is found between the current frame and the first frame. To improve the accuracy and avoid the algorithm being distracted by movements at the edge of the digit, the gradient-filtered images are masked with the model, which removes edge-related gradient features, focusing the algorithm on the nail, which is stable during a finger press. The transform is applied to the two chromatic channels, which aligns the images, and the difference is found between successive frames; this gives us the blood flow. 
+\end{itemize} 
+
+\subsubsection{Force Analogue Shape Detection}\label{sec:ForceAnalogue}
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 
