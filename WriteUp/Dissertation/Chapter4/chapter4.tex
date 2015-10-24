@@ -473,7 +473,7 @@ However, it should be noted that the points provided by the parallel lines fit (
     \parbox[b][0.5\textwidth][s]{0.45\textwidth}{
              \textbf{b) A New Midline Fit} --- We take the set of midline points, extract the subset which lies between $d_1$ and $d_2$, and then apply a straight line fit to these points. The origin is the fit evaluated at the $x$ component of $d_2$, and we determine an orientation $\theta$, which is $\arctan$ the gradient of the linear model. \vfill
         } &
-        \includegraphics[width=0.55\textwidth, height=0.5\textwidth]{Chapter4/Figs/Model_Midline_JSkin_Little.jpg} 
+        \includegraphics[width=0.55\textwidth, height=0.5\textwidth]{Chapter4/Figs/Model_Midline_JSkin_Thumb.jpg} 
     \\ 
    \includegraphics[width=0.45\textwidth, height=0.5\textwidth]{Chapter4/Figs/Model_NeutralCoords_FSkin_Ring.jpg} &
     \parbox[b][0.5\textwidth][s]{0.55\textwidth}{
@@ -528,6 +528,15 @@ The main purpose of the dynamic tracking algorithm is to categorize the motion o
 \end{itemize} 
 
 \subsubsection{Force Analogue Shape Detection}\label{sec:ForceAnalogue}
+The find-tip algorithm (section \ref{sec:FindingTheEndOfTheFingerShape}) gives us a path which we know lies on a digit. This path, however, is not necessarily particularly well-aligned with the axis of the digit. For this reason, we don't ask for a shortened path from the tip to $1 \frac{1}{2}$ distal widths along that path; such a path might actually end closer to the tip than desired, as the path isn't necessarily along the axis. To account for this, we ask for two distal widths from the tip. 
+
+The next problem to be addressed results from the operation of the Filament fill method; because the digit isn't necessarily presented perpendicularly to the frame edge and the Filament fill algorithm finds points perpendicular to the frame edge, we adjust by half the gradient of the path, similarly to the method used in the fingertip model algorithm illustrated in Figure \ref{fig:ModelingFingertip}. So, Filament fill is run along the find-tip path from the tip to a distance of $(2+\left\lvert\frac{1}{2}\delta path\right\lvert)w$ from the tip. This gives us three sets of points: the top, middle and bottom edges, which definitely include points relating to the tip of the digit.
+
+Now we refine these points; because we know the orientation of the frame, we can determine which points correspond to the top edge of the digit, and which points correspond to the bottom. We now put them into neutral orientation as in steps a-c in Figure \ref{fig:ModelingFingertip}. The points can be easily classified as top edge, bottom edge and tip, just as before. 
+
+We now find the distance of the corresponding points and model elements. For the straight edges, if we have $n$ points classified as lying along the top edge, then we divide the top line into $n$ points, each equally spaced along the line; the points on the image and the points on the model are now $1:1$ correspondence, and to find the difference between the two, we simply subtract. The same is done for the bottom edge. For the arc of the ellipse, we need to perform the comparison in the model's coordinates, i.e. where the center of the ellipse is at zero and the orientation of the ellipse is zero. In the model, we know that the tip of the trapezian lies on the ellipse, and from the sides, we know the location of these two points in the image points. The image points can then be rotated and translated so that these two points correspond in both the transformed image points into the model coordinates. We find the distance from the ellipse to the points using the equation <insert here>. The rotation and translation to the model coordinates is simply reversed, giving us vectors from the model to the corresponding points on the image. 
+
+The position of the tip can now be found by taking the mean average of these vectors; subtracting the mean average from the vectors leaves a set which corresponds to the orientation. This is found by taking the inner product of the point position in the model with this rotational vector. For each point, this is analogous to a force acting at that point, producing a rotational moment about the center of the model, which is the center of the ellipse. Summing these moments gives us a rotational force on the model, and using the following equation <insert here>, the orientation can be found.
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 
