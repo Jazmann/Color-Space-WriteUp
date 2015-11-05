@@ -352,6 +352,10 @@ The FASDM method is one of the most straightforward --- if not the most straight
 
 It should be noted that other transformations can easily be included, however for the current purposes, rotation and translation are all that is required.
 
+The position is found by finding the average of the vectors; the orientation is found by taking the product of the distance from the position to the point on the model with the residual of the 'force' vector, and summing over all the points on the model. This gives a total moment about the position which translates to an orientation.
+
+<math here>
+
 \section{Fingertip Model}\label{sec:FingertipModel}
 
 We need an appropriate finger model so we can accurately align points on the fingertip between successive images in the video stream. We need to do this because otherwise, any difference between the frames will be overwhelmed by physical movement of the digit rather than movement of the blood inside the digit. For this reason, we target the most stable portion of the finger: the nail.
