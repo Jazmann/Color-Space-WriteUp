@@ -621,7 +621,11 @@ We assume that the digit's movement will not take it outside of the bounding box
 The image alignment pixel shift updates the change in the model position since the first frame. If the change in the model position since the first frame is greater than the ICWaS threshold, then the control passes back to the Smooth Motion routine. The current frame is aligned with the previous frame and the difference is found between the pixel values in the chromatic channels; this is the blood flow <figure reference here>. These steps are repeated until the change in the model position since the first frame causes the routine to transfer control back to the Smooth Motion routine.
 
 \section{Summary}\label{sec:SummaryCh4}
-
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.99\textwidth]{Chapter4/Figs/Fingerpress_UI.jpg}
+    \caption{Fingerpress UI Flow chart}\label{fig:FingerpressUIFlowchart}
+\end{figure}
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 
