@@ -359,6 +359,26 @@ The position is found by taking the dot product of the force with the distance (
 To facilitate this method, the model is expressed in coordinates where the origin corresponds to the center of mass. Assuming an even distribution of points around the surface, the position can now be found by simply taking the average of the force vectors, and if we assume that the image points are perfect, then the residuals will be perpendicular to the radial point from the center and the cross product becomes a scalar product of magnitudes. Mathematically and algorithmically, there are three points which may be considered the center of mass: the centroid of the area of the model, which is where the center of mass would be if the model were a a flat, uniform sheet; the centroid of the perimeter of the model, which is the center of mass would be if the model were constructed using wire along the perimeter; and the arithmetic average of the points of interest defined on the perimeter of the model. The choice for the analogue of the center of mass depends upon the algorithm used. For a method which returns points radially distributed about a point in the model would favor the area centroid; a method which returned points relatively evenly distributed along the perimeter would naturally favor the perimeter centroid method; and a method which returned points of interest would favor the point centroid method. (There's no guarantee the points of interest would be distributed in any relation to the shape-based centroids.)
 
 
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Random_Polygon_Centroids.jpg}
+    \caption{Random Polygon Centroids.}\label{fig:RandomPolygonCentroids}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Model_Centroids.jpg}
+    \caption{Model Centroids.}\label{fig:ModelCentroids}
+\end{figure}
+
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Exagerated_Model_Centroids_With_Pos_Orientation.jpg}
+    \caption{Position and Orientation.}\label{fig:PositionAndOrientation}
+\end{figure}
+
+
 \section{Fingertip Model}\label{sec:FingertipModel}
 
 We need an appropriate finger model so we can accurately align points on the fingertip between successive images in the video stream. We need to do this because otherwise, any difference between the frames will be overwhelmed by physical movement of the digit rather than movement of the blood inside the digit. For this reason, we target the most stable portion of the finger: the nail.
@@ -500,7 +520,7 @@ However, it should be noted that the points provided by the parallel lines fit (
 \begin{minipage}[t]{1\textwidth}
 \begin{wrapfigure}{l}{0.5\textwidth}
   \begin{center}
-    \includegraphics[width=0.48\textwidth]{Chapter4/Figs/Model_ShapeFitting_FSkin_Little.jpg}
+    \includegraphics[width=0.5\textwidth]{Chapter4/Figs/Model_ShapeFitting_FSkin_Little.jpg}
   \end{center}
   \phantomcaption
 \end{wrapfigure}
@@ -523,9 +543,16 @@ The model can be seen overlayed on the selection of digits for three individuals
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Model_Overlayed.jpg}
+    \includegraphics[width=0.83\textwidth]{Chapter4/Figs/Model_Overlayed.jpg}
     \caption{The models overlayed on the source images.}\label{fig:FingertipModelResult}
 \end{figure}
+
+\begin{sidewaysfigure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Model_Overlayed_Boundary_with_Tips.jpg}
+    \caption{The models and model boundaries overlayed on the source images. With tip masks and extracted tip images.}\label{fig:ModelOverlayedBoundaryWithTips}
+\end{sidewaysfigure}
+
 
 \clearpage
 \section{Dynamic Tracking}\label{sec:DynamicTracking}
@@ -542,6 +569,7 @@ Before any fingertip tracking is performed, the algorithm checks to see if the d
 
 
 \subsection{Smooth Motion Tracking}\label{sec:SmoothMotionTracking}
+
 The find-tip algorithm (section \ref{sec:FindingTheEndOfTheFingerShape}) gives us a path which we know lies on a digit. This path, however, is not necessarily particularly well-aligned with the axis of the digit. For this reason, we don't ask for a shortened path from the tip to $1 \frac{1}{2}$ distal widths along that path; such a path might actually end closer to the tip than desired, as the path isn't necessarily along the axis. To account for this, we ask for two distal widths from the tip. 
 
 The next problem to be addressed results from the operation of the Filament fill method; because the digit isn't necessarily presented perpendicularly to the frame edge and the Filament fill algorithm finds points perpendicular to the frame edge, we adjust by half the gradient of the path, similarly to the method used in the fingertip model algorithm illustrated in Figure \ref{fig:ModelingFingertip}. So, Filament fill is run along the find-tip path from the tip to a distance of $(2+\left\lvert\frac{1}{2}\delta path\right\lvert)w$ from the tip. This gives us three sets of points: the top, middle and bottom edges, which definitely include points relating to the tip of the digit.
@@ -552,12 +580,24 @@ We now need to find points on the model which would ideally correspond with the 
 
 In the model's new orientation, we find the furthest point on the model in the $x$ axis. (It should be noted that this is not necessarily what we would refer to as the "tip" of the digit.) We assume that this point on the model corresponds to the first point in the midline set of points; the Filament fill follows the path from the tip back to the frame edge, so the first point in the midline should be the tip. So, we create a set of $x$ axis coordinates where the first midline point corresponds with the furthest point on the model in the $x$ axis. We do this because the Filament fill divides up the shape vertically in a relatively regular fashion, so we are dividing up the model in the way that we would expect Filament fill to if the model were an image. This allows us to put points on the model and points in the image into a $1:1$ correspondence. So although the fingertip model is a relatively arbitrary geometric shape, the regularity of the Filament fill method allows us to use a force analogue shape detection algorithm as outlined previously (section \ref{sec:ForceAnalogue}).
 
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Model_Centroids_With_Pos_Orientation.jpg}
+    \caption{Finding the Position and Orientation of the Tip. A side-effect of the pre-alignment of the model means that, almost always,  the change in the orientation from the force analogue shape detection algorithm is negligible. }\label{fig:PositionAndOrientation}
+\end{figure}
+
 A side-effect of the pre-alignment of the model means that --- almost always --- the change in the orientation from the force analogue shape detection algorithm is negligible.
 
-The dependence of the distribution of points around the perimeter of the model is dependant on the orientation of the digit in the image. This means that the point centroid is not predictable, and so a shape-based centroid is required in the modeling stage. The Filament fill point distribution favors the top and bottom edges of the digit over the points on the tip itself, making a perimeter centroid unfavorable. For these reasons, the fingertip model is centered on the model's area centroid.
+The dependence of the distribution of points around the perimeter of the model is dependant on the orientation of the digit in the image. This means that the point centroid is not predictable, and so a shape-based centroid is required in the modeling stage \ref{fig:PositionAndOrientation}. The Filament fill point distribution favors the top and bottom edges of the digit over the points on the tip itself, making a perimeter centroid unfavorable. For these reasons, the fingertip model is centered on the model's area centroid.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.85\textwidth]{Chapter4/Figs/Smooth_Dynamic_Sequence.jpg}
+    \caption{Smooth Dynamic Sequence}\label{fig:SmoothDynamicSequence}
+\end{figure}
 
 In practice, the area centroid is not perfect, but generally locates the digit with an accuracy of two or three pixels, and the orientation within a degree. This accuracy is sufficient for the smooth motion detection algorithm, which operates upon the small scale image. When the movement of the digit falls below the ICWsS threshold, an easy refinement to this shape-fitting algorithm is made by finding the point centroid for the current model orientation, and adjusting the position and orientation accordingly. The additional computational effort to gain this refinement is small, but not necessary when tracking the moving digit for our application.
-
+\clearpage
 \subsection{ICWaS Method}\label{sec:ICWaS}
 The ICWaS method performs three main tasks: cropping the midscale image around the tip; putting the mask into the cropped midscale image coordinates, rendering the model shape as a binary image; and providing a method which aligns successive frames and finding the pixel color differences in the skin color space, thereby showing the blood flow.
 
