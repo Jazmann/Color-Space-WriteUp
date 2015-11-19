@@ -2557,7 +2557,7 @@
 					<key>strokeShadowOffsetY</key>
 					<real>2</real>
 					<key>strokeType</key>
-					<integer>1</integer>
+					<integer>0</integer>
 					<key>textAlign</key>
 					<integer>2</integer>
 					<key>textAppearanceType</key>
