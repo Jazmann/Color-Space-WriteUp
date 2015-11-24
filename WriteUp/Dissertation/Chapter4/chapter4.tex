@@ -620,16 +620,20 @@ We assume that the digit's movement will not take it outside of the bounding box
 
 The image alignment pixel shift updates the change in the model position since the first frame. If the change in the model position since the first frame is greater than the ICWaS threshold, then the control passes back to the Smooth Motion routine. The current frame is aligned with the previous frame and the difference is found between the pixel values in the chromatic channels; this is the blood flow <figure reference here>. These steps are repeated until the change in the model position since the first frame causes the routine to transfer control back to the Smooth Motion routine.
 
-\section{Summary}\label{sec:SummaryCh4}
+
+\section{Putting it All Together}\label{sec:PuttingItAllTogether}
+So far, we have said little about the app itself; the app associated with this project is designed to demonstrate how the fast color space transform developed in Chapter 2 can be used in conjunction with the simple shape detection routines developed in this chapter to create a simple fingertip mechanical-stress detector using an iPhone.
+
+It is considered good practice when developing an iPhone app to split the code into three parts: the model, which handles all the computation; the view, which handles display and interprets user gestures; and the controller, which is the intermediary, essentially handling the control flow of the user interface. Each can be considered to be running in its own thread, and the Objective-C language handles the interaction between these threads. The recommended division of the control assigns each step in the program as indicated in Figure \ref{fig:FingerpressUIFlowchart}. 
+
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Fingerpress_UI.jpg}
-    \caption{Fingerpress UI Flow chart}\label{fig:FingerpressUIFlowchart}
+    \caption{Finger press UI Flow chart}\label{fig:FingerpressUIFlowchart}
 \end{figure}
 
-\section{Putting it All Together}\label{sec:PuttingItAllTogether}
+The chart accurately presents the logical flow and recommended assignment of the program elements. However, the chart fails to address how the model, controller and view are each running in their own threads, and so control never actually passes from the model to the controller, or vice versa. So, in the MVC structure, the model and the view may only message the controller to indicate that an event has happened. For instance, when processing a video stream, if every time the dynamic tracking part of the model required a new image to send a request message to the controller and wait for the controller to get the image from the video stream and send it to the model, the model would often be waiting for the controller to respond. For this reason, in practice, the model uses OpenCV's video stream handling capabilities to get an image directly from the video stream. 
 
-So far, we have said little about how we actually intend to detect a digit being pressed on a surface. Although a significant amount of discussion has been presented to do with the optimization --- at least in terms of the data types and the underlying maths --- mostly to do with the color space transform. We have said even less about the size of the images captured or the framerate at which the processing is required. These are important considerations for designing practical code, especially for application in a mobile device.
 
 \subsection{Detecting a Finger Press}\label{sec:DetectingAFingerPress}
 
