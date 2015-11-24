@@ -354,7 +354,7 @@
 					<key>fillAngle</key>
 					<integer>0</integer>
 					<key>fillColor</key>
-					<string>1.000000:1.000000:1.000000:1.000000</string>
+					<string>0.400000:1.000000:0.800000:1.000000</string>
 					<key>fillGradientElements</key>
 					<array>
 						<dict>
@@ -365,9 +365,15 @@
 						</dict>
 						<dict>
 							<key>color</key>
-							<string>1.000000:1.000000:1.000000:1.000000</string>
+							<string>0.400000:1.000000:0.800000:1.000000</string>
 							<key>ratio</key>
 							<real>1</real>
+						</dict>
+						<dict>
+							<key>color</key>
+							<string>1.000000:1.000000:1.000000:1.000000</string>
+							<key>ratio</key>
+							<real>0.34996811224489793</real>
 						</dict>
 					</array>
 					<key>fillShadowBlur</key>
@@ -381,7 +387,7 @@
 					<key>fillShadowOffsetY</key>
 					<real>2</real>
 					<key>fillType</key>
-					<integer>0</integer>
+					<integer>2</integer>
 					<key>frame</key>
 					<string>{{138, 241}, {129, 54}}</string>
 					<key>hidden</key>
@@ -3195,7 +3201,7 @@
 					<key>fillAngle</key>
 					<integer>0</integer>
 					<key>fillColor</key>
-					<string>1.000000:1.000000:1.000000:1.000000</string>
+					<string>0.400000:0.800000:1.000000:1.000000</string>
 					<key>fillGradientElements</key>
 					<array>
 						<dict>
@@ -3210,6 +3216,12 @@
 							<key>ratio</key>
 							<real>1</real>
 						</dict>
+						<dict>
+							<key>color</key>
+							<string>0.400000:0.800000:1.000000:1.000000</string>
+							<key>ratio</key>
+							<real>0.85052614795918369</real>
+						</dict>
 					</array>
 					<key>fillShadowBlur</key>
 					<real>3</real>
@@ -3222,7 +3234,7 @@
 					<key>fillShadowOffsetY</key>
 					<real>2</real>
 					<key>fillType</key>
-					<integer>0</integer>
+					<integer>2</integer>
 					<key>frame</key>
 					<string>{{425, 264}, {100, 101}}</string>
 					<key>hidden</key>
