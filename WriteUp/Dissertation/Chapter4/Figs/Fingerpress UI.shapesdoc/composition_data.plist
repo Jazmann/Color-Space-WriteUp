@@ -19765,7 +19765,7 @@
 					<key>flipped</key>
 					<false/>
 					<key>frame</key>
-					<string>{{53.753866741235697, 1528.2860683972217}, {148.15277319487586, 9.6605066773472554}}</string>
+					<string>{{53.753866741235925, 1528.2860683972212}, {148.15277319487586, 9.6605066773472572}}</string>
 					<key>hidden</key>
 					<false/>
 					<key>identifier</key>
@@ -20492,7 +20492,7 @@
 			<key>scaleImage</key>
 			<true/>
 			<key>scrollCenterPoint</key>
-			<string>{388, 1372}</string>
+			<string>{686, 1372}</string>
 			<key>strokeColor</key>
 			<string>0.000000:0.000000:0.000000:1.000000</string>
 			<key>strokeLineCap</key>
@@ -31272,7 +31272,7 @@
 			<key>scaleImage</key>
 			<true/>
 			<key>scrollCenterPoint</key>
-			<string>{415.99999999999994, 845.33333333333326}</string>
+			<string>{459.33333333333337, 845.33333333333326}</string>
 			<key>strokeColor</key>
 			<string>0.000000:0.000000:0.000000:1.000000</string>
 			<key>strokeLineCap</key>
@@ -54808,8 +54808,8 @@
 					MFx0eDQ0ODBcdHg1MDQwXHR4NTYwMFx0eDYx
 					NjBcdHg2NzIwXHBhcmRpcm5hdHVyYWxccWMK
 					ClxmMFxmczI0IFxjZjAgXHVwMCBDb250cm9s
-					bGVyIDogRm91bmQgUG9zICYgClxmMSBcdXAw
-					IFx1YzBcdTk1MiB9
+					bGVyIDogRm91bmQgUG9zICYgClxmMSBcdWMw
+					XHU5NTIgfQ==
 					</data>
 					<key>className</key>
 					<string>Bezier</string>
@@ -55687,7 +55687,7 @@
 			<key>scaleImage</key>
 			<true/>
 			<key>scrollCenterPoint</key>
-			<string>{388, 1045.3333333333333}</string>
+			<string>{409.99999999999994, 1045.3333333333333}</string>
 			<key>strokeColor</key>
 			<string>0.000000:0.000000:0.000000:1.000000</string>
 			<key>strokeLineCap</key>
@@ -63877,7 +63877,7 @@
 			<key>scaleImage</key>
 			<true/>
 			<key>scrollCenterPoint</key>
-			<string>{457.33333333333337, 374.66666666666663}</string>
+			<string>{459.33333333333331, 374.66666666666663}</string>
 			<key>strokeColor</key>
 			<string>0.000000:0.000000:0.000000:1.000000</string>
 			<key>strokeLineCap</key>
