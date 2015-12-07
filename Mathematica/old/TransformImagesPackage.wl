@@ -241,24 +241,28 @@ Table[start+i delta,{i,0,div}]
 ]
 
 
-
-ChannelImage[img_,chn_,colorRules_]:=Module[{\[Mu],dstMax,CMax,CStart,CEnd,pts,max,min,rng,rgbPts,toLCaCb, fromLCaCb},
+Clear[ChannelImage]
+ChannelImage[img_,chn_,colorRules_,cRng:{_,_}:{Null,Null}]:=Module[{toLCaCb, fromLCaCb,\[Mu],dstMin,dstMax,CStart,CEnd,pts,min,max,rng,rgbPts,ticks,wt,ht,chanColorAxis,rules,CMin,CMax},
 {toLCaCb, fromLCaCb}=setLCaCb["\[Theta]"]/.colorRules;
 \[Mu]=("\[Mu]"/.colorRules);
-dstMax="dstMax"/.colorRules;
-CMax=dstMax[[chn]];
+If[TrueQ[cRng[[1]]==Null], CMin=0, CMin=cRng[[1]]]; 
+If[TrueQ[cRng[[2]]==Null], 
+  dstMax="dstMax"/.colorRules; CMax=dstMax[[chn]],
+  CMax=cRng[[2]]];
 CStart=ReplacePart[\[Mu],chn->0];
 CEnd=ReplacePart[\[Mu],chn->1];
-pts=findSpectrum[fromLCaCb[CStart],fromLCaCb[CEnd],CMax];
+(* pts=findSpectrum[fromLCaCb[CStart],fromLCaCb[CEnd],CMax-CMin]; *)
+pts=pointsOnPath[{fromLCaCb[CStart],fromLCaCb[CEnd]},CMax-CMin];
 min={Min[pts[[All,1]]],Min[pts[[All,2]]],Min[pts[[All,3]]]};
 max={Max[pts[[All,1]]],Max[pts[[All,2]]],Max[pts[[All,3]]]};
 rng=max-min;
 rgbPts=Map[((#-min)/rng)&,pts];
-chanColorAxis=Graphics[Table[{RGBColor[rgbPts[[i+1]]],Rectangle[{0,i-0.5},{CMax/10,i+0.5}]},{i,0,CMax}],Frame->True,FrameTicks->{{None,Flatten[{0,Table[Round[N[i]],{i,0,CMax,CMax/10}],CMax}]},{None,None}}];
-rules=Table[i->RGBColor[rgbPts[[i+1]]],{i,0,CMax}];
-ht=Dimensions[img][[1]];
-wt=Dimensions[img][[2]];
-Row[{Show[Image[img[[All,All,chn]]/.rules],ImageSize->{wt,ht}],Show[chanColorAxis,ImageSize->{All,ht}]}]
+ticks=Flatten[{CMin,Table[Round[N[i]],{i,CMin,CMax,(CMax-CMin)/8}],CMax}];
+{ht,wt}=Dimensions[img][[1;;2]];
+chanColorAxis=Graphics[{Rectangle[{0,0},{wt,ht}],Table[{RGBColor[rgbPts[[i-CMin+1]]],Rectangle[{wt,(i-CMin)ht/((CMax-CMin)+1)},{wt+ht/10,(i-CMin+1)ht/((CMax-CMin)+1)}],
+Black,If[MemberQ[ticks,i],Text[i,{wt+ht/9,(i-CMin+0.5)ht/((CMax-CMin)+1)},{-1,0}]]},{i,CMin,CMax}]}];
+rules=Table[i->RGBColor[rgbPts[[i-CMin+1]]],{i,CMin,CMax}];
+Show[{chanColorAxis,Image[img[[All,All,chn]]/.rules]},ImageSize->{wt+ht/5,ht}]
 ]
 
 
@@ -274,7 +278,6 @@ imageGraphics[img_List,rotM_:{{1,0},{0,1}}]:=Module[{w,h},
 {h,w}=Dimensions[img][[1;;2]];
 Graphics[{Texture[Image[img]],Polygon[Transpose[rotM . Transpose[{{1,1},{1,w},{h,w},{h,1}}]],VertexTextureCoordinates->{{0,1},{1,1},{1,0},{0,0}}]}]
 ]
-
 
 
 (* ::Subsubsection:: *)
@@ -717,9 +720,12 @@ Function[{pnt},Abs[(Reverse[pnt]-{0,hh})]]/.hh-> h
 ];
 
 
-toImgS=toImgCoords[imgsS[[1,1]]];
-toImgM=toImgCoords[imgsM[[1,1]]];
-toImgL=toImgCoords[imgsL[[1,1]]];
+Clear[fromImgCoords]
+fromImgCoords[img_Image]:=fromImgCoords[ImageData[img]];
+fromImgCoords[img_List]:=Module[{w,h},
+{h,w}=Dimensions[img][[1;;2]];
+Function[{pnt},{pnt[[2]],hh-pnt[[1]]}]/.hh-> h
+];
 
 
 (* ::Subsection:: *)
@@ -778,7 +784,10 @@ pathLengths[path_]:=Module[{vecs},
 vecs=Most[path]-Rest[path];
 Map[(Sqrt[#[[1]]^2+#[[2]]^2])&,vecs]
 ]
-pointsOnPath[path:{{_,_},{_,_}},n_]:=Module[{len,vec},
+
+
+Clear[pointsOnPath];
+pointsOnPath[path:{_List,_List},n_]:=Module[{len,vec},
 len=pathLengths[path];
 vec=(path[[2]]-path[[1]])/n;
 Table[path[[1]]+i vec,{i,0,n}]
@@ -789,7 +798,7 @@ nums=Map[Ceiling[# n /Total[lens]]&,lens];
 Flatten[Table[pointsOnPath[{path[[i]],path[[i+1]]},nums[[i]]],{i,1,Length[nums]}],1]
 ]
 
-pointOnPath[path:{{_,_},{_,_}},d_]:=Module[{len,vec},
+pointOnPath[path:{_List,_List},d_]:=Module[{len,vec},
 len=pathLengths[path];
 vec=(path[[2]]-path[[1]])/len[[1]];
 path[[1]]+d vec
@@ -1117,6 +1126,7 @@ Clear[modelToGraphics]
 IncludePoints::usage="Option for modelToGraphics: Include points at corners and center of the ellipse.";
 Colors::usage="Option for modelToGraphics: {distalColor,tipColors}";
 Options[modelToGraphics]={IncludePoints->True,Colors->{Opacity[0.4,Yellow],Opacity[0.4,Magenta]}};
+
 modelToGraphics[model_,{pos_,\[Theta]_},OptionsPattern[]]:=Module[{trap,elpse,\[Phi]2,\[Phi]1,tmp,tmb,includePoints,colors},
 colors=OptionValue[Colors];
 includePoints=OptionValue[IncludePoints];
@@ -1140,13 +1150,14 @@ modelToGraphics[model,{pos,\[Theta]},{Colors->colors,IncludePoints->OptionValue[
 
 
 Clear[modelToPolygon]
-modelToPolygon[model_,{pos_,\[Theta]_}]:=Module[{trap,elpse,\[Phi]2,\[Phi]1,tmp,tmb,pts,ePts},
-trap=model[[1]];
-elpse=model[[2]];
-\[Phi]2=ArcTan[Sequence@@trap[[1,2]]];
-\[Phi]1=ArcTan[Sequence@@trap[[2,2]]];
+modelToPolygon[model_,{pos_,\[Theta]_}]:=Module[{trap,elpse,\[Phi]2,\[Phi]1,tmp,tmb,pts,ePts,mdl},
+mdl=translateModel[model,-model[[2,1]]];
+trap=mdl[[1]];
+elpse=mdl[[2]];
+\[Phi]2=ArcTan[Sequence@@(trap[[1,2]]-elpse[[1]])];
+\[Phi]1=ArcTan[Sequence@@(trap[[2,2]]-elpse[[1]])];
 ePts=(ellipse[elpse,{\[Phi]1,\[Phi]2},"Open"])[[1,1]];
-pts=Map[(#+pos)&,Transpose[RotationMatrix[-\[Theta]].Transpose[Flatten[{trap[[2]],ePts,Reverse[trap[[1]]]},1]]]];
+pts=Map[(#+pos+model[[2,1]])&,Transpose[RotationMatrix[-\[Theta]].Transpose[Flatten[{trap[[2]],ePts,Reverse[trap[[1]]]},1]]]];
 Polygon[pts]
 ]
 
@@ -1499,6 +1510,19 @@ translateModel[mdl_,pos_]:=Module[{},
 ]
 
 
+scaleModel[mdl_,mdlPos_,scale_]:=Module[{mdlX,mdlPosX},
+  mdlX  = {scale  mdl[[1]],{scale mdl[[2,1]],scale mdl[[2,2]],mdl[[2,3]]}};
+  mdlPosX  = {scale mdlPos[[1]]-{scale/2,scale/2},mdlPos[[2]]};
+ {mdlX,mdlPosX}
+]
+stretchModel[mdl_,mdlPos_,scale_]:=Module[{trapShift,mdlXL,mdlPosXL},
+  trapShift=Function[{d},{{{-d,d},{d,d}},{{-d,-d},{d,-d}}}];
+  mdlXL = {  mdl[[1]]+trapShift[scale],{ mdl[[2,1]], mdl[[2,2]]+{scale,scale},mdl[[2,3]]}}; 
+  mdlPosXL = { mdlPos[[1]],mdlPos[[2]]};
+ {mdlXL,mdlPosXL}
+]
+
+
 Clear[modelToDiagram]
 modelToDiagram[model_,color_:Blue]:=Module[{trap,elpse,\[Phi]2,\[Phi]1,tmp,tmb},
 trap=model[[1]];
@@ -1521,40 +1545,16 @@ Line[{elpse[[1]],elpse[[1]]+(elpse[[2,1]]) {Cos[elpse[[3]]],Sin[elpse[[3]]]}}],T
 ]
 
 
-modelToTable[model_]:= Module[{trap,elpse,\[Phi]2,\[Phi]1,tmp,tmb,tblColor},
-tblColor={Automatic,LightBlue,LightRed};
-trap={Flatten[model[[1,1]]],Flatten[model[[1,2]]]};
-elpse=model[[2]];
-Panel[Grid[{{Panel[TableForm[Map[NumberForm[#,4,NumberSigns->{"-"," "}]&,trap,{2}],TableHeadings->{{Row[{"(", 
-
-
-\!\(\*SubscriptBox[\("\<x\>"\), \(\("\<1\[EmptyVerySmallSquare]\>"\)\(\ \)\)]\), ", ", 
-
-
-\!\(\*SubscriptBox[\("\<y\>"\), \(\("\<1\[EmptyVerySmallSquare]\>"\)\(\ \)\)]\) , ")"}],
-Row[{"(", 
-
-
-\!\(\*SubscriptBox[\("\<x\>"\), \(\("\<2\[EmptyVerySmallSquare]\>"\)\(\ \)\)]\), ", ", 
-
-
-\!\(\*SubscriptBox[\("\<y\>"\), \(\("\<2\[EmptyVerySmallSquare]\>"\)\(\ \)\)]\) , ")"}]},{Row[{ 
-
-
-\!\(\*SubscriptBox[\("\<x\>"\), \(\("\<\[EmptyVerySmallSquare]1\>"\)\(\ \)\)]\)}],Row[{Subscript["y",  "\[EmptyVerySmallSquare]1" ] }],Row[{ 
-
-
-\!\(\*SubscriptBox[\("\<x\>"\), \(\("\<\[EmptyVerySmallSquare]2\>"\)\(\ \)\)]\)}],Row[{
-
-
-\!\(\*SubscriptBox[\("\<y\>"\), \(\("\<\[EmptyVerySmallSquare]2\>"\)\(\ \)\)]\) }]}},
-TableAlignments->Center],"Trapesium Coords",Background->tblColor[[2]]],
-Panel[Column[{
-Grid[{{"\[Theta]",NumberForm[elpse[[3]],5,NumberSigns->{"-"," "}]},{"Center",elpse[[1]]},
-Sequence@@Transpose[{{"a","b"},Map[NumberForm[#,5,NumberSigns->{"-"," "}]&,elpse[[2]]]}]},Dividers->{{False,True,False},{False,False,True,False,True}}]
-}],"Ellipse",Background->tblColor[[3]]]
-}},Alignment->{Center,Top}],"Model Parameters",Background->tblColor[[1]]]
-]
+modelToTable[model_] := Module[{trap, elpse, \[Phi]2, \[Phi]1, tmp, tmb, tblColor}, tblColor = {Automatic, LightBlue, LightRed}; 
+    trap = {Flatten[model[[1,1]]], Flatten[model[[1,2]]]}; elpse = model[[2]]; 
+    Panel[Grid[{{Panel[TableForm[Map[NumberForm[#1, 4, NumberSigns -> {"-", " "}] & , trap, {2}], TableHeadings -> 
+           {{Row[{"(", Subscript["x", "1\[EmptyVerySmallSquare]"], ", ", Subscript["y", "1\[EmptyVerySmallSquare]"], ")"}], Row[{"(", Subscript["x", "2\[EmptyVerySmallSquare]"], ", ", Subscript["y", "2\[EmptyVerySmallSquare]"], ")"}]}, 
+            {Row[{Subscript["x", "\[EmptyVerySmallSquare]1"]}], Row[{Subscript["y", "\[EmptyVerySmallSquare]1"]}], Row[{Subscript["x", "\[EmptyVerySmallSquare]2"]}], Row[{Subscript["y", "\[EmptyVerySmallSquare]2"]}]}}, 
+          TableAlignments -> Center], "Trapesium Coords", Background -> tblColor[[2]]], 
+        Panel[Column[{Grid[{{"\[Theta]", NumberForm[elpse[[3]], 5, NumberSigns -> {"-", " "}]}, {"Center", elpse[[1]]}, 
+             Sequence @@ Transpose[{{"a", "b"}, (NumberForm[#1, 5, NumberSigns -> {"-", " "}] & ) /@ elpse[[2]]}]}, 
+            Dividers -> {{False, True, False}, {False, False, True, False, True}}]}], "Ellipse", Background -> tblColor[[3]]]}}, Alignment -> {Center, Top}], 
+     "Model Parameters", Background -> tblColor[[1]]]]
 
 
 (* ::Subsubsection:: *)
@@ -1641,10 +1641,7 @@ b0=Max[1,Floor[y0]]; b1=Min[dim[[2]],Ceiling[y1]];
 Clear[cropTip]
 cropTip[img_,model_,modelPos_,rescale_]:=Module[{box,mdl,mdlPos,imgData,toCropRot,cropMdlPos,imgRot,cropBox,cropImgData},
   box=fixImageDimensionRanges[img,modelBoundingBox[model,modelPos] rescale];
-  mdl=model;
-  mdl[[1]]  =rescale model[[1]];
-  mdl[[2,1]]=rescale model[[2,1]];
-  mdl[[2,2]]=rescale model[[2,2]];
+  mdl={rescale model[[1]],{rescale model[[2,1]],rescale model[[2,2]],model[[2,3]]}};
   mdlPos={rescale  modelPos[[1]],modelPos[[2]]};
   imgData=ImageData[img][[box[[1,1]];;box[[1,2]],box[[2,1]];;box[[2,2]]]];
   {Image[imgData],mdl,{mdlPos-{box[[1,1]],box[[2,1]]},modelPos[[2]]}}
@@ -1655,10 +1652,7 @@ Clear[cropTip]
 cropTip[img_,model_,modelPos_,rescale_]:=Module[{extraBox,box,mdl,mdlPos,imgData,toCropRot,cropMdlPos,imgRot,cropBox,cropImgData},
 extraBox=fixImageDimensionRanges[img,extraBoundingBox[model,modelPos] rescale];
 box=fixImageDimensionRanges[img,modelBoundingBox[model,modelPos] rescale];
-mdl=model;
-mdl[[1]]=rescale model[[1]];
-mdl[[2,1]]=rescale model[[2,1]];
-mdl[[2,2]]=rescale model[[2,2]];
+mdl={rescale model[[1]],{rescale model[[2,1]],rescale model[[2,2]],model[[2,3]]}};
 mdlPos={rescale  modelPos[[1]],modelPos[[2]]};
 imgData=ImageData[img][[extraBox[[1,1]];;extraBox[[1,2]],extraBox[[2,1]];;extraBox[[2,2]]]];
 toCropRot=ToCropRot[extraBox,modelPos[[2]]];
@@ -1670,8 +1664,13 @@ cropImgData=ImageData[imgRot][[cropBox[[1,1]];;cropBox[[1,2]],cropBox[[2,1]];;cr
 ]
 
 
-tipMask[img_,mdl_,mdlPos_]:=Module[{},
-Rasterize[Graphics[modelToGraphics[mdl,mdlPos,{RGBColor[1,1,1,1],RGBColor[1,1,1,1]},IncludePoints->False],Background->Black],ImageSize->ImageDimensions[ImageRotate[img,Pi/2]]]
+Clear[tipMask]
+tipMask[img_,mdl_,mdlPos_,frame_]:=Module[{},
+ImageRotate[Rasterize[Graphics[{{EdgeForm[Black], FaceForm[White], modelToPolygon[mdl, mdlPos]}, 
+    {EdgeForm[Red], FaceForm[None], Rectangle[Sequence @@ (#1 - {frame[[1,1]], frame[[2,1]]} & ) /@ Transpose[frame]]}}, 
+   Background -> Black, ImagePadding -> None, 
+   PlotRangePadding -> None], 
+  ImageSize -> ImageDimensions[ImageRotate[img, Pi/2]]], -Pi/2]
 ]
 
 
@@ -1763,29 +1762,67 @@ imgPts={reachPtsStd[[All,1]][[1;;Length[mdlPts[[1]]]]],reachPtsStd[[All,2]][[1;;
 (*Find the Tip*)
 
 
-(* findTip[img_,mdl_,dWidth_]:=Module[{drctn,strtPnt,pthToTip,edgPts,rnPts,pop,midDigitPts,reachPts,reachPtsStd,midDigitPtsStd,lm,\[Theta]1,mdlPts},
-(* Input img and mdl in same scale. Img in Classifyed *)
+buildModel[img_,csRules_]:=Module[{probFuns,partitionFuns,distroFuns,catagoryFun,imgLCaCb,imgLCaCbPartitioned,imgLCaCbProb,imgLCaCbDataClassified,
+imgClassified,direction,startPnt,pathToTip,edgePts,runPts,fillamentFraction=1/3,numFillaments,midFingerPts, extraReachPts,direction\[Theta],toStd,fromStd,
+excludeOnFramePos, includePos, tipPos, fingerPos, kinkPos, midLineFit, kink\[Theta], width, pntClassPos, middleQ, lines, model, modelPos},
+(* Setup ColorSpace *)
+probFuns=setProbFun[csRules];
+partitionFuns=setPartitioningFun[csRules];
+distroFuns=setDistroFun[csRules];
+catagoryFun=RegionClassifier[csRules,qRange->True,Slack->0.1];
+(* LCaCb Image *)
+imgLCaCb=processImage[ImageData[img,"Byte"],{},{},csRules,Unit->True];
+(* LCaCb Partitioned Image *)
+imgLCaCbPartitioned=processImage[ImageData[img,"Byte"],{{partitionFuns,{1,2,3}}},{},csRules,Unit->False];
+(* LCaCb Probability Image *)
+imgLCaCbProb=processImage[ImageData[img,"Byte"],{{partitionFuns,{1,2,3}},{probFuns,{4,5,6}}},{},csRules,Unit->False];
+(* LCaCb Classified Image *)
+imgLCaCbDataClassified=processImage[ImageData[img,"Byte"],{{catagoryFun,{1,2,3}}},{},csRules,Unit->False];
+(* Image Component Analysis *)
 (* 1. Frame Orientation *)
-drctn=frameOrientation[img,5];
+imgClassified=imgLCaCbDataClassified[[All,All,4]];
+direction=frameOrientation[imgClassified,5];
 (* 2. Find Starting Point *)
-strtPnt=findStartingPoint[img,5];
+startPnt=findStartingPoint[imgClassified,5];
 (* 3. Find Path to Tip *)
-{pthToTip,edgPts,rnPts}=runReach[img,strtPnt,drctn,{2,1},True,True,True];
+{pathToTip,edgePts,runPts}=runReach[imgClassified,startPnt,direction,{2,1},True,True,True];
 (* 4. Fillament Fill *)
-pop=pointOnPath[Reverse[pthToTip],2 dWidth];
-Block[{fillamentFraction=1/3,numFill},
-numFill=Floor[fillamentFraction  Abs[Extract[(pthToTip[[1]]-pthToTip[[-1]]),Position[drctn,1|-1]][[1]]]];
-{midDigitPts,reachPts}=fillamentFill[img,{pthToTip[[-1]],pop},drctn,numFill];
+numFillaments = Ceiling[fillamentFraction Abs[Extract[(pathToTip[[1]] - pathToTip[[-1]]), Position[direction, 1 | -1]][[1]]]];
+{midFingerPts, extraReachPts} = fillamentFill[imgClassified, pathToTip, direction, numFillaments];
+(* 5. Prep Midpoints For fit *)
+(* 5.1 Standard Orientation *)
+direction\[Theta]=direction/.{{0,-1}->Pi/2,{0,1}->-Pi/2,{1,0}->0,{-1,0}-> Pi};
+  toStd=Function[{pts},If[Depth[pts]>2,Transpose["R" . Transpose[pts]],If[Length[pts]==2,"R" . pts,{}]]]/.{"R"->RotationMatrix[ direction\[Theta]]};
+fromStd=Function[{pts},If[Depth[pts]>2,Transpose["R" . Transpose[pts]],If[Length[pts]==2,"R" . pts,{}]]]/.{"R"->RotationMatrix[-direction\[Theta]]};
+(* 5.3. Exclude Points: Edge Points on Frame. *)
+excludeOnFramePos=edgePointsOnFramePos[imgClassified, extraReachPts, direction];
+includePos=Complement[Table[k,{k,1,Length[extraReachPts]}],excludeOnFramePos];
+(* 5.4. Exclude Points: Estimated Tip Position *)
+{tipPos, fingerPos}=tipEstimate[extraReachPts, includePos, direction];
+(* 6.0. MidLine Fit *)
+Block[{fitStd},
+  {fitStd, kinkPos} = kinkFit[toStd[midFingerPts], fingerPos, 3];
+  midLineFit=fromStd[fitStd];
+  ];
+middleQ = Length[midLineFit] >= 3;
+kink\[Theta] = If[Length[midLineFit]>=3,N[Pi]-VectorAngle[midLineFit[[1]]-midLineFit[[2]],midLineFit[[3]]-midLineFit[[2]]],0];
+(* 7.0  Width Estimation and non parallel edge points exclusion. *)
+{width, pntClassPos, middleQ, lines}=FindWidths[extraReachPts, midLineFit, toStd, fromStd];
+(* 8.0  Model The Tip. *)
+{model, modelPos} = findModel[extraReachPts, midFingerPts, midLineFit, pntClassPos, direction\[Theta], toStd, width, EllipseAlignment -> False, EdgeAlignment -> True, MassCentered -> True];
+{model, modelPos,width}
 ]
-(* 5. Put into standard orientation. *)
-reachPtsStd=Map[std,reachPts,{2}];
-midDigitPtsStd=std[midDigitPts];
-(* 6. Find the Approximate Orientation *)
-lm=LinearModelFit[midDigitPtsStd[[Floor[Length[midDigitPtsStd]/6];;-Floor[Length[midDigitPtsStd]/6]]],x,x];
-\[Theta]1=ArcTan[lm["BestFitParameters"][[2]]]
-(* 7. Generate model points in Approximate Orientation *)
-mdlPts=modelToPoints[rotateModel[mdl,\[Theta]1],midDigitPtsStd[[All,1]]];
-(* 8. Find Pos and Orientation *)
-shapeMatchingMoments[Flatten[imgPts,1],Flatten[mdlPts,1]]
+
+
+
+getChannelEndColors[colorRules_,chn_]:=Module[{toLCaCb, fromLCaCb,\[Mu],CStart,CEnd,pts,min,max,rng,rgbPts},
+{toLCaCb, fromLCaCb}=setLCaCb["\[Theta]"]/.colorRules;
+\[Mu]=("\[Mu]"/.colorRules);
+CStart=ReplacePart[\[Mu],chn->0];
+CEnd=ReplacePart[\[Mu],chn->1];
+pts={fromLCaCb[CStart],fromLCaCb[CEnd]};
+min={Min[pts[[All,1]]],Min[pts[[All,2]]],Min[pts[[All,3]]]};
+max={Max[pts[[All,1]]],Max[pts[[All,2]]],Max[pts[[All,3]]]};
+rng=max-min;
+rgbPts=Map[((#-min)/rng)&,pts]
 ]
-*)
