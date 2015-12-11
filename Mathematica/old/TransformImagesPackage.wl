@@ -1107,8 +1107,7 @@ Function[{\[Theta]},0<= Mod[\[Theta]-"\[Phi]1",2Pi]<= toP["\[Phi]2"-"\[Phi]1"]]/
 
 
 Clear[ellipseBoundingBox]
-ellipseBoundingBox[{tri_,{center_,{a_,b_},\[Phi]_}},{pos_,\[Theta]_}]:=Module[{i,\[Theta]lim,\[Psi],t1,t2,t,angles,dn,pnts},
-\[Theta]lim=AngleInequality[ArcTan[tri[[2,2,2]]/tri[[2,2,1]]]-\[Theta],ArcTan[tri[[1,2,2]]/tri[[1,2,1]]]-\[Theta]];
+ellipseBoundingBox[{{center_,{a_,b_},\[Phi]_}},{pos_,\[Theta]_}]:=Module[{i,\[Psi],t1,t2,t,angles,dn,pnts},
 \[Psi]=-(\[Phi]+\[Theta]);
 t1=ArcTan[-b Tan[\[Psi]]/a];
 t2=ArcTan[ b Cot[\[Psi]]/a];
@@ -1320,15 +1319,21 @@ xyp=ImageScaled[{2 (txtR+dp) Cos[\[Theta]], 2 (txtR+dp) Sin[\[Theta]]},{x,y}];
 
 
 Clear[angleSymbol]
-angleSymbol[xy_,sym_,\[Phi]1\[Phi]2_List,color_:Green,imgSize_:{350,350}]:=Module[{txt,d,dp,\[Phi],\[Phi]0,txtR,txtPnt,\[Phi]1,\[Phi]2},
+angleSymbol[xy_,sym_,\[Phi]1\[Phi]2_List,color_:Green,imgSize_:{350,350},pltRange_:{10,10}]:=Module[{txt,d,dp,\[Phi],\[Phi]0,txtR,txtPnt,\[Phi]1,\[Phi]2,ellps},
 {\[Phi]1,\[Phi]2}=Sort[\[Phi]1\[Phi]2];
 \[Phi]=\[Phi]2-\[Phi]1;
 \[Phi]0=(\[Phi]2+\[Phi]1)/2;
 txt = Text[Style[sym,14]];
 dp =  txtRadius[txt,imgSize] + 5 If[Length[imgSize]>1,1/Sqrt[imgSize[[1]]^2+imgSize[[2]]^2],1/imgSize];
 txtR=If[\[Phi]<Pi,dp/Sin[\[Phi]/2],1.1 Max[dp]/2];
-txtPnt=ImageScaled[{txtR Cos[\[Phi]0],txtR Sin[\[Phi]0]},xy];
-{EdgeForm[Black],FaceForm[color],Disk[xy,ImageScaled[{txtR+dp,txtR+dp}],{\[Phi]1,\[Phi]2}],Black,Text[txt,txtPnt,{0,0}]}
+txtPnt=ImageScaled[{txtR Cos[\[Phi]0],txtR Sin[\[Phi]0]},xy]; 
+ellps=If[Length[pltRange]>1,
+  ellipse[{xy,{pltRange[[1]](txtR+dp),pltRange[[2]](txtR+dp)},0},{\[Phi]1,\[Phi]2}],
+  ellipse[{xy, pltRange {txtR+dp,txtR+dp},0},{\[Phi]1,\[Phi]2}] 
+];
+(* ellipse[{xy,{txtR+dp,txtR+dp},0},{\[Phi]1,\[Phi]2}] *)
+(* Disk[xy,ImageScaled[{txtR+dp,txtR+dp}],{\[Phi]1,\[Phi]2}] *)
+{EdgeForm[Black],FaceForm[color],ellps,Black,Text[txt,txtPnt,{0,0}]}
 ];
 
 
@@ -1389,7 +1394,10 @@ ellipse[xy_, ab_, \[Phi]_,{\[Phi]1_,\[Phi]2_},"Closed",OptionsPattern[ellipse]]:
   res=OptionValue[Resolution];
   fun=paramEllipseFunction[{xy, ab, \[Phi]}];
   pnts=Table[fun[\[Phi]1+k (\[Phi]2-\[Phi]1)/res],{k,0,res}];
-  partition=Polygon[{Sequence@@pnts,xy}];
+  If[(\[Phi]2-\[Phi]1)>=2Pi,
+    partition=Polygon[{Sequence@@pnts,pnts[[1]]}],
+    partition=Polygon[{Sequence@@pnts,xy}]
+  ];
   Return[partition]
 ]
 ellipse[xy_, ab_, \[Phi]_,{\[Phi]1_,\[Phi]2_},"Open",OptionsPattern[ellipse]]:=Module[{res,fun,pnts,partition},

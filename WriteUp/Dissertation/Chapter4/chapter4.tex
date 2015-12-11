@@ -600,8 +600,26 @@ From the Smooth Movement Tracking (section \ref{sec:SmoothMotionTracking}), we h
 
 Now we want to find the extreme top, bottom, left and right edges of the model in order to crop the midscale image appropriately. The model is comprised of a quadrilateral and an ellipse. To find the extreme edges of the quadrilateral, the algorithm just finds the minimum and maximum values of the coordinates of its vertices. The ellipse's extreme edges can be found using
 
-\begin{math}
-\end{math}
+\begin{minipage}{0.7\textwidth}
+\begin{align*}
+\begin{array}{ll}
+e_1= \Bigg( x_0+\frac{(a-b) (a+b) }{A} \sin \left( \theta \right), & y_0+A \cos \left( \theta \right) \Bigg)\\
+e_2=  \Bigg( x_0-\frac{(a-b) (a+b)}{A} \sin \left( \theta \right), & y_0-A \cos \left( \theta \right) \Bigg)\\
+e_3=  \Bigg( x_0-B \cos \left( \theta \right) , & y_0-\frac{(a-b) (a+b) }{B} \sin \left( \theta \right) \Bigg)\\
+e_4=  \Bigg( x_0+B \cos \left( \theta \right) , & y_0+\frac{(a-b) (a+b) }{B} \sin \left( \theta \right) \Bigg)\\
+\end{array} \\
+ \text{where}\quad 
+\begin{array}{c}
+A=\sqrt{a^2 \tan ^2(\theta )+b^2} \\
+B=\sqrt{a^2+b^2 \tan ^2(\theta )} \\
+-\frac{\Pi}{2}< \theta < \frac{\Pi}{2}
+\end{array}
+\end{align*}
+\end{minipage}%%%%%%%%%%%%%%%%
+\begin{minipage}{0.3\textwidth}
+ \includegraphics[width=\textwidth]{Chapter4/Figs/Elliptical_Bounds.jpg}
+\end{minipage}
+
 
 However, we only want to include extreme points which lie on the curve which models the tip. The curve which models the tip is the part of the ellipse which falls between the two points on the quadrilateral closest to the tip. We can check if the extreme edges of the ellipse are on this part of the curve by checking that they lie at an angular position between the angles at which the tipmost quadrilateral points lie.
 
@@ -662,16 +680,16 @@ The charts in Figures \ref{fig:FingerpressFingerModel}, \ref{fig:FingerpressStdC
     \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Difference_JSkin.jpg}
     \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_JSkin.jpg}
     \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Misc_JSkin.jpg}
-    \caption{ICWaS flowchart}\label{fig:FingerpressICWaS}
+    \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultJSkin}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.880\textwidth]{Chapter4/Figs/Final_Fig_Channels_FSkin.jpg}
-    \includegraphics[width=0.714\textwidth]{Chapter4/Figs/Final_Fig_Difference_FSkin.jpg}
-    \includegraphics[width=0.714\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_FSkin.jpg}
-    \includegraphics[width=0.880\textwidth]{Chapter4/Figs/Final_Fig_Misc_FSkin.jpg}
-    \caption{ICWaS flowchart}\label{fig:FingerpressICWaS}
+    \includegraphics[width=0.820\textwidth]{Chapter4/Figs/Final_Fig_Channels_FSkin.jpg}
+    \includegraphics[width=0.660\textwidth]{Chapter4/Figs/Final_Fig_Difference_FSkin.jpg}
+    \includegraphics[width=0.660\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_FSkin.jpg}
+    \includegraphics[width=0.820\textwidth]{Chapter4/Figs/Final_Fig_Misc_FSkin.jpg}
+        \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultFSkin}
 \end{figure}
 
 
@@ -681,5 +699,5 @@ The charts in Figures \ref{fig:FingerpressFingerModel}, \ref{fig:FingerpressStdC
     \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Difference_NSkin.jpg}
     \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_NSkin.jpg}
     \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Misc_NSkin.jpg}
-    \caption{ICWaS flowchart}\label{fig:FingerpressICWaS}
+        \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultNSkin}
 \end{figure}
