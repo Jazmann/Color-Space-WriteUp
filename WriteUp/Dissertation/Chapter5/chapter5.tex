@@ -20,13 +20,11 @@
 
 \subsection{Computer Vision Applications}\label{sec:ComputerVisionApplications}
 
-\section{Improvements and Extensions}\label{sec:ImprovementsAndExtensions}
 
+\section{Color Space Algorithm Improvements}\label{sec:ColorSpaceAlgorithmImprovements}
+Here we suggest several improvements which could be made to the color space algorithm developed in Chapter 2. The improvements presented herein address generalizing the algorithm to accommodate the characteristics of cameras other than the iPhone's. We consider three adaptations; one to allow for multi-spectral cameras, another to allow for cameras which do not have a fixed white point, and a third to handle RAW images captured from the CCD without the iPhone's pre-processing. In practice, these three adaptations need to be combined. Hopefully it shouldn't be too difficult to imagine how this could be done, but in terms of practically proceeding, each one would need to be tackled individually first.
 
-\subsection{Color Space Algorithm}\label{sec:ColorSpaceAlgorithmImprovements}
-
-
-\subsubsection{Generalizing the Rotation}\label{sec:GeneralizingTheRotation}
+\subsection{Generalizing the Rotation}\label{sec:GeneralizingTheRotation}
 In Chapter 2, we derived an expression for a rotation matrix consisting entirely of integers which rotates the RGB pixel values into a custom color space with a luminosity axis and two chromatic axes. The orientation of the chromatic axes is specified using a free rotation $\theta$ about the luminosity axis. The only restriction on the free parameter $\theta$ is that which results from the requirement for the matrix to consist entirely of integer values within a specific range. The question remains: is it possible to achieve a similar result without restricting one of the axes?
 
 In this work, we assumed that an 8-bit per-channel value of $(255, 255, 255)$ corresponds with white. This, however is a result of the pre-processing on the iPhone. Extending this work to other devices or accessing the iPhone's RAW camera feed, it may be desirable to use a different point for the camera's white point. Another reason is to adjust for local ambient light conditions; it is common in digital photography to choose a pixel value from a reference white object to set a white point for the image, allowing a color correction to be performed.
@@ -37,11 +35,9 @@ An arbitrary rotation is determined by three angles, and so it's conceivable tha
 
 Because the general rotation matrix can be split into the product of three individual matrices, each of which is dependent on only one of the three free parameters, the work in Section \ref{sec:ConstructingANewColorSpace} could be repeated relatively straightforwardly for each of these three individual matrices, and from this --- for a given quantization criteria --- a minimum and a maximum angle step size (Figure \ref{fig:PtbToChan}). If we have for the separate matrices a minimum and a maximum step size, it's a reasonable idea to search around our initial approximation in steps of the minimum step size to either side out to a maximum distance of the maximum step size. For each of the three angles, we search within a cube with sides defined by the maximum step sizes for each of those rotation matrices. On a cubic grid defined by their minimum step sizes. The result of this is that there is a relatively small set of possible optimized choices. Although this is not solving the problem to the same degree that was done in \ref{sec:ConstructingANewColorSpace}, where we reduced it to a mathematical function, it provides a practical way of achieving the same results without excessive computational effort in the setup. 
 
-\subsubsection{Multi-Channel Color Spaces}\label{sec:MultiChannelColorSpaces}
+\subsection{Multi-Channel Color Spaces}\label{sec:MultiChannelColorSpaces}
 
-As mentioned in Chapter 1, the RGB color space is an approximation to the full spectrum of light. However, commercially-available cameras which are not confined to the three-channel approximation are becoming available; such a multi-channel image contains far more information about the objects in frame. So where the camera is being used for computer vision tasks where the objective is not to produce a pretty picture to present to the human eye, this allows the chromatic space to discriminate between different objects and surfaces in ways which are unseen by the standard RGB camera point of view.
-
-The basic design of these multi-spectral cameras is essentially the same as for the RGB cameras where the spectrum of light on each point in the scene (roughly speaking, see Chapter 1) is presented by a combination of Gaussians, the only difference being we have more Gaussians; each channel can therefore be considered an orthogonal axis in a multi-dimensional color space. The multi-dimensional color space contains a point which corresponds to white, so it is just as possible to construct a color space with a luminosity axis and $n-1$ chromatic axes for an $n$-channel image. Transformation to this color space is defined by a multi-dimensional rotation; this rotation could be optimized in a similar way to that presented in Chapter 2. However, our requirement in Chapter 2 was that the immediate result of the rotation would fit into a data type no more than twice the bit depth of each channel. An $n$-channel color space will be rotated by an $n$ x $n$ rotation matrix; if we have $m$ bits per channel and the quantized rotation matrix is expressed in $l$-bit integers, the result is $l + n + (n-1)$.
+As mentioned in Chapter 1, the RGB color space is an approximation to the full spectrum of light. However, cameras which are not confined to the three-channel approximation are becoming commercially available (Figure \ref{fig:MultiSpectralCameras}); such a multi-channel image contains far more information about the objects in frame. So where the camera is being used for computer vision tasks where the objective is not to produce a pretty picture to present to the human eye, this allows the chromatic space to discriminate between different objects and surfaces in ways which are unseen by the standard RGB camera point of view.
 
 \begin{figure}
   \centering
@@ -62,19 +58,24 @@ The basic design of these multi-spectral cameras is essentially the same as for 
   \label{fig:MultiSpectralCameras}
 \end{figure}
 
-\subsubsection{Using the RAW Image From the Camera}\label{sec:UsingTheRAWImageFromTheCamera}
+The basic design of these multi-spectral cameras is essentially the same as for the RGB cameras where the spectrum of light on each point in the scene (roughly speaking, see Chapter 1) is represented by a combination of Gaussians, the only difference being we have more Gaussians. Each channel can therefore be considered an orthogonal axis in a multi-dimensional color space. The multi-dimensional color space contains a point which corresponds to white, so it is just as possible to construct a color space with a luminosity axis and $n-1$ chromatic axes for an $n$-channel image. Transformation to this color space is defined by a multi-dimensional rotation; this rotation could be optimized in a similar way to that presented in Chapter 2. However, our requirement in Chapter 2 was that the immediate result of the rotation would fit into a data type no more than twice the bit depth of each channel. An $n$-channel color space will be rotated by an $n$ x $n$ rotation matrix; if we have $m$ bits per channel and the quantized rotation matrix is expressed in $l$-bit integers, the result is $l + m + (n-1) \leqslant 2m$. For the larger values of $n$, the rotation matrix would have to be expressed in smaller data types, so aside from special rotation angles which just happen to produce integer rotation matrices, it's unlikely that our criterion can be met. So for multi-channel images to still be able to use integer rotation matrices, the target data type will undoubtedly have to be significantly larger. 
 
-\subsection{Implementation Improvements}\label{sec:ImplementationImprovements}
+\subsection{Using the RAW Image From the Camera}\label{sec:UsingTheRAWImageFromTheCamera}
+The RAW camera image contains all the information captured by the camera, but without any pre-processing. Individual CCDs have different sensitivities in each of their channels, and so the corresponding bit depth of each channel may actually vary. This is likely to be the case for the iPhone's camera as we found in Chapter 3 that certain RGB values appear to be inaccessible. These inaccessible values also appear to be relatively evenly-spread throughout the RGB cube, which produced what we referred to as "speckling" in the statistics gathered in Chapter 3 as seen in Figure \ref{fig:Despeckle_the_Bins}. 
 
-\subsubsection{An Empirical WoBo Algorithm}\label{sec:EmpicialWoBoAlgorithm}
+A possible explanation for this is that one or more of the iPhone camera's channels are not truly captured at an 8-bit depth, but a smaller range of values which the CCD actually captures is stretched to fit the full 8-bit range. It is also entirely possible that one or more of the channels may actually be captured at a higher bit depth than 8-bit. But in terms of the algorithm, we now need to allow each channel in the source to have a variable bit depth. This will affect several things; it changes the integer range of allowed values in a rotation matrix and the algorithm for determining the optimal angle could be adapted by weighting the channels appropriately. But otherwise, adapting to a RAW camera image should be relatively straightforward.
 
-\subsubsection{Auto-Adjusting the Variance}\label{sec:AutoAdjustingTheVariance}
+\section{Implementation Improvements}\label{sec:ImplementationImprovements}
 
-\subsubsection{Statistics Gathering Method for the App}\label{sec:StatisticsGatheringMethod}
+\subsection{An Empirical WoBo Algorithm}\label{sec:EmpicialWoBoAlgorithm}
 
-\subsubsection{Improved ICWaS Alignment}\label{sec:ImprovedICWaSAlignment}
+\subsection{Auto-Adjusting the Variance}\label{sec:AutoAdjustingTheVariance}
 
-\subsubsection{More Designed Metric for Mechanical Stress}\label{sec:MoreDesignedMetricforMechanicalStress}
+\subsection{Statistics Gathering Method for the App}\label{sec:StatisticsGatheringMethod}
+
+\subsection{Improved ICWaS Alignment}\label{sec:ImprovedICWaSAlignment}
+
+\subsection{More Designed Metric for Mechanical Stress}\label{sec:MoreDesignedMetricforMechanicalStress}
 
 
 \section{Conclusion}\label{sec:ConclusionCh5}
