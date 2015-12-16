@@ -20,6 +20,8 @@
 
 \subsection{Computer Vision Applications}\label{sec:ComputerVisionApplications}
 
+\subsubsection{A Novel Canny Edge Detector}\label{sec:ANovelCannyEdgeDetector}
+
 
 \section{Color Space Algorithm Improvements}\label{sec:ColorSpaceAlgorithmImprovements}
 Here we suggest several improvements which could be made to the color space algorithm developed in Chapter 2. The improvements presented herein address generalizing the algorithm to accommodate the characteristics of cameras other than the iPhone's. We consider three adaptations; one to allow for multi-spectral cameras, another to allow for cameras which do not have a fixed white point, and a third to handle RAW images captured from the CCD without the iPhone's pre-processing. In practice, these three adaptations need to be combined. Hopefully it shouldn't be too difficult to imagine how this could be done, but in terms of practically proceeding, each one would need to be tackled individually first.
@@ -97,6 +99,13 @@ An interesting possibility is whether the work of Chapter 3 can be somewhat repl
 One final refinement suggests itself at this point; the resulting color space can be used to model the fingertip and mask the image such that only on-digit pixels are present. In doing this, we now have a broader sample set of pixel values which don't suffer from selection bias. These pixel values could be passed back through the statistical model algorithm to produce a skin chromatic model which is less susceptible to human input.
 
 \subsection{Improved ICWaS Alignment}\label{sec:ImprovedICWaSAlignment}
+To align successive frames, the ICWaS developed in Chapter 4 uses OpenCV's template aligning routines which operates by performing a translation of one frame and computing a per-pixel difference. This works because the alignment is already quite good. There are two ways in which this can be improved; the allowed transforms can be increased to include rotation and perspective adjustments, and the alignment methodology can be improved to utilize more constant features of the fingertip image than the per-pixel approach. 
+
+It's a simple matter to allow for a more general transform, however the per-pixel based comparison is wholly inappropriate to find a more general transform as we would have to try all possible results of the transform and compare them. This would be computationally far too expensive. So, to find a more general transform, we must turn each frame into a set of feature points which can be put into a correspondence, or perform some image transform which simplifies the alignment problem.
+
+<figures here>
+
+
 
 \subsection{More Designed Metric for Mechanical Stress}\label{sec:MoreDesignedMetricForMechanicalStress}
 The metric method which is very briefly presented at the end of Chapter 4 (see Figures \ref{fig:ICWaSResultJSkin}, \ref{fig:ICWaSResultFSkin} and \ref{fig:ICWaSResultNSkin}) relies on a pixel-to-pixel comparison; it is well known that pixel-based methods are unreliable for detecting movement, and our mechanical stress measurement relies on detecting the flow of blood. The metric should therefore account for neighboring pixels. 
