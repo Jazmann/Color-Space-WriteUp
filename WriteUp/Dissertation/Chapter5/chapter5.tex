@@ -68,15 +68,42 @@ A possible explanation for this is that one or more of the iPhone camera's chann
 \section{Implementation Improvements}\label{sec:ImplementationImprovements}
 
 \subsection{An Empirical WoBo Algorithm}\label{sec:EmpicialWoBoAlgorithm}
+The White-out Black-out algorithm outlined in \ref{sec:WhiteoutAndBlackout} uses theoretical values based on the extent of the data type used to store the RGB image. Looking at the empirical results presented in Figure \ref{fig:WhitePoint}, there's more to the WoBo behavior than simply saturating the data type; the performance of the CCD changes with overall ambient light, and the pre-processing performed on the device also has an effect which takes the pixel values away from the naive data point values using the data type extent. 
+
+Although it may be possible to reverse-engineer both the pre-processing and CCD characteristics simultaneously, this would be a difficult task at best. However, if for a device we were able to obtain the RAW image from the CCD, then repeatedly performing empirical tests, such as those performed to generate Figure \ref{fig:WhitePoint}, the CCD characteristics could be obtained. If we know how the CCD detects objects of a certain color under different ambient luminosities, then a more nuanced algorithm can be used to determine if a certain pixel value has suffered from white-out or black-out.
 
 \subsection{Auto-Adjusting the Variance}\label{sec:AutoAdjustingTheVariance}
+The algorithm presented in Chapter 4 uses a reference image to float the mean, yet algorithm makes no attempt to adjust the variance to local ambient light conditions. This is found to work well, however it was initially found that using a standard deviation 2.3 times larger than the value found in Chapter 3 produced better results. (See Figure \ref{fig:RelaxedSigma}.) Although the algorithm was tested against a selection of background colors which are notably close to skin colors were avoided. For practical applications, it may therefore be useful to use a value for the standard deviation close to that used in Chapter 3.
+
+The image is chosen to be included in this document were taken against a green background because that gave the cleanest results; a value of 2.3$\sigma$ produced good results in this ideal background condition, so we'll choose 2.3 as the overall upper limit and 1$\sigma$ as the overall lower limit. We have a reference image where we have a good idea that there is a finger, and a portion of that finger is within a known frame, so the lower criteria is that nearly all, if not all, the pixel values within that frame are categorized as skin using the new value for the standard deviation, so for a choice between 1$\sigma$ and 2.3$\sigma$, we can "score" the choice as follows:
+
+\begin{enumerate}
+\item The proportion of pixels within the known skin region successfully classified as skin.
+\item The number of edge points found using the Filament fill algorithm which are classified as bad edge points which also lie outside the approximated digit edge.
+\item The number of edge points found by Filament fill which are classified as bad edge points, but which lie within the edges of the digit.
+\end{enumerate}
+
+So, a score where measure 1 is too low suggests that $\sigma$ should be increased, as pixel values which we know to be skin are classified as not skin; if measure 2 is too high, then we need to reduce the value of $\sigma$; and if measure 3 is too high, then we need to increase the value of $\sigma$.
+
+This suggests a way that an algorithm could be developed which appropriately adjusts the value of $\sigma$ striking a compromise between false negatives and false positives. The actual values, thresholds and criteria used can best be determined empirically.
+
+One way of proceeding may be to combine the three measures by taking the weighted product of measures 2 and 3 with the weighted reciprocal of measure 1. We combine the measures in this fashion and minimize the result with respect to $\sigma$.
 
 \subsection{Statistics Gathering Method for the App}\label{sec:StatisticsGatheringMethod}
+Given that, in the implementation, we have "floated" the mean and "relaxed" the standard deviation, and above, a method is suggested for adaptively adjusting the standard deviation, it is natural to consider whether the app can handle all the work from Chapter 3. Collecting the statistical model following Chapter 3 is entirely possible, as at no point is any human intervention necessary. However, the Chapter 3 methodology requires that a set of images are captured against a uniform, highly chromatically-contrasting background, which is not a practical or interesting extension to the app.
+
+An interesting possibility is whether the work of Chapter 3 can be somewhat replicated using the same reference image which is used by the app to float the mean and build the initial fingertip model. The difficulties with this idea are the same two difficulties faced by most statistics-gathering methods; sample size and selection bias. To address the first difficulty, we've seen that the number of pixels within the frame which correspond to skin is sufficiently large to usefully adjust the mean of the distribution. This suggests that the sample size should not be a significant problem. Selection bias, on the other hand, comes from asking the user to select a portion of their finger which they consider to be most skin-like; this is not an explicit request of the user, but an implicit request, i.e. when asking a person to supply a sample of skin, they will supply the most skin-like sample they can. This selection bias will likely exclude the edges of the digit, strong features and poorly-lit portions of the skin. As a result, while the mean almost certainly will be fine, the variance will be narrow. So, it's easy to imagine using techniques suggested for auto-adjusting the variance (Section \ref{sec:AutoAdjustingTheVariance}) to make the distribution more inclusive.
+
+One final refinement suggests itself at this point; the resulting color space can be used to model the fingertip and mask the image such that only on-digit pixels are present. In doing this, we now have a broader sample set of pixel values which don't suffer from selection bias. These pixel values could be passed back through the statistical model algorithm to produce a skin chromatic model which is less susceptible to human input.
 
 \subsection{Improved ICWaS Alignment}\label{sec:ImprovedICWaSAlignment}
 
-\subsection{More Designed Metric for Mechanical Stress}\label{sec:MoreDesignedMetricforMechanicalStress}
+\subsection{More Designed Metric for Mechanical Stress}\label{sec:MoreDesignedMetricForMechanicalStress}
+The metric method which is very briefly presented at the end of Chapter 4 (see Figures \ref{fig:ICWaSResultJSkin}, \ref{fig:ICWaSResultFSkin} and \ref{fig:ICWaSResultNSkin}) relies on a pixel-to-pixel comparison; it is well known that pixel-based methods are unreliable for detecting movement, and our mechanical stress measurement relies on detecting the flow of blood. The metric should therefore account for neighboring pixels. 
 
+There are many possible methodologies for detecting movement which would improve the pixel-based method of Chapter 4. Mechanical stress tends to move pooled blood from one area to another within the stressed tissue. The upshot of this is that as one portion of the image loses blood, another gains it. This is different to the circulatory blood, which is pumped in through the arteries and capillaries and flows out through the veins. A better metric may be to compare blobs in the negative and positive chromatic difference images. To be clear, the algorithm would find blobs using a negative thresholding and a positive thresholding; the largest blobs in each of these spaces would be considered good indicators of pooled blood flow.
+
+Another possibility arises from incidental observations of the pooled blood flow images; for each individual's digit, the pooled blood flow pattern is fairly consistent under similar mechanical stress conditions. This suggests that it may be possible to construct a blood flow model for a given digit. Regarding the app, we can imagine generalizing the reference image idea to asking the user to press on a surface several times, allowing the blood flow model to be generated for that digit.
 
 \section{Conclusion}\label{sec:ConclusionCh5}
 
