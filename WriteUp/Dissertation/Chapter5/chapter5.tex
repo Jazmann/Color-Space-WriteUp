@@ -15,13 +15,48 @@
 
 
 \subsection{Medical Applications}\label{sec:MedicalApplications}
+1. Vitals monitoring.
 
+2. Inflammation. Arthritis, combined with diet/lifestyle monitoring functions. Photograph the hands, and have a way of measuring the degree of inflammation throughout the day in an easy way which doesn't rely on subjective reporting, we could allow individual people to find out triggers for conditions like eczema arthritis and other such inflammatory diseases.
+
+3. Oncology. 
+
+4. Dermatology.
+
+5. Measuring chances of repetitive strain injury from videos of activity.
+
+6. Blood flow patterns in the retina; good indication of eye health. Image the retina; could use algorithm given its sensitivities, we may be able to adapt it to discriminate between oxygenated and deoxygenated blood flow. We could use the image alignment so that, with a simple lens adaptor which fits over the phone's camera, one could photograph their own retina daily and measure the difference overtime. We could use the alignment algorithms to monitor any burst blood vessels, even in the eyeball itself; you could take a picture of the eye. 
+
+7. As a fitness/bodybuilder's app, varicose/spider veins detection, blisters, etc. to monitor vascular health when doing intensive exercise and training routines.
+
+8. Real-time diagnostics/monitoring, vitals, AR layers for surgery, robot-assisted surgery, etc.
+
+Also, the use of lossy methods; our color space can keep all the information, so better.
+ 
 \subsection{Scientific Applications}\label{sec:ScientificApplications}
+
+\subsubsection{A Study of Human Chromatic Diversity}\label{sec:AStudyOfHumanChromaticDiversity}
+In Chapter 3, we used a sample set of skin images from three individuals; it was interesting to see, in the lumiochromatic color space LCaCb, how close these skin statistics were to each other in the chromatic plane. It would also be interesting to perform the work of Chapter 3 for a large and chromatically diverse group of people. An attempt was made to look at a diverse sample of individuals using images collected in the Humanae project (\cite{dass2012}). This failed, however, as we had no control over the camera or the image compression performed before making them available on the Internet. Ultimately, it would be interesting to see if it were possible to estimate the levels of the skin chromophores identified in Chapter 1 using the skin statistics of the individual.
+
+\subsubsection{Chromatic Statistics for Injuries and Defects}\label{sec:ChromaticStatisticsForInjuriesAndDefects}
+If we have the normal skin statistics for an individual, we could take images of a site of injury and build the chromatic histogram (Figure \ref{fig:Fill_the_Bins}). We could find the difference between the sets and create a profile for the injury or defect. In order to do this, it would be useful to have built the statistics for the injury site prior to injury; this is an issue of this is to be done in-lab as it would necessitate causing the injury or defect in order to study it. This could be overcome using crowdsourcing. For instance, one might go skydiving as a hobby so often bruises their legs, so we could build the skin statistics for their uninjured skin and simply wait for a bruise to appear. 
+
+An issue of this approach would be the consistency of lighting conditions; this could be overcome if we have adapted the method to allow us to set a new white point as outlined in Section \ref{sec:GeneralizingTheRotation}. We could take an uninjured skin patch for which we already have a previous image from which we build the skin statistics, and comparing the two would allow us to find a white point which accounts for the ambient lighting conditions. Our generalized transform could then compensate for the changing lighting conditions. Any difference in the statistics now is due to the injury, and our theoretical model built in Chapter 1 should allow us to interpret this in terms of the chromophores, the key one being the bilirubin, which is a chromophore which causes the yellow-and-green coloration in bruises.
+
+\subsubsection{Repetitive Strain Study}]\label{sec:RepetitiveStrainStudy}
+The algorithm we developed in Chapter 4 focuses on the mechanical stress to the fingertip when pressing on a surface; in the Figures \ref{fig:ICWaSResultJSkin}, \ref{fig:ICWaSResultFSkin} and \ref{fig:ICWaSResultNSkin}), it can be seen that the stress also shows in the knuckle. In fact, the mechanical strain can be seen in all the joints of the hand. This suggests that we could build an algorithm which monitors the stress in the joints of the hand by observing the blood flow using the routines developed above. By monitoring the strain put on the joints of an individual's hands while they perform a task, we could measure the overall strain that they have placed on their finger joints. If we combine this with the techniques to measure inflammation presented in Section \ref{sec:MedicalApplications}, we could get a measure of the damage suffered by the individual. 
+
+Once developed, such a monitoring system could be used in studies which assess different ergonomic designs and workplace practices. 
 
 \subsection{Computer Vision Applications}\label{sec:ComputerVisionApplications}
 
-\subsubsection{A Novel Canny Edge Detector}\label{sec:ANovelCannyEdgeDetector}
+\subsubsection{A Novel Canny Edge Detection Algorithm}\label{sec:ANovelCannyEdgeDetectionAlgorithm}
+The trinary classification developed in Chapter 4 can also be used for an edge detection routine which operates similarly to the Canny edge detection. The Canny edge detection operates by finding edges using a high threshold which is then lowered as the routine traces along the edge, allowing the edge to be extended from a strong edge into a weak edge. This also allows Canny edge detection to "hurdle" over minor defects in the image of the edge. The trinary classified image can be binarized and presented to standard edge detection techniques, thus we can find all of the strong edges. 
 
+The edges which end surrounded by possible "probably not skin" values can easily be found and marked. Other marked ends which lie close to each other are joined if the pixel values on the path between them are all "probably not skin" (1) or higher. This is similar to the Canny edge detection in that it allows us to join edges by using a lower threshold across the joint. It differs from Canny, however, in that it does not allow the edge to extend into a lower threshold edge. This would be undesirable using the trinary classification because the low threshold "probably not skin" classification often appears in patches which extend across the true edge often resulting from shadow or reflection. This method could be refined by taking into account the orientation of the edges at their end points, which could be used to determine how if the edges should actually be connected. This is similar to the "hurdle" method presented in Section \ref{sec:HurdleMethod}, but applied to edges.
+
+\subsubsection{Finger Feature Detection}\label{sec:FingerFeatureDetection}
+The modeling techniques developed in Chapter 4 can be relatively straightforwardly extended to model the entire digit, or even the whole hand. In Chapter 4, we found that the distal width could be used to find a good estimate for the position of the knuckle using the distal, middle and proximal ratios. With this initial model, the next question is what features can we expect to find at these positions in the image? The luminosity axis shows a striking feature at the knuckle position: the knuckle wrinkles. These wrinkles are consistent to each knuckle (i.e. when flexed, they presented in the same way), and they're easily identified by orientation, running across the digit as opposed to along it. Additionally, the knuckle wrinkles curve around the center of the knuckle. This could be used to refine the model and track the knuckles. In the chromatic channels, they also display blood flow when flexed.
 
 \section{Color Space Algorithm Improvements}\label{sec:ColorSpaceAlgorithmImprovements}
 Here we suggest several improvements which could be made to the color space algorithm developed in Chapter 2. The improvements presented herein address generalizing the algorithm to accommodate the characteristics of cameras other than the iPhone's. We consider three adaptations; one to allow for multi-spectral cameras, another to allow for cameras which do not have a fixed white point, and a third to handle RAW images captured from the CCD without the iPhone's pre-processing. In practice, these three adaptations need to be combined. Hopefully it shouldn't be too difficult to imagine how this could be done, but in terms of practically proceeding, each one would need to be tackled individually first.
