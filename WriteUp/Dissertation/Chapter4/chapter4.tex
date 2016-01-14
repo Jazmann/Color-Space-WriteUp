@@ -235,10 +235,10 @@ This produces a 2-bit image. For this purpose, a 2-bit data type was added to Op
     \caption{The Quaternary Pixel Classification presented alongside the probability scored image for comparison.}\label{fig:2BitImage}
 \end{figure}
 
-\subsection{The \textquoteleft Hurdle' Method}\label{sec:HurdleMethod}
+\subsection{The `Hurdle' Method}\label{sec:HurdleMethod}
 The Hurdle method is an algorithm for finding a path inside an object using the quaternary classified image. The Hurdle method follows straight line paths in the object. As written, it is flexible enough to follow any straight line, however the current implementation takes a direction vector and evaluates at multiples of that direction vector. This means that non-horizontal and non-vertical lines are not guaranteed to be continuous. This is because the pixel values are not found using Bresenham's line algorithm. The algorithm has two thresholds --- a high and a low threshold. Whilst the pixel values remain in the high threshold, the path end point variable is updated; when the pixel values are in the lower threshold, the algorithm continues along the path, but without updating the path end point. This allows the path to pass through artifacts (i.e. pixel values which are inside the object but which have been misclassified), but does not allow the path to extend outside of the object into regions which are, for instance, in the shadow of the object.
  
-\subsection{The \textquoteleft Filament Fill' Method}\label{sec:FilamentFill}
+\subsection{The `Filament Fill' Method}\label{sec:FilamentFill}
 The Filament Fill method takes a path --- given as a sequence of points --- within an object and finds the edges of the object using the Hurdle method running away from the path within the object. Assuming a horizontally-oriented object, the path's extent in the horizontal direction is divided equally into points, and these points are used to start the Hurdle method in the vertical directions, and vice versa for vertical-oriented objects.
 
 
@@ -248,10 +248,10 @@ The Filament Fill method takes a path --- given as a sequence of points --- with
     \caption{The 'Filament Fill' Method.}\label{fig:FillamentFill}
 \end{figure}
 
-\subsection{The \textquoteleft Mean-Median' Method}\label{sec:MeanMedians}
+\subsection{The `Mean-Median' Method}\label{sec:MeanMedians}
 For the purposes of the shape detection algorithms, there are metrics that are applied which suffer from noise and anomalies, where the noise is due to the natural variability of human digits from regular geometric forms, and the anomalies are due to misdetections of the edges of the digit. We assume that the anomalous results are extreme values, however we acknowledge that the most common (mode) or middle (median) values may not be representative of the best geometric approximation for the shape. The Mean-Median method --- similar to the "k-Nearest Neighbors" algorithm --- solves this problem by taking a confidence interval around the median and then taking the mean of the points within this interval. This method is a useful adaptation of methods like the k-Nearest Neighbors in that it solves the outlier problem for this particular application.
 
-\subsection{The \textquoteleft Kink Fit' Method}\label{sec:KinkFitMethod}
+\subsection{The `Kink Fit' Method}\label{sec:KinkFitMethod}
 The Kink Fit algorithm takes in a set of 2D points, where the first component is taken to be the independent variable and the second component is taken to be the dependent variable. This assumption excludes the possibility of truly vertical lines being presented to the algorithm. The Kink Fit algorithm fits a function which consists of two straight-line segments to a set of points. Unfortunately, currently the only piecewise linear fitting function is the proprietary MARS algorithm which, aside from being commercial, is overkill for this particular problem, which has a small number of points which are well-aligned. 
 
 The Kink Fit algorithm relies on the fact that we know that the points are in order; it chooses a point and divides the set in two, and then performs a standard, least squares linear fit to the two sets. Both sets include the point at which the set is divided. 
@@ -260,7 +260,7 @@ The fit is also assumed to be continuous, except in the first derivative. The al
 
 The algorithm then finds the residuals, and then finds the average of the square of the residuals. This is considered the score for dividing the set of points at that position. The algorithm finds the point which minimizes the score using a bisecting algorithm; if a linear fit to the data has a low score, then the Kink Fit algorithm is considered unnecessary and the digit is assumed to be in a relaxed, straight, neutral pose. The algorithm specifies a minimum number of points to be included in a set, as this avoids the problem of dividing into sets which contain only one point.
 
-\subsection{The \textquoteleft Elliptical Fit' Method}\label{sec:EllipticalFitMethod}
+\subsection{The `Elliptical Fit' Method}\label{sec:EllipticalFitMethod}
 Fitting an ellipse to a set of points is surprisingly difficult. The reason for this is outlined below.
 
 To follow the standard linear algebra approach to least squares fitting, we need to decide upon a functional form for the fit, and thereby a basis set. For an ellipse, this basis set is $\chi= \left(x^2, x y, y^2, x, y, 1\right)$, which is a set of six free coefficients $ A^T=\left\{A_{\text{xx}},A_{\text{xy}},A_{\text{yy}},A_x,A_y,A_0\right\}$. However, to specify an ellipse, all that is needed is five numbers; the major and minor axes lengths $(a,b)$, the position $(x_0,y_0)$, and the orientation $\theta$. This is because the basis set includes lines, quadratics, parabolic and hyperbolic functions as well as elliptical functions as possible fits. An additional difficulty arises when we try to construct a cost function for an ellipse. Ideally, we wish to minimize the perpendicular distances of the points from the ellipse, but the calculation of the distance of a point from an ellipse is not straightforward, requiring the roots of a fourth degree polynomial to be found. Due to these complexities, several different methods have been proposed by different authors, but we will be focusing on two methods: The Approximate Mean Square (AMS)  proposed by (\cite{Taubin1991}), and the Direct least square (Direct) method by (\cite{Fitzgibbon1999}).
@@ -333,7 +333,7 @@ These methods were implemented in Mathematica for evaluation and in the OpenCV C
 
 The largest computational effort in both methods is the determination of the $D^T D$ matrix. Once found, however, both methods can be used at relatively little extra computational cost. All Ellipses between the two can be considered as valid fits also. This suggests a method which allows for extra information to be used to refine the fit. In the case of the finger model this is the orientation, distal width and position from the parallel line fit. The ellipse between the two fits which most closely matches the extra information is chosen as the best fit.
 
-\subsection{The \textquoteleft Isoscelian Trapezian' Fit}\label{sec:TrapezianFit}
+\subsection{The `Isoscelian Trapezian' Fit}\label{sec:TrapezianFit}
 
 Given three sets of points corresponding to the top, middle and bottom of an isosceles trapezium which is oriented so that the parallel sides are on the left and right, a fit can be found as follows:
 
@@ -345,7 +345,7 @@ Given three sets of points corresponding to the top, middle and bottom of an iso
 \item Four points describing the trapezium are found and returned along with the orientation and position in the original coordinates.
 \end{enumerate}
 
-\subsection{The \textquoteleft Force Analogue Shape Detection' Method (FASDM)}\label{sec:ForceAnalogue}
+\subsection{The `Force Analogue Shape Detection' Method (FASDM)}\label{sec:ForceAnalogue}
 \newcommand{\pos}{\mathbf{P}}
 \newcommand{\F}{\mathbf{F}_i}
 \newcommand{\Ft}{\mathbf{F}^\tau_i}
