@@ -642,10 +642,40 @@ Now we have the extreme edges of the model. These points are used to find a boun
 During a finger press, we expect the flesh to deform around the tip, making the edges of the digit unreliable for alignment. So we wish to construct a binary mask which tells the template matching algorithm which pixels to use for alignment. Using OpenCV's drawing routines, we render the model in the midscale tip image coordinates. This is done in a way which actually renders the model 'slightly' by four or five pixels smaller than the model proper. This effectively eliminates the edge of the digit next to the background, pushing the algorithm to rely on features which do not deform, such as the nail.
 
 \subsubsection{Blood Flow}\label{sec:BloodFlow}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Channels_JSkin.jpg}
+    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Difference_JSkin.jpg}
+    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_JSkin.jpg}
+    \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Misc_JSkin.jpg}
+    \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultJSkin}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.820\textwidth]{Chapter4/Figs/Final_Fig_Channels_FSkin.jpg}
+    \includegraphics[width=0.660\textwidth]{Chapter4/Figs/Final_Fig_Difference_FSkin.jpg}
+    \includegraphics[width=0.660\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_FSkin.jpg}
+    \includegraphics[width=0.820\textwidth]{Chapter4/Figs/Final_Fig_Misc_FSkin.jpg}
+        \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultFSkin}
+\end{figure}
+
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Channels_NSkin.jpg}
+    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Difference_NSkin.jpg}
+    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_NSkin.jpg}
+    \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Misc_NSkin.jpg}
+        \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultNSkin}
+\end{figure}
+
 We assume that the digit's movement will not take it outside of the bounding box set up in the initialization step (section \ref{sec:ICWaSSetup}), so we capture the tip image from the video feed. The RGB tip image is converted to the skin color space, then the grayscale channel image is used to align with the previous captured frame; if this is the first pass through the loop, this is the image captured in the initialization. The frame alignment metric is masked using the binary rastered model image generated in the initialization.
 
-The image alignment pixel shift updates the change in the model position since the first frame. If the change in the model position since the first frame is greater than the ICWaS threshold, then the control passes back to the Smooth Motion routine. The current frame is aligned with the previous frame and the difference is found between the pixel values in the chromatic channels; this is the blood flow <figure reference here>. These steps are repeated until the change in the model position since the first frame causes the routine to transfer control back to the Smooth Motion routine.
+The image alignment pixel shift updates the change in the model position since the first frame. If the change in the model position since the first frame is greater than the ICWaS threshold, then the control passes back to the Smooth Motion routine. The current frame is aligned with the previous frame and the difference is found between the pixel values in the chromatic channels; this is the blood flow \ref{fig:ICWaSResultFSkin},\ref{fig:ICWaSResultJSkin} \& \ref{fig:ICWaSResultNSkin}. These steps are repeated until the change in the model position since the first frame causes the routine to transfer control back to the Smooth Motion routine.
 
+\clearpage
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 So far, we have said little about the app itself; the app associated with this project is designed to demonstrate how the fast color space transform developed in Chapter 2 can be used in conjunction with the simple shape detection routines developed in this chapter to create a simple fingertip mechanical-stress detector using an iPhone.
@@ -687,31 +717,3 @@ The chart accurately presents the logical flow and recommended assignment of the
 
 The charts in Figures \ref{fig:FingerpressFingerModel}, \ref{fig:FingerpressStdCoordinates&RapidMovement}, \ref{fig:FingerpressSmoothMovement} and \ref{fig:FingerpressICWaS} more accurately depict the actual implementation of the model by showing the data flow to the elements of the model which are accessible to the controller. 
 
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Channels_JSkin.jpg}
-    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Difference_JSkin.jpg}
-    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_JSkin.jpg}
-    \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Misc_JSkin.jpg}
-    \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultJSkin}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.820\textwidth]{Chapter4/Figs/Final_Fig_Channels_FSkin.jpg}
-    \includegraphics[width=0.660\textwidth]{Chapter4/Figs/Final_Fig_Difference_FSkin.jpg}
-    \includegraphics[width=0.660\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_FSkin.jpg}
-    \includegraphics[width=0.820\textwidth]{Chapter4/Figs/Final_Fig_Misc_FSkin.jpg}
-        \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultFSkin}
-\end{figure}
-
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Channels_NSkin.jpg}
-    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Difference_NSkin.jpg}
-    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_NSkin.jpg}
-    \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Misc_NSkin.jpg}
-        \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultNSkin}
-\end{figure}
