@@ -95,7 +95,7 @@ We need to find the point at which a chromatic value begins to suffer from white
   \end{multline}
   
   \subsection{The Region Classification and Partitioning Function}\label{sec:TheRegionClassificationAndPartitioningFunction}
-  It is desirable to classify a pixel value after rotation but before redistribution in-order to avoid unnecessary work on pixel values which are not of interest. This can be done to a degree, but it is necessary to assume reasonably uniform lighting conditions or by using boundaries set by the WOBO algorithm above \ref{sec:WhiteOutBlackOutAlgorithm}. The pixel values are classified by chromatic value as either inside the target region or outside in each chromatic axes, dividing the chromatic plane into nine regions, as illustrated in Figure \ref{fig:PartitioningRegions}. A rudimentary partitioning is performed by assigning 8 constant chromatic vectors to the values outside the target region around the mean. The chromatic channel values are not evaluated further for values outside the target region. The luminosity is always evaluated, because all that is required is a scaling from $qRsRange$ to the destination range $dRange$  and the luminosity is needed to choose appropriate bounds using the WOBO algorithm.
+  It is desirable to classify a pixel value after rotation but before redistribution in-order to avoid unnecessary work on pixel values which are not of interest. This can be done to a degree, but it is necessary to assume reasonably uniform lighting conditions or by using boundaries set by the WOBO algorithm described in Section \ref{sec:WhiteOutBlackOutAlgorithm} above. The pixel values are classified by chromatic value as either inside the target region or outside in each chromatic axes, dividing the chromatic plane into nine regions, as illustrated in Figure \ref{fig:PartitioningRegions}. A rudimentary partitioning is performed by assigning 8 constant chromatic vectors to the values outside the target region around the mean. The chromatic channel values are not evaluated further for values outside the target region. The luminosity is always evaluated, because all that is required is a scaling from $qRsRange$ to the destination range $dRange$  and the luminosity is needed to choose appropriate bounds using the WOBO algorithm.
   
   \begin{figure}[h!]
     \centering
@@ -233,7 +233,7 @@ Color $\ColorSquareBool$ & $\WoBoBool$ & $\ColorSquareBool$ & XOR($\ColorSquareB
 \end{center}
 
 
-This produces a 2-bit image. For this purpose, a 2-bit data type was added to OpenCV. The question then is how to use it. Essentially, we have four different states: values which are neither the right color nor in the right region; values which are possibly the right color, but because they're outside the valid region, they've potentially suffered from white-out and black-out; values which are in the right region, but the wrong color, and we are certain that they are not skin; and finally, values which are in the valid region and are of the right color. In the next subsections we will present some useful methods which take advantage of this quaternary classified image.
+This produces a 2-bit image, as seen in Figure \ref{fig:2BitImage}. For this purpose, a 2-bit data type was added to OpenCV. The question then is how to use it. Essentially, we have four different states: values which are neither the right color nor in the right region; values which are possibly the right color, but because they're outside the valid region, they've potentially suffered from white-out and black-out; values which are in the right region, but the wrong color, and we are certain that they are not skin; and finally, values which are in the valid region and are of the right color. In the following subsections we will present some useful methods which take advantage of this quaternary classified image.
 
 \clearpage
 \subsection{The `Hurdle' Method}\label{sec:HurdleMethod}
@@ -375,12 +375,6 @@ The moment weighted average of these is the angle $\theta$ which will most reduc
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Model_Centroids.jpg}
-    \caption{Model Centroids.}\label{fig:ModelCentroids}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
     \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Random_Polygon_Centroids.jpg}
     \caption{Random Polygon Centroids.}\label{fig:RandomPolygonCentroids}
 \end{figure}
@@ -391,7 +385,7 @@ The moment weighted average of these is the angle $\theta$ which will most reduc
     \caption{Position and Orientation.}\label{fig:ExaggeratedPositionAndOrientation}
 \end{figure}
 
- Mathematically and algorithmically, there are three points which may be considered the center of mass: the centroid of the area of the model, which is where the center of mass would be if the model were a a flat, uniform sheet; the centroid of the perimeter of the model, which is the center of mass would be if the model were constructed using wire along the perimeter; and the arithmetic average of the points of interest defined on the perimeter of the model. The choice for the analogue of the center of mass depends upon the algorithm used. For a method which returns points radially distributed about a point in the model would favor the area centroid; a method which returned points relatively evenly distributed along the perimeter would naturally favor the perimeter centroid method; and a method which returned points of interest would favor the point centroid method. (There's no guarantee the points of interest would be distributed in any relation to the shape-based centroids.)
+ Mathematically and algorithmically, there are three points which may be considered the center of mass: the centroid of the area of the model, which is where the center of mass would be if the model were a a flat, uniform sheet; the centroid of the perimeter of the model, which is the center of mass would be if the model were constructed using wire along the perimeter; and the arithmetic average of the points of interest defined on the perimeter of the model. (See Figure \ref{fig:RandomPolygonCentroids}.) The choice for the analogue of the center of mass depends upon the algorithm used. For a method which returns points radially distributed about a point in the model would favor the area centroid; a method which returned points relatively evenly distributed along the perimeter would naturally favor the perimeter centroid method; and a method which returned points of interest would favor the point centroid method. (There's no guarantee the points of interest would be distributed in any relation to the shape-based centroids.) An example fingertip model centroid and FASDM method can be seen in Figure \ref{fig:ExaggeratedPositionAndOrientation}.
 
 
 \section{Fingertip Model}\label{sec:FingertipModel}
@@ -412,7 +406,7 @@ It is assumed we will not be using severed fingers, and so we know that the fing
 \subsubsection{Finding the End of the Finger Shape}\label{sec:FindingTheEndOfTheFingerShape}
 Taking the longest Hurdle path on the frame edge found above, we take the middle point on that path and start a 'Run-Reach' algorithm in the direction found previously from that point. The Run-Reach algorithm proceeds as follows:
 
-It finds a Hurdle path in the primary direction, i.e. perpendicularly away from the frame edge. At the end of the Hurdle path, it finds the Hurdle paths in the two perpendicular directions to its primary direction, i.e. parallel to the frame edge. It then finds the midpoint between the ends of the Hurdle path, and then uses that to start a new Hurdle path in its primary direction. The algorithm continues in this way until the end of the finger is found.
+It finds a Hurdle path in the primary direction, i.e. perpendicularly away from the frame edge. At the end of the Hurdle path, it finds the Hurdle paths in the two perpendicular directions to its primary direction, i.e. parallel to the frame edge. It then finds the midpoint between the ends of the Hurdle path, and then uses that to start a new Hurdle path in its primary direction. The algorithm continues in this way until the end of the finger is found, as seen in Figure \ref{fig:FindingTheTip}.
 
 \begin{figure}[h!]
   \centering
@@ -574,7 +568,7 @@ The main purpose of the dynamic tracking algorithm is to categorize the motion o
 \end{itemize}
 
 \subsection{Rapid Motion Tracking}\label{sec:RapidMotionTracking}
-Before any fingertip tracking is performed, the algorithm checks to see if the digit is still in motion. This is done by first taking the difference between subsequent grayscaled frames from the raw video feed using OpenCV's 'absdiff' method. To account for changes in lighting and contrast, a binary threshold is applied to the frames, after which an erosion operation (the 'erode' method) is performed to further reduce artifacts and false positives. If the number of changes in the image is above a given threshold, then the digit is considered to be in rapid motion.
+Before any fingertip tracking is performed, the algorithm checks to see if the digit is still in motion. This is done by first taking the difference between subsequent grayscaled frames from the raw video feed using OpenCV's `absdiff' method. To account for changes in lighting and contrast, a binary threshold is applied to the frames, after which an erosion operation (the `erode' method) is performed to further reduce artifacts and false positives. If the number of changes in the image is above a given threshold, then the digit is considered to be in rapid motion.
 
 
 \subsection{Smooth Motion Tracking}\label{sec:SmoothMotionTracking}
