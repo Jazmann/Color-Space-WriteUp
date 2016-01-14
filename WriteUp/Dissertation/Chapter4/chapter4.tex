@@ -521,7 +521,7 @@ Finding  $i_m$ and $j_m$ which minimise $i_m + \frac{\log(3)}{\log(2)} j_m$  and
     \end{tabular}\\
     \phantomcaption
 \end{figure}
-
+\addtocounter{figure}{-1}
 
 \begin{figure}[p!]
 \ContinuedFloat
@@ -546,15 +546,15 @@ Having determined a measure of the width of the distal portion of the fingertip 
 
 From the kink fit, we have a midline, which is specified by three points. We now determine two points on this line, which are $\frac{1}{2}$ the distal width ($d_1$) and $1\frac{1}{2}$ the distal width from the tip ($d_2$). So the midline point that lies between the two points can now be taken to correspond to the straight-edged section of the distal portion of the finger. These points are passed to the Trapezian Fit method (\ref{sec:TrapezianFit}), and the points which lie between the tip and the point half the distal width from the tip are passed to the Elliptical Fit (\ref{sec:EllipticalFitMethod}). The ellipse is adjusted to correspond with the two near vertices of the Trapezian; the result can be seen in Figure \ref{fig:ModelingFingertip}.
 
-To illustrate the model, we can overlay the model on its source image in the original orientation and position. This shows that the application of the model actually only requires a position and orientation, because we assume that the camera is positioned such that the digit presents at the same scale when in contact with a surface throughout the frame; we're not accounting for perspective effects in this simple application.
-
-The model can be seen overlayed on the selection of digits for three individuals in Figure \ref{fig:FingertipModelResult}.
-
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.83\textwidth]{Chapter4/Figs/Model_Overlayed.jpg}
+    \includegraphics[width=0.69\textwidth]{Chapter4/Figs/Model_Overlayed.jpg}
     \caption{The models overlayed on the source images.}\label{fig:FingertipModelResult}
 \end{figure}
+
+To illustrate the model, we can overlay the model on its source image in the original orientation and position. This shows that the application of the model actually only requires a position and orientation, because we assume that the camera is positioned such that the digit presents at the same scale when in contact with a surface throughout the frame; we're not accounting for perspective effects in this simple application.
+The model can be seen overlayed on the selection of digits for three individuals in Figure \ref{fig:FingertipModelResult}.
+
 
 \begin{sidewaysfigure}[h!]
   \centering
