@@ -211,6 +211,12 @@ In this section, pattern recognition routines which use the new color space are 
 \newcommand{\ColorSquareBool}{\underset{ \scalebox{0.5}[0.5]{square} }{ \mathbb{C} } }
 \newcommand{\ColorEllipseBool}{\underset{ \scalebox{0.5}[0.5]{ellipse} }{ \mathbb{C} } }
 
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ClassifiedSkin.jpg}
+    \caption{The Quaternary Pixel Classification presented alongside the probability scored image for comparison.}\label{fig:2BitImage}
+\end{figure}
+
 We wish to classify the pixel values as either skin or not skin whist taking account of the reliability of the detected color due to whiteout and blackout effects. This is done by applying equation \ref{eq:InWoBoRegion} and setting a boolean flag $\WoBoBool$ accordingly. The square partitioning performed earlier in the algorithm also sets a boolean flag $\ColorSquareBool$ to 1 if the pixel is within the target range and to 0 otherwise. These can be combined to produce a 2-bit image which indicates both if the pixel value is in the target chromatic range and the reliability of the classification.
 % 
 
@@ -229,18 +235,11 @@ Color $\ColorSquareBool$ & $\WoBoBool$ & $\ColorSquareBool$ & XOR($\ColorSquareB
 
 This produces a 2-bit image. For this purpose, a 2-bit data type was added to OpenCV. The question then is how to use it. Essentially, we have four different states: values which are neither the right color nor in the right region; values which are possibly the right color, but because they're outside the valid region, they've potentially suffered from white-out and black-out; values which are in the right region, but the wrong color, and we are certain that they are not skin; and finally, values which are in the valid region and are of the right color. In the next subsections we will present some useful methods which take advantage of this quaternary classified image.
 
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ClassifiedSkin.jpg}
-    \caption{The Quaternary Pixel Classification presented alongside the probability scored image for comparison.}\label{fig:2BitImage}
-\end{figure}
-
+\clearpage
 \subsection{The `Hurdle' Method}\label{sec:HurdleMethod}
 The Hurdle method is an algorithm for finding a path inside an object using the quaternary classified image. The Hurdle method follows straight line paths in the object. As written, it is flexible enough to follow any straight line, however the current implementation takes a direction vector and evaluates at multiples of that direction vector. This means that non-horizontal and non-vertical lines are not guaranteed to be continuous. This is because the pixel values are not found using Bresenham's line algorithm. The algorithm has two thresholds --- a high and a low threshold. Whilst the pixel values remain in the high threshold, the path end point variable is updated; when the pixel values are in the lower threshold, the algorithm continues along the path, but without updating the path end point. This allows the path to pass through artifacts (i.e. pixel values which are inside the object but which have been misclassified), but does not allow the path to extend outside of the object into regions which are, for instance, in the shadow of the object.
  
 \subsection{The `Filament Fill' Method}\label{sec:FilamentFill}
-The Filament Fill method takes a path --- given as a sequence of points --- within an object and finds the edges of the object using the Hurdle method running away from the path within the object. Assuming a horizontally-oriented object, the path's extent in the horizontal direction is divided equally into points, and these points are used to start the Hurdle method in the vertical directions, and vice versa for vertical-oriented objects.
-
 
 \begin{figure}[h!]
   \centering
@@ -248,7 +247,10 @@ The Filament Fill method takes a path --- given as a sequence of points --- with
     \caption{The 'Filament Fill' Method.}\label{fig:FillamentFill}
 \end{figure}
 
-\subsection{The `Mean-Median' Method}\label{sec:MeanMedians}
+The Filament Fill method takes a path --- given as a sequence of points --- within an object and finds the edges of the object using the Hurdle method running away from the path within the object. Assuming a horizontally-oriented object, the path's extent in the horizontal direction is divided equally into points, and these points are used to start the Hurdle method in the vertical directions, and vice versa for vertical-oriented objects.
+
+
+
 For the purposes of the shape detection algorithms, there are metrics that are applied which suffer from noise and anomalies, where the noise is due to the natural variability of human digits from regular geometric forms, and the anomalies are due to misdetections of the edges of the digit. We assume that the anomalous results are extreme values, however we acknowledge that the most common (mode) or middle (median) values may not be representative of the best geometric approximation for the shape. The Mean-Median method --- similar to the "k-Nearest Neighbors" algorithm --- solves this problem by taking a confidence interval around the median and then taking the mean of the points within this interval. This method is a useful adaptation of methods like the k-Nearest Neighbors in that it solves the outlier problem for this particular application.
 
 \subsection{The `Kink Fit' Method}\label{sec:KinkFitMethod}
@@ -332,6 +334,7 @@ These methods were implemented in Mathematica for evaluation and in the OpenCV C
 
 
 The largest computational effort in both methods is the determination of the $D^T D$ matrix. Once found, however, both methods can be used at relatively little extra computational cost. All Ellipses between the two can be considered as valid fits also. This suggests a method which allows for extra information to be used to refine the fit. In the case of the finger model this is the orientation, distal width and position from the parallel line fit. The ellipse between the two fits which most closely matches the extra information is chosen as the best fit.
+\clearpage
 
 \subsection{The `Isoscelian Trapezian' Fit}\label{sec:TrapezianFit}
 
@@ -370,8 +373,11 @@ The moment weighted average of these is the angle $\theta$ which will most reduc
 \Mt &= \lVert (\di - \pos) \wedge \dm \rVert
 \end{align*}
 
- Mathematically and algorithmically, there are three points which may be considered the center of mass: the centroid of the area of the model, which is where the center of mass would be if the model were a a flat, uniform sheet; the centroid of the perimeter of the model, which is the center of mass would be if the model were constructed using wire along the perimeter; and the arithmetic average of the points of interest defined on the perimeter of the model. The choice for the analogue of the center of mass depends upon the algorithm used. For a method which returns points radially distributed about a point in the model would favor the area centroid; a method which returned points relatively evenly distributed along the perimeter would naturally favor the perimeter centroid method; and a method which returned points of interest would favor the point centroid method. (There's no guarantee the points of interest would be distributed in any relation to the shape-based centroids.)
-
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Model_Centroids.jpg}
+    \caption{Model Centroids.}\label{fig:ModelCentroids}
+\end{figure}
 
 \begin{figure}[h!]
   \centering
@@ -381,16 +387,11 @@ The moment weighted average of these is the angle $\theta$ which will most reduc
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Model_Centroids.jpg}
-    \caption{Model Centroids.}\label{fig:ModelCentroids}
-\end{figure}
-
-
-\begin{figure}[h!]
-  \centering
     \includegraphics[width=0.95\textwidth]{Chapter4/Figs/Exagerated_Model_Centroids_With_Pos_Orientation.jpg}
     \caption{Position and Orientation.}\label{fig:PositionAndOrientation}
 \end{figure}
+
+ Mathematically and algorithmically, there are three points which may be considered the center of mass: the centroid of the area of the model, which is where the center of mass would be if the model were a a flat, uniform sheet; the centroid of the perimeter of the model, which is the center of mass would be if the model were constructed using wire along the perimeter; and the arithmetic average of the points of interest defined on the perimeter of the model. The choice for the analogue of the center of mass depends upon the algorithm used. For a method which returns points radially distributed about a point in the model would favor the area centroid; a method which returned points relatively evenly distributed along the perimeter would naturally favor the perimeter centroid method; and a method which returned points of interest would favor the point centroid method. (There's no guarantee the points of interest would be distributed in any relation to the shape-based centroids.)
 
 
 \section{Fingertip Model}\label{sec:FingertipModel}
