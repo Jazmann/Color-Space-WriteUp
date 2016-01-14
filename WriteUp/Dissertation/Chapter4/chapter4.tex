@@ -211,7 +211,7 @@ In this section, pattern recognition routines which use the new color space are 
 \newcommand{\ColorSquareBool}{\underset{ \scalebox{0.5}[0.5]{square} }{ \mathbb{C} } }
 \newcommand{\ColorEllipseBool}{\underset{ \scalebox{0.5}[0.5]{ellipse} }{ \mathbb{C} } }
 
-OpenCV's findContours method takes a binary image and finds the contours in that binary image. However, the problem with this method is that we're thresholding on chromatic values, i.e. using color information to break up the image into blobs in which we're finding the contours. This doesn't take into account the white-out and black-out, which was noted previously. This is done by applying equation \ref{eq:InWoBoRegion} and setting a boolean flag $\WoBoBool$ accordingly. The square partitioning performed earlier in the algorithm also sets a boolean flag $\ColorSquareBool$ to 1 if the pixel is within the target range and to 0 otherwise. These can be combined to produce a 2-bit image which indicates both if the pixel value is in the target chromatic range and the reliability of the classification.
+We wish to classify the pixel values as either skin or not skin whist taking account of the reliability of the detected color due to whiteout and blackout effects. This is done by applying equation \ref{eq:InWoBoRegion} and setting a boolean flag $\WoBoBool$ accordingly. The square partitioning performed earlier in the algorithm also sets a boolean flag $\ColorSquareBool$ to 1 if the pixel is within the target range and to 0 otherwise. These can be combined to produce a 2-bit image which indicates both if the pixel value is in the target chromatic range and the reliability of the classification.
 % 
 
 \begin{center}
@@ -227,14 +227,12 @@ Color $\ColorSquareBool$ & $\WoBoBool$ & $\ColorSquareBool$ & XOR($\ColorSquareB
 \end{center}
 
 
-This produces a 2-bit image. For this purpose, a 2-bit data type was added to OpenCV. The question then is how to use it. Essentially, we have four different states: values which are neither the right color nor in the right region; values which are possibly the right color, but because they're outside the valid region, they've potentially suffered from white-out and black-out and as such they are not reliable indicators for either the start of an edge or the end of an edge; values which are in the right region, but the wrong color, and we are certain that they are not skin; and finally, values which are in the valid region and are of the right color.
+This produces a 2-bit image. For this purpose, a 2-bit data type was added to OpenCV. The question then is how to use it. Essentially, we have four different states: values which are neither the right color nor in the right region; values which are possibly the right color, but because they're outside the valid region, they've potentially suffered from white-out and black-out; values which are in the right region, but the wrong color, and we are certain that they are not skin; and finally, values which are in the valid region and are of the right color. In the next subsections we will present some useful methods which take advantage of this quaternary classified image.
 
-The Canny edge detector method is perfect for implementing a decision by setting a high threshold --- our strong criteria --- in the right region in the right color, and a low threshold so that it will continue following an edge across values which are in the invalid region. Whichever value we set the low threshold to depends on the state of the image; we use a lower value if there is ambiguity and a higher value if the result is fairly accurate:
- 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ClassifiedSkin.jpg}
-    \caption{The Pixel Classification.}\label{fig:2BitImage}
+    \caption{The Quaternary Pixel Classification presented alongside the probability scored image for comparison.}\label{fig:2BitImage}
 \end{figure}
 
 \subsection{The \textquoteleft Hurdle' Method}\label{sec:HurdleMethod}
@@ -330,7 +328,7 @@ The system produces only one positive eigenvalue $ \lambda$ which is chosen as t
 \end{equation*}
 The scaling factor guarantees that  $A^T C A =1$.
 
-These methods were implemented in Mathematica for evaluation and in the OpenCV C++ code. Testing routines generated sample data with variable ellipse occlusion and noise around a randomly generated ellipse. The methods both produced good fits to complete ellipses and incomplete ellipses. The AMS method was slightly better at fitting the extreme ends of the ellipse, generally producing a larger ellipse than the Direct method. Both methods accurately obtained the position and orientation. The AMS method occasionally produced a hyperbolic fit for very flat ellipses.
+These methods were implemented in Mathematica for evaluation and in the OpenCV C++ code. Testing routines generated sample data with variable ellipse occlusion and noise around a randomly generated ellipse . The methods both produced good fits to complete ellipses Fig.\ref{fig:EllipseFitTestFull} and incomplete ellipses Fig.\ref{fig:EllipseFitTestHalf}. The AMS method was slightly better at fitting the extreme ends of the ellipse, generally producing a larger ellipse than the Direct method. Both methods accurately obtained the position and orientation. The AMS method occasionally produced a hyperbolic fit for very flat ellipses Fig \ref{fig:EllipseFitTestHalfHyperbolic}.
 
 
 The largest computational effort in both methods is the determination of the $D^T D$ matrix. Once found, however, both methods can be used at relatively little extra computational cost. All Ellipses between the two can be considered as valid fits also. This suggests a method which allows for extra information to be used to refine the fit. In the case of the finger model this is the orientation, distal width and position from the parallel line fit. The ellipse between the two fits which most closely matches the extra information is chosen as the best fit.
@@ -341,22 +339,38 @@ Given three sets of points corresponding to the top, middle and bottom of an iso
 
 \begin{enumerate}
 \item A straight line fit to the midpoints is found giving start and end points along with an orientation.
-\item The points are translated and rotated so that the start point is at the origin and the end point is on the x axis.
+\item The points are translated and rotated so that the first middle point is at the origin and the last middle point is on the x axis.
 \item The bottom points are reflected about the x axis.
 \item A single straight line is fitted to the top and reflected bottom points together.
 \item Four points describing the trapezium are found and returned along with the orientation and position in the original coordinates.
 \end{enumerate}
 
 \subsection{The \textquoteleft Force Analogue Shape Detection' Method (FASDM)}\label{sec:ForceAnalogue}
-The FASDM is one of the most straightforward --- if not the most straightforward --- shape alignment algorithms. Given a set of points, if we know a corresponding set of points on the the target shape model, we can find vectors between the points on the model and the points on the image; the FASDM makes the analogue between these vectors and a force acting on that point on the model. The position and orientation of the shape is then found by translating and rotating the model such that the 'force' acting upon it sums to zero. 
+\newcommand{\pos}{\mathbf{P}}
+\newcommand{\F}{\mathbf{F}_i}
+\newcommand{\Ft}{\mathbf{F}^\tau_i}
+\newcommand{\dm}{\mathbf{d}^{m{\scriptscriptstyle dl} }_i}
+\newcommand{\di}{\mathbf{d}^{i{\scriptscriptstyle mg} }_i}
+\newcommand{\Mt}{\mathbf{\tau}_i}
+The FASDM is one of the most straightforward --- if not the most straightforward --- shape alignment algorithms. Given a set of points, if we know a corresponding set of points on the the target shape model, we can find translation vectors between the points on the model $\dm$ and the points  on the image $\di$; the FASDM makes the analogue between these vectors and a force acting on that point on the model $\F=\di-\dm$. The position and orientation of the shape is then found by translating and rotating the model such that the 'force' acting upon it sums to zero. To facilitate the calculation the model is expressed in coordinates where the origin corresponds to the center of mass for the model.
 
 It should be noted that other transformations can easily be included, however for the current purposes, rotation and translation are all that is required.
+The translation vector $\F$ is found by taking the average of the force acting on the center of mass $\pos= \frac{1} {n} \sum_{i=1}^n \F$. 
+Translating the model to this position allows the residual turning forces to be found $\Ft = \F - \pos$. 
+The moment about the center of mass $\Mt$ is found simply by finding the magnitude of the outer product of the residual turning force $\Ft$ with the the point on the model $\dm$ thus $\Mt = \lVert \Ft \wedge \dm \rVert$. 
+The rotation which would reduce the moment to zero is found by taking the angle between $\dm$ and $\dm+\Ft$.
+The moment weighted average of these is the angle $\theta$ which will most reduce the total rotational moment $\mathbf{\tau} $. 
 
-The position is found by taking the dot product of the force with the distance (position) vector on the model. Translating the model to this position allows the residual turning force to be found. The orientation is found by taking the cross product of the distance vector from the position to the point on the model with the residual of the force vector, and summing over all the points on the model. This gives a total moment about the position which translates to an orientation.
+\begin{align*}
+\theta &= \frac{1} {\mathbf{\tau}} \sum_{i=1}^{n} \Mt \theta_i &
+\theta_i &=  \arccos \left(\frac{\dm \cdot (\dm+\Ft)}{\lVert \dm \rVert \lVert \dm+\Ft \rVert}\right)  &
+\mathbf{\tau} &= \sum_{i=1}^{n} \Mt \\
+\pos &= \frac{1} {n} \sum_{i=1}^n \F &
+  &=  \arccos \left(\frac{\dm \cdot (\di - \pos)}{\lVert \dm \rVert \lVert \di - \pos \rVert}\right)  &
+\Mt &= \lVert (\di - \pos) \wedge \dm \rVert
+\end{align*}
 
-<math here>
-
-To facilitate this method, the model is expressed in coordinates where the origin corresponds to the center of mass. Assuming an even distribution of points around the surface, the position can now be found by simply taking the average of the force vectors, and if we assume that the image points are perfect, then the residuals will be perpendicular to the radial point from the center and the cross product becomes a scalar product of magnitudes. Mathematically and algorithmically, there are three points which may be considered the center of mass: the centroid of the area of the model, which is where the center of mass would be if the model were a a flat, uniform sheet; the centroid of the perimeter of the model, which is the center of mass would be if the model were constructed using wire along the perimeter; and the arithmetic average of the points of interest defined on the perimeter of the model. The choice for the analogue of the center of mass depends upon the algorithm used. For a method which returns points radially distributed about a point in the model would favor the area centroid; a method which returned points relatively evenly distributed along the perimeter would naturally favor the perimeter centroid method; and a method which returned points of interest would favor the point centroid method. (There's no guarantee the points of interest would be distributed in any relation to the shape-based centroids.)
+ Mathematically and algorithmically, there are three points which may be considered the center of mass: the centroid of the area of the model, which is where the center of mass would be if the model were a a flat, uniform sheet; the centroid of the perimeter of the model, which is the center of mass would be if the model were constructed using wire along the perimeter; and the arithmetic average of the points of interest defined on the perimeter of the model. The choice for the analogue of the center of mass depends upon the algorithm used. For a method which returns points radially distributed about a point in the model would favor the area centroid; a method which returned points relatively evenly distributed along the perimeter would naturally favor the perimeter centroid method; and a method which returned points of interest would favor the point centroid method. (There's no guarantee the points of interest would be distributed in any relation to the shape-based centroids.)
 
 
 \begin{figure}[h!]
