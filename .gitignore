@@ -50,6 +50,10 @@ Icon?
 ehthumbs.db
 Thumbs.db
 
+# Versioning #
+######################
+*.plist
+
 # Xcode 4 stuff. Ignore all except project.pbxproj
 #########################
 
