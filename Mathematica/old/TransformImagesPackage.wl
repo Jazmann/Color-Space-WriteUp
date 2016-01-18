@@ -1569,10 +1569,34 @@ modelToTable[model_] := Module[{trap, elpse, \[Phi]2, \[Phi]1, tmp, tmb, tblColo
 (*Bounding Box; Tip extraction. : Init*)
 
 
+fixEllipse[{{x0_, y0_}, {aIn_, bIn_}, \[Theta]_}] := Module[{A, B, a, b, \[Delta]\[Theta], \[CapitalTheta]}, 
+  If[OddQ[Quotient[\[Theta], Pi/2]], a = bIn; b = aIn, a = aIn; b = bIn]; 
+  \[CapitalTheta] = Quotient[\[Theta], Pi/2]*(Pi/2); \[Delta]\[Theta] = Mod[\[Theta], Pi/2]; 
+  {{x0,y0},{a,b},\[Delta]\[Theta]}
+]
+
+
 Clear[pntBoundingBox]
 pntBoundingBox[pnts_]:=Module[{},
 {{Min[Floor[pnts[[All,1]]]],Max[Ceiling[pnts[[All,1]]]]},{Min[Floor[pnts[[All,2]]]],Max[Ceiling[pnts[[All,2]]]]}}
 ]
+
+
+Clear[ellipseBoundingBox]
+ellipseBoundingBox[{{x0_,y0_},{a_,b_},\[Theta]_}]:=Module[{A,B,pts},
+pts=ellipseBoundingPoints[{{x0,y0},{a,b},\[Theta]}];
+pntBoundingBox[pts]
+]
+
+
+Clear[ellipseBoundingPoints]
+ellipseBoundingPoints[{{x0_, y0_}, {aIn_, bIn_}, \[Theta]_}] := Module[{A, B, a, b, \[Delta]\[Theta], \[CapitalTheta]}, 
+   {{x0,y0},{a,b},\[Delta]\[Theta]}=fixEllipse[{{x0, y0}, {aIn, bIn}, \[Theta]}];
+    A = Sqrt[a^2*Tan[\[Delta]\[Theta]]^2 + b^2]; B = Sqrt[a^2 + b^2*Tan[\[Delta]\[Theta]]^2]; 
+    {{x0 + (((a - b)*(a + b))/A)*Sin[\[Delta]\[Theta]], y0 + A*Cos[\[Delta]\[Theta]]}, 
+     {x0 - (((a - b)*(a + b))/A)*Sin[\[Delta]\[Theta]], y0 - A*Cos[\[Delta]\[Theta]]}, 
+     {x0 - B*Cos[\[Delta]\[Theta]], y0 - (((a - b)*(a + b))/B)*Sin[\[Delta]\[Theta]]}, 
+     {x0 + B*Cos[\[Delta]\[Theta]], y0 + (((a - b)*(a + b))/B)*Sin[\[Delta]\[Theta]]}}]
 
 
 Clear[modelBoundingBox]
@@ -1599,6 +1623,8 @@ QAngles=Map[\[Theta]lim, angles];
 dn=Flatten[{Pick[Flatten[{ellipsePnts,-ellipsePnts},1], QAngles],triExtreama},1];
 Map[(#+pos)&,dn]
 ];
+
+
 modelBoundingPnts[{tri_,{center_,{a_,b_},\[Phi]_}},{pos_,\[Theta]_}]:=Module[{mdl,position,pnts},
 mdl=translateModel[{tri,{center,{a,b},\[Phi]}},-center];
 position={pos+center,\[Theta]};
