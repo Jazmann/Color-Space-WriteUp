@@ -606,6 +606,7 @@ Format[\[Delta]qEO, TraditionalForm]=Style[
 
 
 
+
 \!\(\*OverscriptBox[\("\<\[Delta]qEO\>"\), \(^\)]\),Bold];
 
 
@@ -2224,47 +2225,7 @@ Clear[\[Mu],c,\[Sigma],s,\[Gamma],g,sMin,sMax,dMin,dMax,sRange,dRange,K,\[Delta]
 
 
 Clear[processImage];
-Options[processImage]={Unit->True};
-processImage[imgData_, qFuns_:{},dFuns_:{}, \[Sigma]s\[Gamma]g_, \[Mu]c_, \[Theta]in_, n_, sdMinMax:{{_,_},{_,_}}, opts:OptionsPattern[]]:=Module[ {rules},
-rules=colorSpaceParams[\[Sigma]s\[Gamma]g,\[Mu]c,\[Theta]in,n,sdMinMax,opts];
-processImage[imgData, qFuns,dFuns, rules, opts]
-]
-
-processImage[imgData_, qFuns_:{},dFuns_:{}, rules_List, OptionsPattern[]]:=Module[
-{sMin,sMax,dMin,dMax,sRange,dRange,
-K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],dis,\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
-LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal,pxl,qPxl,dqPxl,img},
-{\[Mu],c,\[Sigma],s,\[Gamma],g,sMin,sMax,dMin,dMax,sRange,dRange,
-K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],dis,\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
-LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,
-Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal}=
-{"\[Mu]","c","\[Sigma]","s","\[Gamma]","g","sMin","sMax","dMin","dMax","sRange","dRange",
-"K","\[Delta]","m","\[Omega]","\[CapitalOmega]","\[Omega]p","\[CapitalOmega]p","\[Lambda]","\[CapitalLambda]","dis",
-"\[Theta]","\[Delta]qS","L","\[Kappa]","tRange","\[Lambda]RGB2","mp","\[Alpha]\[Beta]","\[Alpha]","\[Beta]","\[Tau]",
-"LCaCbColor","qRsMin","qRsMax","qRsRange","\[CapitalLambda]q","\[CapitalOmega]pq",
-"Qdisc","Qdist","Qkeep","S","disFun","dstMax","qR","fSs"}/.rules;
-img=Table[
-pxl=imgData[[i,j]];
-If[OptionValue[Unit],
-qqPxl=(fSsVal (qRval.pxl) -qRsMin);
-qPxl=qqPxl/qRsRange;
-dqPxl=Table[N[N[Round[disFun[[i]] [qqPxl[[i]]]]]/dstMax[[i]]],{i,1,3}];,
-qPxl=fSsVal (qRval.pxl) -qRsMin;
-dqPxl=Table[N[Round[disFun[[i]] [qPxl[[i]]]]],{i,1,3}];
-]
-Do[
-AppendTo[dqPxl, qFuns[[i]][qPxl]];
-,{i,1,Length[qFuns]}];
-Do[
-AppendTo[dqPxl, dFuns[[i]][dqPxl]];
-,{i,1,Length[dFuns]}];
-{qPxl,dqPxl}
-,{i,1,(Dimensions[imgData])[[1]]},{j,1,(Dimensions[imgData])[[2]]}];
-{img[[All,All,1]],img[[All,All,2]]}
-]
-
-
-Clear[processImage];
+Unit::usage="Option for processImage. True:the desired output should be in the unit range. False: output is in the qRs range";
 Options[processImage]={Unit->True};
 processImage[imgData_, qFuns_:{},uFuns_:{}, \[Sigma]s\[Gamma]g_, \[Mu]c_, \[Theta]in_, n_, sdMinMax:{{_,_},{_,_}}, opts:OptionsPattern[]]:=Module[ {rules},
 rules=colorSpaceParams[\[Sigma]s\[Gamma]g,\[Mu]c,\[Theta]in,n,sdMinMax,opts];
@@ -2272,7 +2233,7 @@ processImage[imgData, qFuns,uFuns, rules, opts]
 ]
 
 processImage[imgData_, qFuns_:{},uFuns_:{}, rules_List, OptionsPattern[]]:=Module[
-{sMin,sMax,dMin,dMax,sRange,dRange,
+{\[Mu],c,\[Sigma],s,\[Gamma],g,sMin,sMax,dMin,dMax,sRange,dRange,
 K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],dis,\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
 LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal,pxl,qPxl,uPxl,img},
 {\[Mu],c,\[Sigma],s,\[Gamma],g,sMin,sMax,dMin,dMax,sRange,dRange,

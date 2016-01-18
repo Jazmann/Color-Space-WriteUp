@@ -603,6 +603,10 @@ Format[\[Delta]qEO, TraditionalForm]=Style[
 
 
 
+
+
+
+
 \!\(\*OverscriptBox[\("\<\[Delta]qEO\>"\), \(^\)]\),Bold];
 
 
@@ -968,7 +972,7 @@ nLCaCbCube["RGB"]=Function[{\[Theta]},Evaluate[FullSimplify[inLCaCb[\[Theta]].nL
 nLCaCbPolygon= Function[{\[Theta]},Evaluate[Transpose[{Take[RGBCube[nLCaCb][\[Theta] ][[2]],{2,7}],Take[RGBCube[nLCaCb][\[Theta] ][[3]],{2,7}]}]]];
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*General Utility *)
 
 
@@ -2113,23 +2117,6 @@ Map[Max,\[Lambda]CubeRGB]
 
 
 
-{"\[Mu]" -> \[Mu] , "c" -> c, "\[Sigma]" -> \[Sigma], "s" -> s, "\[Gamma]" -> \[Gamma], "g" -> g,
-"sMin"->sMin, "sMax"->sMax, "dMin"->dMin, "dMax"->dMax, "sRange"->sRange, "dRange"->dRange,
-"K"->K, "\[Delta]"->\[Delta], "m"->m, "\[Omega]"->\[Omega], "\[CapitalOmega]"->\[CapitalOmega], "\[Omega]p"->\[Omega]p, "\[CapitalOmega]p"->\[CapitalOmega]p, "\[Lambda]"->\[Lambda], "\[CapitalLambda]"->\[CapitalLambda],"dis"->disFunc}/.{Rule[var_,sym_]:> sym}
-
-
-{\[Mu],c,\[Sigma],s,\[Gamma],g,0,255,0,255,sRange,dRange,K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],disFunc}=
-{"\[Mu]","c","\[Sigma]","s","\[Gamma]","g","sMin","sMax","dMin","dMax","sRange","dRange","K","\[Delta]","m","\[Omega]","\[CapitalOmega]","\[Omega]p","\[CapitalOmega]p","\[Lambda]","\[CapitalLambda]","dis"}/.DistroAll[\[Sigma]s\[Gamma]g,\[Mu]c,{{sMin,sMax},{dMin,dMax}},opts];
-
-
-
-(* ::Text:: *)
-(*Put the distrobution*)
-
-
-Global`\[Delta]qS[LCaCb\[Theta]]
-
-
 Clear[colorSpaceParams]
 colorSpaceParams::usage = 
   "Input 3 distributions from setUpErf and a color space angle to get:\n
@@ -2189,9 +2176,9 @@ If[ !Qkeep[[i]] && Qdisc[[i]] && Qdist[[i]], Piecewise[{
 {func[S[[i]]*x], \[CapitalLambda]q[[i,1]] < x < \[CapitalLambda]q[[i,2]]}, {dMax[[i]], \[CapitalLambda]q[[i,2]] <= x}}], 
 If[ Qkeep[[i]] && !Qdisc[[i]] && Qdist[[i]], 
   Piecewise[{
-   {func[S[[i]]*x],                                                                         x <  \[CapitalOmega]pq[[i,1]]}, 
-   {S[[i]]*x - \[CapitalOmega]p[[i,1]] + func[\[CapitalOmega]p[[i,1]]],                                    \[CapitalOmega]pq[[i,1]] <= x <= \[CapitalOmega]pq[[i,2]]}, 
-   {func[S[[i]]*x] + \[CapitalOmega]p[[i,2]] - \[CapitalOmega]p[[i,1]] - func[\[CapitalOmega]p[[i,2]]] + func[\[CapitalOmega]p[[i,1]]], \[CapitalOmega]pq[[i,2]] <  x }
+   {func[x],                                                                         x <  \[CapitalOmega]pq[[i,1]]}, 
+   {S[[i]]*(x - \[CapitalOmega]pq[[i,1]]) + func[\[CapitalOmega]pq[[i,1]]],                                    \[CapitalOmega]pq[[i,1]] <= x <= \[CapitalOmega]pq[[i,2]]}, 
+   {func[x] + \[CapitalOmega]p[[i,2]] - \[CapitalOmega]p[[i,1]] - func[\[CapitalOmega]pq[[i,2]]] + func[\[CapitalOmega]pq[[i,1]]], \[CapitalOmega]pq[[i,2]] <  x }
   }], 
 If[ !Qkeep[[i]] && Qdisc[[i]] &&  !Qdist[[i]], Piecewise[{
 {dMin[[i]], x <= (1/2)*(\[CapitalLambda]q[[i,1]] + \[CapitalLambda]q[[i,1]])}, 
@@ -2238,15 +2225,17 @@ Clear[\[Mu],c,\[Sigma],s,\[Gamma],g,sMin,sMax,dMin,dMax,sRange,dRange,K,\[Delta]
 
 
 Clear[processImage];
-processImage[imgData_, qFuns_:{},dFuns_:{}, \[Sigma]s\[Gamma]g_, \[Mu]c_, \[Theta]in_, n_, sdMinMax:{{_,_},{_,_}}, opts:OptionsPattern[]]:=Module[ {rules},
+Unit::usage="Option for processImage. True:the desired output should be in the unit range. False: output is in the qRs range";
+Options[processImage]={Unit->True};
+processImage[imgData_, qFuns_:{},uFuns_:{}, \[Sigma]s\[Gamma]g_, \[Mu]c_, \[Theta]in_, n_, sdMinMax:{{_,_},{_,_}}, opts:OptionsPattern[]]:=Module[ {rules},
 rules=colorSpaceParams[\[Sigma]s\[Gamma]g,\[Mu]c,\[Theta]in,n,sdMinMax,opts];
-processImage[imgData, qFuns,dFuns, rules, opts]
+processImage[imgData, qFuns,uFuns, rules, opts]
 ]
 
-processImage[imgData_, qFuns_:{},dFuns_:{}, rules_List, opts:OptionsPattern[]]:=Module[
-{sMin,sMax,dMin,dMax,sRange,dRange,
+processImage[imgData_, qFuns_:{},uFuns_:{}, rules_List, OptionsPattern[]]:=Module[
+{\[Mu],c,\[Sigma],s,\[Gamma],g,sMin,sMax,dMin,dMax,sRange,dRange,
 K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],dis,\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
-LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal,pxl,qPxl,dqPxl},
+LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal,pxl,qPxl,uPxl,img},
 {\[Mu],c,\[Sigma],s,\[Gamma],g,sMin,sMax,dMin,dMax,sRange,dRange,
 K,\[Delta],m,\[Omega],\[CapitalOmega],\[Omega]p,\[CapitalOmega]p,\[Lambda],\[CapitalLambda],dis,\[Theta],\[Delta]qSval,L,\[Kappa],tRange,\[Lambda]RGB2val,mp,\[Alpha]\[Beta],\[Alpha],\[Beta],\[Tau],
 LCaCbColor,qRsMin,qRsMax,qRsRange,\[CapitalLambda]q,\[CapitalOmega]pq,
@@ -2256,18 +2245,24 @@ Qdisc,Qdist,Qkeep,S,disFun,dstMax,qRval,fSsVal}=
 "\[Theta]","\[Delta]qS","L","\[Kappa]","tRange","\[Lambda]RGB2","mp","\[Alpha]\[Beta]","\[Alpha]","\[Beta]","\[Tau]",
 "LCaCbColor","qRsMin","qRsMax","qRsRange","\[CapitalLambda]q","\[CapitalOmega]pq",
 "Qdisc","Qdist","Qkeep","S","disFun","dstMax","qR","fSs"}/.rules;
-Table[
+img=Table[
 pxl=imgData[[i,j]];
-qPxl=fSsVal (qRval.pxl) -qRsMin;
-dqPxl=Table[N[Round[disFun[[i]] [qPxl[[i]]]]/dstMax[[i]]],{i,1,3}];
+qPxl=(fSsVal (qRval.pxl) -qRsMin);
+uPxl=qPxl/qRsRange;
 Do[
-AppendTo[dqPxl, qFuns[[i]][qPxl]];
+qPxl=Flatten[Append[qPxl, qFuns[[i,1]][Sequence@@(qPxl[[(qFuns[[i,2]])]])]
+]];
 ,{i,1,Length[qFuns]}];
 Do[
-AppendTo[dqPxl, dFuns[[i]][dqPxl]];
-,{i,1,Length[dFuns]}];
-dqPxl
-,{i,1,(Dimensions[imgData])[[1]]},{j,1,(Dimensions[imgData])[[2]]}]
+uPxl=Flatten[Append[uPxl, uFuns[[i,1]][Sequence@@(uPxl[[uFuns[[i,2]]]])]]];
+,{i,1,Length[uFuns]}];
+{Flatten[qPxl],Flatten[uPxl]}
+,{i,1,(Dimensions[imgData])[[1]]},{j,1,(Dimensions[imgData])[[2]]}];
+If[OptionValue[Unit],
+img[[All,All,2]],
+img[[All,All,1]],
+{img[[All,All,1]],img[[All,All,2]]}
+]
 ]
 
 

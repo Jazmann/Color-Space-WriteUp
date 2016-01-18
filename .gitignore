@@ -50,10 +50,6 @@ Icon?
 ehthumbs.db
 Thumbs.db
 
-# Versioning #
-######################
-*.plist
-
 # Xcode 4 stuff. Ignore all except project.pbxproj
 #########################
 
@@ -169,6 +165,9 @@ xcuserdata
 
 *.moved-aside
 
+####
+# Shapes - Internal file versioning
+*.plist
 
 ####
 # UNKNOWN: recommended by others, but I can't discover what these files are
