@@ -607,6 +607,7 @@ Format[\[Delta]qEO, TraditionalForm]=Style[
 
 
 
+
 \!\(\*OverscriptBox[\("\<\[Delta]qEO\>"\), \(^\)]\),Bold];
 
 
@@ -717,7 +718,7 @@ cubeCorners[minMax:{{_,_},{_,_},{_,_}}]:={
 faces = {{1,2,3,4},{5,6,7,8},{1,2,7,6},{2,3,8,7},{3,4,5,8},{1,4,5,6}};
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*RGB Cube*)
 
 
@@ -1829,40 +1830,6 @@ Plot[PDF[NormalDistribution[c,s],t],{t,sMin,sMax},PlotRange->{{sMin,sMax},All},I
 (*Distro Plots*)
 
 
-(*Clear[setDistroValues]
-Options[setDistroValues]={Unit->True,G->True};
-setDistroValues[ \[Sigma]g_,\[Mu]c_,{{sMin_,sMax_},{dMin_,dMax_}},OptionsPattern[]]:= Module[{\[Mu],c,\[Sigma],s,\[Gamma],g},
-If[OptionValue[Unit],
-\[Mu]=\[Mu]c ;c = pointFromUnit[\[Mu]c ,{sMin,sMax}];
-If[OptionValue[G],
-\[Gamma]=\[Sigma]g; \[Sigma] = uG[\[Gamma]]; s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s]; ,
-\[Sigma] =\[Sigma]g;\[Gamma] = uG[\[Sigma] ];s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s];
-],
-\[Mu]=pointToUnit[\[Mu]c ,{sMin,sMax}] ;c = \[Mu]c;
-If[OptionValue[G],
-g=\[Sigma]g;  s = uG[g];\[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];,
-s =\[Sigma]g; g = uG[s]; \[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];
-];
-];
-{{\[Mu],c},{\[Sigma],s},{\[Gamma],g}}
-]
-setDistroValues[ {{\[Mu]i_,ci_},{\[Sigma]i_,si_},{\[Gamma]i_,gi_}},{{sMin_,sMax_},{dMin_,dMax_}},OptionsPattern[]]:= Module[{\[Mu],c,\[Sigma],s,\[Gamma],g},
-If[OptionValue[Unit],
-\[Mu]=\[Mu]i ;c = pointFromUnit[\[Mu]i ,{sMin,sMax}];
-If[OptionValue[G],
-\[Gamma]=\[Gamma]i; \[Sigma] = uG[\[Gamma]]; s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s]; ,
-\[Sigma] =\[Sigma]i;\[Gamma] = uG[\[Sigma] ];s=scaleFromUnit[\[Sigma],{sMin,sMax}]; g = uG[s];
-],
-\[Mu]=pointToUnit[ci ,{sMin,sMax}] ;c = ci;
-If[OptionValue[G],
-g=gi;  s = uG[g];\[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];,
-s =si; g = uG[s]; \[Sigma]=scaleToUnit[s,{sMin,sMax}];\[Gamma] = uG[\[Sigma] ];
-];
-];
-{{\[Mu],c},{\[Sigma],s},{\[Gamma],g}}
-]*)
-
-
 Clear[DistroValues]
 Options[DistroValues]={Unit->True,G->True};
 DistroValues[ \[Sigma]g_,\[Mu]c_,{{sMin_,sMax_},{dMin_,dMax_}},OptionsPattern[]]:= Module[{\[Mu],c,\[Sigma],s,\[Gamma],g},
@@ -2159,9 +2126,9 @@ func = Function[{x}, Evaluate[dis[x, qRsRange[[i]] \[Sigma][[i]], qRsRange[[i]] 
 Function[{x}, Evaluate[
 If[Qkeep[[i]] && Qdisc[[i]] && Qdist[[i]], 
   Piecewise[{
-   {dMin[[i]],                                                                              x <= \[CapitalLambda]q[[i,1]]}, 
+   {dMin[[i]],                                                                       x <= \[CapitalLambda]q[[i,1]]}, 
    {func[x],                                                            \[CapitalLambda]q[[i,1]] <  x <  \[CapitalOmega]pq[[i,1]]}, 
-   {S[[i]]*x - S[[i]]*\[CapitalOmega]pq[[i,1]] + func[\[CapitalOmega]pq[[i,1]]],                               \[CapitalOmega]pq[[i,1]] <= x <= \[CapitalOmega]pq[[i,2]]}, 
+   {S[[i]]*x - S[[i]]*\[CapitalOmega]pq[[i,1]] + func[\[CapitalOmega]pq[[i,1]]],                 \[CapitalOmega]pq[[i,1]] <= x <= \[CapitalOmega]pq[[i,2]]}, 
    {func[x] + S[[i]]*\[CapitalOmega]pq[[i,2]] - S[[i]]*\[CapitalOmega]pq[[i,1]] - func[\[CapitalOmega]pq[[i,2]]] + func[\[CapitalOmega]pq[[i,1]]], \[CapitalOmega]pq[[i,2]] <  x < \[CapitalLambda]q[[i,2]]}, 
    {func[\[CapitalLambda]q[[i,2]]] + S[[i]]*\[CapitalOmega]pq[[i,2]] - S[[i]]*\[CapitalOmega]pq[[i,1]] - func[\[CapitalOmega]pq[[i,2]]] + func[\[CapitalOmega]pq[[i,1]]],  \[CapitalLambda]q[[i,2]] <= x}}], 
 If[Qkeep[[i]] && Qdisc[[i]] &&  !Qdist[[i]], 
