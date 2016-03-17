@@ -2442,7 +2442,6 @@ Next, we decide which of the distribution methods should be used. This is done b
            \Scale \; x  + \dstMin  & \Discard_1^q \le x \le \Discard_2^q  \\
            \Discard_2 - \Discard_1 + \dstMin  & \Discard_2^q \le x\\
            \end{cases}$
-          \ElsIf{$\mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Linear Distribution}
           \algstore{bkbreak}
 \end{algorithmic}
   \caption{An algorithm which returns a channel appropriate distribution function}
@@ -2452,6 +2451,14 @@ Next, we decide which of the distribution methods should be used. This is done b
 \caption{Part 2}
 \begin{algorithmic}[1]
 \algrestore{bkbreak}
+          \ElsIf{$\mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \mathbf{Q}_{distribute} $}\Comment{Little Loss Distribution}
+          \State $
+           pDis(x) \gets \begin{cases}
+                    \text{dis}(\Scale x) & \srcMin < x < \eKeep_1^q \\
+                    \Scale x - \eKeep_1 + \text{dis}(\eKeep_1) & \eKeep_1^q \le x \le \eKeep_2^q  \\
+                    \text{dis}(\Scale x) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1)  & \eKeep_2^q < x \\
+                    \end{cases}   $
+          \ElsIf{$\mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Linear Distribution}
           \State   
           $  pDis(x) \gets \Scale \; x + \dstMin $
           \ElsIf{$\lnot \mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \mathbf{Q}_{distribute} $}\Comment{Truncated Erf Distribution}
@@ -2459,7 +2466,7 @@ Next, we decide which of the distribution methods should be used. This is done b
          $ pDis(x) \gets \begin{cases}
           \dstMin & x \le \Discard_1^q \\
           \text{dis}(\Scale x) & \Discard_1^q < x < \Discard_2^q \\
-          \dstMax & \Discard_2^q < x  \\
+          \dstMax & \Discard_2^q \le x  \\
           \end{cases} $
           \ElsIf{$\lnot\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Step Distribution!}
          \State   
