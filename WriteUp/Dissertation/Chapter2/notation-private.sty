@@ -1,0 +1,390 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{notation-private}
+ 
+\newcommand{\um}{\scalebox{0.75}[1.0]{\( - \)}}
+\newcommand{\Pii}[1]{\frac{\pi}{#1} }
+\newcommand{\sine}[1]{\sin \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
+\newcommand{\cosine}[1]{\cos \left( \scalebox{0.75}[1.0]{\( #1 \)} \right)}
+\newcommand{\secant}[1]{\sec \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
+\newcommand{\cosecant}[1]{\csc \left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
+
+%\newcommand\mycmd[2][]{%
+%  \ifstrempty{#1}{%
+    % something with #2
+%  }{%
+    % some other thing with #1 and #2
+%  }%
+%}
+
+\newcommand{\discrete}[1]{\widehat{#1}}
+\newcommand{\apprx}[1]{\widetilde{#1}}
+\newcommand{\normed}[1]{\overline{#1}}
+
+
+\newcommand{\thetaA}{\delta\theta}
+
+
+\newcommand\R[1][]{
+  \ifstrempty{#1}{
+    \mathbf{R}
+  }{
+    \mathbf{R}\left( #1 \right)
+  }
+} 
+
+% The scaling for the matrix
+\newcommand\Scale[1][]{
+  \ifstrempty{#1}{
+    \vec{S}
+  }{
+    \vec{S}\left( #1 \right)
+  }
+} 
+
+% ----- qR definitions -------
+% The scaling for the matrix
+\newcommand\qS[1][]{
+  \ifstrempty{#1}{
+    \vec{qS}
+  }{
+    \vec{qS}\left( #1 \right)
+  }
+} 
+
+% The matrix
+\newcommand\qR[1][]{
+  \ifstrempty{#1}{
+    \mathbf{qR}
+  }{
+    \mathbf{qR}\left( #1 \right)
+  }
+} 
+
+% The matrix which is used in the algorithm \aR=\fSs \otimes \qR 
+\newcommand\aR[1][]{
+  \ifstrempty{#1}{
+    \mathbf{aR}
+  }{
+    \mathbf{aR}\left( #1 \right)
+  }
+} 
+
+% The matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
+\newcommand\qRe[1][]{
+  \ifstrempty{#1}{
+     \mathbf{qR}\text{e}
+  }{
+     \mathbf{qR}\text{e}\left( #1 \right)
+  }
+} 
+
+% The perturbation to the matrix 
+\newcommand\dqR[1][]{
+  \ifstrempty{#1}{
+    \delta \mathbf{qR}
+  }{
+    \delta \mathbf{qR}\left( #1 \right)
+  }
+} 
+
+% The perturbation to the matrix in the 0 < theta < Pi/6 region \dqR[\theta]=\fRO[ \dqRe[\theta], \theta]
+\newcommand\dqRe[1][]{
+  \ifstrempty{#1}{
+    \delta \mathbf{qR}\text{e}
+  }{
+    \delta \mathbf{qR}\text{e}\left( #1 \right)
+  }
+} 
+
+
+% ----- fR definitions -------
+% The scaling for the matrix
+\newcommand\fS[1][]{
+  \ifstrempty{#1}{
+    \vec{fS}
+  }{
+    \vec{fS}\left( #1 \right)
+  }
+} 
+% The sign for the scaling for the matrix
+\newcommand\fSs[1][]{
+  \ifstrempty{#1}{
+    \vec{fSs}
+  }{
+    \vec{fSs}\left( #1 \right)
+  }
+} 
+
+% The scaling ordering for the matrix
+\newcommand\fSO[1][]{
+  \ifstrempty{#1}{
+    \text{fSO}
+  }{
+    \text{fSO}\left[ #1 \right]
+  }
+} 
+
+% The scaling for the matrix  in the 0 < theta < Pi/6 region
+\newcommand\fSe[1][]{
+  \ifstrempty{#1}{
+    \text{fSe}
+  }{
+    \text{fSe}\left[#1 \right)
+  }
+} 
+
+% The matrix
+\newcommand\fR[1][]{
+  \ifstrempty{#1}{
+    \mathbf{fR}
+  }{
+    \mathbf{fR}\left( #1 \right)
+  }
+} 
+
+% The matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
+\newcommand\fRe[1][]{
+  \ifstrempty{#1}{
+     \mathbf{fR}\text{e}
+  }{
+     \mathbf{fR}\text{e}\left( #1 \right)
+  }
+} 
+
+% The matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
+\newcommand\fRm[1][]{
+  \ifstrempty{#1}{
+     \mathbf{fR}\text{m}
+  }{
+     \mathbf{fR}\text{m}\left( #1 \right)
+  }
+} 
+
+% The perturbation to the matrix 
+\newcommand\dfR[1][]{
+  \ifstrempty{#1}{
+    \delta \mathbf{fR}
+  }{
+    \delta \mathbf{fR}\left( #1 \right)
+  }
+} 
+
+% The perturbation to the matrix in the 0 < theta < Pi/6 region \dfR[\theta]=\fRO[ \dfRe[\theta], \theta]
+\newcommand\dfRe[1][]{
+  \ifstrempty{#1}{
+    \delta \mathbf{fR}\text{e}
+  }{
+    \delta \mathbf{fR}\text{e}\left( #1 \right)
+  }
+} 
+
+% The Ordering function which puts fRe into the correct form for the other regions \fR[\theta]=\fRO[ \fRe[\theta], \theta]
+\newcommand\fRO[1][]{
+  \ifstrempty{#1}{
+    \mathbf{fR}\text{O}
+  }{
+    \mathbf{fR}\text{O}\left[#1\right]
+  }
+}
+
+% The Ordering function which puts fRe into the correct form for the other regions \fR[\theta]=\fRO[ \fRe[\theta], \theta]
+\newcommand\fROm[1][]{
+  \ifstrempty{#1}{
+    \widehat{\mathbf{fR}\text{O}}
+  }{
+    \widehat{\mathbf{fR}\text{O}}\left[#1\right]
+  }
+}
+
+% --------- rR
+
+\newcommand\rR[1][]{
+  \ifstrempty{#1}{
+    \mathbf{rR}
+  }{
+    \mathbf{rR}\left( #1 \right)
+  }
+} 
+
+\newcommand\nR[1][]{
+  \ifstrempty{#1}{
+    \normed{\mathbf{R}}
+  }{
+    \normed{\mathbf{R}}\left( #1 \right)
+  }
+} 
+
+\newcommand\nRa[1][]{
+  \ifstrempty{#1}{
+    \apprx{\normed{\mathbf{R}}}
+  }{
+   \apprx{ \normed{\mathbf{R}}} \left( #1 \right)
+  }
+} 
+
+\newcommand\dnR[1][]{
+  \ifstrempty{#1}{
+    \normed{\delta\mathbf{R}}
+  }{
+   \normed{\delta\mathbf{R}} \left( #1 \right)
+  }
+} 
+
+
+% The scaling for the matrix
+\newcommand\rS[1][]{
+  \ifstrempty{#1}{
+    \vec{rS}
+  }{
+    \vec{rS}\left( #1 \right)
+  }
+} 
+
+
+% ----- nR definitions -------
+% The scaling for the matrix
+\newcommand\nS[1][]{
+  \ifstrempty{#1}{
+    \vec{\mathbf{L}^{\um 1}}
+  }{
+    \vec{\mathbf{L}^{\um 1}}\left( #1 \right)
+  }
+} 
+
+
+% \newcommand{\fRe}[1]{\mathbf{fR}\text{e}\left(#1\right) }
+
+% \newcommand{\dfRe}[1]{\delta \mathbf{fR}\text{e}\left(#1\right) }
+
+% \newcommand{\fRO}[1]{\mathbf{fR}\text{O}\left[#1\right] }
+
+\newcommand{\fReq}[1]{\text{fRe}\left( \scalebox{0.75}[1.0]{\( #1 \)}\right) }
+
+\newcommand{\unitDst}{\text{uDst}} % Destination in the unit range 0:1
+\newcommand{\uDst}{\unitDst}       % Destination in the unit range 0:1
+\newcommand{\intDst}{\text{iDst}}  % Destination in the integer range dstMin:dstMax
+\newcommand{\iDst}{\intDst}        % Destination in the integer range dstMin:dstMax
+\newcommand{\dstMax}{\text{dstMax}}      % Destination integer range maximum
+\newcommand{\dstMin}{\text{dstMin}}      % Destination integer range mimimum
+\newcommand{\dstRange}{\text{dstRange}}  % Destination integer range
+\newcommand{\discreteDst}{\widetilde{\uDst}}   % Destination found using the discretized transformation matrix
+\newcommand{\dDst}{\discreteDst}               % Destination found using the discretized transformation matrix
+\newcommand{\delDst}{\delta\uDst}              % Error in the Destination found using the discretized transformation matrix
+
+\newcommand{\unitT}{\text{uT}}             % Rotated values in the unit range 0:1
+\newcommand{\uT}{\unitT}                   % Rotated values in the unit range 0:1
+\newcommand{\intT}{\text{iT}}              % Rotated values in the integer range tMin:tMax
+\newcommand{\iT}{\intT}                    % Rotated values in the integer range tMin:tMax
+\newcommand{\tMax}{\text{tMax}}            % Rotated values integer range maximum
+\newcommand{\tMin}{\text{tMin}}            % Rotated values integer range mimimum
+\newcommand{\tRange}{\text{tRange}}        % Rotated values after integer rotation range 
+\newcommand{\aMax}{\text{aMax}}            % Rotated values after integer rotation integer range maximum
+\newcommand{\aMin}{\text{aMin}}            % Rotated values after integer rotation integer range mimimum
+\newcommand{\aRange}{\text{aRange}}        % Rotated values integer range
+\newcommand{\discreteT}{\widetilde{\uT}}   % Rotated values found using the discretized transformation matrix
+\newcommand{\dT}{\discreteT}               % Rotated values found using the discretized transformation matrix
+\newcommand{\delT}{\delta\uT}              % Error in the Rotated values found using the discretized transformation matrix
+
+\newcommand{\unitSrc}{\text{uSrc}}       % Source in the unit range 0:1
+\newcommand{\uSrc}{\unitSrc}             % Source in the unit range 0:1
+\newcommand{\intSrc}{\text{iSrc}}        % Source in the integer range srcMin:srcMax
+\newcommand{\iSrc}{\intSrc}              % Source in the integer range srcMin:srcMax
+\newcommand{\srcMax}{\text{srcMax}}      % Source integer range maximum
+\newcommand{\srcMin}{\text{srcMin}}      % Source integer range mimimum
+\newcommand{\srcRange}{\text{srcRange}}  % Source integer range
+
+\newcommand{\unitX}{\text{uX}}       % Source in the unit range 0:1
+\newcommand{\uX}{\unitX}             % Source in the unit range 0:1
+\newcommand{\intX}{\text{iX}}        % Source in the integer range xMin:xMax
+\newcommand{\iX}{\intX}              % Source in the integer range xMin:xMax
+\newcommand{\xMax}{\text{xMax}}      % Source integer range maximum
+\newcommand{\xMin}{\text{xMin}}      % Source integer range mimimum
+\newcommand{\xRange}{\text{xRange}}  % Source integer range
+
+\newcommand{\unitY}{\text{uY}}       % Destination in the unit range 0:1
+\newcommand{\uY}{\unitY}             % Destination in the unit range 0:1
+\newcommand{\intY}{\text{iY}}        % Destination in the integer range yMin:yMax
+\newcommand{\iY}{\intY}              % Destination in the integer range yMin:yMax
+\newcommand{\yMax}{\text{yMax}}      % Destination integer range maximum
+\newcommand{\yMin}{\text{yMin}}      % Destination integer range mimimum
+\newcommand{\yRange}{\text{yRange}}  % Destination integer range
+
+\newcommand{\unitR}{\text{uR}}
+\newcommand{\uR}{\unitR}
+\newcommand{\intR}{\text{iR}}
+\newcommand{\iR}{\intR}
+\newcommand{\discreteR}{\widetilde{\uR}}
+\newcommand{\dR}{\discreteR}
+\newcommand{\delR}{\delta\uR}
+\newcommand{\rRange}{\text{rRange}}  % the discretization of the rotation matrix
+
+
+% The Ordering function which puts dqE into the correct form for the other regions  \dqR[\theta]=\dqEO[ \dqRe[\theta] \theta] \otimes \dqs[\theta],
+\newcommand\dqEO[1][]{
+  \ifstrempty{#1}{
+    \widehat{\mathbf{\delta qE}\text{O}}
+  }{
+    \widehat{\mathbf{\delta qE}\text{O}}\left[#1\right]
+  }
+}
+
+% The sign of the perturbation matrix \dqR[\theta]=\dqEO[ \dqRe[\theta] \theta] \otimes \dqs[\theta],
+\newcommand\dqs[1][]{
+  \ifstrempty{#1}{
+    \mathbf{\delta qS}
+  }{
+    \mathbf{\delta qS}\left(#1\right)
+  }
+}
+
+% The absolute sign of the perturbation matrix by for row construction \dqR[\theta]=\dqEO[ \dqRe[\theta] \theta] \otimes \dqs[\theta],
+\newcommand\dqas[1][]{
+  \ifstrempty{#1}{
+    \mathbf{\delta qAS}
+  }{
+    \mathbf{\delta qAS}\left(#1\right)
+  }
+}
+
+
+\newcommand{\rgb}{\vec{v}}
+\newcommand{\w}{\vec{w}}
+\newcommand{\dW}{\vec{\delta w}}
+
+
+\newcommand{\extremaTheta}[2]{\mathring{\phi} _{#1}\left( \scalebox{0.75}[1.0]{\( #2 \)}\right)}
+\newcommand{\maximaTheta}[1]{\hat{\phi}_{#1}}
+\newcommand{\minimaTheta}[1]{\check{\phi}_{#1}}
+\newcommand{\thetaX}[1]{\overset{\times}{\phi}\left( \scalebox{0.75}[1.0]{\( #1 \)}\right)}
+
+
+
+\newcommand{\meanIndx}{\overline{\mathbf{i}}}
+
+
+\newcommand{\Keep}{\Omega}
+\newcommand{\keep}{\omega}
+\newcommand{\eKeep}{\Omega p}
+\newcommand{\ekeep}{\omega p}
+\newcommand{\Discard}{\Lambda}
+\newcommand{\discard}{\lambda}
+
+\newcommand{\uSTD}[1]{\sigma_#1}
+\newcommand{\STD}[1]{\text{s}_#1}
+\newcommand{\uMean}[1]{\mu_#1}
+\newcommand{\mean}[1]{\text{c}_#1}
+
+\newcommand{\Rc}{\mathbf{R}\text{c}}
+
+\newcounter{algosection}[subsubsection]
+\newcommand{\algosection}[1]{\needspace{5\baselineskip} \stepcounter{algosection} \textbf{\thealgosection. #1} }
+
+
+\newcommand{\round}[1]{\text{Round}\left[ #1 \right] }
+\newcommand{\elemU}{\mathbf{U}}
+\newcommand{\elemAp}{\mathbf{A}_\oplus}
+\newcommand{\elemAm}{\mathbf{A}_\circleddash }
+\newcommand{\elemBp}{\mathbf{B}_\oplus}
+\newcommand{\elemBm}{\mathbf{B}_\circleddash }
+
+\newcommand{\mTheta}[2]{\theta_#1^#2} 
