@@ -2342,11 +2342,11 @@ Expanding the definition of the quantized matrix $\qR[\theta, n]$ (\ref{eq:quant
 \end{aligned} \\
 \end{gather*}
 This $\qRs[\theta, n]$ matrix is used to perform the rotation of the pixel values. Taking the inner product of $\qRs$ with the pixel values produces 
-a rotated set of pixel values $\vec{a} = \qRs \cdot \vec{rgb}$ with elements $ \vec{a}_1 \in \{0 \cdots 2^{n+2} \}$,  $ \vec{a}_2 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$ and $ \vec{a}_3 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$. 
+a rotated set of pixel values $\vec{a} = \qRs \cdot \vec{rgb}$ with elements $ \vec{a}_1 \in \{0 \cdots 3 (2^n - 1)\}$,  $ \vec{a}_2 \in 2^{n-2}-2^{2 n-2} \cdots 2^{2 n-2}-2^{n-2}  \}$ and $ \vec{a}_3 \in 2^{n-2}-2^{2 n-2}  \cdots 2^{2 n-2}-2^{n-2}  \}$. 
 \begin{align*}
-\qRsMin     &= \left( \begin{smallmatrix}  0           \\  2^{n-2}-2^{2 n-2} \\ 2^{n-2}-2^{2 n-2}\\ \end{smallmatrix} \right) & 
-\qRsMax    &= \left( \begin{smallmatrix}  2^{n+2} \\    2^{2 n-2}-2^{n-2}  \\   2^{2 n-2}-2^{n-2} \\ \end{smallmatrix} \right) & 
-\qRsRange &= \left( \begin{smallmatrix} 3 (2^n - 1) \\   2^{n-1} \left(2^n-1\right)      \\   2^{n-1} \left(2^n-1\right)     \\ \end{smallmatrix} \right) 
+\qRsMin     &= \left( \begin{smallmatrix} 0                \\  2^{n-2}-2^{2 n-2}                  \\ 2^{n-2}-2^{2 n-2}               \\ \end{smallmatrix} \right) & 
+\qRsMax    &= \left( \begin{smallmatrix} 3 (2^n - 1) \\  2^{2 n-2}-2^{n-2}                  \\  2^{2 n-2}-2^{n-2}              \\ \end{smallmatrix} \right) & 
+\qRsRange &= \left( \begin{smallmatrix} 3 (2^n - 1) \\  2^{n-1} \left(2^n-1\right)      \\  2^{n-1} \left(2^n-1\right)  \\ \end{smallmatrix} \right) 
 \end{align*}
 \algosection{Design the distribution function.} 
 First, the overall scaling for the quantized rotation matrix is found by combining the normalized scaling $\Scale[\theta, n]$ (\ref{eq:scaleDef}) with the desired scaling defined in equation (\ref{eq:CombinedRotationRange}):
