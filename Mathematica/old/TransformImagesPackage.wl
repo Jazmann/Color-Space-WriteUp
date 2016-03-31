@@ -307,7 +307,6 @@ cc=Axy^2/(4 Axx);
 
 
 EllipsePropertiesFromCoeffs[Axx_,Axy_,Ayy_,Ax_,Ay_,A0_]:=Module[{x0,y0,a,b,\[Theta],u1,u2,l1,l2,l3,p1,p2},
-
 u1= (A0 Axy^2-Ax Axy Ay+Axx Ay^2+Ax^2 Ayy);
 u2=A0 Axx Ayy;
 l1=Sqrt[Axy^2+(Axx-Ayy)^2];
@@ -317,7 +316,7 @@ p1=(-Axy Ay+2 Ax Ayy);
 p2= (-Ax Axy+2 Axx Ay);
 {x0,y0}={p1/l3,p2/l3};
 {a,b}={Sqrt[2] Sqrt[(u1-4u2)/((l1-l2) l3)],Sqrt[2] Sqrt[(u1-4u2)/(-l3 (l1+l2) )]};
-\[Theta]=If[Axy==0,If[Axx<Ayy,0,Pi/2],If[Axx<Ayy,1/2 ArcCot[(Axx-Ayy)/Axy],Pi/2+1/2 ArcCot[(Axx-Ayy)/Axy]]];
+\[Theta]=If[Axy==0,If[Axx<Ayy,0,Pi/2],Pi/2+1/2 ArcTan[Axx-Ayy,Axy]];
 {{x0,y0},{a,b},\[Theta]}
 ]
 
@@ -370,7 +369,87 @@ Function[{x},Evaluate[Piecewise[{{Sequence[],x<trap[[2,1,1]]},{{x,fun[[2]][x]},t
 ]
 
 
-Clear[EllipseFitCoeffs]
+Clear[EllipseFit]
+EllipseFit[points_,method:("Direct"|"AMS")]:=Module[{Axx,Axy,Ayy,Ax,Ay,A0,x0,y0,a,b,\[Theta]},
+{Axx,Axy,Ayy,Ax,Ay,A0}=EllipseFitCoeffs[points,method];
+If[IsEllipse[Axx,Axy,Ayy,Ax,Ay,A0],
+{{x0,y0},{a,b},\[Theta]}=EllipsePropertiesFromCoeffs[Axx,Axy,Ayy,Ax,Ay,A0];
+If[a>=b,
+{{x0,y0},{a,b},\[Theta],Function[{x,y},Evaluate[{Axx,Axy,Ayy,Ax,Ay,A0}.{x^2, x y , y^2, x, y,1}]]},
+If[\[Theta]<0,
+{{x0,y0},{b,a},\[Theta]+N[Pi/2],Function[{x,y},Evaluate[{Axx,Axy,Ayy,Ax,Ay,A0}.{x^2, x y , y^2, x, y,1}]]},
+{{x0,y0},{b,a},\[Theta]-N[Pi/2],Function[{x,y},Evaluate[{Axx,Axy,Ayy,Ax,Ay,A0}.{x^2, x y , y^2, x, y,1}]]}
+]],
+{{},{},Null,Function[{x,y},Evaluate[{Axx,Axy,Ayy,Ax,Ay,A0}.{x^2, x y , y^2, x, y, 1}]]}
+]
+]
+
+
+EllipseFitCoeffs[points_,"AMS"]:=Module[{c,DMat,DM,eVal,eVec,pos,A,A4,A5,A6,Axx,Axy,Ayy,Ax,Ay,A0,x0,y0,a,b,\[Theta]},
+c=Mean[points];
+DMat = (Function[{x,y},{(x-c[[1]])^2,(x-c[[1]]) (y-c[[2]]), (y-c[[2]])^2, (x-c[[1]]), (y-c[[2]]), 1}])@@@points;
+DM=(Transpose[DMat].DMat)/Length[points];
+M={{((-DM[[1,1]]+DM[[1,3]]+DM[[1,6]]^2) DM[[2,6]]^2+(-2 DM[[1,2]] DM[[2,6]]+DM[[1,6]] (DM[[1,1]]-DM[[1,6]]^2+DM[[2,6]]^2)) DM[[3,6]]+(DM[[1,1]]-DM[[1,6]]^2) DM[[3,6]]^2)/(4 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(DM[[2,6]]^2 (-DM[[1,2]]+DM[[2,3]]+DM[[1,6]] DM[[2,6]])+(DM[[1,2]] DM[[1,6]]-(DM[[1,6]]^2+2 DM[[2,2]]) DM[[2,6]]+DM[[2,6]]^3) DM[[3,6]]+(DM[[1,2]]-DM[[1,6]] DM[[2,6]]) DM[[3,6]]^2)/(4 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(-2 DM[[2,3]] DM[[2,6]] DM[[3,6]]-DM[[1,6]] DM[[3,6]]^2 (DM[[1,6]]+DM[[3,6]])+DM[[1,3]] (-DM[[2,6]]^2+DM[[3,6]] (DM[[1,6]]+DM[[3,6]]))+DM[[2,6]]^2 (DM[[3,3]]+DM[[3,6]] (DM[[1,6]]+DM[[3,6]])))/(4 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(DM[[2,6]] (DM[[2,6]] DM[[3,4]]-2 DM[[2,4]] DM[[3,6]])+DM[[1,4]] (-DM[[2,6]]^2+DM[[3,6]] (DM[[1,6]]+DM[[3,6]])))/(4 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(DM[[2,6]] (DM[[2,6]] DM[[3,5]]-2 DM[[2,5]] DM[[3,6]])+DM[[1,5]] (-DM[[2,6]]^2+DM[[3,6]] (DM[[1,6]]+DM[[3,6]])))/(4 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]]))},
+{(-DM[[1,3]] DM[[1,6]] DM[[2,6]]+(2 DM[[1,2]] DM[[1,6]]-DM[[1,1]] DM[[2,6]]) DM[[3,6]])/(2 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(-DM[[1,2]] DM[[2,6]] DM[[3,6]]+DM[[1,6]] (-DM[[2,3]] DM[[2,6]]+2 DM[[2,2]] DM[[3,6]]))/(2 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(-DM[[1,3]] DM[[2,6]] DM[[3,6]]+DM[[1,6]] (-DM[[2,6]] DM[[3,3]]+2 DM[[2,3]] DM[[3,6]]))/(2 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(-DM[[1,4]] DM[[2,6]] DM[[3,6]]+DM[[1,6]] (-DM[[2,6]] DM[[3,4]]+2 DM[[2,4]] DM[[3,6]]))/(2 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(-DM[[1,5]] DM[[2,6]] DM[[3,6]]+DM[[1,6]] (-DM[[2,6]] DM[[3,5]]+2 DM[[2,5]] DM[[3,6]]))/(2 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]]))},
+{(-2 DM[[1,2]] DM[[1,6]] DM[[2,6]]+(DM[[1,1]]+DM[[1,6]]^2) DM[[2,6]]^2+DM[[1,6]] (-DM[[1,6]]^2+DM[[2,6]]^2) DM[[3,6]]-DM[[1,6]]^2 DM[[3,6]]^2+DM[[1,3]] (-DM[[2,6]]^2+DM[[1,6]] (DM[[1,6]]+DM[[3,6]])))/(4 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(DM[[1,6]]^2 (DM[[2,3]]-DM[[2,6]] DM[[3,6]])+DM[[2,6]]^2 (DM[[1,2]]-DM[[2,3]]+DM[[2,6]] DM[[3,6]])+DM[[1,6]] (DM[[2,3]] DM[[3,6]]+DM[[2,6]] (-2 DM[[2,2]]+DM[[2,6]]^2-DM[[3,6]]^2)))/(4 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(DM[[1,6]]^2 (DM[[3,3]]-DM[[3,6]]^2)+DM[[2,6]]^2 (DM[[1,3]]-DM[[3,3]]+DM[[3,6]]^2)+DM[[1,6]] (-2 DM[[2,3]] DM[[2,6]]+DM[[3,6]] (DM[[2,6]]^2+DM[[3,3]]-DM[[3,6]]^2)))/(4 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(DM[[2,6]]^2 (DM[[1,4]]-DM[[3,4]])+DM[[1,6]]^2 DM[[3,4]]+DM[[1,6]] (-2 DM[[2,4]] DM[[2,6]]+DM[[3,4]] DM[[3,6]]))/(4 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]])),
+(DM[[2,6]]^2 (DM[[1,5]]-DM[[3,5]])+DM[[1,6]]^2 DM[[3,5]]+DM[[1,6]] (-2 DM[[2,5]] DM[[2,6]]+DM[[3,5]] DM[[3,6]]))/(4 (DM[[1,6]]+DM[[3,6]]) (-DM[[2,6]]^2+DM[[1,6]] DM[[3,6]]))},
+{DM[[1,4]],DM[[2,4]],DM[[3,4]],DM[[4,4]],DM[[4,5]]},{DM[[1,5]],DM[[2,5]],DM[[3,5]],DM[[4,5]],DM[[5,5]]}};
+{eVal,eVec}=Eigensystem[M];
+pos=Ordering[eVal,All,Less][[1]];
+
+A = {Sequence@@eVec[[pos]],-eVec[[pos,1;;3]].DM[[1;;3,6]]};
+A4 = A[[4]]-2 A[[1]] c[[1]]-A[[2]] c[[2]];
+A5 = A[[5]]-2 A[[3]] c[[2]]-A[[2]] c[[1]];
+A6 = A[[6]]+A[[1]] c[[1]]^2 + A[[3]] c[[2]]^2 + A[[2]] c[[1]] c[[2]]-A[[4]] c[[1]]-A[[5]] c[[2]];
+
+{A[[1]],A[[2]],A[[3]],A4,A5,A6}/Norm[{A[[1]],A[[2]],A[[3]],A4,A5,A6}]
+]
+
+
+EllipseFitCoeffs[points_,"Direct"]:=Module[{c,DMat,DM,eVal,eVec,pos,TSfun,TMfun,TS,TM,M,cond,A,A1,A4,A5,A6,Axx,Axy,Ayy,Ax,Ay,A0,x0,y0,a,b,\[Theta]},
+c=Mean[points];
+DMat = (Function[{x,y},{(x-c[[1]])^2,(x-c[[1]]) (y-c[[2]]), (y-c[[2]])^2, (x-c[[1]]), (y-c[[2]]), 1}])@@@points;
+DM=(Transpose[DMat].DMat)/Length[points];
+TMfun=Function[{DM},{
+{ DM[[1,6]] DM[[4,6]] DM[[5,5]]-DM[[1,6]] DM[[4,5]] DM[[5,6]]-DM[[1,5]] DM[[4,6]] DM[[6,5]]+DM[[1,4]] DM[[5,6]] DM[[6,5]]+DM[[1,5]] DM[[4,5]] DM[[6,6]]-DM[[1,4]] DM[[5,5]] DM[[6,6]],
+  DM[[2,6]] DM[[4,6]] DM[[5,5]]-DM[[2,6]] DM[[4,5]] DM[[5,6]]-DM[[2,5]] DM[[4,6]] DM[[6,5]]+DM[[2,4]] DM[[5,6]] DM[[6,5]]+DM[[2,5]] DM[[4,5]] DM[[6,6]]-DM[[2,4]] DM[[5,5]] DM[[6,6]],
+  DM[[3,6]] DM[[4,6]] DM[[5,5]]-DM[[3,6]] DM[[4,5]] DM[[5,6]]-DM[[3,5]] DM[[4,6]] DM[[6,5]]+DM[[3,4]] DM[[5,6]] DM[[6,5]]+DM[[3,5]] DM[[4,5]] DM[[6,6]]-DM[[3,4]] DM[[5,5]] DM[[6,6]]},
+{-DM[[1,6]] DM[[4,6]] DM[[5,4]]+DM[[1,6]] DM[[4,4]] DM[[5,6]]+DM[[1,5]] DM[[4,6]] DM[[6,4]]-DM[[1,4]] DM[[5,6]] DM[[6,4]]-DM[[1,5]] DM[[4,4]] DM[[6,6]]+DM[[1,4]] DM[[5,4]] DM[[6,6]],
+ -DM[[2,6]] DM[[4,6]] DM[[5,4]]+DM[[2,6]] DM[[4,4]] DM[[5,6]]+DM[[2,5]] DM[[4,6]] DM[[6,4]]-DM[[2,4]] DM[[5,6]] DM[[6,4]]-DM[[2,5]] DM[[4,4]] DM[[6,6]]+DM[[2,4]] DM[[5,4]] DM[[6,6]],
+ -DM[[3,6]] DM[[4,6]] DM[[5,4]]+DM[[3,6]] DM[[4,4]] DM[[5,6]]+DM[[3,5]] DM[[4,6]] DM[[6,4]]-DM[[3,4]] DM[[5,6]] DM[[6,4]]-DM[[3,5]] DM[[4,4]] DM[[6,6]]+DM[[3,4]] DM[[5,4]] DM[[6,6]]},
+{ DM[[1,6]] DM[[4,5]] DM[[5,4]]-DM[[1,6]] DM[[4,4]] DM[[5,5]]-DM[[1,5]] DM[[4,5]] DM[[6,4]]+DM[[1,4]] DM[[5,5]] DM[[6,4]]+DM[[1,5]] DM[[4,4]] DM[[6,5]]-DM[[1,4]] DM[[5,4]] DM[[6,5]],
+  DM[[2,6]] DM[[4,5]] DM[[5,4]]-DM[[2,6]] DM[[4,4]] DM[[5,5]]-DM[[2,5]] DM[[4,5]] DM[[6,4]]+DM[[2,4]] DM[[5,5]] DM[[6,4]]+DM[[2,5]] DM[[4,4]] DM[[6,5]]-DM[[2,4]] DM[[5,4]] DM[[6,5]],
+  DM[[3,6]] DM[[4,5]] DM[[5,4]]-DM[[3,6]] DM[[4,4]] DM[[5,5]]-DM[[3,5]] DM[[4,5]] DM[[6,4]]+DM[[3,4]] DM[[5,5]] DM[[6,4]]+DM[[3,5]] DM[[4,4]] DM[[6,5]]-DM[[3,4]] DM[[5,4]] DM[[6,5]]}}];
+TSfun=Function[{DM},1/(-DM[[4,6]] DM[[5,5]] DM[[6,4]]+DM[[4,5]] DM[[5,6]] DM[[6,4]]+DM[[4,6]] DM[[5,4]] DM[[6,5]]-DM[[4,4]] DM[[5,6]] DM[[6,5]]-DM[[4,5]] DM[[5,4]] DM[[6,6]]+DM[[4,4]] DM[[5,5]] DM[[6,6]])];
+
+TM = TMfun[DM];
+TS = TSfun[DM];
+M=Reverse[{1/2,-1,1/2} * (DM[[1;;3,1;;3]] + TS  DM[[1;;3,4;;6]]. TM)];
+(* M=List[List[Times[Rational[1,2],Plus[DM[[3,1]],Times[Power[Plus[Times[-1,DM[[4,6]],DM[[5,5]],DM[[6,4]]],Times[DM[[4,5]],DM[[5,6]],DM[[6,4]]],Times[DM[[4,6]],DM[[5,4]],DM[[6,5]]],Times[-1,DM[[4,4]],DM[[5,6]],DM[[6,5]]],Times[-1,DM[[4,5]],DM[[5,4]],DM[[6,6]]],Times[DM[[4,4]],DM[[5,5]],DM[[6,6]]]],-1],Plus[Times[DM[[1,6]],Plus[Times[DM[[3,6]],DM[[4,5]],DM[[5,4]]],Times[-1,DM[[3,5]],DM[[4,6]],DM[[5,4]]],Times[-1,DM[[3,6]],DM[[4,4]],DM[[5,5]]],Times[DM[[3,4]],DM[[4,6]],DM[[5,5]]],Times[DM[[3,5]],DM[[4,4]],DM[[5,6]]],Times[-1,DM[[3,4]],DM[[4,5]],DM[[5,6]]]]],Times[DM[[1,5]],Plus[Times[-1,DM[[3,6]],DM[[4,5]],DM[[6,4]]],Times[DM[[3,5]],DM[[4,6]],DM[[6,4]]],Times[DM[[3,6]],DM[[4,4]],DM[[6,5]]],Times[-1,DM[[3,4]],DM[[4,6]],DM[[6,5]]],Times[-1,DM[[3,5]],DM[[4,4]],DM[[6,6]]],Times[DM[[3,4]],DM[[4,5]],DM[[6,6]]]]],Times[DM[[1,4]],Plus[Times[DM[[3,6]],DM[[5,5]],DM[[6,4]]],Times[-1,DM[[3,5]],DM[[5,6]],DM[[6,4]]],Times[-1,DM[[3,6]],DM[[5,4]],DM[[6,5]]],Times[DM[[3,4]],DM[[5,6]],DM[[6,5]]],Times[DM[[3,5]],DM[[5,4]],DM[[6,6]]],Times[-1,DM[[3,4]],DM[[5,5]],DM[[6,6]]]]]]]]],Times[Rational[1,2],Plus[DM[[3,2]],Times[Power[Plus[Times[-1,DM[[4,6]],DM[[5,5]],DM[[6,4]]],Times[DM[[4,5]],DM[[5,6]],DM[[6,4]]],Times[DM[[4,6]],DM[[5,4]],DM[[6,5]]],Times[-1,DM[[4,4]],DM[[5,6]],DM[[6,5]]],Times[-1,DM[[4,5]],DM[[5,4]],DM[[6,6]]],Times[DM[[4,4]],DM[[5,5]],DM[[6,6]]]],-1],Plus[Times[DM[[2,6]],Plus[Times[DM[[3,6]],DM[[4,5]],DM[[5,4]]],Times[-1,DM[[3,5]],DM[[4,6]],DM[[5,4]]],Times[-1,DM[[3,6]],DM[[4,4]],DM[[5,5]]],Times[DM[[3,4]],DM[[4,6]],DM[[5,5]]],Times[DM[[3,5]],DM[[4,4]],DM[[5,6]]],Times[-1,DM[[3,4]],DM[[4,5]],DM[[5,6]]]]],Times[DM[[2,5]],Plus[Times[-1,DM[[3,6]],DM[[4,5]],DM[[6,4]]],Times[DM[[3,5]],DM[[4,6]],DM[[6,4]]],Times[DM[[3,6]],DM[[4,4]],DM[[6,5]]],Times[-1,DM[[3,4]],DM[[4,6]],DM[[6,5]]],Times[-1,DM[[3,5]],DM[[4,4]],DM[[6,6]]],Times[DM[[3,4]],DM[[4,5]],DM[[6,6]]]]],Times[DM[[2,4]],Plus[Times[DM[[3,6]],DM[[5,5]],DM[[6,4]]],Times[-1,DM[[3,5]],DM[[5,6]],DM[[6,4]]],Times[-1,DM[[3,6]],DM[[5,4]],DM[[6,5]]],Times[DM[[3,4]],DM[[5,6]],DM[[6,5]]],Times[DM[[3,5]],DM[[5,4]],DM[[6,6]]],Times[-1,DM[[3,4]],DM[[5,5]],DM[[6,6]]]]]]]]],Times[Rational[1,2],Plus[DM[[3,3]],Times[Power[Plus[Times[DM[[4,6]],DM[[5,5]],DM[[6,4]]],Times[-1,DM[[4,5]],DM[[5,6]],DM[[6,4]]],Times[-1,DM[[4,6]],DM[[5,4]],DM[[6,5]]],Times[DM[[4,4]],DM[[5,6]],DM[[6,5]]],Times[DM[[4,5]],DM[[5,4]],DM[[6,6]]],Times[-1,DM[[4,4]],DM[[5,5]],DM[[6,6]]]],-1],Plus[Times[Power[DM[[3,6]],2],Plus[Times[-1,DM[[4,5]],DM[[5,4]]],Times[DM[[4,4]],DM[[5,5]]]]],Times[-1,Plus[Times[DM[[3,5]],DM[[4,6]]],Times[-1,DM[[3,4]],DM[[5,6]]]],Plus[Times[DM[[3,5]],DM[[6,4]]],Times[-1,DM[[3,4]],DM[[6,5]]]]],Times[DM[[3,6]],Plus[Times[DM[[3,4]],Plus[Times[DM[[4,5]],DM[[5,6]]],Times[-1,DM[[5,5]],Plus[DM[[4,6]],DM[[6,4]]]],Times[DM[[5,4]],DM[[6,5]]]]],Times[DM[[3,5]],Plus[Times[DM[[4,6]],DM[[5,4]]],Times[DM[[4,5]],DM[[6,4]]],Times[-1,DM[[4,4]],Plus[DM[[5,6]],DM[[6,5]]]]]]]],Times[Plus[Times[Power[DM[[3,5]],2],DM[[4,4]]],Times[-1,DM[[3,4]],DM[[3,5]],Plus[DM[[4,5]],DM[[5,4]]]],Times[Power[DM[[3,4]],2],DM[[5,5]]]],DM[[6,6]]]]]]]],List[Plus[Times[-1,DM[[2,1]]],Times[-1,Power[Plus[Times[-1,DM[[4,6]],DM[[5,5]],DM[[6,4]]],Times[DM[[4,5]],DM[[5,6]],DM[[6,4]]],Times[DM[[4,6]],DM[[5,4]],DM[[6,5]]],Times[-1,DM[[4,4]],DM[[5,6]],DM[[6,5]]],Times[-1,DM[[4,5]],DM[[5,4]],DM[[6,6]]],Times[DM[[4,4]],DM[[5,5]],DM[[6,6]]]],-1],Plus[Times[DM[[1,6]],Plus[Times[DM[[2,6]],DM[[4,5]],DM[[5,4]]],Times[-1,DM[[2,5]],DM[[4,6]],DM[[5,4]]],Times[-1,DM[[2,6]],DM[[4,4]],DM[[5,5]]],Times[DM[[2,4]],DM[[4,6]],DM[[5,5]]],Times[DM[[2,5]],DM[[4,4]],DM[[5,6]]],Times[-1,DM[[2,4]],DM[[4,5]],DM[[5,6]]]]],Times[DM[[1,5]],Plus[Times[-1,DM[[2,6]],DM[[4,5]],DM[[6,4]]],Times[DM[[2,5]],DM[[4,6]],DM[[6,4]]],Times[DM[[2,6]],DM[[4,4]],DM[[6,5]]],Times[-1,DM[[2,4]],DM[[4,6]],DM[[6,5]]],Times[-1,DM[[2,5]],DM[[4,4]],DM[[6,6]]],Times[DM[[2,4]],DM[[4,5]],DM[[6,6]]]]],Times[DM[[1,4]],Plus[Times[DM[[2,6]],DM[[5,5]],DM[[6,4]]],Times[-1,DM[[2,5]],DM[[5,6]],DM[[6,4]]],Times[-1,DM[[2,6]],DM[[5,4]],DM[[6,5]]],Times[DM[[2,4]],DM[[5,6]],DM[[6,5]]],Times[DM[[2,5]],DM[[5,4]],DM[[6,6]]],Times[-1,DM[[2,4]],DM[[5,5]],DM[[6,6]]]]]]]],Plus[Times[-1,DM[[2,2]]],Times[-1,Power[Plus[Times[DM[[4,6]],DM[[5,5]],DM[[6,4]]],Times[-1,DM[[4,5]],DM[[5,6]],DM[[6,4]]],Times[-1,DM[[4,6]],DM[[5,4]],DM[[6,5]]],Times[DM[[4,4]],DM[[5,6]],DM[[6,5]]],Times[DM[[4,5]],DM[[5,4]],DM[[6,6]]],Times[-1,DM[[4,4]],DM[[5,5]],DM[[6,6]]]],-1],Plus[Times[Power[DM[[2,6]],2],Plus[Times[-1,DM[[4,5]],DM[[5,4]]],Times[DM[[4,4]],DM[[5,5]]]]],Times[-1,Plus[Times[DM[[2,5]],DM[[4,6]]],Times[-1,DM[[2,4]],DM[[5,6]]]],Plus[Times[DM[[2,5]],DM[[6,4]]],Times[-1,DM[[2,4]],DM[[6,5]]]]],Times[DM[[2,6]],Plus[Times[DM[[2,4]],Plus[Times[DM[[4,5]],DM[[5,6]]],Times[-1,DM[[5,5]],Plus[DM[[4,6]],DM[[6,4]]]],Times[DM[[5,4]],DM[[6,5]]]]],Times[DM[[2,5]],Plus[Times[DM[[4,6]],DM[[5,4]]],Times[DM[[4,5]],DM[[6,4]]],Times[-1,DM[[4,4]],Plus[DM[[5,6]],DM[[6,5]]]]]]]],Times[Plus[Times[Power[DM[[2,5]],2],DM[[4,4]]],Times[-1,DM[[2,4]],DM[[2,5]],Plus[DM[[4,5]],DM[[5,4]]]],Times[Power[DM[[2,4]],2],DM[[5,5]]]],DM[[6,6]]]]]],Plus[Times[-1,DM[[2,3]]],Times[-1,Power[Plus[Times[-1,DM[[4,6]],DM[[5,5]],DM[[6,4]]],Times[DM[[4,5]],DM[[5,6]],DM[[6,4]]],Times[DM[[4,6]],DM[[5,4]],DM[[6,5]]],Times[-1,DM[[4,4]],DM[[5,6]],DM[[6,5]]],Times[-1,DM[[4,5]],DM[[5,4]],DM[[6,6]]],Times[DM[[4,4]],DM[[5,5]],DM[[6,6]]]],-1],Plus[Times[DM[[2,6]],Plus[Times[DM[[3,6]],DM[[4,5]],DM[[5,4]]],Times[-1,DM[[3,6]],DM[[4,4]],DM[[5,5]]],Times[-1,DM[[3,5]],DM[[4,5]],DM[[6,4]]],Times[DM[[3,4]],DM[[5,5]],DM[[6,4]]],Times[DM[[3,5]],DM[[4,4]],DM[[6,5]]],Times[-1,DM[[3,4]],DM[[5,4]],DM[[6,5]]]]],Times[DM[[2,5]],Plus[Times[-1,DM[[3,6]],DM[[4,6]],DM[[5,4]]],Times[DM[[3,6]],DM[[4,4]],DM[[5,6]]],Times[DM[[3,5]],DM[[4,6]],DM[[6,4]]],Times[-1,DM[[3,4]],DM[[5,6]],DM[[6,4]]],Times[-1,DM[[3,5]],DM[[4,4]],DM[[6,6]]],Times[DM[[3,4]],DM[[5,4]],DM[[6,6]]]]],Times[DM[[2,4]],Plus[Times[DM[[3,6]],DM[[4,6]],DM[[5,5]]],Times[-1,DM[[3,6]],DM[[4,5]],DM[[5,6]]],Times[-1,DM[[3,5]],DM[[4,6]],DM[[6,5]]],Times[DM[[3,4]],DM[[5,6]],DM[[6,5]]],Times[DM[[3,5]],DM[[4,5]],DM[[6,6]]],Times[-1,DM[[3,4]],DM[[5,5]],DM[[6,6]]]]]]]]],List[Times[Rational[1,2],Plus[DM[[1,1]],Times[Power[Plus[Times[DM[[4,6]],DM[[5,5]],DM[[6,4]]],Times[-1,DM[[4,5]],DM[[5,6]],DM[[6,4]]],Times[-1,DM[[4,6]],DM[[5,4]],DM[[6,5]]],Times[DM[[4,4]],DM[[5,6]],DM[[6,5]]],Times[DM[[4,5]],DM[[5,4]],DM[[6,6]]],Times[-1,DM[[4,4]],DM[[5,5]],DM[[6,6]]]],-1],Plus[Times[Power[DM[[1,6]],2],Plus[Times[-1,DM[[4,5]],DM[[5,4]]],Times[DM[[4,4]],DM[[5,5]]]]],Times[-1,Plus[Times[DM[[1,5]],DM[[4,6]]],Times[-1,DM[[1,4]],DM[[5,6]]]],Plus[Times[DM[[1,5]],DM[[6,4]]],Times[-1,DM[[1,4]],DM[[6,5]]]]],Times[DM[[1,6]],Plus[Times[DM[[1,4]],Plus[Times[DM[[4,5]],DM[[5,6]]],Times[-1,DM[[5,5]],Plus[DM[[4,6]],DM[[6,4]]]],Times[DM[[5,4]],DM[[6,5]]]]],Times[DM[[1,5]],Plus[Times[DM[[4,6]],DM[[5,4]]],Times[DM[[4,5]],DM[[6,4]]],Times[-1,DM[[4,4]],Plus[DM[[5,6]],DM[[6,5]]]]]]]],Times[Plus[Times[Power[DM[[1,5]],2],DM[[4,4]]],Times[-1,DM[[1,4]],DM[[1,5]],Plus[DM[[4,5]],DM[[5,4]]]],Times[Power[DM[[1,4]],2],DM[[5,5]]]],DM[[6,6]]]]]]],Times[Rational[1,2],Plus[DM[[1,2]],Times[Power[Plus[Times[-1,DM[[4,6]],DM[[5,5]],DM[[6,4]]],Times[DM[[4,5]],DM[[5,6]],DM[[6,4]]],Times[DM[[4,6]],DM[[5,4]],DM[[6,5]]],Times[-1,DM[[4,4]],DM[[5,6]],DM[[6,5]]],Times[-1,DM[[4,5]],DM[[5,4]],DM[[6,6]]],Times[DM[[4,4]],DM[[5,5]],DM[[6,6]]]],-1],Plus[Times[DM[[1,6]],Plus[Times[DM[[2,6]],DM[[4,5]],DM[[5,4]]],Times[-1,DM[[2,6]],DM[[4,4]],DM[[5,5]]],Times[-1,DM[[2,5]],DM[[4,5]],DM[[6,4]]],Times[DM[[2,4]],DM[[5,5]],DM[[6,4]]],Times[DM[[2,5]],DM[[4,4]],DM[[6,5]]],Times[-1,DM[[2,4]],DM[[5,4]],DM[[6,5]]]]],Times[DM[[1,5]],Plus[Times[-1,DM[[2,6]],DM[[4,6]],DM[[5,4]]],Times[DM[[2,6]],DM[[4,4]],DM[[5,6]]],Times[DM[[2,5]],DM[[4,6]],DM[[6,4]]],Times[-1,DM[[2,4]],DM[[5,6]],DM[[6,4]]],Times[-1,DM[[2,5]],DM[[4,4]],DM[[6,6]]],Times[DM[[2,4]],DM[[5,4]],DM[[6,6]]]]],Times[DM[[1,4]],Plus[Times[DM[[2,6]],DM[[4,6]],DM[[5,5]]],Times[-1,DM[[2,6]],DM[[4,5]],DM[[5,6]]],Times[-1,DM[[2,5]],DM[[4,6]],DM[[6,5]]],Times[DM[[2,4]],DM[[5,6]],DM[[6,5]]],Times[DM[[2,5]],DM[[4,5]],DM[[6,6]]],Times[-1,DM[[2,4]],DM[[5,5]],DM[[6,6]]]]]]]]],Times[Rational[1,2],Plus[DM[[1,3]],Times[Power[Plus[Times[-1,DM[[4,6]],DM[[5,5]],DM[[6,4]]],Times[DM[[4,5]],DM[[5,6]],DM[[6,4]]],Times[DM[[4,6]],DM[[5,4]],DM[[6,5]]],Times[-1,DM[[4,4]],DM[[5,6]],DM[[6,5]]],Times[-1,DM[[4,5]],DM[[5,4]],DM[[6,6]]],Times[DM[[4,4]],DM[[5,5]],DM[[6,6]]]],-1],Plus[Times[DM[[1,6]],Plus[Times[DM[[3,6]],DM[[4,5]],DM[[5,4]]],Times[-1,DM[[3,6]],DM[[4,4]],DM[[5,5]]],Times[-1,DM[[3,5]],DM[[4,5]],DM[[6,4]]],Times[DM[[3,4]],DM[[5,5]],DM[[6,4]]],Times[DM[[3,5]],DM[[4,4]],DM[[6,5]]],Times[-1,DM[[3,4]],DM[[5,4]],DM[[6,5]]]]],Times[DM[[1,5]],Plus[Times[-1,DM[[3,6]],DM[[4,6]],DM[[5,4]]],Times[DM[[3,6]],DM[[4,4]],DM[[5,6]]],Times[DM[[3,5]],DM[[4,6]],DM[[6,4]]],Times[-1,DM[[3,4]],DM[[5,6]],DM[[6,4]]],Times[-1,DM[[3,5]],DM[[4,4]],DM[[6,6]]],Times[DM[[3,4]],DM[[5,4]],DM[[6,6]]]]],Times[DM[[1,4]],Plus[Times[DM[[3,6]],DM[[4,6]],DM[[5,5]]],Times[-1,DM[[3,6]],DM[[4,5]],DM[[5,6]]],Times[-1,DM[[3,5]],DM[[4,6]],DM[[6,5]]],Times[DM[[3,4]],DM[[5,6]],DM[[6,5]]],Times[DM[[3,5]],DM[[4,5]],DM[[6,6]]],Times[-1,DM[[3,4]],DM[[5,5]],DM[[6,6]]]]]]]]]]];*)
+{eVal,eVec}=Eigensystem[M];
+cond = 4 eVec[[All,1]] * eVec[[All,3]] - eVec[[All,2]] * eVec[[All,2]];
+pos = Position[cond,n_ /; n>0][[1,1]];
+A1 = eVec[[pos]];
+A = {Sequence@@A1,Sequence@@(TS (TM . A1))};
+A4 = A[[4]]-2 A[[1]] c[[1]]-A[[2]] c[[2]];
+A5 = A[[5]]-2 A[[3]] c[[2]]-A[[2]] c[[1]];
+A6 = A[[6]]+A[[1]] c[[1]]^2 + A[[3]] c[[2]]^2 + A[[2]] c[[1]] c[[2]]-A[[4]] c[[1]]-A[[5]] c[[2]];
+{ A[[1]], A[[2]],A[[3]], A4, A5, A6}/Norm[{A[[1]],A[[2]],A[[3]],A4,A5,A6}]
+]
+
+
+(*Clear[EllipseFitCoeffs]
 EllipseFitCoeffs[points_,"AMS"]:=Module[{c,DMat,DM,P,Q,eVal,eVec,pos,A,A4,A5,A6,Axx,Axy,Ayy,Ax,Ay,A0,x0,y0,a,b,\[Theta]},
 c=Mean[points];
 DMat = (Function[{x,y},{(x-c[[1]])^2,(x-c[[1]]) (y-c[[2]]), (y-c[[2]])^2, (x-c[[1]]), (y-c[[2]]), 1}])@@@points;
@@ -395,10 +474,10 @@ A5 = A[[5]]-2 A[[3]] c[[2]]-A[[2]] c[[1]];
 A6 = A[[6]]+A[[1]] c[[1]]^2 + A[[3]] c[[2]]^2 + A[[2]] c[[1]] c[[2]]-A[[4]] c[[1]]-A[[5]] c[[2]];
 
 {A[[1]],A[[2]],A[[3]],A4,A5,A6}/Norm[{A[[1]],A[[2]],A[[3]],A4,A5,A6}]
-]
+]*)
 
 
-EllipseFitCoeffs[points_,"Direct"]:=Module[{c,D1,D2,S1,S2,S3,eVal,eVec,pos,T,M,cond,A,A1,A4,A5,A6,Axx,Axy,Ayy,Ax,Ay,A0,x0,y0,a,b,\[Theta]},
+(*EllipseFitCoeffs[points_,"Direct"]:=Module[{c,D1,D2,S1,S2,S3,eVal,eVec,pos,T,M,cond,A,A1,A4,A5,A6,Axx,Axy,Ayy,Ax,Ay,A0,x0,y0,a,b,\[Theta]},
 c=Mean[points];
 D1 = (Function[{x,y},{(x-c[[1]])^2,(x-c[[1]]) (y-c[[2]]), (y-c[[2]])^2}])@@@points;
 D2 = (Function[{x,y},{(x-c[[1]]), (y-c[[2]]), 1}])@@@points;
@@ -416,36 +495,7 @@ A4 = A[[4]]-2 A[[1]] c[[1]]-A[[2]] c[[2]];
 A5 = A[[5]]-2 A[[3]] c[[2]]-A[[2]] c[[1]];
 A6 = A[[6]]+A[[1]] c[[1]]^2 + A[[3]] c[[2]]^2 + A[[2]] c[[1]] c[[2]]-A[[4]] c[[1]]-A[[5]] c[[2]];
 { A[[1]], A[[2]],A[[3]], A4, A5, A6}/Norm[{A[[1]],A[[2]],A[[3]],A4,A5,A6}]
-]
-
-
-Clear[EllipseFit]
-EllipseFit[points_,"AMS"]:=Module[{Axx,Axy,Ayy,Ax,Ay,A0,x0,y0,a,b,\[Theta]},
-{Axx,Axy,Ayy,Ax,Ay,A0}=EllipseFitCoeffs[points,"AMS"];
-If[IsEllipse[Axx,Axy,Ayy,Ax,Ay,A0],
-{{x0,y0},{a,b},\[Theta]}=EllipsePropertiesFromCoeffs[Axx,Axy,Ayy,Ax,Ay,A0];
-If[a>=b,
-{{x0,y0},{a,b},\[Theta],Function[{x,y},Evaluate[{Axx,Axy,Ayy,Ax,Ay,A0}.{x^2, x y , y^2, x, y,1}]]},
-If[\[Theta]<0,
-{{x0,y0},{b,a},\[Theta]+N[Pi/2],Function[{x,y},Evaluate[{Axx,Axy,Ayy,Ax,Ay,A0}.{x^2, x y , y^2, x, y,1}]]},
-{{x0,y0},{b,a},\[Theta]-N[Pi/2],Function[{x,y},Evaluate[{Axx,Axy,Ayy,Ax,Ay,A0}.{x^2, x y , y^2, x, y,1}]]}
-]],
-{{},{},Null,Function[{x,y},Evaluate[{Axx,Axy,Ayy,Ax,Ay,A0}.{x^2, x y , y^2, x, y, 1}]]}
-]
-]
-
-
-EllipseFit[points_,"Direct"]:=Module[{Axx,Axy,Ayy,Ax,Ay,A0,x0,y0,a,b,\[Theta]},
-{Axx,Axy,Ayy,Ax,Ay,A0}=EllipseFitCoeffs[points,"Direct"];
-{{x0,y0},{a,b},\[Theta]}=EllipsePropertiesFromCoeffs[Axx,Axy,Ayy,Ax,Ay,A0];
-If[a>=b,
-{{x0,y0},{a,b},\[Theta],Function[{x,y},Evaluate[{Axx,Axy,Ayy,Ax,Ay,A0}.{x^2,
- x y , y^2, x, y,1}]]},
-If[\[Theta]<0,
-{{x0,y0},{b,a},\[Theta]+N[Pi/2],Function[{x,y},Evaluate[{Axx,Axy,Ayy,Ax,Ay,A0}.{x^2, x y , y^2, x, y,1}]]},
-{{x0,y0},{b,a},\[Theta]-N[Pi/2],Function[{x,y},Evaluate[{Axx,Axy,Ayy,Ax,Ay,A0}.{x^2, x y , y^2, x, y,1}]]}
-]]
-]
+]*)
 
 
 Clear[ellipseThetaSpacings]
