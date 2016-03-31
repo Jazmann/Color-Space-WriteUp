@@ -2342,11 +2342,11 @@ Expanding the definition of the quantized matrix $\qR[\theta, n]$ (\ref{eq:quant
 \end{aligned} \\
 \end{gather*}
 This $\qRs[\theta, n]$ matrix is used to perform the rotation of the pixel values. Taking the inner product of $\qRs$ with the pixel values produces 
-a rotated set of pixel values $\vec{a} = \qRs \cdot \vec{rgb}$ with elements $ \vec{a}_1 \in \{0 \cdots 2^{n+2} \}$,  $ \vec{a}_2 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$ and $ \vec{a}_3 \in \{-2^{2n-1} \cdots 2^{2n-1} \}$. 
+a rotated set of pixel values $\vec{a} = \qRs \cdot \vec{rgb}$ with elements $ \vec{a}_1 \in \{0 \cdots 3 (2^n - 1)\}$,  $ \vec{a}_2 \in 2^{n-2}-2^{2 n-2} \cdots 2^{2 n-2}-2^{n-2}  \}$ and $ \vec{a}_3 \in 2^{n-2}-2^{2 n-2}  \cdots 2^{2 n-2}-2^{n-2}  \}$. 
 \begin{align*}
-\qRsMin     &= \left( \begin{smallmatrix}  0           \\  2^{n-2}-2^{2 n-2} \\ 2^{n-2}-2^{2 n-2}\\ \end{smallmatrix} \right) & 
-\qRsMax    &= \left( \begin{smallmatrix}  2^{n+2} \\    2^{2 n-2}-2^{n-2}  \\   2^{2 n-2}-2^{n-2} \\ \end{smallmatrix} \right) & 
-\qRsRange &= \left( \begin{smallmatrix} 3 (2^n - 1) \\   2^{n-1} \left(2^n-1\right)      \\   2^{n-1} \left(2^n-1\right)     \\ \end{smallmatrix} \right) 
+\qRsMin     &= \left( \begin{smallmatrix} 0                \\  2^{n-2}-2^{2 n-2}                  \\ 2^{n-2}-2^{2 n-2}               \\ \end{smallmatrix} \right) & 
+\qRsMax    &= \left( \begin{smallmatrix} 3 (2^n - 1) \\  2^{2 n-2}-2^{n-2}                  \\  2^{2 n-2}-2^{n-2}              \\ \end{smallmatrix} \right) & 
+\qRsRange &= \left( \begin{smallmatrix} 3 (2^n - 1) \\  2^{n-1} \left(2^n-1\right)      \\  2^{n-1} \left(2^n-1\right)  \\ \end{smallmatrix} \right) 
 \end{align*}
 \algosection{Design the distribution function.} 
 First, the overall scaling for the quantized rotation matrix is found by combining the normalized scaling $\Scale[\theta, n]$ (\ref{eq:scaleDef}) with the desired scaling defined in equation (\ref{eq:CombinedRotationRange}):
@@ -2442,7 +2442,6 @@ Next, we decide which of the distribution methods should be used. This is done b
            \Scale \; x  + \dstMin  & \Discard_1^q \le x \le \Discard_2^q  \\
            \Discard_2 - \Discard_1 + \dstMin  & \Discard_2^q \le x\\
            \end{cases}$
-          \ElsIf{$\mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Linear Distribution}
           \algstore{bkbreak}
 \end{algorithmic}
   \caption{An algorithm which returns a channel appropriate distribution function}
@@ -2452,6 +2451,14 @@ Next, we decide which of the distribution methods should be used. This is done b
 \caption{Part 2}
 \begin{algorithmic}[1]
 \algrestore{bkbreak}
+          \ElsIf{$\mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \mathbf{Q}_{distribute} $}\Comment{Little Loss Distribution}
+          \State $
+           pDis(x) \gets \begin{cases}
+                    \text{dis}(\Scale x) & \srcMin < x < \eKeep_1^q \\
+                    \Scale x - \eKeep_1 + \text{dis}(\eKeep_1) & \eKeep_1^q \le x \le \eKeep_2^q  \\
+                    \text{dis}(\Scale x) + \eKeep_2 - \eKeep_1 - \text{dis}(\eKeep_2) + \text{dis}(\eKeep_1)  & \eKeep_2^q < x \\
+                    \end{cases}   $
+          \ElsIf{$\mathbf{Q}_{keep}  \wedge \lnot \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Linear Distribution}
           \State   
           $  pDis(x) \gets \Scale \; x + \dstMin $
           \ElsIf{$\lnot \mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \mathbf{Q}_{distribute} $}\Comment{Truncated Erf Distribution}
@@ -2459,7 +2466,7 @@ Next, we decide which of the distribution methods should be used. This is done b
          $ pDis(x) \gets \begin{cases}
           \dstMin & x \le \Discard_1^q \\
           \text{dis}(\Scale x) & \Discard_1^q < x < \Discard_2^q \\
-          \dstMax & \Discard_2^q < x  \\
+          \dstMax & \Discard_2^q \le x  \\
           \end{cases} $
           \ElsIf{$\lnot\mathbf{Q}_{keep}  \wedge \mathbf{Q}_{discard} \wedge \lnot \mathbf{Q}_{distribute} $}\Comment{Step Distribution!}
          \State   
