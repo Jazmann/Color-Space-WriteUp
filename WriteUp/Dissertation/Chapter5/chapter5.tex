@@ -15,25 +15,38 @@
 
 
 \subsection{Medical Applications}\label{sec:MedicalApplications}
-1. Vitals monitoring.
 
-One possible application of the algorithm is monitoring inflammation. By adapting the color space to distinguish between healthy and inflamed tissue, one might be able measure the degree of inflammation over a period of time by, for the sake of example, photographing parts of the user's body prone to inflammation throughout the day and using the algorithm to perform the comparison. This has the benefit of measuring the degree of inflammation without having to rely on subjective reporting, and could allow individuals to discover triggers for conditions like eczema, arthritis and other such inflammatory diseases. Combining this approach with diet and lifestyle monitoring functions -- other factors which may contribute to inflammation -- could serve as a simple and empowering means of increasing users' quality of life.
+One possible application of the algorithm is monitoring inflammation. By adapting the color space to distinguish between healthy and inflamed tissue, one might be able measure the degree of inflammation over a period of time by, for the sake of example, photographing parts of the user's body prone to inflammation throughout the day and using the algorithm to perform the comparison. This has the benefit of measuring the degree of inflammation without having to rely on subjective reporting, and could allow individuals to discover triggers for conditions like eczema, arthritis and other such inflammatory diseases. Combining this approach with diet and lifestyle monitoring functions --- other factors which may contribute to inflammation --- could serve as a simple and empowering means of increasing users' quality of life.
 
+In mole mapping, a series of photographs of moles are taken over a period of time to track changes in size, color or shape in order to detect conditions such as malignant melanoma. However, identifying changes in such skin lesions is often limited to the doctor performing naked-eye comparisons between RGB photos of the areas of concern. (Figure \ref{fig:MelanomaImages}.) This poses a problem when checking for changes in color, in part due to the RGB color space not separating the luminosity from the chromatic information and differences in lighting conditions. Using our color space, it is possible to highlight such changes more clearly; the color space can be adapted to detect changes in coloration between successive skin lesion images, thereby eliminating the need for guesswork. Additionally, by floating the mean the algorithm can account for variable lighting conditions.
 
-In mole mapping, a series of photographs of moles are taken over a period of time to track changes in size, color or shape in order to detect conditions such as malignant melanoma. However, identifying changes in such skin lesions is often limited to the doctor performing naked-eye comparisons between RGB photos of the areas of concern. This poses a problem when checking for changes in color, in part due to the RGB color space not separating the luminosity from the chromatic information and differences in lighting conditions. Using our color space, it is possible to highlight such changes more clearly; the color space can be adapted to detect changes in coloration between successive skin lesion images, thereby eliminating the need for guesswork. Additionally, by floating the mean the algorithm can account for variable lighting conditions.
+Blood flow patterns in the retina are a good indication of eye health. As such, a retina imaging app for monitoring these blood flow patterns is another potential application of the algorithm. It is possible to adapt the color space to discriminate between oxygenated and deoxygenated blood flow and use the image alignment such that, with a simple lens manipulator which fits over the phone's camera, one could photograph their own retina daily and measure the difference overtime. The alignment algorithms could be used to monitor any burst blood vessels, even within the eyeball itself. Another, similar application would involve detecting for anemia; the skin under the eyelids lacks pigmentation, appearing pale if there is little blood. One might be able to take a photo of the skin under the eyelids with their phone camera and use the algorithm to check for a lack of blood flow.
 
-4. Dermatology.
+As for applications beyond phone cameras, a number of different medical cameras have been designed for medical diagnostics (see Figure \ref{fig:MedicalExaminationCameras}), especially for use in telemedicine and thermal imaging, and many of which are commercially available. These cameras are typically HD video cameras, some of which support a variety of attachments for different types of examinations such as tongue depressors for laryngoscopy. However, these cameras also tend to use the RGB color space, which again has the disadvantage of requiring the examiner to perform a naked-eye comparison, relying on their knowledge and experience to make a diagnosis. By adapting our color space to target specific chromophores, it may be possible to accurately diagnose any number of conditions without relying as much on expertise. 
 
-5. Measuring chances of repetitive strain injury from videos of activity.
+Also, the use of lossy methods; our color space can keep all the information, so better. Differences in chromophores like oxyhemoglobin and deoxyhemoglobin and the two types of melanin are very small, so losing information makes telling them apart that much harder.
 
-Blood flow patterns in the retina are a good indication of eye health. As such, a retina imaging app for monitoring these blood flow patterns is another potential application of the algorithm. It is possible to adapt the color space to discriminate between oxygenated and deoxygenated blood flow and use the image alignment such that, with a simple lens manipulator which fits over the phone's camera, one could photograph their own retina daily and measure the difference overtime. The alignment algorithms could be used to monitor any burst blood vessels, even within the eyeball itself. 
+Another benefit of using the algorithm is that it's lossless; unlike the lossier methods used in many medical applications, our color space retains all the chromatic information without negatively affecting performance. This is especially beneficial when performing comparisons between chromophores with very subtle differences such as oxyhemoglobin and deoxyhemoglobin or the two types of eumelanin, as losing information makes telling them apart that much harder.
 
-7. As a fitness/bodybuilder's app, varicose/spider veins detection, blisters, etc. to monitor vascular health when doing intensive exercise and training routines.
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.45\textwidth]{Chapter5/Figs/DermLite-DL1.jpg}
+    \caption{DermLite DL1; A dermatoscope attachment available for several smart devices, used in diagnosing skin disorders.}\label{fig:DermatoscopePhone}
+\end{figure}
 
-8. Real-time diagnostics/monitoring, vitals, AR layers for surgery, robot-assisted surgery, etc.
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.45\textwidth]{Chapter5/Figs/DermLite-DL1.jpg}
+    \caption{A skin lesion photographed under different lighting conditions. (Photos by Kevin Jakob, Illingworth Research.)}\label{fig:MelanomaImages}
+\end{figure}
 
-Also, the use of lossy methods; our color space can keep all the information, so better.
- 
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.45\textwidth]{Chapter5/Figs/TEHD_1.png}
+    \includegraphics[width=0.45\textwidth]{Chapter5/Figs/examination-clinical-dermoscan-x2.jpg}
+    \caption{A few different medical examination cameras. }\label{fig:MedicalExaminationCameras}
+\end{figure}
+
 \subsection{Scientific Applications}\label{sec:ScientificApplications}
 
 \subsubsection{A Study of Human Chromatic Diversity}\label{sec:AStudyOfHumanChromaticDiversity}
@@ -44,7 +57,7 @@ If we have the normal skin statistics for an individual, we could take images of
 
 An issue of this approach would be the consistency of lighting conditions; this could be overcome if we have adapted the method to allow us to set a new white point as outlined in Section \ref{sec:GeneralizingTheRotation}. We could take an uninjured skin patch for which we already have a previous image from which we build the skin statistics, and comparing the two would allow us to find a white point which accounts for the ambient lighting conditions. Our generalized transform could then compensate for the changing lighting conditions. Any difference in the statistics now is due to the injury, and our theoretical model built in Chapter 1 should allow us to interpret this in terms of the chromophores, the key one being the bilirubin, which is a chromophore which causes the yellow-and-green coloration in bruises.
 
-\subsubsection{Repetitive Strain Study}]\label{sec:RepetitiveStrainStudy}
+\subsubsection{Repetitive Strain Study}\label{sec:RepetitiveStrainStudy}
 The algorithm we developed in Chapter 4 focuses on the mechanical stress to the fingertip when pressing on a surface; in the Figures \ref{fig:ICWaSResultJSkin}, \ref{fig:ICWaSResultFSkin} and \ref{fig:ICWaSResultNSkin}), it can be seen that the stress also shows in the knuckle. In fact, the mechanical strain can be seen in all the joints of the hand. This suggests that we could build an algorithm which monitors the stress in the joints of the hand by observing the blood flow using the routines developed above. By monitoring the strain put on the joints of an individual's hands while they perform a task, we could measure the overall strain that they have placed on their finger joints. If we combine this with the techniques to measure inflammation presented in Section \ref{sec:MedicalApplications}, we could get a measure of the damage suffered by the individual. 
 
 Once developed, such a monitoring system could be used in studies which assess different ergonomic designs and workplace practices. 
