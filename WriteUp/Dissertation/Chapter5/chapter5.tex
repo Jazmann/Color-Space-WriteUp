@@ -11,17 +11,31 @@
 \fi
 \section{Results and Evaluation}\label{sec:ResultsAndEvaluation}
 
+All the performance gains are made in the work of Chapter 2, in which we presented an integer-based method for performing the color space conversion which we hoped would be a bit more efficient in comparison with the standardly-used floating point method. To compare the two methods, an equivalent floating point color space conversion method was implemented which first converted the pixel value into a double precision unit range, performed the rotation using a double precision rotation matrix and then redistributed with the redistribution function described in Chapter 2 to the destination integer range. This is compared below with the optimized integer method presented in Chapter 2.
+
+\subsection{Timing the Methods}\label{sec:TimingTheMethods}
+
+Because we have multi-core CPUs running operating systems which handle multi-threading, even on mobile devices these days, it is problematic getting clean running times for algorithms on such modern devices. In investigating this, the two algorithms were run using the same input 1,000 times. Theoretically, the time should be the same for every run with the same input, however, as can be seen in Figure \ref{fig:TimingVariationPlot}, the timings vary away from a baseline with a statistical positive error. It is reasonable to assume that this variation is due to interrupts from system processes, and so the algorithm performance is best measured by taking the minimum runtime from this set of 1,000 runs. 
+
+For the image used in this test, it can be seen that the integer method is about 4.9 times faster than the floating point method. This is a significant gain given that the color space transform is the most computationally-intensive operation in the entire algorithm.
+
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.95\textwidth]{Chapter5/Figs/Timing_Variation_Plot.jpg}
-    \caption{Timing variation plot.}\label{fig:TimingVariationPlot}
+    \caption{Timing variation plot. Comparison of process run times using the floating point method and the integer optimized method with the same image input data.}\label{fig:TimingVariationPlot}
 \end{figure}
+
+\subsection{Optimization Variation with Input}\label{sec:OptimizationVariationWithInput}
+
+Now we evaluate the performance of the algorithm with differing input images. For the purpose of this test, images generated with varying tonal characteristics is done by generating images with random pixel values within random ranges. Each image was processed 1,000 times and the minimum runtime from those 1,000 runs was taken to be an indication of the difficulty of that image when presented to the two algorithms. The algorithms were run over 100 different images, and the mean and the standard deviation from that mean were found for each of the two methods. The performance of the algorithms can be seen in Figure \ref{fig:ToneVariationPlot} below.
 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.95\textwidth]{Chapter5/Figs/Tone_Variation_Plot.jpg}
     \caption{Tone variation plot.}\label{fig:ToneVariationPlot}
 \end{figure}
+
+Here the performance gain can be seen to be slightly lower than for the test image used above. However, it can be confidently said that the method presented in Chapter 2 is 4-5 times faster than using the usual floating point methods.
 
 \section{Future Applications}\label{sec:FutureApplications}
 
