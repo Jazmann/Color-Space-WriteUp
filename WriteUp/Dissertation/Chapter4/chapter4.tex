@@ -493,7 +493,7 @@ k & $k_{scale}$ &j & $j_{scale}$ & $1$ & $\frac{1}{2}$ & $\frac{1}{4}$ & $\frac{
 So for a chosen small scale $S_s = 2^{-3} 3^{-1}$, a distal width in the small scale $w$ and a minimum distal width in the medium scale $w_m$. 
 Finding  $i_m$ and $j_m$ which minimise $i_m + \frac{\log(3)}{\log(2)} j_m$  and which satisfy  $2^{-i_m} 3^{-j_m} - \lceil \frac{w_m}{w} \rceil \ge 0$, $i_m\le i_s$ and $j_m \le j_s$ determines the medium scale space.
 
-\subsubsection{Modeling the Fingertip}\label{sec:ModellingTheFingertip}
+\subsubsection{Modelling the Fingertip}\label{sec:ModellingTheFingertip}
 \begin{figure}[p!]
   \centering
   \noindent
@@ -671,6 +671,42 @@ We assume that the digit's movement will not take it outside of the bounding box
 The image alignment pixel shift updates the change in the model position since the first frame. If the change in the model position since the first frame is greater than the ICWaS threshold, then the control passes back to the Smooth Motion routine. The current frame is aligned with the previous frame and the difference is found between the pixel values in the chromatic channels; this is the blood flow (Figures  \ref{fig:ICWaSResultJSkin}, \ref{fig:ICWaSResultFSkin} \& \ref{fig:ICWaSResultNSkin}). These steps are repeated until the change in the model position since the first frame causes the routine to transfer control back to the Smooth Motion routine.
 
 \clearpage
+
+\subsection{Dynamic State Transitions}\label{sec:DynamicStateTransitions}
+Each movement state has a metric. For each of the three states, we need to define a metric which characterizes the motion detected. Using these metrics, we need to define four tolerances for the state transitions.
+
+The metric for the rapid motion detection is the average pixel value of the the eroded difference image \ref{sec:DynamicTracking}, so if two consecutive images are the same, then the metric is 0. And if every pixel has changed by its maximum amount (e.g. every pixel black/white), then the metric is 255. The only question remaining is what sort of values should we expect for rapid finger movement. We can roughly estimate that a finger occupies about 10\% of the frame; given that the background is illuminated by the same amount, we can expect pixel differences around 20\%. Thus, although the range of the metric is actually 0-255, we actually expect the tolerance to be quite low.
+
+(graph here)
+
+The metric for the smooth motion detection is the pixel distance moved by the model divided by the distal width \ref{sec:SmoothMotionTracking}. Significant values for this metric are 0 if the model hasn't had to move; 1 if the model is moved by a finger width; and it is assigned a negative value when the finger is not detected, moved out of frame, or if an insufficient amount of the digit remains in the frame. So, for negative values, the model isn't updated.
+
+(graph here)
+
+The ICWaS detection method returns the distance that the bounding box for the fingertip has had to move to align the image with the previous frame \ref{sec:ICWaS}. OpenCV's alignment routine requires the images to be well-aligned in order to function properly, so before attempting alignment, the code initially checks for large movements and does not perform the alignment if such movement is detected, avoiding long iterations of OpenCV's routine which would ultimately result in an error. However, in order to make this robust, the routine also catches any error from the alignment routine. Both of these result in an negative value being returned.
+
+(graph here)
+
+In order to set reasonable values for the tolerances, a version of the code was written which, regardless of the state, performed all three dynamic tracking routines. This may sound like it would fail for ICWaS as the images would not be at all aligned, however because the smooth tracking was performed before ICWaS, the model location and frame were updated in the smooth tracking allowing for the ICWaS routine to properly function. Using timed intervals, the code was run with the user performing what should be classified as a 'rapid movement, 'smooth movement' and 'ICWaS movement'. The results of the metric can be seen in Figure (insert fig ref here).
+
+(fig here)
+
+From this figure, you can see the metrics are fairly noisy; we want to avoid triggering a state transition on the basis of a single video frame. This problem is effectively solved in the code simply by taking the average of the current metric with the previous value, thus smoothing out the noise and stabilizing the state transitions, as illustrated by figure (insert fig ref here).
+
+(fig here)
+
+\section{iPhone Camera Setup}\label{sec:iPhoneCameraSetup}
+Quite later on in development, an iOS update was released which allows in-code control of camera properties, such as focus, exposure and white point color balance. Because the code does per-pixel comparisons and assumes that the color values remain constant, the first thing this allows us to do is fix the exposure, the white point and the focus such that the code is tracking the digit and tracking the blood flow, the algorithm isn't thrown off by the phone deciding to suddenly changing the camera properties. 
+
+Initially, a simple routine was added which simply fixed these camera properties before starting the tracking. However, it was apparent that we could take advantage of the camera control features to produce a better result. First, we needed to be able to perform a metric for how good the camera settings are for tracking. Initially, this metric was taken using the whole image. Taking the classified image, the metric was formed by taking a weighted sum of the classified image pixel values; the metric scored values of 0 and 3 positively and values of 1 and 2 negatively, the idea being to promote camera settings which result in a classified image which rewards certainty.
+
+However, the problem with this approach is that if the camera properties are set with, say, a very low exposure, the image is almost entirely black and the classified image is certain that there isn't a finger in the picture, regardless of the reality, so this metric is scored highly. To combat this, the app allows two regions to be selected in the frame, one which definitely contains skin, and one which definitely does not. We then have two separate metrics for the skin region; values of 2 and 3 are scored highly, while values of 0 and 1 are scored negatively, and conversely for the skinless region.
+
+After all this work, we have three metrics: one which rewards correctly identifying skin, one which rewards correctly identifying background, and one which rewards overall certainty. The final metric which was returned in the camera calibration is the weighted sum of these three metrics; the skin and the background identification metrics given a slightly higher weighting than the overall certainty.
+
+\subsection{Setting the Exposure}\label{sec:SettingTheExposure}
+To find the optimal exposure, the code first picks a handful of values between a minimum and maximum exposure and evaluates the metric at these values. This is done by setting the exposure waiting in-code for a few microseconds for the camera to finish adjusting and then evaluating the metric. This is necessary because the camera properties are set in a different thread to the tracking algorithm's thread. A bisection algorithm is then used to refine the optimal exposure.
+
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
 So far, we have said little about the app itself; the app associated with this project is designed to demonstrate how the fast color space transform developed in Chapter 2 can be used in conjunction with the simple shape detection routines developed in this chapter to create a simple fingertip mechanical-stress detector using an iPhone.
