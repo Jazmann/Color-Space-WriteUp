@@ -226,8 +226,8 @@ We wish to classify the pixel values as either skin or not skin whist taking acc
 Correct                               & Unreliable      & \multicolumn{2}{|c|}{Image Bit} & \multicolumn{1}{|c|}{\multirow{2}{*}{Comment}}  \\ \cline{1-4}
 Color $\ColorSquareBool$ & $\WoBoBool$ & $\ColorSquareBool$ & XOR($\ColorSquareBool$, $\WoBoBool$) & \\\hline
 0 & 0 & 0 & 0 &  Definitely not the target \\\hline % & Wrong Color &    Reliable Luminosity 
-0 & 1 & 0 & 1  & Possibly the target but shifted. \\\hline % & Wrong Color & Unreliable Luminosity
-1 & 1 & 1 & 0  & \begin{tabular}{l} Probably the target but possibly \\ shifted into the target region \end{tabular} \\\hline % &   Right Color &    Reliable Luminosity
+0 & 1 & 0 & 1  & Possibly the target but shifted \\ out of the target chromatic region \\ by WOBO. \\\hline % & Wrong Color & Unreliable Luminosity
+1 & 1 & 1 & 0  & \begin{tabular}{l} Probably the target but possibly \\ shifted into the target chromatic region by WOBO \end{tabular} \\\hline % &   Right Color &    Reliable Luminosity
 1 & 0 & 1 & 1  & Definitely the target \\\hline % &   Right Color & Unreliable Luminosity
 \end{tabular}
 \end{center}
@@ -542,7 +542,7 @@ From the kink fit, we have a midline, which is specified by three points. We now
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.69\textwidth]{Chapter4/Figs/Model_Overlayed.jpg}
+    \includegraphics[width=0.99\textwidth]{Chapter4/Figs/Model_Overlayed.jpg}
     \caption{The models overlayed on the source images.}\label{fig:FingertipModelResult}
 \end{figure}
 
@@ -814,4 +814,30 @@ The charts in Figures \ref{fig:FingerpressFingerModel}, \ref{fig:FingerpressStdC
   \centering
     \includegraphics[width=0.95\textwidth]{Chapter4/Figs/KinkFit_K.jpg}
     \caption{KinkFitK}\label{fig:KinkFitK}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS1.jpg}
+    \caption{ICWaS1}\label{fig:ICWaS1}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS2.jpg}
+    \caption{ICWaS2}\label{fig:ICWaS2}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS3.jpg}
+    \caption{ICWaS3}\label{fig:ICWaS3}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS4.jpg}
+    \caption{ICWaS4}\label{fig:ICWaS4}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/exposureGraphic1.jpg}
+    \caption{ExposureGraphic}\label{fig:ExposureGraphic1}
 \end{figure}
