@@ -226,8 +226,8 @@ We wish to classify the pixel values as either skin or not skin whist taking acc
 Correct                               & Unreliable      & \multicolumn{2}{|c|}{Image Bit} & \multicolumn{1}{|c|}{\multirow{2}{*}{Comment}}  \\ \cline{1-4}
 Color $\ColorSquareBool$ & $\WoBoBool$ & $\ColorSquareBool$ & XOR($\ColorSquareBool$, $\WoBoBool$) & \\\hline
 0 & 0 & 0 & 0 &  Definitely not the target \\\hline % & Wrong Color &    Reliable Luminosity 
-0 & 1 & 0 & 1  & Possibly the target but shifted \\ out of the target chromatic region \\ by WOBO. \\\hline % & Wrong Color & Unreliable Luminosity
-1 & 1 & 1 & 0  & \begin{tabular}{l} Probably the target but possibly \\ shifted into the target chromatic region by WOBO \end{tabular} \\\hline % &   Right Color &    Reliable Luminosity
+0 & 1 & 0 & 1  & \begin{tabular}{l} Possibly the target but \\ shifted out of the target \\ chromatic region by WOBO. \end{tabular} \\\hline % & Wrong Color & Unreliable Luminosity
+1 & 1 & 1 & 0  & \begin{tabular}{l} Probably the target but possibly \\ shifted into the target chromatic \\ region by WOBO \end{tabular} \\\hline % &   Right Color &    Reliable Luminosity
 1 & 0 & 1 & 1  & Definitely the target \\\hline % &   Right Color & Unreliable Luminosity
 \end{tabular}
 \end{center}
@@ -593,7 +593,7 @@ In the model's new orientation, we find the furthest point on the model in the $
 
 A side-effect of the pre-alignment of the model means that --- almost always --- the change in the orientation from the force analogue shape detection algorithm is negligible.
 
-The dependence of the distribution of points around the perimeter of the model is dependant on the orientation of the digit in the image. This means that the point centroid is not predictable, and so a shape-based centroid is required in the modeling stage \ref{fig:PositionAndOrientation}. The Filament fill point distribution favors the top and bottom edges of the digit over the points on the tip itself, making a perimeter centroid unfavorable. For these reasons, the fingertip model is centered on the model's area centroid.
+The distribution of points around the perimeter of the model is dependant on the orientation of the digit in the image. This means that the point centroid is not constant, and so a shape-based area centroid is used in the modeling stage \ref{fig:PositionAndOrientation}. 
 
 \begin{figure}[h!]
   \centering
@@ -601,7 +601,8 @@ The dependence of the distribution of points around the perimeter of the model i
     \caption{Smooth Dynamic Sequence}\label{fig:SmoothDynamicSequence}
 \end{figure}
 
-In practice, the area centroid is not perfect, but generally locates the digit with an accuracy of two or three pixels, and the orientation within a degree. This accuracy is sufficient for the smooth motion detection algorithm, which operates upon the small scale image. When the movement of the digit falls below the ICWsS threshold, an easy refinement to this shape-fitting algorithm is made by finding the point centroid for the current model orientation, and adjusting the position and orientation accordingly. The additional computational effort to gain this refinement is small, but not necessary when tracking the moving digit for our application.
+
+In practice, the algorithm first finds the rough orientation of the digit in the image and rotates the model accordingly. The model is recentered on the point centroid for the current orientation before the FASDM method is used. 
 
 In addition to the FASDM method, the algorithm also finds the mean of the length of the vectors between the rotated and translated model points and the points on the image. To be clear, this distance is signed according to which point is further away from the model center. This allows the model to be scaled. The upshot of this is that the code correctly follows a digit even as the digit moves closer or further away from the camera. (Fingers do not normally change shape.)
 \clearpage
