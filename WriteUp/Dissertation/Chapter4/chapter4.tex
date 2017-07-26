@@ -728,25 +728,41 @@ f^{set}_{channel} (x) = A e^{-\frac{0.5 (x-\mu )^2}{\sigma ^2}}+m x +c
 \end{equation}
 The 6 Press data functions clearly exhibit a common peak  and a similar variance \ref{fig:anyliticcorrelationgrfx}. This allows the Press data to be divided into regions where we want the combined metric to register minimally and maximally. It is also desirable for the combined metric to be flat when no pressure is is being applied. These considerations allow  a set of equations to be defined
 
-\begin{multline}
+
+\newlength{\savedbelowdisplayskip}
+\newlength{\savedabovedisplayskip}
+\newlength{\savedbelowdisplayshortskip}
+\newlength{\savedabovedisplayshortskip}
+
+\setlength{\savedbelowdisplayskip}{\belowdisplayskip} \setlength{\savedbelowdisplayshortskip}{\belowdisplayshortskip}
+\setlength{\savedabovedisplayskip}{\abovedisplayskip} \setlength{\savedabovedisplayshortskip}{\abovedisplayshortskip}
+
+\setlength{\belowdisplayskip}{0pt} \setlength{\belowdisplayshortskip}{0pt}
+\setlength{\abovedisplayskip}{0pt} \setlength{\abovedisplayshortskip}{0pt}
+
+
+\begin{multline*}
 F^{np}(x) =    \CmCa F^{np}_{\mCa}(x) + \CpCa F^{np}_{\pCa}(x) +   \\
   \CmCb F^{np}_{\mCb}(x) + \CpCb F^{np}_{\pCb}(x) +   \\ 
   \CmL    F^{np}_{  \mL}(x) + \CpL   F^{np}_{   \pL}(x)   
-\end{multline}
-
+\end{multline*} 
 \begin{multline}
 F^{p}(x) =  
  \CmCa F^{p}_{\mCa}(x) + \CpCa F^{p}_{\pCa}(x) +  \\
   \CmCb F^{p}_{\mCb}(x) + \CpCb F^{p}_{\pCb}(x) + \\ 
    \CmL    F^{p}_{  \mL}(x) + \CpL   F^{p}_{   \pL}(x) 
-\end{multline}
+\end{multline}\label{eqn:FnpFp}
 \begin{align}
-F^{np}(x_{start}) & = F^{p}(x_{start}) = F^{np}(x_{end}) = F^{p}(x_{end}) \\
-F^{np}(x_{low}) & = F^{p}(x_{low})  \\
-F^{np}(x_{high}) & = F^{p}(x_{high})  
+F^{np}(x_{start}) & = F^{p}(x_{start}) = F^{np}(x_{end}) = F^{p}(x_{end}) \nonumber  \\
+F^{np}(x_{low}) & = F^{p}(x_{low})  \nonumber  \\
+F^{np}(x_{high}) & = F^{p}(x_{high})  \label{eqn:AnanyticSolutionConditions}
 \end{align}
 
-These conditions can be solved for finding the 6 linear coefficients. The results can be seen in figure \ref{fig:anyliticcorrelationgrfx}.
+
+\setlength{\belowdisplayskip}{\savedbelowdisplayskip} \setlength{\belowdisplayshortskip}{\savedbelowdisplayshortskip}
+\setlength{\abovedisplayskip}{\savedabovedisplayskip} \setlength{\abovedisplayshortskip}{\savedabovedisplayshortskip}
+
+These conditions \ref{eqn:AnanyticSolutionConditions} can be solved for finding the 6 linear coefficients \ref{eqn:FnpFp}. The results can be seen in figure \ref{fig:anyliticcorrelationgrfx}.
 
 For completeness a numerical technique to find the 6 linear coefficients was also tried. The success was scored by checking the 'correct' classification of the data as press or no-press. The results can be seen in figure \ref{fig:numericcorrelationgrfx}. 
 
@@ -796,6 +812,8 @@ Initially, a simple routine was added which simply fixed these camera properties
 However, the problem with this approach is that if the camera properties are set with, say, a very low exposure, the image is almost entirely black and the classified image is certain that there isn't a finger in the picture, regardless of the reality, so this metric is scored highly. To combat this, the app allows two regions to be selected in the frame, one which definitely contains skin, and one which definitely does not. We then have two separate metrics for the skin region; values of 2 and 3 are scored highly, while values of 0 and 1 are scored negatively, and conversely for the skinless region.
 
 After all this work, we have three metrics: one which rewards correctly identifying skin, one which rewards correctly identifying background, and one which rewards overall certainty. The final metric which was returned in the camera calibration is the weighted sum of these three metrics; the skin and the background identification metrics given a slightly higher weighting than the overall certainty.
+
+\clearpage
 
 \subsection{Setting the Exposure}\label{sec:SettingTheExposure}
 \begin{figure}[h!]
