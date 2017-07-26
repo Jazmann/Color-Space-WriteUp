@@ -607,7 +607,7 @@ In practice, the algorithm first finds the rough orientation of the digit in the
 In addition to the FASDM method, the algorithm also finds the mean of the length of the vectors between the rotated and translated model points and the points on the image. To be clear, this distance is signed according to which point is further away from the model center. This allows the model to be scaled. The upshot of this is that the code correctly follows a digit even as the digit moves closer or further away from the camera. (Fingers do not normally change shape.)
 \clearpage
 \subsection{ICWaS Method}\label{sec:ICWaS}
-The ICWaS method performs three main tasks: cropping the midscale image around the tip; putting the mask into the cropped midscale image coordinates, rendering the model shape as a binary image; and providing a method which aligns successive frames and finding the pixel color differences in the skin color space, thereby showing the blood flow.
+The ICWaS method performs three main tasks: cropping the midscale image around the tip; providing a multiplicative mask which highlights blood flow in the tip; and aligning successive frames in-order to find the pixel color differences in the skin color space. Combining these three tasks allows the blood flow to be shown.
 
 \subsubsection{ICWaS Setup}\label{sec:ICWaSSetup}
 From the Smooth Movement Tracking (Section \ref{sec:SmoothMotionTracking}), we have a model position and orientation in the small scale space. We wish to track the blood flow using the medium scale image, so first we must put the model in the medium scale space. This is as simple as multiplying the coordinates by a scaling factor as shown in Section \ref{sec:ScaleSpace}.
@@ -641,12 +641,89 @@ Now we have the extreme edges of the model. These points are used to find a boun
 
 During a finger press, we expect the flesh to deform around the tip, making the edges of the digit unreliable for alignment. So we wish to construct a binary mask which tells the template matching algorithm which pixels to use for alignment. Using OpenCV's drawing routines, we render the model in the midscale tip image coordinates. This is done in a way which actually renders the model 'slightly' by four or five pixels smaller than the model proper. This effectively eliminates the edge of the digit next to the background, pushing the algorithm to rely on features which do not deform, such as the nail.
 
+\subsubsection{Blood Flow Metric}\label{sec:BloodFlowMetric}
+
+
+\newcommand{\mL}{L^-}
+\newcommand{\pL}{L^+}
+\newcommand{\mCa}{Ca^-}
+\newcommand{\pCa}{Ca^+}
+\newcommand{\mCb}{Cb^-}
+\newcommand{\pCb}{Cb^+}
+
+\newcommand{\CmL}{C_{\mL}}
+\newcommand{\CpL}{C_{\pL}}
+\newcommand{\CmCa}{C_{\mCa}}
+\newcommand{\CpCa}{C_{\pCa}}
+\newcommand{\CmCb}{C_{\mCb}}
+\newcommand{\CpCb}{C_{\pCb}}
+We have a 6 channel metric from the ICWaS method which we wish to use to detect the presence of mechanical stress in the tip, i.e. the finger tip pressing on the surface. The simplest solution is to form a linear combination of the 6 channel metric and to set a threshold above which the finger tip is considered to be pressing on the surface. 
+
+The metric needs to be able to distinguish between the finger sliding slowly across the surface and the finger pressing on the surface. Two ICWaS runs are compared in figure  \ref{fig:sixchannelsweightsgrfx} , one with the finger sliding slowly across the surface (No-Press data) and the other with the finger pressing on the surface then releasing pressure (Press data). 
+
+First the 6 channel metrics are normalised to reveal the shape of the distributions and to facilitate numerical techniques \ref{fig:sixchannelsweightsgrfx}. Then we fit a function which is a combination of a straight line with a Gaussian to the two sets of data \ref{fig:sixchannelfitgrfx}. 
+\begin{equation}
+f^{set}_{channel} (x) = A e^{-\frac{0.5 (x-\mu )^2}{\sigma ^2}}+m x +c
+\end{equation}
+The 6 Press data functions clearly exhibit a common peak  and a similar variance \ref{anyliticcorrelationgrfx}. This allows the Press data to be divided into regions where we want the combined metric to register minimally and maximally. It is also desirable for the combined metric to be flat when no pressure is is being applied. These considerations allow  a set of equations to be defined
+
+\begin{multline}
+F^{np}(x) =    \CmCa F^{np}_{\mCa}(x) + \CpCa F^{np}_{\pCa}(x) +   \\
+  \CmCb F^{np}_{\mCb}(x) + \CpCb F^{np}_{\pCb}(x) +   \\ 
+  \CmL    F^{np}_{  \mL}(x) + \CpL   F^{np}_{   \pL}(x)   
+\end{multline}
+
+\begin{multline}
+F^{p}(x) =  
+ \CmCa F^{p}_{\mCa}(x) + \CpCa F^{p}_{\pCa}(x) +  \\
+  \CmCb F^{p}_{\mCb}(x) + \CpCb F^{p}_{\pCb}(x) + \\ 
+   \CmL    F^{p}_{  \mL}(x) + \CpL   F^{p}_{   \pL}(x) 
+\end{multline}
+\begin{align}
+F^{np}(x_{start}) & = F^{p}(x_{start}) = F^{np}(x_{end}) = F^{p}(x_{end}) \\
+F^{np}(x_{low}) & = F^{p}(x_{low})  \\
+F^{np}(x_{high}) & = F^{p}(x_{high})  
+\end{align}
+
+These conditions can be solved for finding the 6 linear coefficients. The results can be seen in figure \ref{anyliticcorrelationgrfx}.
+
+For completeness a numerical technique to find the 6 linear coefficients was also tried. The success was scored by checking the 'correct' classification of the data as press or no-press. The results can be seen in figure \ref{fig:numericcorrelationgrfx}. 
+
+The two different methods were run using data from different individuals and different digits. 
+
+
+\begin{figure}[tbph]
+\centering
+\includegraphics[width=0.95\linewidth]{Chapter4/Figs/sixChannelsWeightsGrfx}
+\caption[Normalised the 6 channel metrics]{Normalised 6 channel metrics to revealing the shape of the distributions and facilitating numerical techniques.}
+\label{fig:sixchannelsweightsgrfx}
+\end{figure}
+\begin{figure}[tbph]
+\centering
+\includegraphics[width=0.95\linewidth]{Chapter4/Figs/sixChannelFitGrfx}
+\caption{A functional fit to the 6 channel metrics for both the press and no-press data. The fit uses a combination of a gaussian and a straight line.}
+\label{fig:sixchannelfitgrfx}
+\end{figure}
+\begin{figure}[tbph]
+\centering
+\includegraphics[width=0.95\linewidth]{Chapter4/Figs/anyliticCorrelationGrfx}
+\caption[The Analytic Correlation.]{The Analytic Correlation. Fixing the points for the linear combination, as seen in top right diagram, an analytic solution is found for the correlation matrix.}
+\label{fig:anyliticcorrelationgrfx}
+\end{figure}
+\begin{figure}[tbph]
+\centering
+\includegraphics[width=0.95\linewidth]{Chapter4/Figs/numericCorrelationGrfx}
+\caption{The numerically found correlation matrix.}
+\label{fig:numericcorrelationgrfx}
+\end{figure}
+
+
 \subsubsection{Blood Flow}\label{sec:BloodFlow}
 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Channels_JSkin.jpg}
-    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Difference_JSkin.jpg}
+%    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Difference_JSkin.jpg}
     \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_JSkin.jpg}
     \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Misc_JSkin.jpg}
     \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultJSkin}
@@ -655,7 +732,7 @@ During a finger press, we expect the flesh to deform around the tip, making the 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.820\textwidth]{Chapter4/Figs/Final_Fig_Channels_FSkin.jpg}
-    \includegraphics[width=0.660\textwidth]{Chapter4/Figs/Final_Fig_Difference_FSkin.jpg}
+%    \includegraphics[width=0.660\textwidth]{Chapter4/Figs/Final_Fig_Difference_FSkin.jpg}
     \includegraphics[width=0.660\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_FSkin.jpg}
     \includegraphics[width=0.820\textwidth]{Chapter4/Figs/Final_Fig_Misc_FSkin.jpg}
         \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultFSkin}
@@ -665,7 +742,7 @@ During a finger press, we expect the flesh to deform around the tip, making the 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Channels_NSkin.jpg}
-    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Difference_NSkin.jpg}
+%    \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Difference_NSkin.jpg}
     \includegraphics[width=0.86\textwidth]{Chapter4/Figs/Final_Fig_Total_Difference_NSkin.jpg}
     \includegraphics[width=1.00\textwidth]{Chapter4/Figs/Final_Fig_Misc_NSkin.jpg}
         \caption{The resulting sequence of images from the ICWaS algorithm followed by the differences. The metric is the result of summing the positive and negative changes separately and dividing by the number of pixels. Finally the initial image of the sequence is shown with the model outline, the slightly larger model used to set the crop frame and the slightly smaller model used for setting the mask.}\label{fig:ICWaSResultNSkin}
@@ -678,27 +755,38 @@ The image alignment pixel shift updates the change in the model position since t
 \clearpage
 
 \subsection{Dynamic State Transitions}\label{sec:DynamicStateTransitions}
-Each movement state has a metric. For each of the three states, we need to define a metric which characterizes the motion detected. Using these metrics, we need to define four tolerances for the state transitions.
+For each of the three states, we need to define a metric which characterizes the motion detected. Using these metrics, we need to define four tolerances for the state transitions.
 
-The metric for the rapid motion detection is the average pixel value of the the eroded difference image \ref{sec:DynamicTracking}, so if two consecutive images are the same, then the metric is 0. And if every pixel has changed by its maximum amount (e.g. every pixel black/white), then the metric is 255. The only question remaining is what sort of values should we expect for rapid finger movement. We can roughly estimate that a finger occupies about 10\% of the frame; given that the background is illuminated by the same amount, we can expect pixel differences around 20\%. Thus, although the range of the metric is actually 0-255, we actually expect the tolerance to be quite low.
+The metric for the rapid motion detection is the average pixel value of the eroded difference image \ref{sec:DynamicTracking}, so if two consecutive images are the same, then the metric is 0. And if every pixel has changed by its maximum amount (e.g. every pixel black/white), then the metric is 255. The only question remaining is what sort of values should we expect for rapid finger movement. We can roughly estimate that a finger occupies about 10\% of the frame; given that the background is illuminated by the same amount, we can expect pixel differences around 20\%. Thus, although the range of the metric is actually 0-255, we actually expect the tolerance to be quite low.
 
-(graph here)
+\begin{figure}[tbph]
+\centering
+\includegraphics[width=0.95\linewidth]{Chapter4/Figs/ICWaSAlignment&Metric}
+\caption{ICWaS alignment and Metric}
+\label{fig:icwasalignmentmetric}
+\end{figure}
 
 The metric for the smooth motion detection is the pixel distance moved by the model divided by the distal width \ref{sec:SmoothMotionTracking}. Significant values for this metric are 0 if the model hasn't had to move; 1 if the model is moved by a finger width; and it is assigned a negative value when the finger is not detected, moved out of frame, or if an insufficient amount of the digit remains in the frame. So, for negative values, the model isn't updated.
 
-(graph here)
-
 The ICWaS detection method returns the distance that the bounding box for the fingertip has had to move to align the image with the previous frame \ref{sec:ICWaS}. OpenCV's alignment routine requires the images to be well-aligned in order to function properly, so before attempting alignment, the code initially checks for large movements and does not perform the alignment if such movement is detected, avoiding long iterations of OpenCV's routine which would ultimately result in an error. However, in order to make this robust, the routine also catches any error from the alignment routine. Both of these result in an negative value being returned.
 
-(graph here)
+\begin{figure}[tbph]
+\centering
+\includegraphics[width=0.7\linewidth]{Chapter4/Figs/instantaniousShiftGrfx}
+\caption{The rapid and smooth dynamic tracking metrics.}
+\label{fig:instantaniousshiftgrfx}
+\end{figure}
 
-In order to set reasonable values for the tolerances, a version of the code was written which, regardless of the state, performed all three dynamic tracking routines. This may sound like it would fail for ICWaS as the images would not be at all aligned, however because the smooth tracking was performed before ICWaS, the model location and frame were updated in the smooth tracking allowing for the ICWaS routine to properly function. Using timed intervals, the code was run with the user performing what should be classified as a 'rapid movement, 'smooth movement' and 'ICWaS movement'. The results of the metric can be seen in Figure (insert fig ref here).
+In order to set reasonable values for the tolerances, a version of the code was written which, regardless of the state, performed both the rapid and smooth tracking routines. Using timed intervals, the code was run with the user performing motions which should be classified as a 'rapid movement, 'smooth movement' and 'ICWaS movement'. The results can be seen in Figure \ref{fig:instantaniousshiftgrfx}.
 
-(fig here)
+\begin{figure}[tbph]
+\centering
+\includegraphics[width=0.7\linewidth]{Chapter4/Figs/smoothedShiftGrfx}
+\caption{The rapid and smooth dynamic tracking metrics with values smoothed by averaging with previous values.}
+\label{fig:smoothedshiftgrfx}
+\end{figure}
 
-From this figure, you can see the metrics are fairly noisy; we want to avoid triggering a state transition on the basis of a single video frame. This problem is effectively solved in the code simply by taking the average of the current metric with the previous value, thus smoothing out the noise and stabilizing the state transitions, as illustrated by figure (insert fig ref here).
-
-(fig here)
+From this figure, you can see the metrics are fairly noisy; we want to avoid triggering a state transition on the basis of a single video frame. This problem is effectively solved in the code simply by taking the average of the current metric with the previous value, thus smoothing out the noise and stabilizing the state transitions, as illustrated by figure \ref{fig:smoothedshiftgrfx}.
 
 \section{iPhone Camera Setup}\label{sec:iPhoneCameraSetup}
 Quite later on in development, an iOS update was released which allows in-code control of camera properties, such as focus, exposure and white point color balance. Because the code does per-pixel comparisons and assumes that the color values remain constant, the first thing this allows us to do is fix the exposure, the white point and the focus such that the code is tracking the digit and tracking the blood flow, the algorithm isn't thrown off by the phone deciding to suddenly changing the camera properties. 
@@ -710,7 +798,12 @@ However, the problem with this approach is that if the camera properties are set
 After all this work, we have three metrics: one which rewards correctly identifying skin, one which rewards correctly identifying background, and one which rewards overall certainty. The final metric which was returned in the camera calibration is the weighted sum of these three metrics; the skin and the background identification metrics given a slightly higher weighting than the overall certainty.
 
 \subsection{Setting the Exposure}\label{sec:SettingTheExposure}
-To find the optimal exposure, the code first picks a handful of values between a minimum and maximum exposure and evaluates the metric at these values. This is done by setting the exposure waiting in-code for a few microseconds for the camera to finish adjusting and then evaluating the metric. This is necessary because the camera properties are set in a different thread to the tracking algorithm's thread. A bisection algorithm is then used to refine the optimal exposure.
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/exposureGraphic1.jpg}
+    \caption{ExposureGraphic}\label{fig:ExposureGraphic1}
+\end{figure}
+To find the optimal exposure, the code first picks a handful of values between a minimum and maximum exposure and evaluates the metric at these values. This is done by setting the exposure waiting in-code for a few microseconds for the camera to finish adjusting and then evaluating the metric. This is necessary because the camera properties are set in a different thread to the tracking algorithm's thread. A bisection algorithm is then used to refine the optimal exposure \ref{fig:ExposureGraphic1}.
 
 
 \section{Putting it All Together}\label{sec:PuttingItAllTogether}
@@ -752,12 +845,13 @@ The chart accurately presents the logical flow and recommended assignment of the
 \end{figure}
 
 The charts in Figures \ref{fig:FingerpressFingerModel}, \ref{fig:FingerpressStdCoordinates&RapidMovement}, \ref{fig:FingerpressSmoothMovement} and \ref{fig:FingerpressICWaS} more accurately depict the actual implementation of the model by showing the data flow to the elements of the model which are accessible to the controller. 
+\clearpage
 
 \section{Appendix}
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/KinkFit_A.jpg}
+    \includegraphics[width=0.92\textwidth]{Chapter4/Figs/KinkFit_A.jpg}
     \caption{KinkFitA}\label{fig:KinkFitA}
 \end{figure}
 
@@ -821,28 +915,24 @@ The charts in Figures \ref{fig:FingerpressFingerModel}, \ref{fig:FingerpressStdC
     \caption{KinkFitK}\label{fig:KinkFitK}
 \end{figure}
 
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS1.jpg}
-    \caption{ICWaS1}\label{fig:ICWaS1}
-\end{figure}
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS2.jpg}
-    \caption{ICWaS2}\label{fig:ICWaS2}
-\end{figure}
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS3.jpg}
-    \caption{ICWaS3}\label{fig:ICWaS3}
-\end{figure}
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS4.jpg}
-    \caption{ICWaS4}\label{fig:ICWaS4}
-\end{figure}
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/exposureGraphic1.jpg}
-    \caption{ExposureGraphic}\label{fig:ExposureGraphic1}
-\end{figure}
+%\begin{figure}[h!]
+%  \centering
+%   \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS1.jpg}
+%    \caption{ICWaS1}\label{fig:ICWaS1}
+%\end{figure}
+%\begin{figure}[h!]
+%  \centering
+%    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS2.jpg}
+%    \caption{ICWaS2}\label{fig:ICWaS2}
+%\end{figure}
+%\begin{figure}[h!]
+%  \centering
+%    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS3.jpg}
+%    \caption{ICWaS3}\label{fig:ICWaS3}
+%\end{figure}
+%\begin{figure}[h!]
+%  \centering
+%    \includegraphics[width=0.95\textwidth]{Chapter4/Figs/ICWaS4.jpg}
+%    \caption{ICWaS4}\label{fig:ICWaS4}
+%\end{figure}
+
