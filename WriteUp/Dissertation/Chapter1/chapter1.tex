@@ -32,7 +32,7 @@ As mentioned previously, one of the challenges facing this project is identifyin
 
 Unlike RGB, the HSV color space makes a clear distinction between the chrominance (the "Hue" and "Saturation" channels) and the luminance (the "Value" channel), storing them separately (\cite{Vezhnevets2003,Sigal2000a}). However, the chromatic information in the Hue channel is expressed in polar coordinates, thereby necessitating a coordinate transform when converting from the raw image data. Given the nature of the algorithm outlined herein --- targeted preservation of information, as opposed to classification ---  the computational cost of this transformation is undesirable.
 
-LAB and YCbCr, on the other hand, explicitly separate the chrominance and luminance without an accompanying polar coordinate transform (\cite{Vezhnevets2003,Poynton1997,Phung2002a}). LAB and YCbCr use a matrix transform to convert from RGB, allowing for simple and quick conversion exploiting optimised matrix multiplication routines. However, while they appear to be perfectly suited for the purposes of this project, a number of issues arise when represented discretely. LAB, YCbCr and other such luminosity-chrominance spaces all include implicit white-point correction in the readily-available implementations, which distorts the information from the raw image. Also, while the transform is reversible mathematically, discrete data types are used in practical computer science applications, and in most implementations the output is the same data type as the input, resulting in some loss of information when the transform is applied.
+LAB and YCbCr, on the other hand, explicitly separate the chrominance and luminance without an accompanying polar coordinate transform (\cite{Vezhnevets2003,Poynton1997,Phung2002a}). LAB and YCbCr use a matrix transform to convert from RGB, allowing for simple and quick conversion exploiting optimized matrix multiplication routines. However, while they appear to be perfectly suited for the purposes of this project, a number of issues arise when represented discretely. LAB, YCbCr and other such luminosity-chrominance spaces all include implicit white-point correction in the readily-available implementations, which distorts the information from the raw image. Also, while the transform is reversible mathematically, discrete data types are used in practical computer science applications, and in most implementations the output is the same data type as the input, resulting in some loss of information when the transform is applied.
 
 Furthermore, based on the skin statistics we have gathered --- which will be described in detail in the next chapter --- the entire region of skin color in the chromatic space can be expressed as a 2D Gaussian. Typically, this is a complex operation, but by aligning the chromatic axes of a luminosity-chrominance space with the major and minor axes of the 2D Gaussian, it can be expressed as the product of two 1D Gaussians in each chromatic channel, thereby facilitating the application of the statistics. It was decided that a bespoke color space would be best suited for this project. 
 
@@ -72,7 +72,7 @@ The absorption coefficient $\mu = \frac{\epsilon \rho}{M_{chem}}$, where $\rho$ 
 
 We can convert the molar absorptivity into an absorption spectrum for a chromophore if we know the average path length in the skin. So, the scattering properties of the skin will determine the path length. Since we are not trying to simulate any skin in particular, we can simply use average values taken from the OMLC site (\cite{OMLC2001}). At this point, we aren't so much interested in the saturation --- the concentration and path length both affect the saturation of the color rather than the hue --- as we are interested in the relative position around the luminosity axis.
 
-So now we have an absorption spectrum, but the color that we perceive is the light which is remitted, and that is what we are really interested in: the remitted light, or $R$. While the optics is a complicated study, there is a relatively simple theory called Kubelka-Munk Theory, which allows us to turn an absorption spectra into a remission spectra:
+So now we have an absorption spectrum, but the color that we perceive is the light which is remitted, and that is what we are really interested in: the remitted light, or $R$. While the optics is a complicated study, there is a relatively simple theory called Kubelka-Munk Theory (\cite{Kubelka1931,Kubelka:48,Kubelka:54}), which allows us to turn an absorption spectra into a remission spectra:
 
 \begin{align}\label{eq:KubelkaMunk}
 r &=\frac{A}{S} \\
@@ -125,7 +125,7 @@ However, because the methods chosen here are straightforward amplifications of e
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ResponseSpectraStripes.jpg}
-    \caption{The light spectrum as viewed using various CCDs with a physical spectrum for comparison }  \label{fig:ResponseSpectraStripes}
+    \caption{The light spectrum as viewed using various CCDs with a physical spectrum for comparison.}  \label{fig:ResponseSpectraStripes}
 \end{figure}
 
 \begin{figure}[h!]
@@ -143,7 +143,7 @@ In addition to the color rebalancing, which corrects the behavior of the CCD dev
 
 So, we have the molar absorptivity for the four key chromophores in the skin, we have the response spectra for a variety of devices, and a response spectra which serves as a target color output for all the devices after the color correction has been applied. Additionally, we are using the CIE 1931 RGB color space for the absorption spectra, which is closer to how our eyes perceive color than any other color space (\cite{RIDI2013}). This means that, in principle, we can get appropriate RGB values for the four key chromophores at the hardware layer using the device response spectra, or at the AP layer using the CIE 1931 RGB color space spectrum, assuming the device's color space correction does its job. The question now is how to actually simulate skin color.
 
-Given a remittance spectrum $R(\lambda)$ and a response function $S_{rgb}(\lambda)$ for the sensor the RGB output values can be calculated by finding the convolution 
+Given a remittance spectrum $R(\lambda)$ and a response function $S_{rgb}(\lambda)$ for the sensor, the RGB output values can be calculated by finding the convolution 
 
 \begin{align}
 R & = \int_{0}^{\infty} R(\lambda) S_{R} (\lambda)  \mathbf{d\lambda}\\
@@ -151,7 +151,7 @@ G & = \int_{0}^{\infty} R(\lambda) S_{G} (\lambda) \mathbf{d\lambda}\\
 B & = \int_{0}^{\infty} R(\lambda) S_{B} (\lambda)  \mathbf{d\lambda}
 \end{align}
 
-As for finding the RGB values, the bright color is the response of the CCD. By integrating the following functions in the figure below, we get the channel output:
+As for finding the RGB values, the bright color is the response of the CCD. By integrating the following functions in the figure below, we get the channel output seen in Figure~\ref{fig:Chromophores_NokiaN900}.
 
 
 \begin{figure}[h!]
@@ -162,7 +162,7 @@ As for finding the RGB values, the bright color is the response of the CCD. By i
 
 
 
-Thus, we can now find the channel output of any device for which we have a response function. (Figure \ref{fig:CameraComparison})
+Thus, we can now find the channel output of any device for which we have a response function (Figure \ref{fig:CameraComparison}).
 
 At the time of development, access to the camera on the iPhone was limited to the AP layer, and so we work with the CIE 1931 RGB color space. The relative position of the chromophores in the chromatic space, i.e. a color space with a luminosity axis, is shown in Figure \ref{fig:ChromophoresYAB}.
 
@@ -193,5 +193,5 @@ At the time of development, access to the camera on the iPhone was limited to th
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ChromophoresYAB.jpg}
-    \caption{The four main chromophores as perceived by CIE 1931 RGB color space after rotation into the LXY(0) color space.}  \label{fig:ChromophoresYAB}
+    \caption{The four main chromophores as perceived by CIE 1931 RGB color space after rotation into the LCaCb(0) color space.}  \label{fig:ChromophoresYAB}
 \end{figure}
