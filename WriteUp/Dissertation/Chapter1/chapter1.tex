@@ -96,7 +96,7 @@ R = r+1 - \sqrt{r^2+2 r}
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ChemicalSpectralProperties.jpg}
-    \caption{From left to right, the molar absorptivity, the absorption coefficient, and remittance of the four key chromophores. We assume a concentration of 150 $g/L$, which is typical of haemoglobin concentration in blood. The remittance was found using Kubelka-Munk Theory, outlined in section \ref{sec:SkinColorSimulation}. }  \label{fig:ChemicalSpectralProperties}
+    \caption{From left to right, the molar absorptivity, the absorption coefficient, and remittance of the four key chromophores. We assume a typical hemoglobin concentration of 150 $g/L$. The remittance was found using Kubelka-Munk Theory, outlined in section \ref{sec:SkinColorSimulation}. }  \label{fig:ChemicalSpectralProperties}
 \end{figure}
 
 The remittance spectra for the four key chromophores is shown in Figure \ref{fig:ChemicalSpectralProperties}. 
@@ -109,11 +109,7 @@ The first is peak normalization, which simply levels out the maximum output in e
 
 The second method is to approach the response spectra as the basis functions for representing the spectrum. Using this approach, each basis function is normalized according to its integral over the visible wavelengths, giving an equal weighting to each of the response spectra functions over the range of values, rather than focusing on a peak value. Mathematically speaking, this approach is not unusual when constructing a basis set as it facilitates the maths.
 
-\begin{figure}[h!]
-  \centering
-    \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ResponseSpectrum_NokiaN900.jpg}
-    \caption{The response spectrum for the Nokia N900. }  \label{fig:ResponseSpectumNokia}
-\end{figure}
+
 
 
 
@@ -121,6 +117,15 @@ It should be noted that the color balancing methods used in modern CCD devices a
 
 However, because the methods chosen here are straightforward amplifications of each channel, they're likely to be used as a first step in color rebalancing at the hardware level in the device. While we are not concerned with device constructions, it is useful to know how these devices capture the color information if this algorithm is to be used diagnostically, as color rebalancing may introduce artefacts and distortions in the data.
 
+Although we consider these sensors to be capturing information throughout the entire visible spectrum, what they are actually capturing varies quite significantly between devices, as shown in Figure \ref{fig:ResponseSpectraStripes}. Even a very simple color rebalancing can restore some normality to the spectrum, as shown in Figure \ref{fig:ResponseSpectraStripesNorm}. However, as these devices use the aforementioned color rebalancing algorithms to alter the image to look more sensible to human eyes, these differences aren't so apparent to us.
+
+\clearpage
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ResponseSpectrum_NokiaN900.jpg}
+    \caption{The response spectrum for the Nokia N900. }  \label{fig:ResponseSpectumNokia}
+\end{figure}
 
 \begin{figure}[h!]
   \centering
@@ -128,16 +133,17 @@ However, because the methods chosen here are straightforward amplifications of e
     \caption{The light spectrum as viewed using various CCDs with a physical spectrum for comparison.}  \label{fig:ResponseSpectraStripes}
 \end{figure}
 
+\clearpage
+
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.99\textwidth]{Chapter1/Figs/ResponseSpectraStripesNorm.jpg}
     \caption{The light spectrum as viewed using various CCDs after normalization with a physical spectrum for comparison.}  \label{fig:ResponseSpectraStripesNorm}
 \end{figure}
 
-Although we consider these sensors to be capturing information throughout the entire visible spectrum, what they are actually capturing varies quite significantly between devices, as shown in Figure \ref{fig:ResponseSpectraStripes}. Even a very simple color rebalancing can restore some normality to the spectrum, as shown in Figure \ref{fig:ResponseSpectraStripesNorm}. However, as these devices use the aforementioned color rebalancing algorithms to alter the image to look more sensible to human eyes, these differences aren't so apparent to us.
-
 In addition to the color rebalancing, which corrects the behavior of the CCD devices, as is found in later sections, some devices, like the iPhone, also apply a dynamic color rebalancing which attempts to even out the colors based on the image captured. This feature is intended to correct for strange lighting conditions and other such problems which could affect the image. This will be addressed in detail in Chapter \ref{sec:Chap2}.
 
+\clearpage
 
 \subsection{Skin Color Simulation} \label{sec:SkinColorSimulation}
 
