@@ -245,7 +245,7 @@ Sample image sets were collected using the iPhone for three individuals with var
   \includegraphics[width=0.3 \textwidth]{Chapter3/Figs/SampleCollages/NSkin_Sample.jpg}\\ 
   \hline 
   \end{tabular} 
-    \caption{Samples from the image sets for each individuals.}  \label{fig:SetSamples}
+    \caption{Samples from the image sets for each individual.}  \label{fig:SetSamples}
 \end{figure}
 
 The MATLAB bin class was written so that the combined statistics for the three individuals could be found by adding the RGB bins together, and then following the same steps 1-8 as described previously. All three distributions along with the combined distribution can be seen in Figures \ref{fig:AllTogether2D} and \ref{fig:AllTogether3D}.
@@ -283,7 +283,7 @@ $\left(\begin{array}{c} 84 \\ 117 \end{array} \right) < \mu'  < \left(\begin{arr
 \end{figure}
 
 We now follow the procedure outlined in chapter 2 and obtain an angle informed by computational considerations.  
-With the perturbations to each channel scaled by their relative importance (fig \ref{fig:PerturbationNearThetaAB}) there are three angles which satisfy the criteria.
+With the perturbations to each channel scaled by their relative importance (Figure \ref{fig:PerturbationNearThetaAB}) there are three angles which satisfy the criteria.
  The algorithm returns the closest angle to the requested angle which is $\overset{x}{\phi } (48)$ however the perturbation is close to the tolerance of 1 which suggests that if the distribution parameters were adjusted to fit a particular individual then the perturbation may slip above the tolerance. 
  The channel scaling $\left\{ \alpha, \beta\right\} $ are also fairly close in value so the unscaled perturbations can be used with a tolerance $\tau = \text{Max}\left(\alpha, \beta\right)$ Figure \ref{fig:PerturbationNearThetaT}. 
  Accounting for both low perturbation and future adaptability a final angle $\theta = \overset{x}{\phi }(46) = 0.9025768293268257$ was chosen.
@@ -300,7 +300,7 @@ With the perturbations to each channel scaled by their relative importance (fig 
     \caption{ The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color space  }  \label{fig:DistributionResults}
 \end{figure}
 
-As a final step, the MATLAB statistics gathering routine was run again using the combined F,J\&N RGB bins as a starting point and then rotating to the LCa'Cb' color space with the new value for $\theta$. This was done partly to check that the code works as expected and to see how well the product of Gaussians function fits the distribution. The only difference to the MATLAB code was that for this run the Gaussian fit was found using eq. \ref{eq:2DGaussianProd} which is the product of two 1D Gaussians with a fixed amplitude of 1. The result can be seen in Figure \ref{fig:FittheGaussianFinal}. 
+As a final step, the MATLAB statistics gathering routine was run again using the combined F,J\&N RGB bins as a starting point and then rotating to the LCa'Cb' color space with the new value for $\theta$. This was done partly to check that the code works as expected and to see how well the product of Gaussians function fits the distribution. The only difference to the MATLAB code was that for this run the Gaussian fit was found using equation \ref{eq:2DGaussianProd} which is the product of two 1D Gaussians with a fixed amplitude of 1. The result can be seen in Figure \ref{fig:FittheGaussianFinal}. 
 
 \begin{equation}\label{eq:2DGaussianProd}
 \exp \left( -\frac{{\CaMu}^2}{2 \sigma_1^2} -  \frac{ { \CbMu }^2}{2 \sigma_2^2} \right) \quad \textbf{where} \quad \CaMu = \text{Ca}-\mu_1 \quad \text{and} \quad \CbMu = \text{Cb}-\mu_2 
@@ -314,7 +314,7 @@ As a final step, the MATLAB statistics gathering routine was run again using the
     \caption{ \textbf{The Tight MATLAB fit in LCa'Cb'.} The redistribution functions for each axis alongside summary tables of the key parameters and a selection of calculations and an overview of the distribution in the new color space.}  \label{fig:DistributionResultsFinal}
 \end{figure}
 
-It can be seen that the least square fit is a good predictor for the distribution but the aim of the color space is to capture all skin relevant chromatic information. For this reason,  as well as the desire to be inclusive of skin tones outside of the sample set of three individuals, a region larger than the $2\sigma$ ellipse region (fig \ref{fig:DistributionResultsFinal}) which is kept by the tight MATLAB fit may be desirable to be included. The $3\sigma$ ellipse region would include everything in the combined individual F,J\&N histogram. A $5\sigma$ ellipse region would  likely account for a wide variety of skin tones. 
+It can be seen that the least square fit is a good predictor for the distribution but the aim of the color space is to capture all skin relevant chromatic information. For this reason,  as well as the desire to be inclusive of skin tones outside of the sample set of three individuals, a region larger than the $2\sigma$ ellipse region (Figure \ref{fig:DistributionResultsFinal}) which is kept by the tight MATLAB fit may be desirable to be included. The $3\sigma$ ellipse region would include everything in the combined individual F,J\&N histogram. A $5\sigma$ ellipse region would  likely account for a wide variety of skin tones. 
 
 \begin{figure}[h!]
   \centering
@@ -328,7 +328,7 @@ It can be seen that the least square fit is a good predictor for the distributio
     \caption{ The tight and extended fits in the LCa'Cb' color space.}  \label{fig:DistributionResultsFinalExtended3D}
 \end{figure}
 
-Extending the distribution may also affect the accuracy required in the rotation as mentioned previously. Extending out to a $5\sigma$ ellipse region does indeed affect the tolerance (fig \ref{fig:DistributionResultsFinalExtended}), but the chosen angle perturbation $\pm0.144$ still satisfies the tolerance $\tau = 0.3094$ as $0.1441 < 0.3094$. It's also notable that the tight MATLAB distribution requires a  partition in the chromatic axis whilst the extended distribution requires a small amount of redistribution. The tight MATLAB distribution and the extended distribution can be seen in fig \ref{fig:DistributionResultsFinalExtended3D}.
+Extending the distribution may also affect the accuracy required in the rotation as mentioned previously. Extending out to a $5\sigma$ ellipse region does indeed affect the tolerance (Figure \ref{fig:DistributionResultsFinalExtended}), but the chosen angle perturbation $\pm0.144$ still satisfies the tolerance $\tau = 0.3094$ as $0.1441 < 0.3094$. It's also notable that the tight MATLAB distribution requires a partition in the chromatic axis while the extended distribution requires a small amount of redistribution. The tight MATLAB distribution and the extended distribution can be seen in Figure \ref{fig:DistributionResultsFinalExtended3D}.
 
 \subsection{Conclusion}
 
